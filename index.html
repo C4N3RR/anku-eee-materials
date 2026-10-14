@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ANKU EEE Materials - Öğrenci Materyal Portalı</title>
+  <title>ANKU EEE - 1. Sınıf 1. Dönem Materyal Portalı</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,17 +16,11 @@
             brand: {
               50: '#f0f7ff',
               100: '#e0effe',
-              200: '#bae0fd',
               500: '#0284c7',
               600: '#0369a1',
               700: '#075985',
               800: '#0c4a6e',
               900: '#082f49',
-            },
-            anku: {
-              navy: '#0c2340',
-              gold: '#c5a059',
-              light: '#f8fafc'
             }
           }
         }
@@ -34,821 +28,624 @@
     }
   </script>
 
-  <!-- Lucide Icons -->
+  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(0, 0, 0, 0.05);
+      background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(100, 116, 139, 0.3);
+      background: rgba(148, 163, 184, 0.3);
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(100, 116, 139, 0.5);
-    }
-    .dark ::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(148, 163, 184, 0.5);
     }
     .dark ::-webkit-scrollbar-thumb {
-      background: rgba(148, 163, 184, 0.2);
+      background: rgba(71, 85, 105, 0.4);
     }
-
-    /* Modal Backdrop Blur */
-    dialog::backdrop {
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(4px);
+    
+    /* Smooth transitions */
+    .collapse-transition {
+      transition: max-height 0.25s ease-in-out, opacity 0.2s ease-in-out;
     }
   </style>
 </head>
-<body class="h-full bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 flex flex-col font-sans antialiased selection:bg-sky-500 selection:text-white">
+<body class="h-full bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 flex flex-col font-sans antialiased overflow-hidden select-none">
 
-  <!-- TOP HEADER / NAV -->
-  <header class="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
-    <div class="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-      
-      <!-- Brand & Mobile Toggle -->
-      <div class="flex items-center gap-3">
-        <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-          <i data-lucide="menu" class="w-6 h-6"></i>
-        </button>
+  <!-- TOP BAR -->
+  <header class="h-14 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 z-20 shrink-0">
+    <div class="flex items-center gap-3">
+      <!-- Mobile Sidebar Toggle -->
+      <button id="toggleMobileSidebarBtn" class="md:hidden p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
 
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/20 font-bold text-lg tracking-wider">
-            EEE
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-sky-600 to-indigo-600 dark:from-sky-400 dark:to-indigo-300 bg-clip-text text-transparent">
-                ANKU EEE
-              </span>
-              <span class="text-xs px-2 py-0.5 rounded-full font-medium bg-sky-100 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
-                Materials Hub
-              </span>
-            </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">Ankara Üniversitesi Elektrik-Elektronik Mühendisliği</p>
+      <!-- Logo & Title -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-sky-600 text-white font-black text-sm flex items-center justify-center tracking-wider shadow-sm">
+          EEE
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-sm tracking-tight text-slate-900 dark:text-white">ANKU EEE</span>
+            <span class="text-[11px] px-2 py-0.5 rounded font-semibold bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300">
+              1. Sınıf • 1. Dönem (Güz)
+            </span>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Search Bar -->
-      <div class="flex-1 max-w-lg hidden md:block">
+    <!-- Active Item Header / Actions -->
+    <div class="flex items-center gap-2">
+      <!-- Fast Link to Google Drive Folder -->
+      <a 
+        id="driveFolderBtn" 
+        href="https://drive.google.com" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        title="Google Drive Klasörünü Aç (ANKU EEE Materials)" 
+        class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-emerald-700 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 transition"
+      >
+        <i data-lucide="folder-symlink" class="w-4 h-4 text-emerald-600 dark:text-emerald-400"></i>
+        <span>Drive Klasörü</span>
+      </a>
+
+      <!-- Add New Item Button -->
+      <button 
+        id="openAddModalBtn" 
+        class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-sky-600 hover:bg-sky-500 text-white shadow-sm transition active:scale-95"
+      >
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        <span class="hidden sm:inline">Dosya/Link Ekle</span>
+      </button>
+
+      <!-- Edit / Drive Settings Button -->
+      <button 
+        id="openSettingsBtn" 
+        title="Klasör ve Ders Ayarları" 
+        class="p-2 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+      >
+        <i data-lucide="settings" class="w-4 h-4"></i>
+      </button>
+
+      <!-- Dark Mode Toggle -->
+      <button 
+        id="darkModeToggle" 
+        title="Tema Değiştir" 
+        class="p-2 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+      >
+        <i data-lucide="moon" class="w-4 h-4 dark:hidden"></i>
+        <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-amber-400"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <div class="flex-1 flex overflow-hidden relative">
+    
+    <!-- LEFT SIDEBAR: 6 COURSES TREE ACCORDION -->
+    <aside id="sidebar" class="w-80 md:w-72 lg:w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col shrink-0 z-10 transition-transform duration-200 ease-in-out md:translate-x-0 absolute md:static inset-y-0 left-0 -translate-x-full shadow-lg md:shadow-none">
+      
+      <!-- Search & Course List Header -->
+      <div class="p-3 border-b border-slate-200 dark:border-slate-800 space-y-2">
         <div class="relative">
-          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
           <input 
             type="text" 
-            id="searchInput" 
-            placeholder="Ders adı, kod (örn. EEE201), konu veya hoca ara... (Ctrl + K)"
-            class="w-full pl-10 pr-10 py-2 text-sm bg-slate-100 dark:bg-slate-800/80 border border-transparent focus:border-sky-500 dark:focus:border-sky-400 rounded-xl outline-none focus:ring-2 focus:ring-sky-500/20 transition-all text-slate-900 dark:text-white placeholder-slate-400"
+            id="sidebarSearch" 
+            placeholder="Ders veya dosya adı ara..." 
+            class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:border-sky-500 text-slate-900 dark:text-white placeholder-slate-400"
           >
-          <button id="clearSearchBtn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
-            <i data-lucide="x" class="w-4 h-4"></i>
+        </div>
+        <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-1">
+          <span>Dersler (1. Dönem)</span>
+          <span id="courseCountBadge" class="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500">6 Ders</span>
+        </div>
+      </div>
+
+      <!-- Tree Course Accordion Container -->
+      <div id="courseTreeList" class="flex-1 overflow-y-auto p-2 space-y-1.5">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+        <span class="flex items-center gap-1.5 truncate">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span class="truncate">Drive: ANKU EEE Materials</span>
+        </span>
+        <button id="quickResetDataBtn" title="Varsayılan Verilere Dön" class="hover:text-sky-600 transition">
+          Sıfırla
+        </button>
+      </div>
+    </aside>
+
+    <!-- Mobile Backdrop -->
+    <div id="mobileBackdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-0 hidden md:hidden"></div>
+
+    <!-- CENTER VIEWER: LARGE MAIN STAGE -->
+    <main class="flex-1 flex flex-col bg-slate-200 dark:bg-slate-950 overflow-hidden relative">
+      
+      <!-- Stage Header Bar (When file is opened) -->
+      <div id="stageHeader" class="hidden h-12 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 flex items-center justify-between gap-3 shrink-0 shadow-sm z-10">
+        <div class="flex items-center gap-2.5 overflow-hidden">
+          <span id="activeTypeBadge" class="p-1 rounded-md bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 shrink-0">
+            <i data-lucide="file" class="w-4 h-4"></i>
+          </span>
+          <div class="truncate">
+            <h2 id="activeItemTitle" class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">Dosya Adı</h2>
+            <div id="activeItemBreadcrumb" class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 truncate">Ders Kodu > Alt Klasör</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <!-- Open in Drive / External Tab -->
+          <a 
+            id="openExternalBtn" 
+            href="#" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            title="Drive'da / Yeni Sekmede Aç" 
+            class="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg font-medium text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Yeni Sekmede Aç</span>
+          </a>
+
+          <!-- Fullscreen Toggle for the Center Stage -->
+          <button 
+            id="fullscreenBtn" 
+            title="Tam Ekran Görüntüle" 
+            class="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+          >
+            <i data-lucide="maximize-2" class="w-4 h-4"></i>
           </button>
         </div>
       </div>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Add Material Button -->
-        <button id="openAddModalBtn" class="flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-sky-600 hover:bg-sky-500 text-white shadow-sm hover:shadow-md transition active:scale-95">
-          <i data-lucide="plus-circle" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">Materyal Ekle</span>
-        </button>
-
-        <!-- Drive Settings -->
-        <button id="openDriveSettingsBtn" title="Google Drive Bağlantısı" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition relative">
-          <i data-lucide="hard-drive" class="w-5 h-5 text-emerald-500"></i>
-          <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        </button>
-
-        <!-- Dark Mode Toggle -->
-        <button id="darkModeToggle" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-          <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
-          <i data-lucide="sun" class="w-5 h-5 hidden dark:block text-amber-400"></i>
-        </button>
-      </div>
-
-    </div>
-
-    <!-- Mobile Search Bar (Only visible on small screens) -->
-    <div class="px-4 pb-3 md:hidden">
-      <div class="relative">
-        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-        <input 
-          type="text" 
-          id="mobileSearchInput" 
-          placeholder="Ders, dosya veya hoca ara..."
-          class="w-full pl-10 pr-4 py-2 text-sm bg-slate-100 dark:bg-slate-800 border border-transparent focus:border-sky-500 rounded-xl outline-none"
-        >
-      </div>
-    </div>
-  </header>
-
-  <!-- MAIN BODY LAYOUT -->
-  <div class="flex-1 flex overflow-hidden">
-    
-    <!-- SIDEBAR NAVIGATION -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 lg:static lg:translate-x-0 -translate-x-full transition-transform duration-200 ease-in-out bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between pt-16 lg:pt-0">
-      <div class="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+      <!-- Stage Body / Viewer Container -->
+      <div id="stageContainer" class="flex-1 w-full h-full relative overflow-hidden flex items-center justify-center">
         
-        <!-- Quick Views -->
-        <div>
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Genel Bakış</div>
-          <nav class="space-y-1">
-            <button data-filter="all" class="sidebar-nav-btn active flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-sky-600 bg-sky-50 dark:bg-sky-950/50 dark:text-sky-300">
-              <span class="flex items-center gap-2.5">
-                <i data-lucide="layout-grid" class="w-4 h-4"></i>
-                Tüm Materyaller
-              </span>
-              <span id="badge-count-all" class="text-xs px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900 font-semibold">0</span>
-            </button>
-            <button data-filter="favorites" class="sidebar-nav-btn flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-              <span class="flex items-center gap-2.5">
-                <i data-lucide="star" class="w-4 h-4 text-amber-500"></i>
-                Favorilerim
-              </span>
-              <span id="badge-count-fav" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-semibold">0</span>
-            </button>
-            <button id="navLiveDrive" class="flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-              <span class="flex items-center gap-2.5">
-                <i data-lucide="folder-git-2" class="w-4 h-4 text-emerald-500"></i>
-                Canlı Drive Klasörü
-              </span>
-              <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold">ANKU</span>
-            </button>
-          </nav>
+        <!-- Loading Spinner -->
+        <div id="stageLoader" class="hidden absolute inset-0 bg-slate-900/60 backdrop-blur-sm z-20 flex flex-col items-center justify-center text-white">
+          <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-sky-400 mb-2"></i>
+          <span class="text-xs font-medium">Materyal yükleniyor...</span>
         </div>
 
-        <!-- Material Type Filters -->
-        <div>
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Dosya Türleri</div>
-          <nav class="space-y-1">
-            <button data-filter="pdf" class="sidebar-nav-btn flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-              <span class="flex items-center gap-2.5">
-                <i data-lucide="file-text" class="w-4 h-4 text-rose-500"></i>
-                PDF Dosyaları
-              </span>
-              <span id="badge-count-pdf" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-semibold">0</span>
-            </button>
-            <button data-filter="slide" class="sidebar-nav-btn flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-              <span class="flex items-center gap-2.5">
-                <i data-lucide="presentation" class="w-4 h-4 text-amber-500"></i>
-                Ders Slaytları (PPT)
-              </span>
-              <span id="badge-count-slide" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-semibold">0</span>
-            </button>
-            <button data-filter="word" class="sidebar-nav-btn flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-              <span class="flex items-center gap-2.5">
-                <i data-lucide="file-edit" class="w-4 h-4 text-blue-500"></i>
-                Word & Not Dosyaları
-              </span>
-              <span id="badge-count-word" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-semibold">0</span>
-            </button>
-            <button data-filter="youtube" class="sidebar-nav-btn flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-              <span class="flex items-center gap-2.5">
-                <i data-lucide="youtube" class="w-4 h-4 text-red-600"></i>
-                YouTube Videoları
-              </span>
-              <span id="badge-count-youtube" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-semibold">0</span>
-            </button>
-          </nav>
-        </div>
-
-        <!-- Academic Classes / Yıllar -->
-        <div>
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider px-3 mb-2">Sınıflar & Dönemler</div>
-          <nav class="space-y-1">
-            <button data-filter="class-1" class="sidebar-nav-btn flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-              <span class="flex items-center gap-2.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                1. Sınıf (Temel Dersler)
-              </span>
-              <span id="badge-count-class-1" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-semibold">0</span>
-            </button>
-            <button data-filter="class-2" class="sidebar-nav-btn flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-              <span class="flex items-center gap-2.5">
-                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                2. Sınıf (Devre & Mantık)
-              </span>
-              <span id="badge-count-class-2" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-semibold">0</span>
-            </button>
-            <button data-filter="class-3" class="sidebar-nav-btn flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-              <span class="flex items-center gap-2.5">
-                <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-                3. Sınıf (Sinyal & Elektronik)
-              </span>
-              <span id="badge-count-class-3" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-semibold">0</span>
-            </button>
-            <button data-filter="class-4" class="sidebar-nav-btn flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-xl text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-              <span class="flex items-center gap-2.5">
-                <span class="w-2 h-2 rounded-full bg-orange-500"></span>
-                4. Sınıf (Uzmanlaşma & Bitirme)
-              </span>
-              <span id="badge-count-class-4" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 font-semibold">0</span>
-            </button>
-          </nav>
-        </div>
-
-      </div>
-
-      <!-- Sidebar Footer -->
-      <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
-        <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-          <span class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            Drive Bağlı
-          </span>
-          <button id="exportImportBtn" class="hover:text-sky-600 dark:hover:text-sky-400 font-medium">Yedekle / Yükle</button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- SIDEBAR BACKDROP (Mobile) -->
-    <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-30 hidden lg:hidden"></div>
-
-    <!-- MAIN DASHBOARD CONTENT AREA -->
-    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-      
-      <!-- HERO / BANNER -->
-      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-700 via-indigo-800 to-slate-900 text-white p-6 sm:p-8 mb-8 shadow-xl">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="relative z-10 max-w-2xl">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium mb-3">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
-            <span>Google Drive Destekli Sınıf Materyalleri Portalı</span>
-          </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
-            ANKU EEE Materials
-          </h1>
-          <p class="text-sm sm:text-base text-slate-200 leading-relaxed mb-4">
-            PDF ders notlarını, Word belgelerini, ders sunumlarını ve YouTube video kayıtlarını <strong>siteden hiç ayrılmadan</strong> doğrudan görüntüleyin.
-          </p>
-          
-          <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm">
-            <div class="flex items-center gap-1.5 bg-black/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
-              <i data-lucide="folder" class="w-4 h-4 text-emerald-400"></i>
-              <span>Klasör: <strong class="text-emerald-300">ANKU EEE Materials</strong></span>
-            </div>
-            <button id="quickAddBtn" class="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/20 transition">
-              <i data-lucide="plus" class="w-4 h-4"></i>
-              <span>Hızlı Link Ekle</span>
-            </button>
-            <button id="openFolderDirectBtn" class="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 transition">
-              <i data-lucide="external-link" class="w-4 h-4"></i>
-              <span>Drive'da Aç</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- STATS STRIP -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex items-center gap-3">
-          <div class="p-3 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400">
-            <i data-lucide="file-text" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">PDF Notlar</div>
-            <div id="statPdfCount" class="text-xl font-bold">0</div>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex items-center gap-3">
-          <div class="p-3 rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400">
-            <i data-lucide="presentation" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Slaytlar</div>
-            <div id="statSlideCount" class="text-xl font-bold">0</div>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex items-center gap-3">
-          <div class="p-3 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400">
-            <i data-lucide="file-edit" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Word / Döküman</div>
-            <div id="statWordCount" class="text-xl font-bold">0</div>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm flex items-center gap-3">
-          <div class="p-3 rounded-xl bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400">
-            <i data-lucide="youtube" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Video Dersler</div>
-            <div id="statVideoCount" class="text-xl font-bold">0</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- FILTER TABS & SORTING BAR -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h2 id="currentCategoryTitle" class="text-xl font-bold tracking-tight">Tüm Materyaller</h2>
-          <p id="currentCategorySub" class="text-xs text-slate-500 dark:text-slate-400">Tüm sınıflardan yüklenen güncel kaynaklar</p>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <!-- Course Dropdown Filter -->
-          <select id="courseSelectFilter" class="text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-sky-500/20 text-slate-700 dark:text-slate-300">
-            <option value="all">Tüm Dersler</option>
-            <!-- Courses populated by JS -->
-          </select>
-
-          <!-- Sort Filter -->
-          <select id="sortSelect" class="text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-sky-500/20 text-slate-700 dark:text-slate-300">
-            <option value="newest">En Yeniler</option>
-            <option value="title-asc">İsim (A-Z)</option>
-            <option value="course">Ders Koduna Göre</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- MATERIAL CARDS GRID -->
-      <div id="materialsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-        <!-- Cards injected dynamically by JS -->
-      </div>
-
-      <!-- EMPTY STATE -->
-      <div id="emptyState" class="hidden text-center py-16 px-4">
-        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
-          <i data-lucide="search-x" class="w-8 h-8"></i>
-        </div>
-        <h3 class="text-lg font-bold mb-1">Materyal Bulunamadı</h3>
-        <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto mb-4">
-          Arama kriterinize veya seçili filtreye uygun dosya ya da video bulunamadı.
-        </p>
-        <button id="resetFiltersBtn" class="px-4 py-2 text-xs font-semibold rounded-xl bg-sky-600 text-white hover:bg-sky-500 transition">
-          Filtreleri Sıfırla
-        </button>
-      </div>
-
-      <!-- CANLI DRIVE GÖRÜNTÜLEYİCİ SECTION (Embedded Drive Folder) -->
-      <section id="liveDriveSection" class="hidden mt-6">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-3">
-              <div class="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600">
-                <i data-lucide="folder-git-2" class="w-6 h-6"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-base">ANKU EEE Materials - Canlı Google Drive Klasörü</h3>
-                <p class="text-xs text-slate-500">Google Drive klasörünüz doğrudan iframe olarak entegre edilmiştir.</p>
-              </div>
-            </div>
-            <a id="externalDriveLink" href="https://drive.google.com" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition">
-              <i data-lucide="external-link" class="w-4 h-4"></i>
-              <span>Drive Sekmesinde Aç</span>
-            </a>
-          </div>
-
-          <div class="relative w-full h-[650px] rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950">
-            <iframe 
-              id="liveDriveIframe" 
-              class="w-full h-full border-0" 
-              src="" 
-              allowfullscreen
-            ></iframe>
-          </div>
-        </div>
-      </section>
-
-    </main>
-  </div>
-
-  <!-- ================= IN-APP UNIVERSAL VIEWER DIALOG ================= -->
-  <dialog id="viewerModal" class="p-0 rounded-2xl shadow-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-[96vw] max-w-6xl h-[92vh] max-h-[900px] flex-col overflow-hidden outline-none">
-    <!-- Viewer Header -->
-    <div class="h-14 px-4 sm:px-6 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur border-b border-slate-200 dark:border-slate-700/60 flex items-center justify-between gap-3 shrink-0">
-      <div class="flex items-center gap-2.5 overflow-hidden">
-        <span id="viewerTypeBadge" class="p-1.5 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400">
-          <i data-lucide="file" class="w-4 h-4"></i>
-        </span>
-        <div class="truncate">
-          <h3 id="viewerTitle" class="text-sm font-bold text-slate-900 dark:text-white truncate">Dosya Adı</h3>
-          <p id="viewerSubtitle" class="text-[11px] text-slate-500 dark:text-slate-400 truncate">Ders Kodu • Açıklama</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2 shrink-0">
-        <!-- Open in New Tab -->
-        <a id="viewerExternalBtn" href="#" target="_blank" rel="noopener noreferrer" title="Yeni Sekmede Aç" class="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition">
-          <i data-lucide="external-link" class="w-4 h-4"></i>
-        </a>
-
-        <!-- Toggle Notes Panel -->
-        <button id="toggleNotesBtn" title="Ders Notu Al" class="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition">
-          <i data-lucide="notebook-pen" class="w-4 h-4"></i>
-        </button>
-
-        <!-- Close Modal -->
-        <button id="closeViewerBtn" class="p-2 rounded-xl text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Viewer Body (Content + Optional Notes Sidebar) -->
-    <div class="flex-1 flex overflow-hidden bg-slate-950 relative">
-      <!-- Main Content Iframe Container -->
-      <div id="viewerIframeWrapper" class="flex-1 relative w-full h-full bg-slate-950 flex items-center justify-center">
-        <!-- Loading spinner -->
-        <div id="viewerLoading" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 bg-slate-950 z-10">
-          <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-sky-500 mb-2"></i>
-          <span class="text-xs">Materyal yükleniyor...</span>
-        </div>
-
+        <!-- The Iframe (Google Drive Preview, YouTube Embed, Docs Viewer) -->
         <iframe 
-          id="viewerIframe" 
-          class="w-full h-full border-0" 
+          id="mainIframe" 
+          class="hidden w-full h-full border-0 bg-white dark:bg-slate-900" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
           allowfullscreen
         ></iframe>
-      </div>
 
-      <!-- Quick Notes Sidebar (Toggled) -->
-      <div id="viewerNotesPanel" class="hidden w-80 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-800 flex flex-col">
-        <div class="p-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-          <span class="text-xs font-bold flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-            <i data-lucide="notebook-pen" class="w-4 h-4 text-sky-500"></i>
-            Kişisel Ders Notları
-          </span>
-          <span class="text-[10px] text-slate-400">Tarayıcında saklanır</span>
+        <!-- Welcome / Empty State Placeholder (When no file is selected yet) -->
+        <div id="welcomePlaceholder" class="max-w-md text-center p-6 text-slate-500 dark:text-slate-400 select-none">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-center shadow-sm text-sky-600 dark:text-sky-400">
+            <i data-lucide="layers" class="w-8 h-8"></i>
+          </div>
+          <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mb-1">Bir Materyal Seçin</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+            Sol menüdeki 6 dersten birine tıklayın, alt klasörünü açın ve incelemek istediğiniz <strong>PDF, Slayt, Word belgesi veya YouTube ders videosunu</strong> seçin.
+          </p>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800/80 text-[11px] text-sky-700 dark:text-sky-300 font-medium">
+            <i data-lucide="folder-check" class="w-3.5 h-3.5"></i>
+            <span>Doğrudan bu ekranda büyük ve net olarak açılır</span>
+          </div>
         </div>
-        <textarea 
-          id="viewerNotesTextarea" 
-          placeholder="Bu materyali izlerken veya okurken buraya hızlı notlar alabilirsin..." 
-          class="flex-1 p-3 text-xs bg-transparent outline-none resize-none text-slate-800 dark:text-slate-200 placeholder-slate-400 font-mono leading-relaxed"
-        ></textarea>
-        <div class="p-2 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-[10px] text-slate-400">
-          <span id="notesStatus">Otomatik kaydedilir</span>
-          <button id="clearNotesBtn" class="text-rose-500 hover:underline">Temizle</button>
-        </div>
+
       </div>
-    </div>
-  </dialog>
+    </main>
+
+  </div>
 
 
-  <!-- ================= ADD MATERIAL MODAL ================= -->
-  <dialog id="addModal" class="p-0 rounded-2xl shadow-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-[92vw] max-w-lg overflow-hidden outline-none">
-    <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="p-2 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400">
-          <i data-lucide="file-plus" class="w-5 h-5"></i>
+  <!-- ================= MODAL: DOSYA / LİNK EKLE ================= -->
+  <dialog id="addModal" class="p-0 rounded-2xl shadow-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-[92vw] max-w-md overflow-hidden outline-none">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="p-1.5 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400">
+          <i data-lucide="file-plus-2" class="w-4 h-4"></i>
         </div>
-        <div>
-          <h3 class="font-bold text-base">Yeni Materyal Ekle</h3>
-          <p class="text-xs text-slate-500">Drive linki, PDF, slayt veya YouTube videosu ekleyin</p>
-        </div>
+        <h3 class="font-bold text-sm">Yeni Dosya / Link Ekle</h3>
       </div>
-      <button id="closeAddModalBtn" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white">
-        <i data-lucide="x" class="w-5 h-5"></i>
+      <button id="closeAddModalBtn" class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+        <i data-lucide="x" class="w-4 h-4"></i>
       </button>
     </div>
 
-    <form id="addMaterialForm" class="p-5 space-y-4">
+    <form id="addForm" class="p-4 space-y-3 text-xs">
+      <!-- Target Course Select -->
       <div>
-        <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Materyal Türü *</label>
+        <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">Ders *</label>
+        <select id="modalCourseSelect" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:border-sky-500">
+          <!-- Populated by JS with 6 courses -->
+        </select>
+      </div>
+
+      <!-- Target Subfolder Select -->
+      <div>
+        <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">Alt Klasör / Kategori *</label>
+        <select id="modalFolderSelect" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:border-sky-500">
+          <option value="Ders Notları & PDF">📄 Ders Notları & PDF</option>
+          <option value="Ders Slaytları">📊 Ders Slaytları (PPT)</option>
+          <option value="Lab & Rapor Şablonları">📝 Lab & Rapor Şablonları (Word)</option>
+          <option value="YouTube Ders Videoları">🎥 YouTube Ders Videoları</option>
+          <option value="Soru Çözümleri & Vize-Final">🎯 Soru Çözümleri & Vize-Final</option>
+        </select>
+      </div>
+
+      <!-- File Type -->
+      <div>
+        <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">Materyal Türü *</label>
         <div class="grid grid-cols-4 gap-2">
           <label class="cursor-pointer">
-            <input type="radio" name="itemType" value="pdf" checked class="peer sr-only">
-            <div class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 dark:peer-checked:bg-sky-950/60 peer-checked:text-sky-600 transition">
-              <i data-lucide="file-text" class="w-4 h-4 mx-auto mb-1 text-rose-500"></i>
-              <span class="text-[11px] font-bold block">PDF</span>
+            <input type="radio" name="modalType" value="pdf" checked class="peer sr-only">
+            <div class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 dark:peer-checked:bg-sky-950/60 peer-checked:text-sky-600 transition">
+              <span class="font-bold block">PDF</span>
             </div>
           </label>
           <label class="cursor-pointer">
-            <input type="radio" name="itemType" value="slide" class="peer sr-only">
-            <div class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 dark:peer-checked:bg-sky-950/60 peer-checked:text-sky-600 transition">
-              <i data-lucide="presentation" class="w-4 h-4 mx-auto mb-1 text-amber-500"></i>
-              <span class="text-[11px] font-bold block">Slayt (PPT)</span>
+            <input type="radio" name="modalType" value="slide" class="peer sr-only">
+            <div class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 dark:peer-checked:bg-sky-950/60 peer-checked:text-sky-600 transition">
+              <span class="font-bold block">Slayt</span>
             </div>
           </label>
           <label class="cursor-pointer">
-            <input type="radio" name="itemType" value="word" class="peer sr-only">
-            <div class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 dark:peer-checked:bg-sky-950/60 peer-checked:text-sky-600 transition">
-              <i data-lucide="file-edit" class="w-4 h-4 mx-auto mb-1 text-blue-500"></i>
-              <span class="text-[11px] font-bold block">Word (DOC)</span>
+            <input type="radio" name="modalType" value="word" class="peer sr-only">
+            <div class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 dark:peer-checked:bg-sky-950/60 peer-checked:text-sky-600 transition">
+              <span class="font-bold block">Word</span>
             </div>
           </label>
           <label class="cursor-pointer">
-            <input type="radio" name="itemType" value="youtube" class="peer sr-only">
-            <div class="p-2 rounded-xl border border-slate-200 dark:border-slate-700 text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 dark:peer-checked:bg-sky-950/60 peer-checked:text-sky-600 transition">
-              <i data-lucide="youtube" class="w-4 h-4 mx-auto mb-1 text-red-600"></i>
-              <span class="text-[11px] font-bold block">YouTube</span>
+            <input type="radio" name="modalType" value="youtube" class="peer sr-only">
+            <div class="p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-center peer-checked:border-sky-500 peer-checked:bg-sky-50 dark:peer-checked:bg-sky-950/60 peer-checked:text-sky-600 transition">
+              <span class="font-bold block">YouTube</span>
             </div>
           </label>
         </div>
       </div>
 
+      <!-- File Title -->
       <div>
-        <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Başlık / Materyal Adı *</label>
+        <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">Dosya / Başlık Adı *</label>
         <input 
           type="text" 
-          id="itemTitle" 
+          id="modalTitleInput" 
           required 
-          placeholder="Örn: Hafta 3 - Op-Amp Devreleri & Analiz"
-          class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
+          placeholder="Örn: Hafta 1 - Limit ve Süreklilik Notları" 
+          class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:border-sky-500"
         >
       </div>
 
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Ders Kodu *</label>
-          <input 
-            type="text" 
-            id="itemCourse" 
-            required 
-            placeholder="Örn: EEE 201"
-            class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
-          >
-        </div>
-        <div>
-          <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Sınıf Düzeyi *</label>
-          <select id="itemClass" class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-sky-500">
-            <option value="class-1">1. Sınıf</option>
-            <option value="class-2" selected>2. Sınıf</option>
-            <option value="class-3">3. Sınıf</option>
-            <option value="class-4">4. Sınıf</option>
-          </select>
-        </div>
-      </div>
-
+      <!-- File URL -->
       <div>
-        <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">
-          Bağlantı (Google Drive Paylaşım Linki veya YouTube URL) *
-        </label>
+        <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">Google Drive Linki veya YouTube URL *</label>
         <input 
           type="url" 
-          id="itemUrl" 
+          id="modalUrlInput" 
           required 
-          placeholder="https://drive.google.com/file/d/... veya https://youtu.be/..."
-          class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20"
+          placeholder="https://drive.google.com/... veya https://youtu.be/..." 
+          class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:border-sky-500"
         >
-        <p class="text-[11px] text-slate-400 mt-1">
-          💡 Google Drive linkini yapıştırırsanız sistem otomatik olarak gömülü izleme formatına çevirir.
-        </p>
+        <p class="text-[10px] text-slate-400 mt-1">Google Drive paylaşım linki veya YouTube video linki yapıştırın.</p>
       </div>
 
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Öğretim Üyesi / Hoca</label>
-          <input 
-            type="text" 
-            id="itemInstructor" 
-            placeholder="Örn: Prof. Dr. ..."
-            class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-sky-500"
-          >
-        </div>
-        <div>
-          <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Etiketler</label>
-          <input 
-            type="text" 
-            id="itemTags" 
-            placeholder="Vize, Lab, Final, Soru Çözümü"
-            class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-sky-500"
-          >
-        </div>
-      </div>
-
-      <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2">
-        <button type="button" id="cancelAddBtn" class="px-4 py-2 text-xs font-semibold rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+      <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+        <button type="button" id="cancelAddBtn" class="px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           Vazgeç
         </button>
-        <button type="submit" class="px-4 py-2 text-xs font-semibold rounded-xl bg-sky-600 hover:bg-sky-500 text-white shadow transition">
-          Kaydet & Ekle
+        <button type="submit" class="px-3.5 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold shadow-sm transition">
+          Kaydet
         </button>
       </div>
     </form>
   </dialog>
 
 
-  <!-- ================= GOOGLE DRIVE SETTINGS MODAL ================= -->
-  <dialog id="driveSettingsModal" class="p-0 rounded-2xl shadow-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-[92vw] max-w-lg overflow-hidden outline-none">
-    <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">
-          <i data-lucide="hard-drive" class="w-5 h-5"></i>
+  <!-- ================= MODAL: AYARLAR & DRIVE LINKI ================= -->
+  <dialog id="settingsModal" class="p-0 rounded-2xl shadow-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-[92vw] max-w-md overflow-hidden outline-none">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">
+          <i data-lucide="hard-drive" class="w-4 h-4"></i>
         </div>
-        <div>
-          <h3 class="font-bold text-base">Google Drive Klasör Ayarları</h3>
-          <p class="text-xs text-slate-500">ANKU EEE Materials klasörünü bağlayın</p>
-        </div>
+        <h3 class="font-bold text-sm">Drive Klasör Ayarı</h3>
       </div>
-      <button id="closeDriveSettingsBtn" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white">
-        <i data-lucide="x" class="w-5 h-5"></i>
+      <button id="closeSettingsModalBtn" class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+        <i data-lucide="x" class="w-4 h-4"></i>
       </button>
     </div>
 
-    <div class="p-5 space-y-4">
-      <div class="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 text-xs text-emerald-900 dark:text-emerald-200 leading-relaxed">
-        <strong>Nasıl Yapılır?</strong>
-        <ol class="list-decimal list-inside mt-1.5 space-y-1">
-          <li>Google Drive'da <strong>"ANKU EEE Materials"</strong> klasörünüze sağ tıklayıp <strong>Paylaş</strong> deyin.</li>
-          <li>Erişimi <strong>"Bağlantıya sahip olan herkes: Görüntüleyen"</strong> yapın.</li>
-          <li>Klasör linkindeki ID'yi veya doğrudan linki aşağıya yapıştırın.</li>
-        </ol>
-      </div>
-
+    <div class="p-4 space-y-3 text-xs">
       <div>
-        <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Google Drive Klasör ID veya Linki</label>
+        <label class="block font-semibold mb-1 text-slate-700 dark:text-slate-300">"ANKU EEE Materials" Google Drive Linki</label>
         <input 
-          type="text" 
-          id="driveFolderInput" 
-          placeholder="Örn: 1AbCdEfGhIjKlMnOpQrStUvWxYz..."
-          class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono text-xs"
+          type="url" 
+          id="settingsDriveUrlInput" 
+          placeholder="https://drive.google.com/drive/folders/..." 
+          class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg outline-none focus:border-emerald-500 font-mono text-[11px]"
         >
+        <p class="text-[10px] text-slate-400 mt-1">
+          Üst barda yer alan "Drive Klasörü" butonunun açacağı ana klasör adresidir.
+        </p>
       </div>
 
-      <div>
-        <label class="block text-xs font-semibold mb-1 text-slate-700 dark:text-slate-300">Klasör Adı</label>
-        <input 
-          type="text" 
-          id="driveFolderNameInput" 
-          value="ANKU EEE Materials"
-          class="w-full px-3.5 py-2 text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-emerald-500"
-        >
-      </div>
-
-      <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
-        <button id="resetDriveBtn" class="text-xs text-rose-500 hover:underline">Varsayılana Dön</button>
-        <button id="saveDriveSettingsBtn" class="px-4 py-2 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow transition">
-          Drive Ayarlarını Kaydet
+      <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
+        <button id="exportDataBtn" class="text-sky-600 hover:underline font-semibold">Yedeği İndir (JSON)</button>
+        <button id="saveSettingsBtn" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition">
+          Kaydet
         </button>
       </div>
     </div>
   </dialog>
 
 
-  <!-- ================= EXPORT / IMPORT MODAL ================= -->
-  <dialog id="exportImportModal" class="p-0 rounded-2xl shadow-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-[92vw] max-w-lg overflow-hidden outline-none">
-    <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-      <h3 class="font-bold text-base">Veri Yedekleme ve Paylaşım</h3>
-      <button id="closeExportImportBtn" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
-    </div>
-
-    <div class="p-5 space-y-4 text-xs">
-      <p class="text-slate-500 dark:text-slate-400">
-        Eklediğiniz ders materyallerini bir JSON dosyası olarak indirebilir veya sınıf arkadaşlarınızdan gelen JSON dosyasını içe aktararak sitenizi senkronize edebilirsiniz.
-      </p>
-
-      <div class="grid grid-cols-2 gap-3 pt-2">
-        <button id="downloadJsonBtn" class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 font-semibold transition">
-          <i data-lucide="download" class="w-4 h-4 text-sky-500"></i>
-          Yedeği İndir (JSON)
-        </button>
-
-        <label class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold cursor-pointer transition">
-          <i data-lucide="upload" class="w-4 h-4"></i>
-          JSON Yükle
-          <input type="file" id="importJsonFileInput" accept=".json" class="sr-only">
-        </label>
-      </div>
-
-      <div class="pt-3 border-t border-slate-200 dark:border-slate-800">
-        <button id="resetAllDataBtn" class="text-rose-500 hover:underline">
-          Tüm verileri sıfırla ve örnek verileri geri yükle
-        </button>
-      </div>
-    </div>
-  </dialog>
-
-
-  <!-- ================= JAVASCRIPT APP LOGIC ================= -->
+  <!-- ================= JAVASCRIPT APPLICATION LOGIC ================= -->
   <script>
-    // Initial Seed Data with Real, Functional Links for ANKU EEE Students
-    const INITIAL_MATERIALS = [
+    // 1. Sınıf 1. Dönem Dersleri (Ankara Üniversitesi EEE Müfredatına Uygun 6 Temel Ders)
+    const DEFAULT_COURSES = [
       {
-        id: "mat-1",
-        title: "Ders 01: Devre Elemanları ve Kirchhoff Kanunları (KVL & KCL)",
-        course: "EEE 201 Devre Teorisi I",
-        courseCode: "EEE201",
-        categoryClass: "class-2",
-        type: "pdf",
-        instructor: "Prof. Dr. EEE Bölüm Bşk.",
-        url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs/preview",
-        tags: ["KVL", "KCL", "Vize", "Devre"],
-        addedDate: "2026-10-10",
-        favorite: true
+        id: "math101",
+        code: "MATH 101",
+        name: "Calculus I (Matematik I)",
+        icon: "binary",
+        subfolders: [
+          {
+            name: "Ders Notları & PDF",
+            items: [
+              {
+                id: "m1",
+                title: "Hafta 1: Fonksiyonlar, Limit ve Süreklilik",
+                type: "pdf",
+                url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs/preview"
+              },
+              {
+                id: "m2",
+                title: "Hafta 2: Türev Tanımı, Kuralları ve Zincir Kuralı",
+                type: "pdf",
+                url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs/preview"
+              }
+            ]
+          },
+          {
+            name: "Ders Slaytları",
+            items: [
+              {
+                id: "m3",
+                title: "Calculus I - Giriş ve Temel Teoremler Slaytı",
+                type: "slide",
+                url: "https://docs.google.com/presentation/d/1_o3nI8mH_qg9S8A48U23cKk21U4mF17G/preview"
+              }
+            ]
+          },
+          {
+            name: "YouTube Ders Videoları",
+            items: [
+              {
+                id: "m4",
+                title: "Türev ve İntegralin Geometrik Anlamı (Essence of Calculus)",
+                type: "youtube",
+                url: "https://www.youtube.com/watch?v=9vKqVkMQHKk"
+              }
+            ]
+          }
+        ]
       },
       {
-        id: "mat-2",
-        title: "Op-Amp Devreleri ve İdeal İşlemsel Kuvvetlendirici Analizi",
-        course: "EEE 201 Devre Teorisi I",
-        courseCode: "EEE201",
-        categoryClass: "class-2",
-        type: "slide",
-        instructor: "Doç. Dr. Devre Anabilim Dalı",
-        url: "https://docs.google.com/presentation/d/1_o3nI8mH_qg9S8A48U23cKk21U4mF17G/preview",
-        tags: ["OpAmp", "Slayt", "Ders Sunumu"],
-        addedDate: "2026-10-11",
-        favorite: false
+        id: "phys101",
+        code: "PHYS 101",
+        name: "General Physics I (Fizik I)",
+        icon: "atom",
+        subfolders: [
+          {
+            name: "Ders Notları & PDF",
+            items: [
+              {
+                id: "p1",
+                title: "Bölüm 1-3: Vektörler ve 1 Boyutta Hareket",
+                type: "pdf",
+                url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs/preview"
+              },
+              {
+                id: "p2",
+                title: "Bölüm 4-5: Newton'un Hareket Yasaları ve Sürtünme",
+                type: "pdf",
+                url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs/preview"
+              }
+            ]
+          },
+          {
+            name: "Ders Slaytları",
+            items: [
+              {
+                id: "p3",
+                title: "Physics I - Vektörler ve Dinamik Ders Slaytları",
+                type: "slide",
+                url: "https://docs.google.com/presentation/d/1_o3nI8mH_qg9S8A48U23cKk21U4mF17G/preview"
+              }
+            ]
+          },
+          {
+            name: "YouTube Ders Videoları",
+            items: [
+              {
+                id: "p4",
+                title: "Classical Mechanics: Newton Kanunları (MIT Walter Lewin)",
+                type: "youtube",
+                url: "https://www.youtube.com/watch?v=wWnfJ0-xXRE"
+              }
+            ]
+          }
+        ]
       },
       {
-        id: "mat-3",
-        title: "Laboratuvar Raporu Şablonu ve Deney Yönergesi (Word)",
-        course: "EEE 205 Elektrik Devreleri Laboratuvarı",
-        courseCode: "EEE205",
-        categoryClass: "class-2",
-        type: "word",
-        instructor: "Arş. Gör. Lab Koordinatörü",
-        url: "https://docs.google.com/document/d/19P0B8-g8T4N8pL6w5f0X9-z4rFk0W/preview",
-        tags: ["Rapor", "Lab", "Word", "Format"],
-        addedDate: "2026-10-08",
-        favorite: true
+        id: "phys105",
+        code: "PHYS 105",
+        name: "Physics Laboratory I (Fizik Lab I)",
+        icon: "flask-conical",
+        subfolders: [
+          {
+            name: "Lab Föyleri & Yönergeler",
+            items: [
+              {
+                id: "pl1",
+                title: "Deney 1: Ölçüm, Hata Analizi ve Kumpas Kullanımı (PDF)",
+                type: "pdf",
+                url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs/preview"
+              },
+              {
+                id: "pl2",
+                title: "Deney 2: Serbest Düşme ve Yerçekimi İvmesi Föyü",
+                type: "pdf",
+                url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs/preview"
+              }
+            ]
+          },
+          {
+            name: "Lab & Rapor Şablonları",
+            items: [
+              {
+                id: "pl3",
+                title: "Fizik 105 Laboratuvar Rapor Şablonu (Word)",
+                type: "word",
+                url: "https://docs.google.com/document/d/19P0B8-g8T4N8pL6w5f0X9-z4rFk0W/preview"
+              }
+            ]
+          }
+        ]
       },
       {
-        id: "mat-4",
-        title: "Sinyaller ve Sistemler: Sürekli Zaman Fourier Dönüşümü (CTFT)",
-        course: "EEE 301 Sinyaller ve Sistemler",
-        courseCode: "EEE301",
-        categoryClass: "class-3",
-        type: "youtube",
-        instructor: "MIT / OpenCourseWare",
-        url: "https://www.youtube.com/watch?v=kU_n1H9dGkY",
-        tags: ["Fourier", "Sinyal", "Video Anlatım", "Vize"],
-        addedDate: "2026-10-12",
-        favorite: true
+        id: "eee101",
+        code: "EEE 101",
+        name: "Intro to EEE (Bölüme Giriş)",
+        icon: "zap",
+        subfolders: [
+          {
+            name: "Ders Slaytları",
+            items: [
+              {
+                id: "e1",
+                title: "Hafta 1: Elektrik-Elektronik Mühendisliğine Giriş & Kariyer Alanları",
+                type: "slide",
+                url: "https://docs.google.com/presentation/d/1_o3nI8mH_qg9S8A48U23cKk21U4mF17G/preview"
+              },
+              {
+                id: "e2",
+                title: "Hafta 2: Temel Elektriksel Büyüklükler (Akım, Gerilim, Güç)",
+                type: "slide",
+                url: "https://docs.google.com/presentation/d/1_o3nI8mH_qg9S8A48U23cKk21U4mF17G/preview"
+              }
+            ]
+          },
+          {
+            name: "YouTube Ders Videoları",
+            items: [
+              {
+                id: "e3",
+                title: "What is Electrical Engineering? Mühendislik Temelleri",
+                type: "youtube",
+                url: "https://www.youtube.com/watch?v=F3a37yq_w_Y"
+              }
+            ]
+          }
+        ]
       },
       {
-        id: "mat-5",
-        title: "Sayısal Mantık Tasarımı: Karnaugh Haritaları (K-Map) ile Sadeleştirme",
-        course: "EEE 211 Mantık Devreleri",
-        courseCode: "EEE211",
-        categoryClass: "class-2",
-        type: "youtube",
-        instructor: "Neso Academy",
-        url: "https://www.youtube.com/watch?v=RO5alU6PpSU",
-        tags: ["K-Map", "Boolean", "Mantık", "Video"],
-        addedDate: "2026-10-13",
-        favorite: false
+        id: "ceng101",
+        code: "CENG 101",
+        name: "Computer Programming (C / Python)",
+        icon: "code-2",
+        subfolders: [
+          {
+            name: "Ders Slaytları",
+            items: [
+              {
+                id: "c1",
+                title: "Hafta 1: Algoritma Kavramı, Akış Şemaları ve Değişkenler",
+                type: "slide",
+                url: "https://docs.google.com/presentation/d/1_o3nI8mH_qg9S8A48U23cKk21U4mF17G/preview"
+              },
+              {
+                id: "c2",
+                title: "Hafta 2: Koşullu İfadeler (if-else, switch-case)",
+                type: "slide",
+                url: "https://docs.google.com/presentation/d/1_o3nI8mH_qg9S8A48U23cKk21U4mF17G/preview"
+              }
+            ]
+          },
+          {
+            name: "Ders Notları & PDF",
+            items: [
+              {
+                id: "c3",
+                title: "C Programlama Dili Temel El Kitabı (PDF)",
+                type: "pdf",
+                url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs/preview"
+              }
+            ]
+          },
+          {
+            name: "YouTube Ders Videoları",
+            items: [
+              {
+                id: "c4",
+                title: "C Programlamaya Giriş (CS50 Harvard Türkçe/İngilizce)",
+                type: "youtube",
+                url: "https://www.youtube.com/watch?v=8popR3x-VMY"
+              }
+            ]
+          }
+        ]
       },
       {
-        id: "mat-6",
-        title: "Kalkülüs II: Katlı İntegraller ve Koordinat Dönüşümleri",
-        course: "MATH 102 Calculus II",
-        courseCode: "MATH102",
-        categoryClass: "class-1",
-        type: "pdf",
-        instructor: "Matematik Bölümü",
-        url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs/preview",
-        tags: ["İntegral", "Kalkülüs", "1. Sınıf"],
-        addedDate: "2026-10-05",
-        favorite: false
-      },
-      {
-        id: "mat-7",
-        title: "Elektromanyetik Dalgalar: Maxwell Denklemleri Slaytları",
-        course: "EEE 305 Elektromanyetik Teori",
-        courseCode: "EEE305",
-        categoryClass: "class-3",
-        type: "slide",
-        instructor: "Prof. Dr. EM Grubu",
-        url: "https://docs.google.com/presentation/d/1_o3nI8mH_qg9S8A48U23cKk21U4mF17G/preview",
-        tags: ["Maxwell", "Dalgalar", "Sunum"],
-        addedDate: "2026-10-14",
-        favorite: false
-      },
-      {
-        id: "mat-8",
-        title: "Bitirme Projesi Tez Yazım Kılavuzu & Şablonu",
-        course: "EEE 499 Bitirme Tasarım Projesi",
-        courseCode: "EEE499",
-        categoryClass: "class-4",
-        type: "word",
-        instructor: "Bölüm Komisyonu",
-        url: "https://docs.google.com/document/d/19P0B8-g8T4N8pL6w5f0X9-z4rFk0W/preview",
-        tags: ["Bitirme", "Tez", "Mezuniyet"],
-        addedDate: "2026-10-02",
-        favorite: false
+        id: "eng101",
+        code: "ENG 101",
+        name: "English for Academic Purposes I",
+        icon: "book-open",
+        subfolders: [
+          {
+            name: "Ders Notları & PDF",
+            items: [
+              {
+                id: "en1",
+                title: "Unit 1: Academic Writing & Paragraph Structure (PDF)",
+                type: "pdf",
+                url: "https://drive.google.com/file/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs/preview"
+              }
+            ]
+          },
+          {
+            name: "Lab & Rapor Şablonları",
+            items: [
+              {
+                id: "en2",
+                title: "Essay Formatting & Citation Guidelines (Word)",
+                type: "word",
+                url: "https://docs.google.com/document/d/19P0B8-g8T4N8pL6w5f0X9-z4rFk0W/preview"
+              }
+            ]
+          }
+        ]
       }
     ];
 
-    // State Management
-    let materials = JSON.parse(localStorage.getItem('anku_eee_materials') || 'null') || INITIAL_MATERIALS;
-    let driveConfig = JSON.parse(localStorage.getItem('anku_eee_drive_config') || 'null') || {
-      folderId: "ANKU_EEE_MATERIALS_FOLDER_ID",
-      folderName: "ANKU EEE Materials",
-      folderUrl: "https://drive.google.com"
-    };
-    let activeFilter = 'all';
-    let searchQuery = '';
-    let selectedCourse = 'all';
-    let sortBy = 'newest';
-    let currentViewingItem = null;
+    // State
+    let courses = JSON.parse(localStorage.getItem('anku_eee_courses_v2') || 'null') || DEFAULT_COURSES;
+    let driveUrl = localStorage.getItem('anku_eee_drive_url') || 'https://drive.google.com';
+    let currentActiveItemId = null;
+    let openCourseId = courses[0].id; // first course open by default
 
-    // Helper: URL Transformers for Embedding
+    // URL to Embed Transformer
     function transformToEmbedUrl(url, type) {
       if (!url) return '';
 
@@ -881,12 +678,12 @@
         return url;
       }
 
-      // Office Online Web Viewer fallback for direct .docx / .pptx links
+      // Office Online Web Viewer fallback for raw .docx or .pptx links
       if (url.endsWith('.docx') || url.endsWith('.pptx') || url.endsWith('.doc') || url.endsWith('.ppt')) {
         return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
       }
 
-      // Fallback Google Docs Viewer for other PDFs / docs
+      // Google Docs Viewer fallback for remote web PDFs
       if (type === 'pdf' || type === 'word' || type === 'slide') {
         if (!url.startsWith('blob:') && !url.includes('docs.google.com')) {
           return `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
@@ -896,206 +693,106 @@
       return url;
     }
 
-    // Helper: Save state to LocalStorage
-    function saveMaterials() {
-      localStorage.setItem('anku_eee_materials', JSON.stringify(materials));
-      updateCounts();
-      renderMaterials();
+    // Save Data
+    function saveCourses() {
+      localStorage.setItem('anku_eee_courses_v2', JSON.stringify(courses));
+      renderCourseTree();
     }
 
-    // Update Counts & Badges
-    function updateCounts() {
-      const counts = {
-        all: materials.length,
-        favorites: materials.filter(m => m.favorite).length,
-        pdf: materials.filter(m => m.type === 'pdf').length,
-        slide: materials.filter(m => m.type === 'slide').length,
-        word: materials.filter(m => m.type === 'word').length,
-        youtube: materials.filter(m => m.type === 'youtube').length,
-        'class-1': materials.filter(m => m.categoryClass === 'class-1').length,
-        'class-2': materials.filter(m => m.categoryClass === 'class-2').length,
-        'class-3': materials.filter(m => m.categoryClass === 'class-3').length,
-        'class-4': materials.filter(m => m.categoryClass === 'class-4').length,
-      };
+    // Render Left Sidebar 6 Courses Accordion Tree
+    function renderCourseTree(searchQuery = '') {
+      const container = document.getElementById('courseTreeList');
+      const q = searchQuery.toLowerCase().trim();
 
-      document.getElementById('badge-count-all').innerText = counts.all;
-      document.getElementById('badge-count-fav').innerText = counts.favorites;
-      document.getElementById('badge-count-pdf').innerText = counts.pdf;
-      document.getElementById('badge-count-slide').innerText = counts.slide;
-      document.getElementById('badge-count-word').innerText = counts.word;
-      document.getElementById('badge-count-youtube').innerText = counts.youtube;
-      document.getElementById('badge-count-class-1').innerText = counts['class-1'];
-      document.getElementById('badge-count-class-2').innerText = counts['class-2'];
-      document.getElementById('badge-count-class-3').innerText = counts['class-3'];
-      document.getElementById('badge-count-class-4').innerText = counts['class-4'];
+      container.innerHTML = courses.map(course => {
+        // Filter subfolders and items if searching
+        let hasMatches = false;
+        let subfoldersHtml = '';
 
-      // Stats strip
-      document.getElementById('statPdfCount').innerText = counts.pdf;
-      document.getElementById('statSlideCount').innerText = counts.slide;
-      document.getElementById('statWordCount').innerText = counts.word;
-      document.getElementById('statVideoCount').innerText = counts.youtube;
+        const renderedSubfolders = course.subfolders.map(sub => {
+          const matchingItems = sub.items.filter(item => {
+            if (!q) return true;
+            return item.title.toLowerCase().includes(q) || course.code.toLowerCase().includes(q) || course.name.toLowerCase().includes(q);
+          });
 
-      // Populate courses filter dropdown
-      const courseFilter = document.getElementById('courseSelectFilter');
-      const currentSelected = courseFilter.value;
-      const uniqueCourses = [...new Set(materials.map(m => m.courseCode || m.course))].sort();
-      
-      courseFilter.innerHTML = '<option value="all">Tüm Dersler</option>' + 
-        uniqueCourses.map(c => `<option value="${c}" ${c === currentSelected ? 'selected' : ''}>${c}</option>`).join('');
-    }
+          if (matchingItems.length > 0) hasMatches = true;
 
-    // Render Material Cards
-    function renderMaterials() {
-      const grid = document.getElementById('materialsGrid');
-      const emptyState = document.getElementById('emptyState');
-      const liveDrive = document.getElementById('liveDriveSection');
+          // Item icons
+          const typeIcons = {
+            pdf: 'file-text',
+            slide: 'presentation',
+            word: 'file-edit',
+            youtube: 'youtube'
+          };
 
-      if (activeFilter === 'live-drive') {
-        grid.classList.add('hidden');
-        emptyState.classList.add('hidden');
-        liveDrive.classList.remove('hidden');
-        lucide.createIcons();
-        return;
-      } else {
-        liveDrive.classList.add('hidden');
-        grid.classList.remove('hidden');
-      }
+          const typeColors = {
+            pdf: 'text-rose-500',
+            slide: 'text-amber-500',
+            word: 'text-blue-500',
+            youtube: 'text-red-500'
+          };
 
-      // Filter
-      let filtered = materials.filter(item => {
-        // Category / Type filter
-        if (activeFilter === 'favorites' && !item.favorite) return false;
-        if (['pdf', 'slide', 'word', 'youtube'].includes(activeFilter) && item.type !== activeFilter) return false;
-        if (['class-1', 'class-2', 'class-3', 'class-4'].includes(activeFilter) && item.categoryClass !== activeFilter) return false;
+          const itemsHtml = matchingItems.map(item => {
+            const isSelected = item.id === currentActiveItemId;
+            const activeBg = isSelected 
+              ? 'bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300 font-semibold border-l-2 border-sky-600' 
+              : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60';
 
-        // Course filter
-        if (selectedCourse !== 'all' && (item.courseCode !== selectedCourse && item.course !== selectedCourse)) return false;
-
-        // Search Query
-        if (searchQuery.trim() !== '') {
-          const q = searchQuery.toLowerCase();
-          const matchTitle = item.title.toLowerCase().includes(q);
-          const matchCourse = item.course.toLowerCase().includes(q);
-          const matchInstructor = (item.instructor || '').toLowerCase().includes(q);
-          const matchTags = (item.tags || []).some(t => t.toLowerCase().includes(q));
-          if (!matchTitle && !matchCourse && !matchInstructor && !matchTags) return false;
-        }
-
-        return true;
-      });
-
-      // Sort
-      if (sortBy === 'newest') {
-        filtered.sort((a, b) => new Date(b.addedDate || 0) - new Date(a.addedDate || 0));
-      } else if (sortBy === 'title-asc') {
-        filtered.sort((a, b) => a.title.localeCompare(b.title));
-      } else if (sortBy === 'course') {
-        filtered.sort((a, b) => (a.courseCode || '').localeCompare(b.courseCode || ''));
-      }
-
-      // Empty State
-      if (filtered.length === 0) {
-        grid.innerHTML = '';
-        emptyState.classList.remove('hidden');
-        return;
-      }
-      emptyState.classList.add('hidden');
-
-      // Card Type Icons & Color Config
-      const typeConfig = {
-        pdf: {
-          icon: 'file-text',
-          badgeText: 'PDF Dosyası',
-          badgeClass: 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 border-rose-200 dark:border-rose-900',
-          btnClass: 'bg-rose-600 hover:bg-rose-500'
-        },
-        slide: {
-          icon: 'presentation',
-          badgeText: 'Ders Slaytı',
-          badgeClass: 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border-amber-200 dark:border-amber-900',
-          btnClass: 'bg-amber-600 hover:bg-amber-500'
-        },
-        word: {
-          icon: 'file-edit',
-          badgeText: 'Word / Not',
-          badgeClass: 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border-blue-200 dark:border-blue-900',
-          btnClass: 'bg-blue-600 hover:bg-blue-500'
-        },
-        youtube: {
-          icon: 'youtube',
-          badgeText: 'YouTube Dersi',
-          badgeClass: 'bg-red-50 text-red-700 dark:bg-red-950/60 dark:text-red-300 border-red-200 dark:border-red-900',
-          btnClass: 'bg-red-600 hover:bg-red-500'
-        }
-      };
-
-      grid.innerHTML = filtered.map(item => {
-        const conf = typeConfig[item.type] || typeConfig.pdf;
-        const starFill = item.favorite ? 'fill-amber-400 text-amber-400' : 'text-slate-400';
-        
-        return `
-          <div class="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-sky-500/50 dark:hover:border-sky-500/50 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between">
-            <div>
-              <!-- Top Row: Badge & Favorite -->
-              <div class="flex items-center justify-between gap-2 mb-3">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${conf.badgeClass}">
-                  <i data-lucide="${conf.icon}" class="w-3.5 h-3.5"></i>
-                  ${conf.badgeText}
-                </span>
-
-                <div class="flex items-center gap-1">
-                  <button onclick="toggleFavorite('${item.id}')" title="Favorilere Ekle/Çıkar" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                    <i data-lucide="star" class="w-4 h-4 ${starFill}"></i>
-                  </button>
-                  <button onclick="deleteMaterial('${item.id}')" title="Sil" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition">
-                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                  </button>
+            return `
+              <button 
+                onclick="selectMaterial('${course.id}', '${item.id}')"
+                class="w-full text-left flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition ${activeBg}"
+              >
+                <div class="flex items-center gap-2 truncate">
+                  <i data-lucide="${typeIcons[item.type] || 'file'}" class="w-3.5 h-3.5 shrink-0 ${typeColors[item.type] || 'text-slate-400'}"></i>
+                  <span class="truncate">${item.title}</span>
                 </div>
+              </button>
+            `;
+          }).join('');
+
+          if (q && matchingItems.length === 0) return '';
+
+          return `
+            <div class="mb-2">
+              <div class="flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+                <i data-lucide="folder" class="w-3.5 h-3.5 text-sky-500/80"></i>
+                <span class="truncate">${sub.name}</span>
+                <span class="text-[9px] text-slate-400 ml-auto">(${matchingItems.length})</span>
               </div>
-
-              <!-- Course & Title -->
-              <div class="text-[11px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-1">
-                ${item.course}
-              </div>
-              <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-snug line-clamp-2 mb-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition">
-                ${item.title}
-              </h3>
-
-              <!-- Instructor & Tags -->
-              ${item.instructor ? `
-                <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mb-3">
-                  <i data-lucide="user" class="w-3.5 h-3.5"></i>
-                  <span class="truncate">${item.instructor}</span>
-                </div>
-              ` : ''}
-
-              <!-- Tags -->
-              <div class="flex flex-wrap gap-1.5 mb-4">
-                ${(item.tags || []).map(t => `
-                  <span class="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-medium">#${t}</span>
-                `).join('')}
+              <div class="space-y-0.5 pl-2 border-l border-slate-200 dark:border-slate-800 ml-3 mt-1">
+                ${itemsHtml || '<div class="text-[11px] text-slate-400 px-2 py-1 italic">Dosya yok</div>'}
               </div>
             </div>
+          `;
+        }).join('');
 
-            <!-- Action Buttons -->
-            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
-              <button 
-                onclick="openViewer('${item.id}')" 
-                class="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-semibold rounded-xl text-white ${conf.btnClass} shadow-sm transition active:scale-95"
-              >
-                <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-                <span>Sitede Aç & İzle</span>
-              </button>
+        if (q && !hasMatches) return '';
 
-              <a 
-                href="${item.url}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                title="Yeni Sekmede Aç" 
-                class="p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-              >
-                <i data-lucide="external-link" class="w-4 h-4"></i>
-              </a>
+        const isOpen = (q && hasMatches) || openCourseId === course.id;
+
+        return `
+          <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-slate-900/50 shadow-sm transition">
+            <!-- Course Accordion Header -->
+            <button 
+              onclick="toggleCourse('${course.id}')"
+              class="w-full flex items-center justify-between p-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition"
+            >
+              <div class="flex items-center gap-2.5 truncate">
+                <div class="p-1.5 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 shrink-0">
+                  <i data-lucide="${course.icon || 'book'}" class="w-4 h-4"></i>
+                </div>
+                <div class="truncate">
+                  <div class="font-bold text-xs text-slate-900 dark:text-white truncate">${course.code}</div>
+                  <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${course.name}</div>
+                </div>
+              </div>
+              <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}"></i>
+            </button>
+
+            <!-- Collapsible Subfolders & Files -->
+            <div class="${isOpen ? 'block' : 'hidden'} p-2 pt-1 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30">
+              ${renderedSubfolders}
             </div>
           </div>
         `;
@@ -1104,219 +801,112 @@
       lucide.createIcons();
     }
 
-    // Toggle Favorite
-    window.toggleFavorite = function(id) {
-      const item = materials.find(m => m.id === id);
-      if (item) {
-        item.favorite = !item.favorite;
-        saveMaterials();
+    // Toggle Accordion
+    window.toggleCourse = function(courseId) {
+      if (openCourseId === courseId) {
+        openCourseId = null;
+      } else {
+        openCourseId = courseId;
       }
+      renderCourseTree(document.getElementById('sidebarSearch').value);
     };
 
-    // Delete Material
-    window.deleteMaterial = function(id) {
-      if (confirm('Bu materyali listenizden kaldırmak istediğinize emin misiniz?')) {
-        materials = materials.filter(m => m.id !== id);
-        saveMaterials();
+    // Select Material & Display in Large Center Stage
+    window.selectMaterial = function(courseId, itemId) {
+      currentActiveItemId = itemId;
+      const course = courses.find(c => c.id === courseId);
+      if (!course) return;
+
+      let foundItem = null;
+      let foundSubfolder = null;
+
+      for (const sub of course.subfolders) {
+        const itm = sub.items.find(i => i.id === itemId);
+        if (itm) {
+          foundItem = itm;
+          foundSubfolder = sub;
+          break;
+        }
       }
-    };
 
-    // Open In-App Universal Viewer Modal
-    window.openViewer = function(id) {
-      const item = materials.find(m => m.id === id);
-      if (!item) return;
+      if (!foundItem) return;
 
-      currentViewingItem = item;
-      const modal = document.getElementById('viewerModal');
-      const iframe = document.getElementById('viewerIframe');
-      const loader = document.getElementById('viewerLoading');
-      const title = document.getElementById('viewerTitle');
-      const sub = document.getElementById('viewerSubtitle');
-      const extBtn = document.getElementById('viewerExternalBtn');
-      const notesTextarea = document.getElementById('viewerNotesTextarea');
+      // Update Center Header
+      document.getElementById('stageHeader').classList.remove('hidden');
+      document.getElementById('welcomePlaceholder').classList.add('hidden');
+      document.getElementById('activeItemTitle').innerText = foundItem.title;
+      document.getElementById('activeItemBreadcrumb').innerText = `${course.code} > ${foundSubfolder.name}`;
+      
+      const extBtn = document.getElementById('openExternalBtn');
+      extBtn.href = foundItem.url;
 
-      // Set Metadata
-      title.innerText = item.title;
-      sub.innerText = `${item.course} • ${item.instructor || 'Öğretim Görevlisi'}`;
-      extBtn.href = item.url;
+      // Type Badge
+      const typeBadge = document.getElementById('activeTypeBadge');
+      const badgeIcons = {
+        pdf: 'file-text',
+        slide: 'presentation',
+        word: 'file-edit',
+        youtube: 'youtube'
+      };
+      typeBadge.innerHTML = `<i data-lucide="${badgeIcons[foundItem.type] || 'file'}" class="w-4 h-4"></i>`;
 
-      // Load saved notes for this material
-      const savedNotes = localStorage.getItem(`anku_notes_${item.id}`) || '';
-      notesTextarea.value = savedNotes;
+      // Embed in Center Iframe
+      const iframe = document.getElementById('mainIframe');
+      const loader = document.getElementById('stageLoader');
+      const embedUrl = transformToEmbedUrl(foundItem.url, foundItem.type);
 
-      // Transform URL for embed preview
-      const embedUrl = transformToEmbedUrl(item.url, item.type);
       loader.classList.remove('hidden');
+      iframe.classList.remove('hidden');
 
       iframe.onload = () => {
         loader.classList.add('hidden');
       };
 
       iframe.src = embedUrl;
-      modal.showModal();
+
+      // Re-render sidebar to highlight selected
+      renderCourseTree(document.getElementById('sidebarSearch').value);
+
+      // Close mobile sidebar if screen is small
+      if (window.innerWidth < 768) {
+        toggleMobileSidebar(false);
+      }
+
       lucide.createIcons();
     };
 
-    // Close Viewer Modal
-    function closeViewer() {
-      const modal = document.getElementById('viewerModal');
-      const iframe = document.getElementById('viewerIframe');
-      iframe.src = '';
-      currentViewingItem = null;
-      modal.close();
-    }
-
-    document.getElementById('closeViewerBtn').addEventListener('click', closeViewer);
-
-    // Light-dismiss modal when clicking backdrop
-    document.getElementById('viewerModal').addEventListener('click', (e) => {
-      const rect = e.target.getBoundingClientRect();
-      if (
-        e.clientX < rect.left ||
-        e.clientX > rect.right ||
-        e.clientY < rect.top ||
-        e.clientY > rect.bottom
-      ) {
-        closeViewer();
-      }
-    });
-
-    // Notes Panel Toggle in Viewer
-    document.getElementById('toggleNotesBtn').addEventListener('click', () => {
-      const panel = document.getElementById('viewerNotesPanel');
-      panel.classList.toggle('hidden');
-    });
-
-    // Save Notes Auto-save
-    const notesTextarea = document.getElementById('viewerNotesTextarea');
-    const notesStatus = document.getElementById('notesStatus');
-    notesTextarea.addEventListener('input', () => {
-      if (currentViewingItem) {
-        localStorage.setItem(`anku_notes_${currentViewingItem.id}`, notesTextarea.value);
-        notesStatus.innerText = 'Kaydedildi ✓';
-        setTimeout(() => {
-          notesStatus.innerText = 'Otomatik kaydedilir';
-        }, 1500);
-      }
-    });
-
-    document.getElementById('clearNotesBtn').addEventListener('click', () => {
-      if (currentViewingItem && confirm('Bu notu silmek istediğinize emin misiniz?')) {
-        notesTextarea.value = '';
-        localStorage.removeItem(`anku_notes_${currentViewingItem.id}`);
-      }
-    });
-
-    // Category / Navigation Click Handlers
-    document.querySelectorAll('.sidebar-nav-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.sidebar-nav-btn').forEach(b => {
-          b.classList.remove('active', 'text-sky-600', 'bg-sky-50', 'dark:bg-sky-950/50', 'dark:text-sky-300');
-          b.classList.add('text-slate-600', 'dark:text-slate-400');
-        });
-        btn.classList.add('active', 'text-sky-600', 'bg-sky-50', 'dark:bg-sky-950/50', 'dark:text-sky-300');
-        btn.classList.remove('text-slate-600', 'dark:text-slate-400');
-
-        activeFilter = btn.getAttribute('data-filter');
-        
-        // Update Title
-        const titles = {
-          all: { t: 'Tüm Materyaller', s: 'Tüm sınıflardan yüklenen güncel kaynaklar' },
-          favorites: { t: 'Favorilerim', s: 'Sık kullandığınız ve kaydettiğiniz ders kaynakları' },
-          pdf: { t: 'PDF Ders Notları & Kitaplar', s: 'Ders kitapları, soru çözümleri ve PDF notlar' },
-          slide: { t: 'Ders Slaytları & Sunumlar', s: 'Hocaların paylaştığı haftalık ders sunumları' },
-          word: { t: 'Word Belgeleri & Raporlar', s: 'Lab rapor şablonları, proje metinleri ve dökümanlar' },
-          youtube: { t: 'YouTube Ders Videoları', s: 'Siteden çıkmadan izlenebilen konu anlatımları' },
-          'class-1': { t: '1. Sınıf Dersleri', s: 'Fizik, Matematik, Programlama ve Temel Mühendislik' },
-          'class-2': { t: '2. Sınıf Dersleri', s: 'Devre Teorisi, Sayısal Mantık, Diferansiyel Denklemler' },
-          'class-3': { t: '3. Sınıf Dersleri', s: 'Sinyaller, Elektromanyetik Teori, Elektronik' },
-          'class-4': { t: '4. Sınıf Dersleri', s: 'Haberleşme, Güç Sistemleri, Bitirme Projeleri' }
-        };
-        const cur = titles[activeFilter] || titles.all;
-        document.getElementById('currentCategoryTitle').innerText = cur.t;
-        document.getElementById('currentCategorySub').innerText = cur.s;
-
-        renderMaterials();
-
-        // Close mobile sidebar if open
-        if (window.innerWidth < 1024) {
-          toggleMobileSidebar(false);
-        }
-      });
-    });
-
-    // Live Drive Navigation Tab
-    document.getElementById('navLiveDrive').addEventListener('click', () => {
-      activeFilter = 'live-drive';
-      document.getElementById('currentCategoryTitle').innerText = 'Canlı Google Drive Klasörü';
-      document.getElementById('currentCategorySub').innerText = 'Klasör: ANKU EEE Materials';
-      renderLiveDrive();
-      if (window.innerWidth < 1024) toggleMobileSidebar(false);
-    });
-
-    function renderLiveDrive() {
-      const iframe = document.getElementById('liveDriveIframe');
-      const extLink = document.getElementById('externalDriveLink');
-      
-      // Drive embedded folder url
-      let folderId = driveConfig.folderId;
-      if (folderId && folderId !== 'ANKU_EEE_MATERIALS_FOLDER_ID') {
-        iframe.src = `https://drive.google.com/embeddedfolderview?id=${folderId}#grid`;
-        extLink.href = `https://drive.google.com/drive/folders/${folderId}`;
+    // Fullscreen Toggle for the Center Stage
+    document.getElementById('fullscreenBtn').addEventListener('click', () => {
+      const stage = document.getElementById('stageContainer');
+      if (!document.fullscreenElement) {
+        stage.requestFullscreen().catch(err => alert(`Tam ekran hatası: ${err.message}`));
       } else {
-        iframe.src = `https://drive.google.com/embeddedfolderview?id=root#grid`;
-        extLink.href = driveConfig.folderUrl || "https://drive.google.com";
+        document.exitFullscreen();
       }
-      renderMaterials();
-    }
+    });
 
-    // Search Handling
-    const searchInput = document.getElementById('searchInput');
-    const mobileSearchInput = document.getElementById('mobileSearchInput');
-    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    // Search Filter
+    document.getElementById('sidebarSearch').addEventListener('input', (e) => {
+      renderCourseTree(e.target.value);
+    });
 
-    function handleSearch(val) {
-      searchQuery = val;
-      searchInput.value = val;
-      mobileSearchInput.value = val;
-      if (val.length > 0) {
-        clearSearchBtn.classList.remove('hidden');
+    // Mobile Sidebar Toggle
+    const toggleMobileBtn = document.getElementById('toggleMobileSidebarBtn');
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('mobileBackdrop');
+
+    function toggleMobileSidebar(show) {
+      if (show) {
+        sidebar.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
       } else {
-        clearSearchBtn.classList.add('hidden');
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
       }
-      renderMaterials();
     }
 
-    searchInput.addEventListener('input', (e) => handleSearch(e.target.value));
-    mobileSearchInput.addEventListener('input', (e) => handleSearch(e.target.value));
-    clearSearchBtn.addEventListener('click', () => handleSearch(''));
-
-    // Keyboard shortcut (Ctrl + K / Cmd + K) for search
-    window.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        searchInput.focus();
-      }
-    });
-
-    // Dropdown filters
-    document.getElementById('courseSelectFilter').addEventListener('change', (e) => {
-      selectedCourse = e.target.value;
-      renderMaterials();
-    });
-
-    document.getElementById('sortSelect').addEventListener('change', (e) => {
-      sortBy = e.target.value;
-      renderMaterials();
-    });
-
-    document.getElementById('resetFiltersBtn').addEventListener('click', () => {
-      activeFilter = 'all';
-      searchQuery = '';
-      selectedCourse = 'all';
-      handleSearch('');
-      document.querySelector('.sidebar-nav-btn[data-filter="all"]').click();
-    });
+    toggleMobileBtn.addEventListener('click', () => toggleMobileSidebar(true));
+    backdrop.addEventListener('click', () => toggleMobileSidebar(false));
 
     // Dark Mode Toggle
     const darkModeToggle = document.getElementById('darkModeToggle');
@@ -1336,166 +926,107 @@
       }
     });
 
-    // Mobile Sidebar Toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const sidebar = document.getElementById('sidebar');
-    const backdrop = document.getElementById('sidebarBackdrop');
-
-    function toggleMobileSidebar(show) {
-      if (show) {
-        sidebar.classList.remove('-translate-x-full');
-        backdrop.classList.remove('hidden');
-      } else {
-        sidebar.classList.add('-translate-x-full');
-        backdrop.classList.add('hidden');
-      }
+    // Populate Modal Course Select
+    function populateModalCourseSelect() {
+      const select = document.getElementById('modalCourseSelect');
+      select.innerHTML = courses.map(c => `
+        <option value="${c.id}">${c.code} - ${c.name}</option>
+      `).join('');
     }
 
-    mobileMenuBtn.addEventListener('click', () => toggleMobileSidebar(true));
-    backdrop.addEventListener('click', () => toggleMobileSidebar(false));
-
-    // Add Material Modal Handling
+    // Add Material Modal
     const addModal = document.getElementById('addModal');
-    const openAddBtn = document.getElementById('openAddModalBtn');
-    const quickAddBtn = document.getElementById('quickAddBtn');
-    const closeAddBtn = document.getElementById('closeAddModalBtn');
-    const cancelAddBtn = document.getElementById('cancelAddBtn');
-    const addForm = document.getElementById('addMaterialForm');
-
-    function openAddModal() {
-      addForm.reset();
+    document.getElementById('openAddModalBtn').addEventListener('click', () => {
+      populateModalCourseSelect();
+      document.getElementById('addForm').reset();
       addModal.showModal();
-    }
-    openAddBtn.addEventListener('click', openAddModal);
-    quickAddBtn.addEventListener('click', openAddModal);
-    closeAddBtn.addEventListener('click', () => addModal.close());
-    cancelAddBtn.addEventListener('click', () => addModal.close());
+    });
+    document.getElementById('closeAddModalBtn').addEventListener('click', () => addModal.close());
+    document.getElementById('cancelAddBtn').addEventListener('click', () => addModal.close());
 
-    addForm.addEventListener('submit', (e) => {
+    document.getElementById('addForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      const type = document.querySelector('input[name="itemType"]:checked').value;
-      const title = document.getElementById('itemTitle').value.trim();
-      const course = document.getElementById('itemCourse').value.trim();
-      const categoryClass = document.getElementById('itemClass').value;
-      const url = document.getElementById('itemUrl').value.trim();
-      const instructor = document.getElementById('itemInstructor').value.trim();
-      const tagsStr = document.getElementById('itemTags').value.trim();
-      const tags = tagsStr ? tagsStr.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const courseId = document.getElementById('modalCourseSelect').value;
+      const folderName = document.getElementById('modalFolderSelect').value;
+      const type = document.querySelector('input[name="modalType"]:checked').value;
+      const title = document.getElementById('modalTitleInput').value.trim();
+      const url = document.getElementById('modalUrlInput').value.trim();
 
-      const newItem = {
-        id: 'mat-' + Date.now(),
-        title,
-        course,
-        courseCode: course.split(' ')[0] || course,
-        categoryClass,
-        type,
-        instructor,
-        url,
-        tags,
-        addedDate: new Date().toISOString().split('T')[0],
-        favorite: false
-      };
-
-      materials.unshift(newItem);
-      saveMaterials();
-      addModal.close();
-    });
-
-    // Google Drive Settings Modal
-    const driveModal = document.getElementById('driveSettingsModal');
-    const openDriveBtn = document.getElementById('openDriveSettingsBtn');
-    const closeDriveBtn = document.getElementById('closeDriveSettingsBtn');
-    const saveDriveBtn = document.getElementById('saveDriveSettingsBtn');
-    const resetDriveBtn = document.getElementById('resetDriveBtn');
-    const driveFolderInput = document.getElementById('driveFolderInput');
-    const driveFolderNameInput = document.getElementById('driveFolderNameInput');
-
-    openDriveBtn.addEventListener('click', () => {
-      driveFolderInput.value = driveConfig.folderId || '';
-      driveFolderNameInput.value = driveConfig.folderName || 'ANKU EEE Materials';
-      driveModal.showModal();
-    });
-    closeDriveBtn.addEventListener('click', () => driveModal.close());
-
-    saveDriveBtn.addEventListener('click', () => {
-      let val = driveFolderInput.value.trim();
-      // Extract ID if full Google Drive URL was pasted
-      if (val.includes('/folders/')) {
-        val = val.split('/folders/')[1]?.split('?')[0];
-      }
-      driveConfig.folderId = val || 'ANKU_EEE_MATERIALS_FOLDER_ID';
-      driveConfig.folderName = driveFolderNameInput.value.trim() || 'ANKU EEE Materials';
-      driveConfig.folderUrl = val ? `https://drive.google.com/drive/folders/${val}` : 'https://drive.google.com';
-      localStorage.setItem('anku_eee_drive_config', JSON.stringify(driveConfig));
-      driveModal.close();
-      alert('Google Drive klasör ayarları güncellendi!');
-      if (activeFilter === 'live-drive') renderLiveDrive();
-    });
-
-    resetDriveBtn.addEventListener('click', () => {
-      driveConfig = {
-        folderId: "ANKU_EEE_MATERIALS_FOLDER_ID",
-        folderName: "ANKU EEE Materials",
-        folderUrl: "https://drive.google.com"
-      };
-      localStorage.setItem('anku_eee_drive_config', JSON.stringify(driveConfig));
-      driveFolderInput.value = '';
-      driveFolderNameInput.value = 'ANKU EEE Materials';
-      alert('Varsayılan ayarlar yüklendi.');
-    });
-
-    document.getElementById('openFolderDirectBtn').addEventListener('click', () => {
-      window.open(driveConfig.folderUrl, '_blank');
-    });
-
-    // Export / Import JSON
-    const exportModal = document.getElementById('exportImportModal');
-    document.getElementById('exportImportBtn').addEventListener('click', () => exportModal.showModal());
-    document.getElementById('closeExportImportBtn').addEventListener('click', () => exportModal.close());
-
-    document.getElementById('downloadJsonBtn').addEventListener('click', () => {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(materials, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "anku_eee_materials_backup.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    });
-
-    document.getElementById('importJsonFileInput').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const imported = JSON.parse(event.target.result);
-          if (Array.isArray(imported)) {
-            materials = imported;
-            saveMaterials();
-            exportModal.close();
-            alert(`${imported.length} adet materyal başarıyla içe aktarıldı!`);
-          } else {
-            alert('Geçersiz JSON formatı!');
-          }
-        } catch (err) {
-          alert('Dosya okuma hatası: ' + err.message);
+      const course = courses.find(c => c.id === courseId);
+      if (course) {
+        let sub = course.subfolders.find(s => s.name === folderName);
+        if (!sub) {
+          sub = { name: folderName, items: [] };
+          course.subfolders.push(sub);
         }
-      };
-      reader.readAsText(file);
-    });
 
-    document.getElementById('resetAllDataBtn').addEventListener('click', () => {
-      if (confirm('Tüm materyaller silinecek ve başlangıç verilerine dönülecek. Onaylıyor musunuz?')) {
-        materials = INITIAL_MATERIALS;
-        saveMaterials();
-        exportModal.close();
+        const newItem = {
+          id: 'item-' + Date.now(),
+          title,
+          type,
+          url
+        };
+
+        sub.items.unshift(newItem);
+        saveCourses();
+        addModal.close();
+
+        // Automatically open the new item
+        openCourseId = courseId;
+        selectMaterial(courseId, newItem.id);
       }
     });
 
-    // Initial Launch Setup
-    updateCounts();
-    renderMaterials();
+    // Settings & Drive URL Modal
+    const settingsModal = document.getElementById('settingsModal');
+    const driveInput = document.getElementById('settingsDriveUrlInput');
+    const driveFolderBtn = document.getElementById('driveFolderBtn');
+
+    // Update Drive Link on launch
+    driveFolderBtn.href = driveUrl;
+
+    document.getElementById('openSettingsBtn').addEventListener('click', () => {
+      driveInput.value = driveUrl;
+      settingsModal.showModal();
+    });
+    document.getElementById('closeSettingsModalBtn').addEventListener('click', () => settingsModal.close());
+
+    document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+      driveUrl = driveInput.value.trim() || 'https://drive.google.com';
+      localStorage.setItem('anku_eee_drive_url', driveUrl);
+      driveFolderBtn.href = driveUrl;
+      settingsModal.close();
+      alert('Google Drive klasör bağlantısı kaydedildi!');
+    });
+
+    // Export Data JSON
+    document.getElementById('exportDataBtn').addEventListener('click', () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(courses, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", "anku_eee_1_sinif_dersleri.json");
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+
+    // Reset Data
+    document.getElementById('quickResetDataBtn').addEventListener('click', () => {
+      if (confirm('Varsayılan 6 ders ve örnek materyallere geri dönülsün mü?')) {
+        courses = DEFAULT_COURSES;
+        localStorage.removeItem('anku_eee_courses_v2');
+        renderCourseTree();
+      }
+    });
+
+    // Initialize View
+    renderCourseTree();
+    populateModalCourseSelect();
+
+    // Auto-select first item on desktop launch for instant rich experience
+    if (window.innerWidth >= 768 && courses[0]?.subfolders[0]?.items[0]) {
+      selectMaterial(courses[0].id, courses[0].subfolders[0].items[0].id);
+    }
   </script>
 </body>
 </html>
