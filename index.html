@@ -356,7 +356,7 @@
         instructor: 'Prof. Dr. Emre BİÇER',
         email: 'ebicer@ankara.edu.tr',
         avesisUrl: 'https://avesis.ankara.edu.tr/emreb',
-        credits: '4 Kredi • 6 AKTS',
+        credits: '3 Kredi • 6 AKTS',
         color: 'from-emerald-600 to-teal-800',
         links: [
           { title: 'Periyodik Tablo (Ptable)', url: 'https://ptable.com', icon: 'external-link' }
@@ -378,7 +378,7 @@
         instructor: 'Prof. Dr. Serhan VARMA',
         email: 'svarma@science.ankara.edu.tr',
         avesisUrl: 'https://avesis.ankara.edu.tr/svarma',
-        credits: '4 Kredi • 6 AKTS',
+        credits: '4 Kredi • 7 AKTS',
         color: 'from-indigo-600 to-blue-800',
         links: [
           { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'calculator' },
@@ -390,7 +390,7 @@
         instructor: 'Dr. Öğr. Üyesi Derya KAHVECİ',
         email: 'dkahveci@ankara.edu.tr',
         avesisUrl: 'https://avesis.ankara.edu.tr/dkahveci',
-        credits: '3 Kredi • 5 AKTS',
+        credits: '3 Kredi • 6 AKTS',
         color: 'from-blue-600 to-cyan-800',
         links: [
           { title: 'Essence of Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab', icon: 'youtube' }
@@ -401,7 +401,7 @@
         instructor: 'Doç. Dr. Ahmet KARATAY',
         email: 'akaratay@eng.ankara.edu.tr',
         avesisUrl: 'https://avesis.ankara.edu.tr/akaratay',
-        credits: '4 Kredi • 6 AKTS',
+        credits: '3 Kredi • 6 AKTS',
         color: 'from-amber-600 to-orange-800',
         links: [
           { title: 'PhET Simülasyonları', url: 'https://phet.colorado.edu/tr/', icon: 'external-link' }
@@ -416,6 +416,17 @@
         color: 'from-rose-600 to-red-800',
         links: [
           { title: 'TDK Güncel Yazım Kılavuzu', url: 'https://sozluk.gov.tr', icon: 'book-open' }
+        ]
+      },
+      'OUL101': {
+        name: 'Orientation Programming to the University Life',
+        instructor: 'Öğrenci İşleri / Bölüm Başkanlığı',
+        email: 'eee@ankara.edu.tr',
+        avesisUrl: 'https://eee.ankara.edu.tr',
+        credits: '0 Kredi • 0 AKTS',
+        color: 'from-purple-600 to-indigo-800',
+        links: [
+          { title: 'Bölüm Web Sayfası', url: 'https://eee.ankara.edu.tr', icon: 'globe' }
         ]
       }
     };
@@ -432,8 +443,8 @@
       key: localStorage.getItem('anku_key') || CONFIG.API_KEY
     };
 
-    // Load and sanitize course metadata (synchronizes official AVESİS titles & emails)
-    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v5') || 'null') || DEFAULT_COURSE_METADATA;
+    // Load and sanitize course metadata (synchronizes official AVESİS titles, emails & curriculum credits)
+    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v6') || 'null') || DEFAULT_COURSE_METADATA;
     Object.keys(DEFAULT_COURSE_METADATA).forEach(code => {
       if (!courseMetadata[code]) {
         courseMetadata[code] = DEFAULT_COURSE_METADATA[code];
@@ -441,6 +452,7 @@
         courseMetadata[code].instructor = DEFAULT_COURSE_METADATA[code].instructor;
         courseMetadata[code].email = DEFAULT_COURSE_METADATA[code].email;
         courseMetadata[code].avesisUrl = DEFAULT_COURSE_METADATA[code].avesisUrl;
+        courseMetadata[code].credits = DEFAULT_COURSE_METADATA[code].credits;
         if (courseMetadata[code].links) {
           courseMetadata[code].links = courseMetadata[code].links.filter(l => 
             !/obs/i.test(l.title) && !/izlence|syllabus/i.test(l.title)
@@ -448,7 +460,7 @@
         }
       }
     });
-    localStorage.setItem('anku_course_meta_v5', JSON.stringify(courseMetadata));
+    localStorage.setItem('anku_course_meta_v6', JSON.stringify(courseMetadata));
 
     let driveTree = null;          // Real Drive Tree
     let activeCourseId = null;     // Selected Course Folder ID / Code
@@ -587,7 +599,7 @@
         });
 
         courseMetadata[courseCode] = meta;
-        localStorage.setItem('anku_course_meta_v5', JSON.stringify(courseMetadata));
+        localStorage.setItem('anku_course_meta_v6', JSON.stringify(courseMetadata));
       } catch (e) {
         console.warn('info.txt okunamadı:', e);
       }
@@ -1297,7 +1309,7 @@
       });
 
       courseMetadata[code] = meta;
-      localStorage.setItem('anku_course_meta_v5', JSON.stringify(courseMetadata));
+      localStorage.setItem('anku_course_meta_v6', JSON.stringify(courseMetadata));
 
       $('editCourseModal').close();
       renderSidebarCourses();
