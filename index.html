@@ -38,6 +38,8 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.4); border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(71, 85, 105, 0.7); }
+    dialog:not([open]) { display: none !important; }
+    dialog[open] { display: flex !important; flex-direction: column; }
     dialog::backdrop { background: rgba(2, 6, 23, 0.75); backdrop-filter: blur(4px); }
   </style>
 </head>
@@ -161,7 +163,7 @@
   </div>
 
   <!-- ================= IN-PAGE UNIVERSAL VIEWER MODAL ================= -->
-  <dialog id="viewerModal" class="p-0 rounded-2xl bg-slate-900 text-slate-100 border border-slate-800 w-[96vw] max-w-6xl h-[92vh] max-h-[920px] flex flex-col overflow-hidden outline-none shadow-2xl">
+  <dialog id="viewerModal" class="p-0 rounded-2xl bg-slate-900 text-slate-100 border border-slate-800 w-[96vw] max-w-6xl h-[92vh] max-h-[920px] overflow-hidden outline-none shadow-2xl">
     <!-- Viewer Top Bar -->
     <div class="h-14 bg-slate-900 border-b border-slate-800 px-4 sm:px-6 flex items-center justify-between gap-3 shrink-0">
       <div class="flex items-center gap-3 overflow-hidden">
@@ -198,7 +200,7 @@
       </div>
       <iframe 
         id="viewerFrame" 
-        class="w-full h-full border-0 bg-white"
+        class="w-full h-full border-0 bg-slate-950"
         referrerpolicy="strict-origin-when-cross-origin"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
         allowfullscreen
