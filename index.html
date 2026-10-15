@@ -178,10 +178,24 @@
       </div>
 
       <div class="flex items-center gap-1.5 shrink-0">
+        <!-- Direct Download Button -->
+        <a id="viewerDownloadBtn" href="#" target="_blank" rel="noopener noreferrer" title="Cihaza İndir (En Hızlı Çözüm)"
+           class="flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg font-medium text-emerald-300 bg-emerald-950/60 border border-emerald-800/60 hover:bg-emerald-900/60 transition">
+          <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span class="hidden sm:inline">İndir</span>
+        </a>
+
+        <!-- Switch Server Button -->
+        <button id="viewerSwitchServerBtn" title="Farklı Önizleme Sunucusuna Geç / Yenile"
+           class="flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-sky-400"></i>
+          <span id="viewerServerBadge" class="hidden md:inline">Sunucuyu Değiştir</span>
+        </button>
+
         <a id="viewerExternalBtn" href="#" target="_blank" rel="noopener noreferrer" title="Yeni Sekmede / Drive'da Aç"
            class="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg font-medium text-slate-300 hover:bg-slate-800 transition">
           <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-          <span class="hidden sm:inline">Yeni Sekmede Aç</span>
+          <span class="hidden sm:inline">Drive'da Aç</span>
         </a>
         <button id="viewerFullscreenBtn" title="Tam Ekran" class="p-1.5 rounded-lg text-slate-300 hover:bg-slate-800 transition">
           <i data-lucide="maximize-2" class="w-4 h-4"></i>
@@ -190,6 +204,15 @@
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
+    </div>
+
+    <!-- Word / DOC Loading Tip Banner -->
+    <div id="viewerDocTip" class="hidden bg-amber-950/80 border-b border-amber-800/70 px-4 py-2 text-[11px] text-amber-200 flex items-center justify-between gap-2 shrink-0">
+      <div class="flex items-center gap-2 truncate">
+        <i data-lucide="info" class="w-4 h-4 shrink-0 text-amber-400"></i>
+        <span class="truncate">Word (.doc) belgeleri Google sunucularında bazen sayfaları gecikmeli yükleyebilir. Sayfa açılmazsa üstteki <b>Sunucuyu Değiştir</b> veya <b>İndir</b> butonuna basabilirsiniz.</span>
+      </div>
+      <button onclick="$('viewerDocTip').classList.add('hidden')" class="p-0.5 text-amber-400 hover:text-white shrink-0"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
     </div>
 
     <!-- Viewer Stage Body -->
@@ -952,11 +975,22 @@
             >
               ${kind === 'youtube' || yt ? 'İzle' : 'Aç'}
             </button>
+            ${kind !== 'youtube' ? `
+              <a 
+                href="https://drive.google.com/uc?export=download&id=${realId(item)}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                title="Cihaza İndir (Hızlı)" 
+                class="p-1 text-slate-400 hover:text-emerald-400 transition"
+              >
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              </a>
+            ` : ''}
             <a 
               href="${item.webViewLink || `https://drive.google.com/file/d/${realId(item)}/view`}" 
               target="_blank" 
               rel="noopener noreferrer" 
-              title="Yeni Sekmede Aç" 
+              title="Drive'da Aç" 
               class="p-1 text-slate-400 hover:text-white transition"
             >
               <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
@@ -988,6 +1022,17 @@
             >
               Aç
             </button>
+            ${kind !== 'youtube' ? `
+              <a 
+                href="https://drive.google.com/uc?export=download&id=${realId(item)}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                title="Cihaza İndir (Hızlı)" 
+                class="p-1 text-slate-400 hover:text-emerald-400 transition"
+              >
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              </a>
+            ` : ''}
             <a 
               href="${item.webViewLink || `https://drive.google.com/file/d/${realId(item)}/view`}" 
               target="_blank" 
@@ -1013,10 +1058,16 @@
       return null;
     }
 
+    let currentViewingNode = null;
+    let currentViewerMode = 0;
+
     window.openViewerModal = function(fileId, courseCode) {
       if (!driveTree) return;
       const fileNode = findNodeRecursively(driveTree, fileId);
       if (!fileNode) return;
+
+      currentViewingNode = fileNode;
+      currentViewerMode = 0;
 
       const modal = $('viewerModal');
       const frame = $('viewerFrame');
@@ -1024,10 +1075,25 @@
       const title = $('viewerFileTitle');
       const breadcrumb = $('viewerFileBreadcrumb');
       const extBtn = $('viewerExternalBtn');
+      const downloadBtn = $('viewerDownloadBtn');
+      const docTip = $('viewerDocTip');
+      const serverBadge = $('viewerServerBadge');
 
       title.textContent = fileNode.name;
       breadcrumb.textContent = `${courseCode} • Materyal Önizleme`;
       extBtn.href = fileNode.webViewLink || `https://drive.google.com/file/d/${realId(fileNode)}/view`;
+
+      const id = realId(fileNode);
+      downloadBtn.href = `https://drive.google.com/uc?export=download&id=${id}`;
+
+      // Check if it's Word / DOC file
+      const kind = getFileKind(fileNode);
+      const isDoc = kind === 'word' || fileNode.name.toLowerCase().endsWith('.doc') || fileNode.name.toLowerCase().endsWith('.docx');
+      if (isDoc) {
+        docTip.classList.remove('hidden');
+      } else {
+        docTip.classList.add('hidden');
+      }
 
       loader.classList.remove('hidden');
       frame.onload = () => loader.classList.add('hidden');
@@ -1036,14 +1102,37 @@
       const yt = extractYouTubeId(fileNode.name) || extractYouTubeId(fileNode.description);
       if (yt) {
         extBtn.href = `https://www.youtube.com/watch?v=${yt}`;
+        downloadBtn.classList.add('hidden');
+        $('viewerSwitchServerBtn').classList.add('hidden');
         const origin = encodeURIComponent(location.origin);
         frame.src = `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0&modestbranding=1&origin=${origin}`;
       } else {
+        downloadBtn.classList.remove('hidden');
+        $('viewerSwitchServerBtn').classList.remove('hidden');
+        serverBadge.textContent = 'Sunucuyu Değiştir';
         frame.src = getPreviewUrl(fileNode);
       }
 
       modal.showModal();
       lucide.createIcons();
+    };
+
+    $('viewerSwitchServerBtn').onclick = () => {
+      if (!currentViewingNode) return;
+      currentViewerMode = (currentViewerMode + 1) % 2;
+      const frame = $('viewerFrame');
+      const loader = $('viewerLoader');
+      const id = realId(currentViewingNode);
+      const serverBadge = $('viewerServerBadge');
+
+      loader.classList.remove('hidden');
+      if (currentViewerMode === 0) {
+        frame.src = `https://drive.google.com/file/d/${id}/preview`;
+        serverBadge.textContent = 'Drive Modu';
+      } else {
+        frame.src = `https://docs.google.com/viewer?srcid=${id}&pid=explorer&efh=false&a=v&chrome=false&embedded=true`;
+        serverBadge.textContent = 'Docs Modu';
+      }
     };
 
     function closeViewerModal() {
