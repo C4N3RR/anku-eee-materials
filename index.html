@@ -69,10 +69,10 @@
             onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/f/f2/Ankara_universitesi.png';"
           />
         </a>
-        <div>
+        <div onclick="goHome()" class="cursor-pointer group" title="Ana Sayfa (Tüm Dersler / Seçim)">
           <div class="flex items-center gap-2">
-            <span class="font-extrabold text-sm tracking-tight text-white">ANKU EEE</span>
-            <span class="hidden sm:inline text-[11px] px-2 py-0.5 rounded font-semibold bg-sky-950 text-sky-300 border border-sky-800/60">
+            <span class="font-extrabold text-sm tracking-tight text-white group-hover:text-sky-300 transition">ANKU EEE</span>
+            <span class="hidden sm:inline text-[11px] px-2 py-0.5 rounded font-semibold bg-sky-950 text-sky-300 border border-sky-800/60 group-hover:border-sky-500/60 transition">
               1. Sınıf • 1. Dönem Portalı
             </span>
           </div>
@@ -705,14 +705,11 @@
         }
       });
 
-      // If active course not set, pick the first course
-      if (!activeCourseId && driveTree.length > 0) {
-        const firstFolder = driveTree.find(n => realMime(n) === FOLDER_MIME) || driveTree[0];
-        activeCourseId = firstFolder.id;
-      }
-
+      // No course selected by default on initial startup - show welcome hub
       if (activeCourseId) {
         renderCourseHub(activeCourseId);
+      } else {
+        renderWelcomeHub();
       }
     }
 
@@ -723,7 +720,29 @@
 
       const courses = driveTree.filter(n => realMime(n) === FOLDER_MIME);
 
-      container.innerHTML = courses.map(course => {
+      // Top Overview / Home Item
+      const overviewHtml = !searchVal ? `
+        <button 
+          onclick="goHome()"
+          class="w-full text-left p-2.5 mb-1.5 rounded-xl transition flex items-center justify-between gap-2.5 ${!activeCourseId ? 'bg-sky-950/80 text-sky-300 font-bold border-l-4 border-sky-500 shadow-sm' : 'text-slate-300 hover:bg-slate-800/60 border-l-4 border-transparent'}"
+        >
+          <div class="flex items-center gap-2.5 truncate">
+            <div class="w-7 h-7 rounded-lg bg-sky-950 text-sky-400 flex items-center justify-center shrink-0">
+              <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+            </div>
+            <div class="truncate">
+              <div class="font-bold text-xs truncate">Tüm Dersler</div>
+              <div class="text-[10px] text-slate-400 truncate">Genel Bakış & Seçim</div>
+            </div>
+          </div>
+          <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-800 text-sky-400 font-semibold shrink-0">
+            ${courses.length}
+          </span>
+        </button>
+        <div class="border-t border-slate-800/80 my-1"></div>
+      ` : '';
+
+      container.innerHTML = overviewHtml + courses.map(course => {
         const count = countFilesInFolder(course.children);
         const isSelected = course.id === activeCourseId;
         const code = course.name.toUpperCase().trim();
@@ -762,15 +781,139 @@
       lucide.createIcons();
     }
 
-    // Course Selection
-    window.selectCourse = function(courseId) {
-      activeCourseId = courseId;
+    // Go to Welcome / All Courses Overview
+    window.goHome = function() {
+      activeCourseId = null;
       renderSidebarCourses();
-      renderCourseHub(courseId);
+      renderWelcomeHub();
       if (window.innerWidth < 768) {
         toggleMobileSidebar(false);
       }
     };
+
+    // Course Selection
+    window.selectCourse = function(courseId) {
+      activeCourseId = courseId;
+      renderSidebarCourses();
+      if (courseId) {
+        renderCourseHub(courseId);
+      } else {
+        renderWelcomeHub();
+      }
+      if (window.innerWidth < 768) {
+        toggleMobileSidebar(false);
+      }
+    };
+
+    // ================= RENDER WELCOME / ALL COURSES OVERVIEW =================
+    function renderWelcomeHub() {
+      const container = $('courseHubView');
+      const courses = (driveTree || []).filter(n => realMime(n) === FOLDER_MIME);
+      const totalFiles = countFilesInFolder(driveTree);
+
+      container.innerHTML = `
+        <!-- WELCOME HERO BANNER -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-sky-950/60 to-slate-900 border border-slate-800 p-6 sm:p-8 text-white shadow-xl">
+          <div class="absolute -right-12 -top-12 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="relative z-10 flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
+            <div class="w-20 h-20 rounded-2xl bg-slate-900 border border-slate-700/80 p-1.5 shadow-2xl flex items-center justify-center shrink-0">
+              <img src="assets/ankara-uni-logo.png" alt="Ankara Üniversitesi" class="w-full h-full object-contain" />
+            </div>
+            <div class="space-y-1.5 flex-1">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-950/80 border border-sky-800/60 text-sky-300 text-xs font-semibold">
+                <span>Ankara Üniversitesi</span>
+                <span>•</span>
+                <span>Elektrik-Elektronik Mühendisliği</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                1. Sınıf Ders & Materyal Portalı
+              </h1>
+              <p class="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">
+                1. Yarıyıl derslerine ait tüm slaytlara, haftalık ders akışına, kitaplara ve hoca iletişim bilgilerine ulaşmak için <b>aşağıdaki kartlardan veya sol menüden bir ders seçiniz</b>.
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-slate-800/80 text-center">
+            <div class="p-3 rounded-2xl bg-slate-950/50 border border-slate-800/80">
+              <div class="text-lg font-black text-sky-400">6</div>
+              <div class="text-[11px] text-slate-400 font-medium">Dönem Dersi</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/50 border border-slate-800/80">
+              <div class="text-lg font-black text-emerald-400">17.0 / 30.0</div>
+              <div class="text-[11px] text-slate-400 font-medium">Kredi / AKTS</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/50 border border-slate-800/80">
+              <div class="text-lg font-black text-amber-400">${totalFiles}</div>
+              <div class="text-[11px] text-slate-400 font-medium">Toplam Dosya</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-950/50 border border-slate-800/80">
+              <div class="text-lg font-black text-purple-400">%100</div>
+              <div class="text-[11px] text-slate-400 font-medium">İngilizce Müfredat</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 DERS SEÇİM KARTLARI -->
+        <div>
+          <div class="flex items-center justify-between mb-4 px-1">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-sky-400"></i>
+              <span>Ders Seçimi Yapınız (${courses.length} Ders)</span>
+            </h3>
+            <span class="text-[11px] text-slate-500">Detaylar ve haftalar için derse tıklayın</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${courses.map(course => {
+              const code = course.name.toUpperCase().trim();
+              const meta = courseMetadata[code] || { name: course.name, color: 'from-slate-800 to-slate-900', credits: '' };
+              const fileCount = countFilesInFolder(course.children);
+              return `
+                <div 
+                  onclick="selectCourse('${course.id}')"
+                  class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-850 hover:shadow-xl hover:shadow-sky-950/20 transition-all duration-200 cursor-pointer flex flex-col justify-between group active:scale-[0.99]"
+                >
+                  <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-sky-950 text-sky-300 border border-sky-800/60 font-mono">
+                        ${esc(code)}
+                      </span>
+                      <span class="text-[11px] text-slate-400 font-medium flex items-center gap-1">
+                        <i data-lucide="file" class="w-3.5 h-3.5 text-slate-500"></i>
+                        ${fileCount} dosya
+                      </span>
+                    </div>
+
+                    <div>
+                      <h4 class="text-sm font-bold text-slate-100 group-hover:text-sky-300 transition line-clamp-2">
+                        ${esc(meta.name)}
+                      </h4>
+                      <p class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                        <i data-lucide="user" class="w-3.5 h-3.5 text-slate-500 shrink-0"></i>
+                        <span class="truncate">${esc(meta.instructor || 'Öğretim Üyesi')}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
+                    <span class="text-slate-400 font-medium">${esc(meta.credits || '')}</span>
+                    <span class="text-sky-400 font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                      Dersi Aç <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </span>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      lucide.createIcons();
+    }
 
     // ================= RENDER COURSE HUB (DERS ANA SAYFASI) =================
     function renderCourseHub(courseId) {
