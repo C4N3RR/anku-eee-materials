@@ -197,11 +197,11 @@
           <span class="hidden sm:inline">İndir</span>
         </a>
 
-        <!-- Switch Server Button -->
-        <button id="viewerSwitchServerBtn" title="Farklı Önizleme Sunucusuna Geç / Yenile"
-           class="flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition">
+        <!-- Switch Server / Engine Button -->
+        <button id="viewerSwitchServerBtn" title="Farklı Önizleme Motoruna Geç (Doğrudan Yerel / Drive / Docs)"
+           class="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-sky-400"></i>
-          <span id="viewerServerBadge" class="hidden md:inline">Sunucuyu Değiştir</span>
+          <span id="viewerServerBadge" class="hidden md:inline">Motoru Değiştir</span>
         </button>
 
         <a id="viewerExternalBtn" href="#" target="_blank" rel="noopener noreferrer" title="Yeni Sekmede / Drive'da Aç"
@@ -222,17 +222,42 @@
     <div id="viewerDocTip" class="hidden bg-amber-950/80 border-b border-amber-800/70 px-4 py-2 text-[11px] text-amber-200 flex items-center justify-between gap-2 shrink-0">
       <div class="flex items-center gap-2 truncate">
         <i data-lucide="info" class="w-4 h-4 shrink-0 text-amber-400"></i>
-        <span class="truncate">Word (.doc) belgeleri Google sunucularında bazen sayfaları gecikmeli yükleyebilir. Sayfa açılmazsa üstteki <b>Sunucuyu Değiştir</b> veya <b>İndir</b> butonuna basabilirsiniz.</span>
+        <span class="truncate">Word (.doc) belgeleri Google sunucularında bazen sayfaları gecikmeli yükleyebilir. Sayfa açılmazsa üstteki <b>Motoru Değiştir</b> veya <b>İndir</b> butonuna basabilirsiniz.</span>
       </div>
       <button onclick="$('viewerDocTip').classList.add('hidden')" class="p-0.5 text-amber-400 hover:text-white shrink-0"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
     </div>
 
     <!-- Viewer Stage Body -->
     <div id="viewerStage" class="flex-1 relative bg-slate-950 flex items-center justify-center overflow-hidden">
+      <!-- Standard Spinner Loader -->
       <div id="viewerLoader" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-950/80">
         <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-sky-400 mb-2"></i>
         <span class="text-xs text-slate-400">Materyal açılıyor...</span>
       </div>
+
+      <!-- Streaming Progress Screen for Large Textbooks / Direct Engine -->
+      <div id="viewerStreamProgress" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/95 p-6 text-center select-none">
+        <div class="w-14 h-14 rounded-2xl bg-sky-950/80 border border-sky-800/60 flex items-center justify-center text-sky-400 mb-3.5 shadow-lg shadow-sky-950/50">
+          <i data-lucide="zap" class="w-7 h-7 text-amber-400 animate-pulse"></i>
+        </div>
+        <h4 id="viewerStreamTitle" class="font-bold text-sm text-slate-100 max-w-md truncate mb-1">Kitap Sitede Açılıyor...</h4>
+        <p class="text-xs text-slate-400 max-w-sm mb-4 leading-relaxed">
+          Bu kitap Google sunucu sınırını aştığı için sayfaları dondurmadan doğrudan <b>yüksek hızda tarayıcınıza aktarılıyor</b>. Bir kez yüklendikten sonra anında açılır.
+        </p>
+        <div class="w-80 max-w-[85vw] h-2.5 bg-slate-800 rounded-full overflow-hidden mb-2.5 p-0.5 border border-slate-700/60">
+          <div id="viewerProgressBar" class="h-full bg-gradient-to-r from-sky-500 via-indigo-500 to-emerald-400 rounded-full transition-all duration-150" style="width: 0%"></div>
+        </div>
+        <div class="flex items-center justify-between w-80 max-w-[85vw] text-[11px] font-mono text-slate-400">
+          <span id="viewerProgressMb">0.0 MB / 0.0 MB</span>
+          <span id="viewerProgressPercent" class="text-sky-400 font-bold">0%</span>
+        </div>
+        <div class="mt-5 flex items-center gap-2">
+          <button type="button" id="cancelStreamBtn" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition">
+            İptal Et / Drive Önizlemeye Geç
+          </button>
+        </div>
+      </div>
+
       <iframe 
         id="viewerFrame" 
         class="w-full h-full border-0 bg-slate-950"
@@ -514,6 +539,16 @@
       file: { icon: 'file', color: 'text-slate-400', bg: 'bg-slate-900 border-slate-800', badge: 'Dosya' }
     };
 
+    // Helper: File Size Formatter
+    function formatFileSize(bytes) {
+      if (!bytes || isNaN(bytes)) return '';
+      const b = Number(bytes);
+      if (b <= 0) return '';
+      if (b < 1024) return b + ' B';
+      if (b < 1024 * 1024) return (b / 1024).toFixed(0) + ' KB';
+      return (b / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
     // Drive Preview URL Builder
     function getPreviewUrl(node) {
       const id = realId(node);
@@ -539,7 +574,7 @@
       do {
         const params = new URLSearchParams({
           q: `'${folderId}' in parents and trashed = false`,
-          fields: 'nextPageToken, files(id, name, mimeType, description, webViewLink, shortcutDetails)',
+          fields: 'nextPageToken, files(id, name, mimeType, size, description, webViewLink, shortcutDetails)',
           orderBy: 'folder, name',
           pageSize: '1000',
           supportsAllDrives: 'true',
@@ -1020,7 +1055,12 @@
               <div class="text-xs font-semibold text-slate-200 truncate group-hover:text-sky-300 transition" title="${esc(item.name)}">
                 ${esc(item.name)}
               </div>
-              <div class="text-[10px] text-slate-500 capitalize">${conf.badge}</div>
+              <div class="text-[10px] text-slate-500 capitalize flex items-center gap-1.5 flex-wrap">
+                <span>${conf.badge}${item.size ? ' • ' + formatFileSize(item.size) : ''}</span>
+                ${item.size && Number(item.size) > 20 * 1024 * 1024 ? `
+                  <span class="px-1.5 py-0.2 rounded bg-amber-950/70 border border-amber-800/40 text-[9px] text-amber-300 font-medium">⚡ Sitede Doğrudan Açılır</span>
+                ` : ''}
+              </div>
             </div>
           </div>
 
@@ -1068,9 +1108,15 @@
             <div class="p-1.5 rounded-lg ${conf.bg} shrink-0">
               <i data-lucide="${conf.icon}" class="w-3.5 h-3.5 ${conf.color}"></i>
             </div>
-            <span class="text-xs font-medium text-slate-200 truncate hover:text-sky-300 transition" title="${esc(item.name)}">
-              ${esc(item.name)}
-            </span>
+            <div class="truncate flex items-center gap-2">
+              <span class="text-xs font-medium text-slate-200 truncate hover:text-sky-300 transition" title="${esc(item.name)}">
+                ${esc(item.name)}
+              </span>
+              ${item.size ? `<span class="text-[10px] text-slate-500 shrink-0 font-mono">${formatFileSize(item.size)}</span>` : ''}
+              ${item.size && Number(item.size) > 20 * 1024 * 1024 ? `
+                <span class="px-1.5 py-0.2 rounded bg-amber-950/70 border border-amber-800/40 text-[9px] text-amber-300 font-medium shrink-0">⚡ Sitede Açılır</span>
+              ` : ''}
+            </div>
           </div>
           <div class="flex items-center gap-1 shrink-0">
             <button 
@@ -1116,7 +1162,95 @@
     }
 
     let currentViewingNode = null;
-    let currentViewerMode = 0;
+    let currentViewerMode = 0; // 0: Direct Stream (Native Blob), 1: Drive Mode, 2: Docs Mode
+    let activeStreamXhr = null;
+    const sessionBlobCache = new Map();
+
+    function loadDirectStream(node) {
+      if (!node) return;
+      const id = realId(node);
+      const frame = $('viewerFrame');
+      const loader = $('viewerLoader');
+      const streamBox = $('viewerStreamProgress');
+      const bar = $('viewerProgressBar');
+      const percentEl = $('viewerProgressPercent');
+      const mbEl = $('viewerProgressMb');
+      const serverBadge = $('viewerServerBadge');
+
+      if (activeStreamXhr) {
+        activeStreamXhr.abort();
+        activeStreamXhr = null;
+      }
+
+      loader.classList.add('hidden');
+
+      // Instant 0.0s reopening from in-memory session cache
+      if (sessionBlobCache.has(id)) {
+        streamBox.classList.add('hidden');
+        frame.src = sessionBlobCache.get(id);
+        serverBadge.textContent = '⚡ Doğrudan Motor';
+        return;
+      }
+
+      streamBox.classList.remove('hidden');
+      $('viewerStreamTitle').textContent = node.name;
+      bar.style.width = '0%';
+      percentEl.textContent = '0%';
+      const totalBytes = node.size ? Number(node.size) : 0;
+      const totalMbStr = totalBytes > 0 ? (totalBytes / (1024 * 1024)).toFixed(1) + ' MB' : '...';
+      mbEl.textContent = `0.0 MB / ${totalMbStr}`;
+      serverBadge.textContent = '⚡ Aktarılıyor...';
+      lucide.createIcons();
+
+      const xhr = new XMLHttpRequest();
+      activeStreamXhr = xhr;
+      xhr.open('GET', `https://www.googleapis.com/drive/v3/files/${id}?alt=media&key=${settings.key}`);
+      xhr.responseType = 'blob';
+
+      xhr.onprogress = (e) => {
+        const total = e.lengthComputable && e.total > 0 ? e.total : totalBytes;
+        if (total > 0) {
+          const percent = Math.min(100, Math.round((e.loaded / total) * 100));
+          const loadedMb = (e.loaded / (1024 * 1024)).toFixed(1);
+          const tMb = (total / (1024 * 1024)).toFixed(1);
+          bar.style.width = percent + '%';
+          percentEl.textContent = percent + '%';
+          mbEl.textContent = `${loadedMb} MB / ${tMb} MB`;
+        } else {
+          const loadedMb = (e.loaded / (1024 * 1024)).toFixed(1);
+          mbEl.textContent = `${loadedMb} MB aktarıldı...`;
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          const mime = node.mimeType || 'application/pdf';
+          const blob = new Blob([xhr.response], { type: mime });
+          const blobUrl = URL.createObjectURL(blob);
+          sessionBlobCache.set(id, blobUrl);
+          streamBox.classList.add('hidden');
+          frame.src = blobUrl;
+          serverBadge.textContent = '⚡ Doğrudan Motor';
+          activeStreamXhr = null;
+        } else {
+          console.warn('Doğrudan aktarım yanıt vermedi, Drive önizlemeye dönülüyor');
+          streamBox.classList.add('hidden');
+          frame.src = `https://drive.google.com/file/d/${id}/preview`;
+          serverBadge.textContent = 'Drive Modu';
+          activeStreamXhr = null;
+        }
+      };
+
+      xhr.onerror = () => {
+        console.warn('Doğrudan aktarım hatası, Drive önizlemeye dönülüyor');
+        streamBox.classList.add('hidden');
+        frame.src = `https://drive.google.com/file/d/${id}/preview`;
+        serverBadge.textContent = 'Drive Modu';
+        activeStreamXhr = null;
+      };
+
+      xhr.send();
+    }
 
     window.openViewerModal = function(fileId, courseCode) {
       if (!driveTree) return;
@@ -1124,11 +1258,11 @@
       if (!fileNode) return;
 
       currentViewingNode = fileNode;
-      currentViewerMode = 0;
 
       const modal = $('viewerModal');
       const frame = $('viewerFrame');
       const loader = $('viewerLoader');
+      const streamBox = $('viewerStreamProgress');
       const title = $('viewerFileTitle');
       const breadcrumb = $('viewerFileBreadcrumb');
       const extBtn = $('viewerExternalBtn');
@@ -1136,8 +1270,9 @@
       const docTip = $('viewerDocTip');
       const serverBadge = $('viewerServerBadge');
 
+      const sizeStr = formatFileSize(fileNode.size);
       title.textContent = fileNode.name;
-      breadcrumb.textContent = `${courseCode} • Materyal Önizleme`;
+      breadcrumb.textContent = `${courseCode} • Materyal Önizleme${sizeStr ? ' • ' + sizeStr : ''}`;
       extBtn.href = fileNode.webViewLink || `https://drive.google.com/file/d/${realId(fileNode)}/view`;
 
       const id = realId(fileNode);
@@ -1152,6 +1287,7 @@
         docTip.classList.add('hidden');
       }
 
+      streamBox.classList.add('hidden');
       loader.classList.remove('hidden');
       frame.onload = () => loader.classList.add('hidden');
 
@@ -1166,8 +1302,21 @@
       } else {
         downloadBtn.classList.remove('hidden');
         $('viewerSwitchServerBtn').classList.remove('hidden');
-        serverBadge.textContent = 'Sunucuyu Değiştir';
-        frame.src = getPreviewUrl(fileNode);
+
+        const isPdf = kind === 'pdf' || (fileNode.mimeType && fileNode.mimeType.includes('pdf')) || fileNode.name.toLowerCase().endsWith('.pdf');
+        const isLarge = fileNode.size && Number(fileNode.size) > 20 * 1024 * 1024;
+
+        if (isPdf && isLarge) {
+          // Large books (> 20 MB, e.g. Calculus 70MB, Physics 38-62MB, Chemistry 110-270MB)
+          // Google Drive's web preview server fails on these, so we stream directly via API
+          currentViewerMode = 0;
+          loadDirectStream(fileNode);
+        } else {
+          // Regular files (< 20 MB), fast Google Drive preview
+          currentViewerMode = 1;
+          serverBadge.textContent = 'Drive Modu';
+          frame.src = getPreviewUrl(fileNode);
+        }
       }
 
       modal.showModal();
@@ -1176,23 +1325,53 @@
 
     $('viewerSwitchServerBtn').onclick = () => {
       if (!currentViewingNode) return;
-      currentViewerMode = (currentViewerMode + 1) % 2;
+      currentViewerMode = (currentViewerMode + 1) % 3;
       const frame = $('viewerFrame');
       const loader = $('viewerLoader');
       const id = realId(currentViewingNode);
       const serverBadge = $('viewerServerBadge');
 
-      loader.classList.remove('hidden');
       if (currentViewerMode === 0) {
+        // Direct Stream (Native Blob)
+        loadDirectStream(currentViewingNode);
+      } else if (currentViewerMode === 1) {
+        // Drive Mode
+        if (activeStreamXhr) { activeStreamXhr.abort(); activeStreamXhr = null; }
+        $('viewerStreamProgress').classList.add('hidden');
+        loader.classList.remove('hidden');
         frame.src = `https://drive.google.com/file/d/${id}/preview`;
         serverBadge.textContent = 'Drive Modu';
       } else {
+        // Docs Mode
+        if (activeStreamXhr) { activeStreamXhr.abort(); activeStreamXhr = null; }
+        $('viewerStreamProgress').classList.add('hidden');
+        loader.classList.remove('hidden');
         frame.src = `https://docs.google.com/viewer?srcid=${id}&pid=explorer&efh=false&a=v&chrome=false&embedded=true`;
         serverBadge.textContent = 'Docs Modu';
       }
     };
 
+    $('cancelStreamBtn').onclick = () => {
+      if (activeStreamXhr) {
+        activeStreamXhr.abort();
+        activeStreamXhr = null;
+      }
+      $('viewerStreamProgress').classList.add('hidden');
+      if (currentViewingNode) {
+        const id = realId(currentViewingNode);
+        currentViewerMode = 1;
+        $('viewerLoader').classList.remove('hidden');
+        $('viewerFrame').src = `https://drive.google.com/file/d/${id}/preview`;
+        $('viewerServerBadge').textContent = 'Drive Modu';
+      }
+    };
+
     function closeViewerModal() {
+      if (activeStreamXhr) {
+        activeStreamXhr.abort();
+        activeStreamXhr = null;
+      }
+      $('viewerStreamProgress').classList.add('hidden');
       const modal = $('viewerModal');
       const frame = $('viewerFrame');
       frame.src = 'about:blank';
