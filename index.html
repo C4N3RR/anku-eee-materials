@@ -349,12 +349,13 @@
       API_KEY: 'AIzaSyBjWpi3fw4aAH5AbzzfLX4JYj9iNaZPSBE'
     };
 
-    // 1. Sınıf 6 Temel Ders Varsayılan Metadata Bilgileri
+    // 1. Sınıf 6 Temel Ders Varsayılan Metadata Bilgileri (AVESİS Doğrulanmış)
     const DEFAULT_COURSE_METADATA = {
       'CHM109': {
         name: 'General Chemistry (Genel Kimya)',
-        instructor: 'Kimya Bölümü Öğretim Üyesi',
-        email: 'chemistry@ankara.edu.tr',
+        instructor: 'Prof. Dr. Emre BİÇER',
+        email: 'ebicer@ankara.edu.tr',
+        avesisUrl: 'https://avesis.ankara.edu.tr/emreb',
         credits: '4 Kredi • 6 AKTS',
         color: 'from-emerald-600 to-teal-800',
         links: [
@@ -363,8 +364,9 @@
       },
       'EEE1001': {
         name: 'Introduction to Electrical & Electronics Engineering',
-        instructor: 'Bölüm Başkanlığı',
-        email: 'eee@ankara.edu.tr',
+        instructor: 'Prof. Dr. Asım Egemen YILMAZ',
+        email: 'aeyilmaz@eng.ankara.edu.tr',
+        avesisUrl: 'https://avesis.ankara.edu.tr/aeyilmaz',
         credits: '2 Kredi • 3 AKTS',
         color: 'from-sky-600 to-indigo-800',
         links: [
@@ -373,8 +375,9 @@
       },
       'MTH0101': {
         name: 'Calculus I (Matematik I)',
-        instructor: 'Matematik Bölümü',
-        email: 'math@ankara.edu.tr',
+        instructor: 'Prof. Dr. Serhan VARMA',
+        email: 'svarma@science.ankara.edu.tr',
+        avesisUrl: 'https://avesis.ankara.edu.tr/svarma',
         credits: '4 Kredi • 6 AKTS',
         color: 'from-indigo-600 to-blue-800',
         links: [
@@ -384,8 +387,9 @@
       },
       'MTH103': {
         name: 'Linear Algebra (Lineer Cebir)',
-        instructor: 'Matematik Bölümü',
-        email: 'math@ankara.edu.tr',
+        instructor: 'Dr. Öğr. Üyesi Derya KAHVECİ',
+        email: 'dkahveci@ankara.edu.tr',
+        avesisUrl: 'https://avesis.ankara.edu.tr/dkahveci',
         credits: '3 Kredi • 5 AKTS',
         color: 'from-blue-600 to-cyan-800',
         links: [
@@ -394,8 +398,9 @@
       },
       'PHY0107': {
         name: 'Physics I (Genel Fizik I)',
-        instructor: 'Fizik Mühendisliği Bölümü',
-        email: 'physics@ankara.edu.tr',
+        instructor: 'Doç. Dr. Ahmet KARATAY',
+        email: 'akaratay@eng.ankara.edu.tr',
+        avesisUrl: 'https://avesis.ankara.edu.tr/akaratay',
         credits: '4 Kredi • 6 AKTS',
         color: 'from-amber-600 to-orange-800',
         links: [
@@ -404,8 +409,9 @@
       },
       'TUR171': {
         name: 'Turkish Language I (Türk Dili I)',
-        instructor: 'Türk Dili Bölümü',
-        email: 'turkdili@ankara.edu.tr',
+        instructor: 'Öğr. Gör. Dr. Meltem AYABAKAN İPEK',
+        email: 'mayabakan88@gmail.com',
+        avesisUrl: 'https://avesis.ankara.edu.tr/ayabakan',
         credits: '2 Kredi • 2 AKTS',
         color: 'from-rose-600 to-red-800',
         links: [
@@ -426,16 +432,23 @@
       key: localStorage.getItem('anku_key') || CONFIG.API_KEY
     };
 
-    // Load and sanitize course metadata (removes OBS and Ders İzlencesi from course links)
-    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v4') || 'null') || DEFAULT_COURSE_METADATA;
-    Object.keys(courseMetadata).forEach(code => {
-      if (courseMetadata[code] && courseMetadata[code].links) {
-        courseMetadata[code].links = courseMetadata[code].links.filter(l => 
-          !/obs/i.test(l.title) && !/izlence|syllabus/i.test(l.title)
-        );
+    // Load and sanitize course metadata (synchronizes official AVESİS titles & emails)
+    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v5') || 'null') || DEFAULT_COURSE_METADATA;
+    Object.keys(DEFAULT_COURSE_METADATA).forEach(code => {
+      if (!courseMetadata[code]) {
+        courseMetadata[code] = DEFAULT_COURSE_METADATA[code];
+      } else {
+        courseMetadata[code].instructor = DEFAULT_COURSE_METADATA[code].instructor;
+        courseMetadata[code].email = DEFAULT_COURSE_METADATA[code].email;
+        courseMetadata[code].avesisUrl = DEFAULT_COURSE_METADATA[code].avesisUrl;
+        if (courseMetadata[code].links) {
+          courseMetadata[code].links = courseMetadata[code].links.filter(l => 
+            !/obs/i.test(l.title) && !/izlence|syllabus/i.test(l.title)
+          );
+        }
       }
     });
-    localStorage.setItem('anku_course_meta_v4', JSON.stringify(courseMetadata));
+    localStorage.setItem('anku_course_meta_v5', JSON.stringify(courseMetadata));
 
     let driveTree = null;          // Real Drive Tree
     let activeCourseId = null;     // Selected Course Folder ID / Code
@@ -574,7 +587,7 @@
         });
 
         courseMetadata[courseCode] = meta;
-        localStorage.setItem('anku_course_meta_v4', JSON.stringify(courseMetadata));
+        localStorage.setItem('anku_course_meta_v5', JSON.stringify(courseMetadata));
       } catch (e) {
         console.warn('info.txt okunamadı:', e);
       }
@@ -775,16 +788,36 @@
               </div>
               <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">${esc(meta.name)}</h1>
               
-              <!-- Instructor & Email -->
-              <div class="flex flex-wrap items-center gap-y-1 gap-x-4 text-xs text-slate-200 pt-1">
-                <div class="flex items-center gap-1.5 font-medium">
-                  <i data-lucide="user" class="w-4 h-4 text-amber-300"></i>
+              <!-- Instructor & Copyable Email -->
+              <div class="flex flex-wrap items-center gap-2 pt-2 text-xs">
+                <!-- Instructor Chip with AVESİS link -->
+                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/25 backdrop-blur border border-white/10 font-semibold text-amber-200 shadow-sm">
+                  <i data-lucide="user-check" class="w-4 h-4 text-amber-300"></i>
                   <span>${esc(meta.instructor || 'Öğretim Üyesi')}</span>
+                  ${meta.avesisUrl ? `
+                    <a href="${esc(meta.avesisUrl)}" target="_blank" rel="noopener noreferrer" title="AVESİS Akademik Profili Aç" class="ml-1 p-0.5 rounded text-amber-300 hover:text-white hover:bg-white/10 transition">
+                      <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    </a>
+                  ` : ''}
                 </div>
+
+                <!-- Click-to-Copy Email Button -->
                 ${meta.email ? `
-                  <a href="mailto:${esc(meta.email)}" class="flex items-center gap-1.5 text-sky-200 hover:underline">
-                    <i data-lucide="mail" class="w-3.5 h-3.5"></i>
-                    <span>${esc(meta.email)}</span>
+                  <button 
+                    onclick="copyInstructorEmail('${esc(meta.email)}', this)" 
+                    title="E-postayı Kopyalamak İçin Tıklayın"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/25 hover:bg-black/40 backdrop-blur border border-white/10 hover:border-sky-400/50 font-medium text-sky-200 hover:text-white transition group active:scale-95 shadow-sm"
+                  >
+                    <i data-lucide="mail" class="w-3.5 h-3.5 text-sky-300"></i>
+                    <span class="email-text font-mono text-[11px]">${esc(meta.email)}</span>
+                    <i data-lucide="copy" class="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 copy-icon"></i>
+                  </button>
+                  <a 
+                    href="mailto:${esc(meta.email)}" 
+                    title="Doğrudan E-posta Gönder" 
+                    class="p-1.5 rounded-xl bg-black/20 hover:bg-black/35 backdrop-blur border border-white/10 text-sky-200 hover:text-white transition"
+                  >
+                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
                   </a>
                 ` : ''}
               </div>
@@ -1172,6 +1205,25 @@
       }
     };
 
+    // Click-to-Copy Instructor Email Helper
+    window.copyInstructorEmail = function(email, btnEl) {
+      if (!email) return;
+      navigator.clipboard.writeText(email).then(() => {
+        const textSpan = btnEl.querySelector('.email-text');
+        const originalText = textSpan.textContent;
+        
+        textSpan.textContent = 'Kopyalandı! ✓';
+        btnEl.classList.add('text-emerald-300', 'border-emerald-500/60');
+        
+        setTimeout(() => {
+          textSpan.textContent = originalText;
+          btnEl.classList.remove('text-emerald-300', 'border-emerald-500/60');
+        }, 1800);
+      }).catch(() => {
+        prompt('E-posta adresini kopyalayın:', email);
+      });
+    };
+
     // ================= EDIT COURSE METADATA =================
     window.openEditCourseModal = function(courseCode) {
       currentEditingCourseCode = courseCode;
@@ -1245,7 +1297,7 @@
       });
 
       courseMetadata[code] = meta;
-      localStorage.setItem('anku_course_meta_v4', JSON.stringify(courseMetadata));
+      localStorage.setItem('anku_course_meta_v5', JSON.stringify(courseMetadata));
 
       $('editCourseModal').close();
       renderSidebarCourses();
