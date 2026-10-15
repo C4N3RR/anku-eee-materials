@@ -71,6 +71,18 @@
 
     <!-- Right Header Actions -->
     <div class="flex items-center gap-2">
+      <!-- OBS Button (En Üst Ana Bölüm) -->
+      <a 
+        href="https://obs.ankara.edu.tr" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        title="Ankara Üniversitesi Öğrenci Bilgi Sistemi (OBS)"
+        class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg text-sky-200 bg-sky-950/80 border border-sky-800/80 hover:bg-sky-900/90 hover:text-white transition shadow-sm"
+      >
+        <i data-lucide="graduation-cap" class="w-4 h-4 text-sky-400"></i>
+        <span>OBS Giriş</span>
+      </a>
+
       <!-- Fast Link to Google Drive Main Folder -->
       <a 
         id="headerDriveBtn" 
@@ -346,9 +358,7 @@
         credits: '4 Kredi • 6 AKTS',
         color: 'from-emerald-600 to-teal-800',
         links: [
-          { title: 'Ders İzlencesi', url: '#', icon: 'file-text' },
-          { title: 'Periyodik Tablo (Ptable)', url: 'https://ptable.com', icon: 'external-link' },
-          { title: 'OBS Ankara', url: 'https://obs.ankara.edu.tr', icon: 'globe' }
+          { title: 'Periyodik Tablo (Ptable)', url: 'https://ptable.com', icon: 'external-link' }
         ]
       },
       'EEE1001': {
@@ -358,9 +368,7 @@
         credits: '2 Kredi • 3 AKTS',
         color: 'from-sky-600 to-indigo-800',
         links: [
-          { title: 'Bölüm Web Sayfası', url: 'https://eee.ankara.edu.tr', icon: 'globe' },
-          { title: 'Ders İzlencesi', url: '#', icon: 'file-text' },
-          { title: 'OBS Ankara', url: 'https://obs.ankara.edu.tr', icon: 'globe' }
+          { title: 'Bölüm Web Sayfası', url: 'https://eee.ankara.edu.tr', icon: 'globe' }
         ]
       },
       'MTH0101': {
@@ -370,7 +378,6 @@
         credits: '4 Kredi • 6 AKTS',
         color: 'from-indigo-600 to-blue-800',
         links: [
-          { title: 'Ders İzlencesi', url: '#', icon: 'file-text' },
           { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'calculator' },
           { title: 'Essence of Calculus (3Blue1Brown)', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr', icon: 'youtube' }
         ]
@@ -382,7 +389,6 @@
         credits: '3 Kredi • 5 AKTS',
         color: 'from-blue-600 to-cyan-800',
         links: [
-          { title: 'Ders İzlencesi', url: '#', icon: 'file-text' },
           { title: 'Essence of Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab', icon: 'youtube' }
         ]
       },
@@ -393,9 +399,7 @@
         credits: '4 Kredi • 6 AKTS',
         color: 'from-amber-600 to-orange-800',
         links: [
-          { title: 'Ders İzlencesi', url: '#', icon: 'file-text' },
-          { title: 'PhET Simülasyonları', url: 'https://phet.colorado.edu/tr/', icon: 'external-link' },
-          { title: 'OBS Ankara', url: 'https://obs.ankara.edu.tr', icon: 'globe' }
+          { title: 'PhET Simülasyonları', url: 'https://phet.colorado.edu/tr/', icon: 'external-link' }
         ]
       },
       'TUR171': {
@@ -405,9 +409,7 @@
         credits: '2 Kredi • 2 AKTS',
         color: 'from-rose-600 to-red-800',
         links: [
-          { title: 'TDK Güncel Yazım Kılavuzu', url: 'https://sozluk.gov.tr', icon: 'book-open' },
-          { title: 'Ders İzlencesi', url: '#', icon: 'file-text' },
-          { title: 'OBS Ankara', url: 'https://obs.ankara.edu.tr', icon: 'globe' }
+          { title: 'TDK Güncel Yazım Kılavuzu', url: 'https://sozluk.gov.tr', icon: 'book-open' }
         ]
       }
     };
@@ -424,7 +426,17 @@
       key: localStorage.getItem('anku_key') || CONFIG.API_KEY
     };
 
-    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v3') || 'null') || DEFAULT_COURSE_METADATA;
+    // Load and sanitize course metadata (removes OBS and Ders İzlencesi from course links)
+    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v4') || 'null') || DEFAULT_COURSE_METADATA;
+    Object.keys(courseMetadata).forEach(code => {
+      if (courseMetadata[code] && courseMetadata[code].links) {
+        courseMetadata[code].links = courseMetadata[code].links.filter(l => 
+          !/obs/i.test(l.title) && !/izlence|syllabus/i.test(l.title)
+        );
+      }
+    });
+    localStorage.setItem('anku_course_meta_v4', JSON.stringify(courseMetadata));
+
     let driveTree = null;          // Real Drive Tree
     let activeCourseId = null;     // Selected Course Folder ID / Code
     let currentEditingCourseCode = null;
@@ -562,7 +574,7 @@
         });
 
         courseMetadata[courseCode] = meta;
-        localStorage.setItem('anku_course_meta_v3', JSON.stringify(courseMetadata));
+        localStorage.setItem('anku_course_meta_v4', JSON.stringify(courseMetadata));
       } catch (e) {
         console.warn('info.txt okunamadı:', e);
       }
@@ -1233,7 +1245,7 @@
       });
 
       courseMetadata[code] = meta;
-      localStorage.setItem('anku_course_meta_v3', JSON.stringify(courseMetadata));
+      localStorage.setItem('anku_course_meta_v4', JSON.stringify(courseMetadata));
 
       $('editCourseModal').close();
       renderSidebarCourses();
