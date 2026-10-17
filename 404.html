@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr" class="flex min-h-full w-full antialiased" data-scroll-behavior="smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try {
+      const storedScheme = localStorage.getItem("color-scheme");
+      document.querySelector('meta[name="color-scheme"]').content = storedScheme ?? "light dark";
+      const isDark = storedScheme ? storedScheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.classList.toggle("dark", isDark);
+    } catch (e) {}
+  </script>
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="noindex, follow">
+
+  <!-- 3 & 4. Meta Title & Meta Description -->
+  <title>404 — Sayfa Bulunamadı | ANKU EEE Ders Portalı</title>
+  <meta name="description" content="Aradığınız sayfa ANKU EEE Ders Portalı üzerinde bulunamadı. Ana sayfaya dönerek ders materyallerine ulaşabilirsiniz.">
+
+  <!-- 5. Open Graph & Twitter Card -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ANKU EEE Ders Portalı">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:title" content="404 — Sayfa Bulunamadı | ANKU EEE Ders Portalı">
+  <meta property="og:description" content="Aradığınız sayfa ANKU EEE Ders Portalı üzerinde bulunamadı. Ana sayfaya dönerek ders materyallerine ulaşabilirsiniz.">
+  <meta property="og:url" content="https://c4n3rr.github.io/anku-eee-materials/404.html">
+  <meta property="og:image" content="https://c4n3rr.github.io/anku-eee-materials/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="404 — Sayfa Bulunamadı | ANKU EEE Ders Portalı">
+  <meta name="twitter:description" content="Aradığınız sayfa ANKU EEE Ders Portalı üzerinde bulunamadı. Ana sayfaya dönerek ders materyallerine ulaşabilirsiniz.">
+  <meta name="twitter:image" content="https://c4n3rr.github.io/anku-eee-materials/assets/og-image.png">
+  <meta name="twitter:image:alt" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+
+  <!-- 6. Favicon Set -->
+  <link rel="icon" type="image/svg+xml" href="/anku-eee-materials/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/anku-eee-materials/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/anku-eee-materials/assets/favicon-16x16.png">
+  <link rel="shortcut icon" href="/anku-eee-materials/favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="/anku-eee-materials/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/anku-eee-materials/site.webmanifest">
+
+  <!-- 12. Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ANKUEEE2026"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ANKUEEE2026', { page_title: document.title, page_path: location.pathname });
+  </script>
+
+  <!-- Geist & Geist Mono Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Geist', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['Geist Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+          colors: {
+            background: 'var(--background)',
+            foreground: 'var(--foreground)',
+            card: { DEFAULT: 'var(--card)', foreground: 'var(--card-foreground)' },
+            primary: { DEFAULT: 'var(--primary)', foreground: 'var(--primary-foreground)' },
+            secondary: { DEFAULT: 'var(--secondary)', foreground: 'var(--secondary-foreground)' },
+            muted: { DEFAULT: 'var(--muted)', foreground: 'var(--muted-foreground)' },
+            border: 'var(--border)',
+          },
+          borderRadius: {
+            sm: 'calc(var(--radius) * 0.6)',
+            md: 'calc(var(--radius) * 0.8)',
+            lg: 'var(--radius)',
+            xl: 'calc(var(--radius) * 1.4)',
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      color-scheme: light dark;
+      --background: oklch(1 0 0);
+      --foreground: oklch(0.145 0 0);
+      --card: oklch(1 0 0);
+      --card-foreground: oklch(0.145 0 0);
+      --primary: oklch(0.205 0 0);
+      --primary-foreground: oklch(0.985 0 0);
+      --secondary: oklch(0.97 0 0);
+      --secondary-foreground: oklch(0.205 0 0);
+      --muted: oklch(0.97 0 0);
+      --muted-foreground: oklch(0.556 0 0);
+      --border: oklch(0.922 0 0);
+      --radius: 0.625rem;
+    }
+    .dark {
+      --background: oklch(0.145 0 0);
+      --foreground: oklch(0.985 0 0);
+      --card: oklch(0.205 0 0);
+      --card-foreground: oklch(0.985 0 0);
+      --primary: oklch(0.922 0 0);
+      --primary-foreground: oklch(0.205 0 0);
+      --secondary: oklch(0.269 0 0);
+      --secondary-foreground: oklch(0.985 0 0);
+      --muted: oklch(0.269 0 0);
+      --muted-foreground: oklch(0.708 0 0);
+      --border: oklch(1 0 0 / 10%);
+    }
+    * { border-color: var(--border); }
+    body {
+      background-color: var(--background);
+      color: var(--foreground);
+      font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+    .admincn-card {
+      background-color: var(--card);
+      color: var(--card-foreground);
+      border-radius: calc(var(--radius) * 1.4);
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      border: 1px solid var(--border);
+    }
+    .bg-primary-soft {
+      background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+    }
+    .bg-card\/40 {
+      background-color: color-mix(in oklab, var(--card) 40%, transparent);
+    }
+  </style>
+</head>
+<body class="flex min-h-svh w-full flex-col bg-background text-foreground antialiased select-none">
+
+  <header class="bg-card border-b border-border">
+    <div class="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
+      <a id="brandHomeLink" href="/anku-eee-materials/" class="flex items-center gap-2.5">
+        <div class="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground overflow-hidden p-0.5">
+          <img
+            id="brandLogoImg"
+            src="/anku-eee-materials/assets/ankara-uni-logo.png"
+            alt="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği Logosu"
+            width="32"
+            height="32"
+            class="size-full object-contain rounded-full"
+            onerror="this.src='assets/ankara-uni-logo.png'"
+          />
+        </div>
+        <span class="text-base font-semibold tracking-tight text-foreground">ANKU EEE</span>
+      </a>
+
+      <button
+        id="themeToggleBtn"
+        type="button"
+        title="Tema"
+        aria-label="Tema Değiştir"
+        class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+      >
+        <i data-lucide="moon-star" class="size-4 block dark:hidden"></i>
+        <i data-lucide="sun" class="size-4 hidden dark:block"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="mx-auto flex w-full max-w-[1440px] flex-1 items-center justify-center px-4 py-12 sm:px-6">
+    <div class="admincn-card w-full max-w-md p-8 text-center space-y-5">
+      <div class="mx-auto size-12 rounded-xl bg-primary-soft text-primary flex items-center justify-center font-mono text-base font-bold">
+        404
+      </div>
+      <div class="space-y-1.5">
+        <h1 class="text-xl font-semibold tracking-tight text-foreground">Sayfa Bulunamadı</h1>
+        <p class="text-xs text-muted-foreground">Aradığınız bağlantı mevcut değil veya taşınmış.</p>
+      </div>
+      <div class="flex items-center justify-center gap-2.5 pt-1">
+        <a
+          id="ctaHomeBtn"
+          href="/anku-eee-materials/"
+          class="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-4 text-xs font-medium text-primary-foreground hover:opacity-90 transition"
+        >
+          <i data-lucide="arrow-left" class="size-3.5"></i>
+          <span>Ana Sayfa</span>
+        </a>
+        <a
+          href="https://drive.google.com/drive/folders/1n9cyf8eSj3OremDKF5BdQIBayaryPofN?usp=sharing"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-background px-4 text-xs font-medium text-foreground hover:bg-muted transition"
+        >
+          <i data-lucide="folder-symlink" class="size-3.5"></i>
+          <span>Drive</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-border bg-card/40">
+    <div class="text-muted-foreground mx-auto flex w-full max-w-[1440px] items-center justify-between gap-3 px-4 py-3.5 max-sm:flex-col sm:px-6 text-xs">
+      <div class="flex items-center gap-3">
+        <span>© 2026 ANKU EEE</span>
+        <span>•</span>
+        <a id="footerPrivacyLink" href="/anku-eee-materials/privacy.html" class="hover:text-foreground transition">Gizlilik Politikası</a>
+      </div>
+      <span class="font-medium text-foreground">Produced by Caner Davarcı</span>
+    </div>
+  </footer>
+
+  <script>
+    if (!location.pathname.startsWith('/anku-eee-materials')) {
+      document.getElementById('brandHomeLink').href = './';
+      document.getElementById('ctaHomeBtn').href = './';
+      document.getElementById('footerPrivacyLink').href = './privacy.html';
+    }
+    document.getElementById('themeToggleBtn').onclick = () => {
+      const currentlyDark = document.documentElement.classList.contains('dark');
+      const target = currentlyDark ? 'light' : 'dark';
+      localStorage.setItem('color-scheme', target);
+      document.querySelector('meta[name="color-scheme"]').content = target;
+      document.documentElement.classList.toggle('dark', target === 'dark');
+    };
+    lucide.createIcons();
+  </script>
+</body>
+</html>

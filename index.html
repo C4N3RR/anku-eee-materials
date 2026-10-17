@@ -13,7 +13,45 @@
     } catch (e) {}
   </script>
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>ANKU EEE — Ders Portalı</title>
+
+  <!-- 3 & 4. Meta Title & Meta Description -->
+  <title>ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı</title>
+  <meta id="metaDescription" name="description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
+  <link rel="canonical" href="https://c4n3rr.github.io/anku-eee-materials/">
+
+  <!-- 5. Open Graph & Twitter Card -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ANKU EEE Ders Portalı">
+  <meta property="og:locale" content="tr_TR">
+  <meta id="ogTitle" property="og:title" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+  <meta id="ogDescription" property="og:description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
+  <meta property="og:url" content="https://c4n3rr.github.io/anku-eee-materials/">
+  <meta property="og:image" content="https://c4n3rr.github.io/anku-eee-materials/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta id="twitterTitle" name="twitter:title" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+  <meta id="twitterDescription" name="twitter:description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
+  <meta name="twitter:image" content="https://c4n3rr.github.io/anku-eee-materials/assets/og-image.png">
+  <meta name="twitter:image:alt" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+
+  <!-- 6. Favicon Set -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <!-- 12. Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ANKUEEE2026"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-ANKUEEE2026', { page_title: document.title, page_path: location.pathname });
+  </script>
 
   <!-- Geist & Geist Mono Fonts (AdminCN v1) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -267,6 +305,114 @@
       overflow: hidden;
       overscroll-behavior: contain;
     }
+
+    /* 10. Semantic Indeterminate <progress> Spinner (modern-web-guidance: spinner) */
+    progress.loading-spinner:indeterminate::-webkit-progress-bar {
+      display: none;
+      background: none;
+    }
+    progress.loading-spinner:indeterminate::-webkit-progress-value {
+      display: none;
+      background: none;
+    }
+    progress.loading-spinner:indeterminate::-moz-progress-bar {
+      display: none;
+      background: none;
+    }
+    progress.loading-spinner:indeterminate::slider-fill {
+      display: none;
+      background: none;
+    }
+
+    @property --arc-start {
+      syntax: "<angle>";
+      inherits: false;
+      initial-value: 0deg;
+    }
+    @property --arc-end {
+      syntax: "<angle>";
+      inherits: false;
+      initial-value: 0deg;
+    }
+    @property --progress-dash-animation {
+      syntax: "*";
+      inherits: false;
+      initial-value: , progress-dash 3s ease-in-out infinite;
+    }
+
+    progress.loading-spinner:indeterminate {
+      --_from: calc(90deg + var(--arc-start, 0deg));
+      --_to: calc(90deg + var(--arc-end, 158deg));
+      --size: 32px;
+      --thickness: 3px;
+      --spinner-color: var(--primary);
+      --track-color: var(--muted);
+      --spinner-duration: 1.5s;
+      --_used-spinner-duration: var(--spinner-duration);
+
+      position: relative;
+      display: inline-block;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      appearance: none;
+      background: conic-gradient(
+          from var(--_from),
+          var(--spinner-color) calc(var(--_to) - var(--_from)),
+          transparent 0
+        )
+        var(--track-color);
+      animation:
+        progress-spin var(--_used-spinner-duration) linear infinite
+        var(--progress-dash-animation, );
+    }
+
+    @supports (background-clip: border-area) {
+      progress.loading-spinner:indeterminate {
+        background-clip: border-area;
+        border: var(--thickness) solid transparent;
+        background-origin: border-box;
+      }
+    }
+
+    @supports not (background-clip: border-area) {
+      progress.loading-spinner:indeterminate {
+        --clip-boundary: calc(100% - var(--thickness));
+        mask-image: radial-gradient(
+          farthest-side,
+          transparent var(--clip-boundary),
+          black var(--clip-boundary)
+        );
+        border: 0;
+      }
+    }
+
+    @keyframes progress-spin {
+      to {
+        rotate: 1turn;
+      }
+    }
+
+    @keyframes progress-dash {
+      from {
+        --arc-start: 0deg;
+        --arc-end: 3deg;
+      }
+      50% {
+        --arc-start: 100deg;
+        --arc-end: 358deg;
+      }
+      to {
+        --arc-start: 360deg;
+        --arc-end: 363deg;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      progress.loading-spinner:indeterminate {
+        --_used-spinner-duration: 6s;
+      }
+    }
   </style>
 </head>
 <body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground antialiased select-none">
@@ -290,7 +436,9 @@
             <div class="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground overflow-hidden p-0.5">
               <img
                 src="assets/ankara-uni-logo.png"
-                alt="Ankara Üniversitesi"
+                alt="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği Logosu"
+                width="32"
+                height="32"
                 class="size-full object-contain rounded-full"
                 onerror="this.style.display='none';"
               />
@@ -483,9 +631,9 @@
         </div>
       </header>
 
-      <main id="mainContainer" class="mx-auto size-full max-w-[1440px] flex-1 px-4 py-6 sm:px-6">
-        <div id="mainLoader" class="hidden py-20 flex flex-col items-center justify-center text-muted-foreground">
-          <i data-lucide="loader-2" class="size-8 animate-spin text-primary mb-2"></i>
+      <main id="mainContainer" aria-busy="true" class="mx-auto size-full max-w-[1440px] flex-1 px-4 py-6 sm:px-6">
+        <div id="mainLoader" class="hidden py-20 flex flex-col items-center justify-center gap-3 text-muted-foreground">
+          <progress aria-label="Yükleniyor" class="loading-spinner"></progress>
           <span class="text-xs">Yükleniyor...</span>
         </div>
 
@@ -494,7 +642,11 @@
 
       <footer class="border-t border-border bg-card/40">
         <div class="text-muted-foreground mx-auto flex w-full max-w-[1440px] items-center justify-between gap-3 px-4 py-3.5 max-sm:flex-col sm:px-6 text-xs">
-          <span>© 2026 ANKU EEE</span>
+          <div class="flex items-center gap-3">
+            <span>© 2026 ANKU EEE</span>
+            <span>•</span>
+            <a href="privacy.html" class="hover:text-foreground transition">Gizlilik Politikası</a>
+          </div>
           <span class="font-medium text-foreground">Produced by Caner Davarcı</span>
         </div>
       </footer>
@@ -545,8 +697,8 @@
     </div>
 
     <div id="viewerStage" class="flex-1 relative bg-background flex items-center justify-center overflow-hidden">
-      <div id="viewerLoader" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/90">
-        <i data-lucide="loader-2" class="size-7 animate-spin text-primary mb-2"></i>
+      <div id="viewerLoader" class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-background/90">
+        <progress aria-label="Önizleme Yükleniyor" class="loading-spinner"></progress>
         <span class="text-xs text-muted-foreground">Yükleniyor...</span>
       </div>
 
@@ -950,6 +1102,62 @@
       } catch (e) {}
     }
 
+    // ================= LOADING STATE & DYNAMIC META =================
+    function renderLoadingSkeleton() {
+      const container = $('courseHubView');
+      if (!container) return;
+      $('mainContainer')?.setAttribute('aria-busy', 'true');
+      $('mainLoader')?.classList.remove('hidden');
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 opacity-60 pointer-events-none">
+          ${Array.from({ length: 6 }).map(() => `
+            <div class="admincn-card p-5 space-y-4 animate-pulse">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="size-9 rounded-sm bg-muted"></div>
+                  <div class="space-y-1.5">
+                    <div class="h-3.5 w-16 rounded bg-muted"></div>
+                    <div class="h-2.5 w-20 rounded bg-muted"></div>
+                  </div>
+                </div>
+                <div class="h-5 w-14 rounded-sm bg-muted"></div>
+              </div>
+              <div class="space-y-1.5">
+                <div class="h-4 w-3/4 rounded bg-muted"></div>
+                <div class="h-3 w-1/2 rounded bg-muted"></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function updatePageMeta(courseCode = null, meta = null) {
+      const defaultTitle = 'ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı';
+      const defaultDesc = 'Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.';
+
+      const title = courseCode && meta
+        ? `${courseCode} • ${meta.name} — ANKU EEE Ders Portalı`
+        : defaultTitle;
+      const desc = courseCode && meta
+        ? `${courseCode} ${meta.name}${meta.instructor ? ' (' + meta.instructor + ')' : ''} ders materyalleri ve kaynak arşivi.`
+        : defaultDesc;
+
+      document.title = title;
+      if ($('metaDescription')) $('metaDescription').setAttribute('content', desc);
+      if ($('ogTitle')) $('ogTitle').setAttribute('content', title);
+      if ($('ogDescription')) $('ogDescription').setAttribute('content', desc);
+      if ($('twitterTitle')) $('twitterTitle').setAttribute('content', title);
+      if ($('twitterDescription')) $('twitterDescription').setAttribute('content', desc);
+
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'page_view', {
+          page_title: title,
+          page_path: courseCode ? `${location.pathname}#${courseCode}` : location.pathname
+        });
+      }
+    }
+
     // ================= LOAD DRIVE & INITIALIZE =================
     async function loadDriveData() {
       const folderId = parseFolderId(settings.folder);
@@ -968,6 +1176,8 @@
       if (cache && cache.folderId === folderId && !driveTree) {
         driveTree = cache.tree;
         onTreeReady();
+      } else if (!driveTree) {
+        renderLoadingSkeleton();
       }
 
       $('statusText').textContent = 'Yükleniyor';
@@ -986,12 +1196,16 @@
       } catch (err) {
         $('statusText').textContent = 'Hata';
         $('statusDot').className = 'size-2 shrink-0 rounded-full bg-rose-500';
+        $('mainLoader')?.classList.add('hidden');
+        $('mainContainer')?.setAttribute('aria-busy', 'false');
       } finally {
         $('refreshBtn').querySelector('svg')?.classList.remove('animate-spin');
       }
     }
 
     function onTreeReady() {
+      $('mainLoader')?.classList.add('hidden');
+      $('mainContainer')?.setAttribute('aria-busy', 'false');
       renderSidebarCourses();
 
       driveTree.forEach(node => {
@@ -1121,6 +1335,7 @@
       activeCourseId = null;
       courseLocalSearch = '';
       updateHeaderBreadcrumb(null);
+      updatePageMeta(null, null);
       renderSidebarCourses();
       renderWelcomeHub();
       if (window.innerWidth < 768) {
@@ -1136,6 +1351,9 @@
         const code = courseNode.name.toUpperCase().trim();
         const meta = courseMetadata[code] || { name: courseNode.name };
         updateHeaderBreadcrumb(code, meta.name);
+        updatePageMeta(code, meta);
+      } else {
+        updatePageMeta(null, null);
       }
       renderSidebarCourses();
       if (courseId) {
@@ -1154,8 +1372,42 @@
       const container = $('courseHubView');
       const courses = (driveTree || []).filter(n => realMime(n) === FOLDER_MIME);
       const allFilesFlat = collectAllFiles(driveTree);
+      const folderId = parseFolderId(settings.folder);
+      const driveUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : 'https://drive.google.com';
 
       container.innerHTML = `
+        <!-- 2. CTA ABOVE THE FOLD -->
+        <div class="admincn-card p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <span class="inline-flex items-center rounded-sm bg-primary-soft px-2 py-0.5 font-mono text-[11px] font-medium text-primary">
+              ANKARA ÜNİVERSİTESİ • EEE
+            </span>
+            <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-foreground">
+              Ders Materyalleri Portalı
+            </h1>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onclick="document.getElementById('allMaterialsSection')?.scrollIntoView({ behavior: 'smooth' }); setTimeout(() => document.getElementById('datatableSearchInput')?.focus(), 250);"
+              class="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3.5 text-xs font-medium text-primary-foreground hover:opacity-90 transition"
+            >
+              <i data-lucide="search" class="size-3.5"></i>
+              <span>Materyal Ara</span>
+            </button>
+            <a
+              href="${driveUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex h-9 items-center gap-2 rounded-md bg-secondary px-3.5 text-xs font-medium text-secondary-foreground hover:opacity-90 transition"
+            >
+              <i data-lucide="folder-symlink" class="size-3.5"></i>
+              <span>Drive Arşivi</span>
+            </a>
+          </div>
+        </div>
+
         <!-- COURSE CARDS GRID -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           ${courses.map(course => {
@@ -1184,9 +1436,9 @@
                 </div>
 
                 <div>
-                  <h3 class="text-sm font-semibold text-foreground group-hover:underline line-clamp-1">
+                  <h2 class="text-sm font-semibold text-foreground group-hover:underline line-clamp-1">
                     ${esc(meta.name)}
-                  </h3>
+                  </h2>
                   ${meta.instructor ? `
                     <p class="text-xs text-muted-foreground mt-1 truncate">
                       ${esc(meta.instructor)}
@@ -1199,9 +1451,9 @@
         </div>
 
         <!-- ALL MATERIALS TABLE -->
-        <div class="admincn-card overflow-hidden">
+        <div id="allMaterialsSection" class="admincn-card overflow-hidden">
           <div class="px-5 py-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <h3 class="text-sm font-semibold">Tüm Materyaller</h3>
+            <h2 class="text-sm font-semibold">Tüm Materyaller</h2>
             <div class="flex flex-wrap items-center gap-2">
               <div class="relative">
                 <i data-lucide="search" class="size-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2"></i>
