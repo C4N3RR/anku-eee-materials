@@ -1,11 +1,25 @@
 <!DOCTYPE html>
-<html lang="tr" class="h-full dark">
+<html lang="tr" class="flex min-h-full w-full antialiased" data-scroll-behavior="smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try {
+      const storedScheme = localStorage.getItem("color-scheme");
+      document.querySelector('meta[name="color-scheme"]').content = storedScheme ?? "light dark";
+      const isDark = storedScheme ? storedScheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.classList.toggle("dark", isDark);
+    } catch (e) {}
+  </script>
   <!-- YouTube gömme için gerekli referrer ayarı -->
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>ANKU EEE - 1. Sınıf Ders ve Materyal Portalı</title>
+  <title>ANKU EEE — AdminCN 1. Sınıf Ders & Materyal Portalı</title>
+
+  <!-- Geist & Geist Mono Fonts (AdminCN v1 Typography) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,16 +28,61 @@
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['Geist', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['Geist Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+            heading: ['Geist', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          },
           colors: {
-            brand: {
-              50: '#f0f7ff',
-              100: '#e0effe',
-              500: '#0284c7',
-              600: '#0369a1',
-              700: '#075985',
-              800: '#0c4a6e',
-              900: '#082f49',
+            background: 'var(--background)',
+            foreground: 'var(--foreground)',
+            card: {
+              DEFAULT: 'var(--card)',
+              foreground: 'var(--card-foreground)',
+            },
+            popover: {
+              DEFAULT: 'var(--popover)',
+              foreground: 'var(--popover-foreground)',
+            },
+            primary: {
+              DEFAULT: 'var(--primary)',
+              foreground: 'var(--primary-foreground)',
+            },
+            secondary: {
+              DEFAULT: 'var(--secondary)',
+              foreground: 'var(--secondary-foreground)',
+            },
+            muted: {
+              DEFAULT: 'var(--muted)',
+              foreground: 'var(--muted-foreground)',
+            },
+            accent: {
+              DEFAULT: 'var(--accent)',
+              foreground: 'var(--accent-foreground)',
+            },
+            destructive: {
+              DEFAULT: 'var(--destructive)',
+            },
+            border: 'var(--border)',
+            input: 'var(--input)',
+            ring: 'var(--ring)',
+            sidebar: {
+              DEFAULT: 'var(--sidebar)',
+              foreground: 'var(--sidebar-foreground)',
+              primary: 'var(--sidebar-primary)',
+              'primary-foreground': 'var(--sidebar-primary-foreground)',
+              accent: 'var(--sidebar-accent)',
+              'accent-foreground': 'var(--sidebar-accent-foreground)',
+              border: 'var(--sidebar-border)',
+              ring: 'var(--sidebar-ring)',
             }
+          },
+          borderRadius: {
+            sm: 'calc(var(--radius) * 0.6)',
+            md: 'calc(var(--radius) * 0.8)',
+            lg: 'var(--radius)',
+            xl: 'calc(var(--radius) * 1.4)',
+            '2xl': 'calc(var(--radius) * 1.8)',
           }
         }
       }
@@ -34,244 +93,551 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
+    /* =====================================================================
+       AdminCN v1 Design System Tokens (globals.css)
+       ===================================================================== */
+    :root {
+      color-scheme: light dark;
+      --background: oklch(1 0 0);
+      --foreground: oklch(0.145 0 0);
+      --card: oklch(1 0 0);
+      --card-foreground: oklch(0.145 0 0);
+      --popover: oklch(1 0 0);
+      --popover-foreground: oklch(0.145 0 0);
+      --primary: oklch(0.205 0 0);
+      --primary-foreground: oklch(0.985 0 0);
+      --secondary: oklch(0.97 0 0);
+      --secondary-foreground: oklch(0.205 0 0);
+      --muted: oklch(0.97 0 0);
+      --muted-foreground: oklch(0.556 0 0);
+      --accent: oklch(0.97 0 0);
+      --accent-foreground: oklch(0.205 0 0);
+      --destructive: oklch(0.577 0.245 27.325);
+      --border: oklch(0.922 0 0);
+      --input: oklch(0.922 0 0);
+      --ring: oklch(0.708 0 0);
+      --radius: 0.625rem;
+      --sidebar: oklch(0.985 0 0);
+      --sidebar-foreground: oklch(0.145 0 0);
+      --sidebar-primary: oklch(0.205 0 0);
+      --sidebar-primary-foreground: oklch(0.985 0 0);
+      --sidebar-accent: oklch(0.97 0 0);
+      --sidebar-accent-foreground: oklch(0.205 0 0);
+      --sidebar-border: oklch(0.922 0 0);
+      --sidebar-ring: oklch(0.708 0 0);
+      --sidebar-width: 16rem;
+      --sidebar-width-icon: 3.25rem;
+    }
+
+    :root:has(> head > meta[name="color-scheme"][content="dark"]) {
+      color-scheme: dark;
+    }
+    :root:has(> head > meta[name="color-scheme"][content="light"]) {
+      color-scheme: light;
+    }
+
+    .dark {
+      --background: oklch(0.145 0 0);
+      --foreground: oklch(0.985 0 0);
+      --card: oklch(0.205 0 0);
+      --card-foreground: oklch(0.985 0 0);
+      --popover: oklch(0.205 0 0);
+      --popover-foreground: oklch(0.985 0 0);
+      --primary: oklch(0.922 0 0);
+      --primary-foreground: oklch(0.205 0 0);
+      --secondary: oklch(0.269 0 0);
+      --secondary-foreground: oklch(0.985 0 0);
+      --muted: oklch(0.269 0 0);
+      --muted-foreground: oklch(0.708 0 0);
+      --accent: oklch(0.269 0 0);
+      --accent-foreground: oklch(0.985 0 0);
+      --destructive: oklch(0.704 0.191 22.216);
+      --border: oklch(1 0 0 / 10%);
+      --input: oklch(1 0 0 / 15%);
+      --ring: oklch(0.556 0 0);
+      --sidebar: oklch(0.205 0 0);
+      --sidebar-foreground: oklch(0.985 0 0);
+      --sidebar-primary: oklch(0.488 0.243 264.376);
+      --sidebar-primary-foreground: oklch(0.985 0 0);
+      --sidebar-accent: oklch(0.269 0 0);
+      --sidebar-accent-foreground: oklch(0.985 0 0);
+      --sidebar-border: oklch(1 0 0 / 10%);
+      --sidebar-ring: oklch(0.556 0 0);
+    }
+
+    * {
+      border-color: var(--border);
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--foreground);
+      font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+      cursor: pointer;
+    }
+
+    /* AdminCN Card Surface */
+    .admincn-card {
+      background-color: var(--card);
+      color: var(--card-foreground);
+      border-radius: calc(var(--radius) * 1.4);
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      border: 1px solid var(--border);
+    }
+
+    /* AdminCN Primary 10% Tint Utility */
+    .bg-primary-soft {
+      background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+    }
+    .bg-primary-subtle {
+      background-color: color-mix(in oklab, var(--primary) 6%, transparent);
+    }
+    .hover-bg-primary-soft:hover {
+      background-color: color-mix(in oklab, var(--primary) 14%, transparent);
+    }
+
+    /* Sidebar Collapsible Icon Rail Support */
+    #sidebarWrapper[data-state="collapsed"] #sidebarDesktopGap,
+    #sidebarWrapper[data-state="collapsed"] #sidebar {
+      width: var(--sidebar-width-icon);
+    }
+    #sidebarWrapper[data-state="collapsed"] .sidebar-hide-collapsed {
+      display: none !important;
+    }
+    #sidebarWrapper[data-state="collapsed"] .sidebar-brand-btn {
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    #sidebarWrapper[data-state="collapsed"] .sidebar-nav-btn {
+      justify-content: center;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    /* Scrollbars */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.4); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(71, 85, 105, 0.7); }
+    ::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--muted-foreground) 35%, transparent); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: color-mix(in oklab, var(--muted-foreground) 60%, transparent); }
+
+    /* Modal Dialog Scroll Containment & Backdrop */
     dialog:not([open]) { display: none !important; }
     dialog[open] { display: flex !important; flex-direction: column; }
-    dialog::backdrop { background: rgba(2, 6, 23, 0.75); backdrop-filter: blur(4px); }
+    dialog:modal {
+      overscroll-behavior: contain;
+    }
+    dialog::backdrop {
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(3px);
+      overflow: hidden;
+      overscroll-behavior: contain;
+    }
   </style>
 </head>
-<body class="h-full bg-slate-950 text-slate-100 flex flex-col font-sans antialiased overflow-hidden select-none">
+<body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground antialiased select-none">
 
-  <!-- ================= TOP HEADER ================= -->
-  <header class="h-14 bg-slate-900 border-b border-slate-800 flex items-center justify-between px-4 shrink-0 z-30">
-    <div class="flex items-center gap-3">
-      <!-- Mobile Menu Button -->
-      <button id="mobileMenuBtn" class="md:hidden p-1.5 rounded-lg text-slate-400 hover:bg-slate-800 transition">
-        <i data-lucide="menu" class="w-5 h-5"></i>
-      </button>
-      
-      <!-- Brand Logo & University Avatar -->
-      <div class="flex items-center gap-2.5">
-        <a 
-          href="https://www.ankara.edu.tr" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          title="Ankara Üniversitesi"
-          class="relative w-9 h-9 rounded-full bg-slate-900 border border-slate-700 hover:border-sky-500/60 shadow-md flex items-center justify-center overflow-hidden shrink-0 transition group p-0.5"
-        >
-          <img 
-            src="assets/ankara-uni-logo.png" 
-            alt="Ankara Üniversitesi Logosu" 
-            class="w-full h-full object-contain rounded-full transition-transform duration-300 group-hover:scale-110"
-            onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/f/f2/Ankara_universitesi.png';"
-          />
-        </a>
-        <div onclick="goHome()" class="cursor-pointer group" title="Ana Sayfa (Tüm Dersler / Seçim)">
-          <div class="flex items-center gap-2">
-            <span class="font-extrabold text-sm tracking-tight text-white group-hover:text-sky-300 transition">ANKU EEE</span>
-            <span class="hidden sm:inline text-[11px] px-2 py-0.5 rounded font-semibold bg-sky-950 text-sky-300 border border-sky-800/60 group-hover:border-sky-500/60 transition">
-              1. Sınıf • 1. Dönem Portalı
-            </span>
+  <!-- ================= ADMINCN ROOT SIDEBAR + INSET WRAPPER ================= -->
+  <div id="sidebarWrapper" data-state="expanded" class="group/sidebar-wrapper flex min-h-svh w-full">
+
+    <!-- Desktop Sidebar Layout Spacer -->
+    <div id="sidebarDesktopGap" class="hidden md:block w-64 shrink-0 transition-[width] duration-200 ease-linear"></div>
+
+    <!-- ================= LEFT SIDEBAR (AdminCN SidebarLayout) ================= -->
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 z-40 flex h-svh w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border -translate-x-full md:translate-x-0 transition-[transform,width] duration-200 ease-linear"
+    >
+      <!-- SidebarHeader: Logo & Template Name -->
+      <div data-slot="sidebar-header" class="flex flex-col gap-2 p-2 border-b border-sidebar-border/60">
+        <div class="flex items-center justify-between gap-1">
+          <button
+            onclick="goHome()"
+            title="Ana Sayfa (AdminCN Dashboard)"
+            class="sidebar-brand-btn flex w-full items-center gap-2.5 rounded-md p-2 text-left hover:bg-sidebar-accent transition overflow-hidden"
+          >
+            <!-- AdminCN Logo SVG / University Crest Hybrid -->
+            <div class="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xs overflow-hidden p-0.5">
+              <img
+                src="assets/ankara-uni-logo.png"
+                alt="Ankara Üniversitesi"
+                class="size-full object-contain rounded-full"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+              />
+              <svg style="display:none" viewBox="0 0 328 329" fill="none" class="size-5">
+                <rect y="0.5" width="328" height="328" rx="164" fill="currentColor" />
+              </svg>
+            </div>
+            <div class="sidebar-hide-collapsed flex flex-col items-start min-w-0 flex-1">
+              <div class="flex items-center gap-1.5">
+                <span class="text-base font-semibold tracking-tight leading-none text-sidebar-foreground truncate">ANKU EEE</span>
+                <span class="rounded-full bg-primary-soft px-1.5 py-0.5 text-[10px] font-medium text-primary">v1</span>
+              </div>
+              <span class="text-xs font-light text-muted-foreground truncate mt-0.5">1. Sınıf Ders Portalı</span>
+            </div>
+          </button>
+
+          <!-- Mobile Close Sidebar Button -->
+          <button
+            id="mobileCloseSidebarBtn"
+            class="md:hidden size-8 flex items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
+            aria-label="Menüyü Kapat"
+          >
+            <i data-lucide="x" class="size-4"></i>
+          </button>
+        </div>
+
+        <!-- Sidebar Search Input -->
+        <div class="sidebar-hide-collapsed px-1 pb-1">
+          <div class="relative">
+            <i data-lucide="search" class="size-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            <input
+              id="sidebarSearch"
+              type="text"
+              placeholder="Ders veya materyal ara..."
+              class="h-8 w-full rounded-md bg-background border border-input pl-8 pr-7 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40 transition"
+            >
+            <kbd class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 hidden sm:inline-flex h-4 items-center rounded border border-border bg-muted px-1 font-mono text-[10px] text-muted-foreground">/</kbd>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Right Header Actions -->
-    <div class="flex items-center gap-2">
-      <!-- OBS Button (En Üst Ana Bölüm) -->
-      <a 
-        href="https://obs.ankara.edu.tr" 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        title="Ankara Üniversitesi Öğrenci Bilgi Sistemi (OBS)"
-        class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg text-sky-200 bg-sky-950/80 border border-sky-800/80 hover:bg-sky-900/90 hover:text-white transition shadow-sm"
-      >
-        <i data-lucide="graduation-cap" class="w-4 h-4 text-sky-400"></i>
-        <span>OBS Giriş</span>
-      </a>
+      <!-- SidebarContent: Grouped Navigation -->
+      <div data-slot="sidebar-content" class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-2">
+        <!-- Group 1: Dashboard & Layouts -->
+        <div data-slot="sidebar-group" class="flex flex-col">
+          <div class="sidebar-hide-collapsed flex h-7 shrink-0 items-center px-2 text-[11px] font-medium text-sidebar-foreground/50 tracking-wider uppercase">
+            Dashboard & Genel
+          </div>
+          <ul class="flex flex-col gap-0.5" id="sidebarDashboardNav">
+            <!-- Dynamically updated in renderSidebarCourses() -->
+          </ul>
+        </div>
 
-      <!-- Fast Link to Google Drive Main Folder -->
-      <a 
-        id="headerDriveBtn" 
-        href="#" 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        title="Google Drive Klasörünü Aç"
-        class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg text-emerald-300 bg-emerald-950/60 border border-emerald-800/60 hover:bg-emerald-900/60 transition"
-      >
-        <i data-lucide="folder-symlink" class="w-4 h-4 text-emerald-400"></i>
-        <span>Ana Drive Klasörü</span>
-      </a>
+        <!-- Group 2: Dönem Dersleri -->
+        <div data-slot="sidebar-group" class="flex flex-col mt-2">
+          <div class="sidebar-hide-collapsed flex h-7 shrink-0 items-center justify-between px-2 text-[11px] font-medium text-sidebar-foreground/50 tracking-wider uppercase">
+            <span>Dönem Dersleri</span>
+            <span id="sidebarCoursesCountLabel" class="font-mono text-[10px]">6</span>
+          </div>
+          <ul id="courseListNav" class="flex flex-col gap-0.5">
+            <!-- Dynamically populated by renderSidebarCourses() -->
+          </ul>
+        </div>
 
-      <!-- Refresh Drive Cache Button -->
-      <button 
-        id="refreshBtn" 
-        title="Drive'dan Yenile" 
-        class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-      >
-        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-      </button>
-
-      <!-- Drive & Settings Button -->
-      <button 
-        id="settingsBtn" 
-        title="Bağlantı ve API Ayarları" 
-        class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-      >
-        <i data-lucide="settings" class="w-4 h-4"></i>
-      </button>
-    </div>
-  </header>
-
-  <!-- ================= MAIN LAYOUT ================= -->
-  <div class="flex-1 flex overflow-hidden relative">
-
-    <!-- LEFT SIDEBAR: 6 DERS LİSTESİ -->
-    <aside id="sidebar" class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 z-20 absolute md:static inset-y-0 left-0 -translate-x-full md:translate-x-0 transition-transform duration-200">
-      
-      <!-- Search Input -->
-      <div class="p-3 border-b border-slate-800">
-        <div class="relative">
-          <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
-          <input 
-            id="sidebarSearch" 
-            type="text" 
-            placeholder="Ders veya dosya ara..."
-            class="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-800 border border-slate-700 rounded-lg outline-none focus:border-sky-500 text-white placeholder-slate-500"
-          >
+        <!-- Group 3: Hızlı Erişim & Sistem -->
+        <div data-slot="sidebar-group" class="flex flex-col mt-2">
+          <div class="sidebar-hide-collapsed flex h-7 shrink-0 items-center px-2 text-[11px] font-medium text-sidebar-foreground/50 tracking-wider uppercase">
+            Uygulamalar & Sistem
+          </div>
+          <ul class="flex flex-col gap-0.5">
+            <li>
+              <a
+                href="https://obs.ankara.edu.tr"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Ankara Üniversitesi OBS"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="graduation-cap" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">OBS Öğrenci Sistemi</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+            <li>
+              <a
+                id="sidebarDriveLink"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Google Drive Ana Klasörü"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="folder-git-2" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">Ana Drive Klasörü</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://eee.ankara.edu.tr"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="AÜ Elektrik-Elektronik Mühendisliği"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="globe" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">Bölüm Web Sitesi</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+            <li>
+              <button
+                type="button"
+                onclick="openSettingsModal()"
+                title="Drive ve API Bağlantı Ayarları"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="sliders-horizontal" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 text-left truncate">Drive & API Ayarları</span>
+              </button>
+            </li>
+          </ul>
         </div>
       </div>
 
-      <!-- Course Navigation List -->
-      <div class="p-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3">
-        Dönem Dersleri (6 Ders)
-      </div>
-      <div id="courseListNav" class="flex-1 overflow-y-auto p-2 space-y-1 text-xs">
-        <!-- Injected dynamically by JS -->
-      </div>
-
-      <!-- Sidebar Footer Status -->
-      <div class="px-3 py-2.5 border-t border-slate-800 text-[11px] text-slate-500 flex items-center justify-between">
-        <div class="flex items-center gap-1.5 truncate">
-          <span id="statusDot" class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span id="statusText" class="truncate font-medium">Drive Bağlı</span>
+      <!-- SidebarFooter: Live Sync Status -->
+      <div data-slot="sidebar-footer" class="border-t border-sidebar-border p-2.5">
+        <div class="flex items-center justify-between gap-2 rounded-lg bg-sidebar-accent/70 px-2.5 py-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <span id="statusDot" class="size-2 shrink-0 rounded-full bg-emerald-500"></span>
+            <span id="statusText" class="sidebar-hide-collapsed truncate text-xs font-medium text-sidebar-foreground">Drive Bağlı</span>
+          </div>
+          <span id="totalFilesBadge" class="sidebar-hide-collapsed rounded-full bg-primary-soft px-2 py-0.5 font-mono text-[11px] font-medium text-primary shrink-0">
+            0 dosya
+          </span>
         </div>
-        <span id="totalFilesBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-semibold">0 dosya</span>
       </div>
     </aside>
 
-    <!-- Mobile Backdrop -->
-    <div id="sidebarBackdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-10 hidden md:hidden"></div>
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-30 hidden md:hidden"></div>
 
-    <!-- ================= CENTER MAIN: DERS HUB / ANA SAYFASI ================= -->
-    <main id="mainContainer" class="flex-1 flex flex-col bg-slate-950 overflow-y-auto">
-      
-      <!-- Loading State -->
-      <div id="mainLoader" class="hidden flex-1 flex flex-col items-center justify-center p-8 text-slate-400">
-        <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-sky-400 mb-2"></i>
-        <span class="text-xs">Ders materyalleri yükleniyor...</span>
-      </div>
+    <!-- ================= RIGHT SIDEBAR INSET (Header + Main + Footer) ================= -->
+    <div data-slot="sidebar-inset" class="bg-background relative flex min-w-0 flex-1 flex-col">
 
-      <!-- Course Hub View Container -->
-      <div id="courseHubView" class="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full space-y-6">
-        <!-- Rendered dynamically by renderCourseHub() -->
-      </div>
+      <!-- ================= STICKY HEADER (AdminCN Header.tsx) ================= -->
+      <header class="bg-card sticky top-0 z-30 border-b border-border">
+        <div class="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-2.5 sm:px-6">
+          <!-- Left: SidebarTrigger + Separator + Breadcrumb -->
+          <div class="flex items-center gap-3 min-w-0">
+            <button
+              id="sidebarTriggerBtn"
+              type="button"
+              title="Kenar Çubuğunu Aç/Kapat (Ctrl+B)"
+              class="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-foreground hover:bg-muted transition"
+            >
+              <i data-lucide="panel-left" class="size-4"></i>
+              <span class="sr-only">Toggle Sidebar</span>
+            </button>
 
-    </main>
+            <div class="hidden sm:block h-4 w-px bg-border self-center"></div>
 
+            <!-- Dynamic Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb" class="hidden sm:block min-w-0">
+              <ol id="headerBreadcrumb" class="flex items-center gap-1.5 text-sm text-muted-foreground truncate">
+                <li class="inline-flex items-center gap-1.5">
+                  <button onclick="goHome()" class="hover:text-foreground transition">Dashboard</button>
+                </li>
+                <li><i data-lucide="chevron-right" class="size-3.5"></i></li>
+                <li class="text-foreground font-medium truncate">Tüm Dersler</li>
+              </ol>
+            </nav>
+          </div>
+
+          <!-- Right: Action Buttons + ModeToggle + Avatar -->
+          <div class="flex items-center gap-1.5 shrink-0">
+            <!-- OBS Button -->
+            <a
+              href="https://obs.ankara.edu.tr"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Ankara Üniversitesi Öğrenci Bilgi Sistemi (OBS)"
+              class="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-xs font-medium text-foreground shadow-2xs hover:bg-muted transition"
+            >
+              <i data-lucide="graduation-cap" class="size-3.5 text-primary"></i>
+              <span>OBS Giriş</span>
+            </a>
+
+            <!-- Main Drive Folder Link -->
+            <a
+              id="headerDriveBtn"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Google Drive Klasörünü Aç"
+              class="hidden sm:inline-flex h-8 items-center gap-1.5 rounded-md bg-secondary px-2.5 text-xs font-medium text-secondary-foreground hover:opacity-90 transition"
+            >
+              <i data-lucide="folder-symlink" class="size-3.5"></i>
+              <span>Drive Klasörü</span>
+            </a>
+
+            <!-- Refresh Button -->
+            <button
+              id="refreshBtn"
+              type="button"
+              title="Drive'dan Yenile"
+              class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+            >
+              <i data-lucide="refresh-cw" class="size-4"></i>
+            </button>
+
+            <!-- Light / Dark Mode Toggle (AdminCN ModeToggle.tsx) -->
+            <button
+              id="themeToggleBtn"
+              type="button"
+              title="Temayı Değiştir (Açık / Koyu)"
+              class="relative inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+            >
+              <i data-lucide="moon-star" class="size-4 block dark:hidden"></i>
+              <i data-lucide="sun" class="size-4 hidden dark:block"></i>
+              <span class="sr-only">Temayı Değiştir</span>
+            </button>
+
+            <!-- Settings Button -->
+            <button
+              id="settingsBtn"
+              type="button"
+              title="Bağlantı ve API Ayarları"
+              class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+            >
+              <i data-lucide="settings" class="size-4"></i>
+            </button>
+
+            <!-- AdminCN Profile Avatar Pill -->
+            <a
+              href="https://www.ankara.edu.tr"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği"
+              class="relative ml-1 inline-flex size-8 shrink-0 items-center justify-center rounded-full border border-border bg-muted p-0.5"
+            >
+              <img
+                src="assets/ankara-uni-logo.png"
+                alt="AÜ"
+                class="size-full rounded-full object-contain"
+              />
+              <span class="ring-card absolute right-0 bottom-0 block size-2 rounded-full bg-emerald-600 ring-2"></span>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- ================= MAIN CONTENT AREA (AdminCN PagesLayout main) ================= -->
+      <main id="mainContainer" class="mx-auto size-full max-w-[1440px] flex-1 px-4 py-6 sm:px-6">
+        <!-- Loading State -->
+        <div id="mainLoader" class="hidden py-20 flex flex-col items-center justify-center text-muted-foreground">
+          <i data-lucide="loader-2" class="size-8 animate-spin text-primary mb-2"></i>
+          <span class="text-xs">Ders materyalleri senkronize ediliyor...</span>
+        </div>
+
+        <!-- Dynamic View Container (Dashboard or Course Hub) -->
+        <div id="courseHubView" class="space-y-6">
+          <!-- Rendered dynamically by JS -->
+        </div>
+      </main>
+
+      <!-- ================= FOOTER (AdminCN Footer.tsx) ================= -->
+      <footer class="border-t border-border bg-card/40">
+        <div class="text-muted-foreground mx-auto flex w-full max-w-[1440px] items-center justify-between gap-3 px-4 py-3.5 max-sm:flex-col sm:gap-6 sm:px-6">
+          <p class="text-xs sm:text-sm text-balance max-sm:text-center">
+            © 2026 <a href="https://eee.ankara.edu.tr" target="_blank" rel="noopener noreferrer" class="text-foreground font-medium hover:underline">ANKU EEE</a>
+            • Ankara Üniversitesi Elektrik-Elektronik Mühendisliği 1. Sınıf Materyal Portalı
+          </p>
+          <div class="flex items-center gap-4 text-xs sm:text-sm max-sm:hidden">
+            <button onclick="goHome()" class="text-muted-foreground hover:text-foreground transition">Tüm Dersler</button>
+            <a href="https://obs.ankara.edu.tr" target="_blank" rel="noopener noreferrer" class="text-muted-foreground hover:text-foreground transition">OBS</a>
+            <a href="https://avesis.ankara.edu.tr" target="_blank" rel="noopener noreferrer" class="text-muted-foreground hover:text-foreground transition">AVESİS</a>
+            <button onclick="openSettingsModal()" class="text-muted-foreground hover:text-foreground transition">API Ayarları</button>
+          </div>
+        </div>
+      </footer>
+
+    </div>
   </div>
 
+
   <!-- ================= IN-PAGE UNIVERSAL VIEWER MODAL ================= -->
-  <dialog id="viewerModal" class="p-0 rounded-2xl bg-slate-900 text-slate-100 border border-slate-800 w-[96vw] max-w-6xl h-[92vh] max-h-[920px] overflow-hidden outline-none shadow-2xl">
+  <dialog id="viewerModal" closedby="any" aria-labelledby="viewerFileTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[96vw] max-w-6xl h-[92vh] max-h-[920px] overflow-hidden outline-none shadow-2xl">
     <!-- Viewer Top Bar -->
-    <div class="h-14 bg-slate-900 border-b border-slate-800 px-4 sm:px-6 flex items-center justify-between gap-3 shrink-0">
+    <div class="h-14 bg-card border-b border-border px-4 sm:px-6 flex items-center justify-between gap-3 shrink-0">
       <div class="flex items-center gap-3 overflow-hidden">
-        <button id="viewerBackBtn" class="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition">
-          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-          <span>Ders Sayfasına Dön</span>
+        <button id="viewerBackBtn" class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium text-secondary-foreground bg-secondary hover:opacity-85 transition">
+          <i data-lucide="arrow-left" class="size-3.5"></i>
+          <span>Geri Dön</span>
         </button>
-        <div class="truncate border-l border-slate-800 pl-3">
-          <h2 id="viewerFileTitle" class="text-xs sm:text-sm font-bold text-white truncate">Dosya Adı</h2>
-          <div id="viewerFileBreadcrumb" class="text-[10px] sm:text-[11px] text-slate-400 truncate">Ders Kodu > Alt Klasör</div>
+        <div class="truncate border-l border-border pl-3">
+          <h2 id="viewerFileTitle" class="text-xs sm:text-sm font-semibold text-foreground truncate">Dosya Adı</h2>
+          <div id="viewerFileBreadcrumb" class="text-[11px] text-muted-foreground truncate">Ders Kodu • Materyal Önizleme</div>
         </div>
       </div>
 
       <div class="flex items-center gap-1.5 shrink-0">
         <!-- Direct Download Button -->
         <a id="viewerDownloadBtn" href="#" target="_blank" rel="noopener noreferrer" title="Cihaza İndir (En Hızlı Çözüm)"
-           class="flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg font-medium text-emerald-300 bg-emerald-950/60 border border-emerald-800/60 hover:bg-emerald-900/60 transition">
-          <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
+           class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium bg-primary text-primary-foreground hover:opacity-90 transition">
+          <i data-lucide="download" class="size-3.5"></i>
           <span class="hidden sm:inline">İndir</span>
         </a>
 
         <!-- Switch Server / Engine Button -->
         <button id="viewerSwitchServerBtn" title="Farklı Önizleme Motoruna Geç (Doğrudan Yerel / Drive / Docs)"
-           class="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 transition">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-sky-400"></i>
+           class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium border border-border bg-background hover:bg-muted text-foreground transition">
+          <i data-lucide="refresh-cw" class="size-3.5 text-muted-foreground"></i>
           <span id="viewerServerBadge" class="hidden md:inline">Motoru Değiştir</span>
         </button>
 
         <a id="viewerExternalBtn" href="#" target="_blank" rel="noopener noreferrer" title="Yeni Sekmede / Drive'da Aç"
-           class="flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-lg font-medium text-slate-300 hover:bg-slate-800 transition">
-          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+           class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium border border-border bg-background hover:bg-muted text-foreground transition">
+          <i data-lucide="external-link" class="size-3.5"></i>
           <span class="hidden sm:inline">Drive'da Aç</span>
         </a>
-        <button id="viewerFullscreenBtn" title="Tam Ekran" class="p-1.5 rounded-lg text-slate-300 hover:bg-slate-800 transition">
-          <i data-lucide="maximize-2" class="w-4 h-4"></i>
+        <button id="viewerFullscreenBtn" title="Tam Ekran" class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition">
+          <i data-lucide="maximize-2" class="size-4"></i>
         </button>
-        <button id="viewerCloseBtn" title="Kapat (Esc)" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-950/40 transition">
-          <i data-lucide="x" class="w-5 h-5"></i>
+        <button id="viewerCloseBtn" title="Kapat (Esc)" class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/15 hover:text-destructive transition">
+          <i data-lucide="x" class="size-4"></i>
         </button>
       </div>
     </div>
 
     <!-- Word / DOC Loading Tip Banner -->
-    <div id="viewerDocTip" class="hidden bg-amber-950/80 border-b border-amber-800/70 px-4 py-2 text-[11px] text-amber-200 flex items-center justify-between gap-2 shrink-0">
+    <div id="viewerDocTip" class="hidden bg-amber-500/10 border-b border-amber-500/20 px-4 py-2 text-xs text-amber-600 dark:text-amber-300 flex items-center justify-between gap-2 shrink-0">
       <div class="flex items-center gap-2 truncate">
-        <i data-lucide="info" class="w-4 h-4 shrink-0 text-amber-400"></i>
+        <i data-lucide="info" class="size-4 shrink-0"></i>
         <span class="truncate">Word (.doc) belgeleri Google sunucularında bazen sayfaları gecikmeli yükleyebilir. Sayfa açılmazsa üstteki <b>Motoru Değiştir</b> veya <b>İndir</b> butonuna basabilirsiniz.</span>
       </div>
-      <button onclick="$('viewerDocTip').classList.add('hidden')" class="p-0.5 text-amber-400 hover:text-white shrink-0"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+      <button onclick="$('viewerDocTip').classList.add('hidden')" class="p-0.5 hover:opacity-75 shrink-0"><i data-lucide="x" class="size-3.5"></i></button>
     </div>
 
     <!-- Viewer Stage Body -->
-    <div id="viewerStage" class="flex-1 relative bg-slate-950 flex items-center justify-center overflow-hidden">
+    <div id="viewerStage" class="flex-1 relative bg-background flex items-center justify-center overflow-hidden">
       <!-- Standard Spinner Loader -->
-      <div id="viewerLoader" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-950/80">
-        <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-sky-400 mb-2"></i>
-        <span class="text-xs text-slate-400">Materyal açılıyor...</span>
+      <div id="viewerLoader" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/90">
+        <i data-lucide="loader-2" class="size-8 animate-spin text-primary mb-2"></i>
+        <span class="text-xs text-muted-foreground">Materyal açılıyor...</span>
       </div>
 
       <!-- Streaming Progress Screen for Large Textbooks / Direct Engine -->
-      <div id="viewerStreamProgress" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/95 p-6 text-center select-none">
-        <div class="w-14 h-14 rounded-2xl bg-sky-950/80 border border-sky-800/60 flex items-center justify-center text-sky-400 mb-3.5 shadow-lg shadow-sky-950/50">
-          <i data-lucide="zap" class="w-7 h-7 text-amber-400 animate-pulse"></i>
+      <div id="viewerStreamProgress" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/95 p-6 text-center select-none">
+        <div class="size-12 rounded-xl bg-primary-soft flex items-center justify-center text-primary mb-3.5">
+          <i data-lucide="zap" class="size-6 animate-pulse"></i>
         </div>
-        <h4 id="viewerStreamTitle" class="font-bold text-sm text-slate-100 max-w-md truncate mb-1">Kitap Sitede Açılıyor...</h4>
-        <p class="text-xs text-slate-400 max-w-sm mb-4 leading-relaxed">
+        <h4 id="viewerStreamTitle" class="font-semibold text-base text-foreground max-w-md truncate mb-1">Kitap Sitede Açılıyor...</h4>
+        <p class="text-xs text-muted-foreground max-w-sm mb-4 leading-relaxed">
           Bu kitap Google sunucu sınırını aştığı için sayfaları dondurmadan doğrudan <b>yüksek hızda tarayıcınıza aktarılıyor</b>. Bir kez yüklendikten sonra anında açılır.
         </p>
-        <div class="w-80 max-w-[85vw] h-2.5 bg-slate-800 rounded-full overflow-hidden mb-2.5 p-0.5 border border-slate-700/60">
-          <div id="viewerProgressBar" class="h-full bg-gradient-to-r from-sky-500 via-indigo-500 to-emerald-400 rounded-full transition-all duration-150" style="width: 0%"></div>
+        <div class="w-80 max-w-[85vw] h-2 bg-muted rounded-full overflow-hidden mb-2.5">
+          <div id="viewerProgressBar" class="h-full bg-primary rounded-full transition-all duration-150" style="width: 0%"></div>
         </div>
-        <div class="flex items-center justify-between w-80 max-w-[85vw] text-[11px] font-mono text-slate-400">
+        <div class="flex items-center justify-between w-80 max-w-[85vw] text-xs font-mono text-muted-foreground">
           <span id="viewerProgressMb">0.0 MB / 0.0 MB</span>
-          <span id="viewerProgressPercent" class="text-sky-400 font-bold">0%</span>
+          <span id="viewerProgressPercent" class="text-foreground font-semibold">0%</span>
         </div>
         <div class="mt-5 flex items-center gap-2">
-          <button type="button" id="cancelStreamBtn" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition">
+          <button type="button" id="cancelStreamBtn" class="h-8 px-3 rounded-md border border-border bg-card hover:bg-muted text-foreground text-xs font-medium transition">
             İptal Et / Drive Önizlemeye Geç
           </button>
         </div>
       </div>
 
-      <iframe 
-        id="viewerFrame" 
-        class="w-full h-full border-0 bg-slate-950"
+      <iframe
+        id="viewerFrame"
+        class="w-full h-full border-0 bg-neutral-900"
         referrerpolicy="strict-origin-when-cross-origin"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
         allowfullscreen
@@ -281,50 +647,50 @@
 
 
   <!-- ================= EDIT COURSE METADATA MODAL ================= -->
-  <dialog id="editCourseModal" class="p-0 rounded-2xl bg-slate-900 text-slate-100 border border-slate-800 w-[92vw] max-w-lg outline-none shadow-2xl">
-    <div class="p-4 border-b border-slate-800 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <div class="p-1.5 rounded-lg bg-sky-950 text-sky-400">
-          <i data-lucide="edit-3" class="w-4 h-4"></i>
+  <dialog id="editCourseModal" closedby="any" aria-labelledby="editModalCourseCode" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[92vw] max-w-lg outline-none shadow-2xl">
+    <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="size-8 rounded-sm bg-primary-soft text-primary flex items-center justify-center">
+          <i data-lucide="edit-3" class="size-4"></i>
         </div>
         <div>
-          <h3 id="editModalCourseCode" class="font-bold text-sm">Ders Bilgilerini Düzenle</h3>
-          <p class="text-[11px] text-slate-400">Hoca bilgisi, kredi ve hızlı butonları özelleştirin</p>
+          <h3 id="editModalCourseCode" class="font-semibold text-base leading-none">Ders Bilgilerini Düzenle</h3>
+          <p class="text-xs text-muted-foreground mt-1">Hoca bilgisi, kredi ve hızlı kısayolları özelleştirin</p>
         </div>
       </div>
-      <button id="closeEditCourseBtn" class="p-1 text-slate-400 hover:text-white">
-        <i data-lucide="x" class="w-4 h-4"></i>
+      <button id="closeEditCourseBtn" class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+        <i data-lucide="x" class="size-4"></i>
       </button>
     </div>
 
-    <form id="editCourseForm" class="p-5 space-y-3.5 text-xs">
+    <form id="editCourseForm" class="p-6 space-y-4 text-xs">
       <div>
-        <label class="block font-semibold mb-1 text-slate-300">Ders Tam Adı</label>
-        <input id="editCourseName" type="text" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg outline-none focus:border-sky-500">
+        <label class="block font-medium mb-1.5 text-foreground">Ders Tam Adı</label>
+        <input id="editCourseName" type="text" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
       </div>
 
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label class="block font-semibold mb-1 text-slate-300">Öğretim Üyesi / Hoca</label>
-          <input id="editCourseInstructor" type="text" placeholder="Örn: Prof. Dr. ..." class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg outline-none focus:border-sky-500">
+          <label class="block font-medium mb-1.5 text-foreground">Öğretim Üyesi / Hoca</label>
+          <input id="editCourseInstructor" type="text" placeholder="Örn: Prof. Dr. ..." class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
         </div>
         <div>
-          <label class="block font-semibold mb-1 text-slate-300">Hoca E-Posta</label>
-          <input id="editCourseEmail" type="email" placeholder="hoca@ankara.edu.tr" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg outline-none focus:border-sky-500">
+          <label class="block font-medium mb-1.5 text-foreground">Hoca E-Posta</label>
+          <input id="editCourseEmail" type="email" placeholder="hoca@ankara.edu.tr" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
         </div>
       </div>
 
       <div>
-        <label class="block font-semibold mb-1 text-slate-300">Kredi & AKTS Bilgisi</label>
-        <input id="editCourseCredits" type="text" placeholder="Örn: 3 Kredi • 5 AKTS" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg outline-none focus:border-sky-500">
+        <label class="block font-medium mb-1.5 text-foreground">Kredi & AKTS Bilgisi</label>
+        <input id="editCourseCredits" type="text" placeholder="Örn: 3 Kredi • 6 AKTS" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
       </div>
 
       <!-- Quick Link Buttons Editor -->
-      <div class="pt-2 border-t border-slate-800">
-        <div class="flex items-center justify-between mb-1.5">
-          <label class="font-semibold text-slate-300">Ders Kısayol Butonları (Linkler)</label>
-          <button type="button" id="addNewLinkRowBtn" class="text-[11px] text-sky-400 hover:underline flex items-center gap-1">
-            <i data-lucide="plus" class="w-3 h-3"></i> Buton Ekle
+      <div class="pt-3 border-t border-border">
+        <div class="flex items-center justify-between mb-2">
+          <label class="font-medium text-foreground">Ders Kısayol Butonları (Linkler)</label>
+          <button type="button" id="addNewLinkRowBtn" class="text-xs text-primary hover:underline flex items-center gap-1 font-medium">
+            <i data-lucide="plus" class="size-3.5"></i> Buton Ekle
           </button>
         </div>
         <div id="editLinksContainer" class="space-y-2 max-h-48 overflow-y-auto pr-1">
@@ -333,43 +699,54 @@
       </div>
 
       <!-- Info.txt Generator info -->
-      <details class="rounded-lg bg-slate-800/60 border border-slate-700 p-2.5 text-[11px] text-slate-300">
-        <summary class="font-semibold text-sky-400 cursor-pointer">💡 Bu bilgileri Drive'a info.txt olarak koymak ister misiniz?</summary>
+      <details class="rounded-lg bg-muted/60 border border-border p-3 text-xs text-muted-foreground">
+        <summary class="font-medium text-foreground cursor-pointer">Bu bilgileri Drive'a info.txt olarak kaydetmek ister misiniz?</summary>
         <div class="mt-2 space-y-2 leading-relaxed">
-          <p>Aşağıdaki butona basarak bu ders için hazır metni panoya kopyalayabilir, Drive'daki ders klasörünün içine <b>info.txt</b> olarak kaydedebilirsiniz. Site Drive'daki bu dosyayı da otomatik okur!</p>
-          <button type="button" id="copyInfoTxtBtn" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-white font-mono text-[10px] flex items-center gap-1.5">
-            <i data-lucide="copy" class="w-3 h-3"></i> info.txt Metnini Kopyala
+          <p>Aşağıdaki butona basarak bu ders için hazır metni panoya kopyalayabilir, Drive'daki ders klasörünün içine <b>info.txt</b> olarak kaydedebilirsiniz.</p>
+          <button type="button" id="copyInfoTxtBtn" class="h-7 px-2.5 rounded-md bg-secondary text-secondary-foreground hover:opacity-85 font-mono text-[11px] inline-flex items-center gap-1.5">
+            <i data-lucide="copy" class="size-3"></i> info.txt Metnini Kopyala
           </button>
         </div>
       </details>
 
-      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
-        <button type="button" id="cancelEditCourseBtn" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition">Vazgeç</button>
-        <button type="submit" class="px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold shadow transition">Kaydet</button>
+      <div class="flex justify-end gap-2 pt-3 border-t border-border">
+        <button type="button" id="cancelEditCourseBtn" class="h-9 px-3.5 rounded-md border border-border bg-background hover:bg-muted text-foreground font-medium transition">Vazgeç</button>
+        <button type="submit" class="h-9 px-4 rounded-md bg-primary text-primary-foreground hover:opacity-90 font-medium transition">Kaydet</button>
       </div>
     </form>
   </dialog>
 
 
   <!-- ================= SETTINGS & DRIVE MODAL ================= -->
-  <dialog id="settingsModal" class="p-0 rounded-2xl bg-slate-900 text-slate-100 border border-slate-800 w-[92vw] max-w-lg outline-none shadow-2xl">
-    <form id="settingsForm" class="p-5 space-y-4 text-xs">
-      <div class="flex items-center justify-between">
-        <h3 class="font-bold text-sm">Google Drive Bağlantı Ayarları</h3>
-        <button type="button" id="closeSettingsBtn" class="p-1 text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+  <dialog id="settingsModal" closedby="any" aria-labelledby="settingsModalTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[92vw] max-w-lg outline-none shadow-2xl">
+    <form id="settingsForm" class="p-6 space-y-4 text-xs">
+      <div class="flex items-center justify-between pb-3 border-b border-border">
+        <div class="flex items-center gap-2.5">
+          <div class="size-8 rounded-sm bg-primary-soft text-primary flex items-center justify-center">
+            <i data-lucide="sliders-horizontal" class="size-4"></i>
+          </div>
+          <div>
+            <h3 id="settingsModalTitle" class="font-semibold text-base leading-none">Google Drive Bağlantı Ayarları</h3>
+            <p class="text-xs text-muted-foreground mt-1">Drive Klasör ID ve API Anahtarı yapılandırması</p>
+          </div>
+        </div>
+        <button type="button" id="closeSettingsBtn" class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+          <i data-lucide="x" class="size-4"></i>
+        </button>
       </div>
+
       <div>
-        <label class="block font-semibold mb-1 text-slate-300">"ANKU EEE Materials" Google Drive Klasör Linki</label>
+        <label class="block font-medium mb-1.5 text-foreground">"ANKU EEE Materials" Google Drive Klasör Linki</label>
         <input id="folderInput" type="text" placeholder="https://drive.google.com/drive/folders/..."
-               class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg outline-none focus:border-sky-500 font-mono text-[11px]">
+               class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 font-mono text-xs text-foreground">
       </div>
       <div>
-        <label class="block font-semibold mb-1 text-slate-300">Google Drive API Anahtarı (API Key)</label>
+        <label class="block font-medium mb-1.5 text-foreground">Google Drive API Anahtarı (API Key)</label>
         <input id="keyInput" type="text" placeholder="AIza..."
-               class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg outline-none focus:border-sky-500 font-mono text-[11px]">
+               class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 font-mono text-xs text-foreground">
       </div>
-      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
-        <button type="submit" class="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 font-semibold transition">Kaydet ve Yeniden Bağlan</button>
+      <div class="flex justify-end gap-2 pt-3 border-t border-border">
+        <button type="submit" class="h-9 px-4 rounded-md bg-primary text-primary-foreground hover:opacity-90 font-medium transition">Kaydet ve Yeniden Bağlan</button>
       </div>
     </form>
   </dialog>
@@ -385,7 +762,7 @@
       API_KEY: atob('QUl6YVN5QmpXcGkzZnc0YUFINUFienpmTFg0SllqOWlOYVpQU0JF')
     };
 
-    // 1. Sınıf 6 Temel Ders Varsayılan Metadata Bilgileri (AVESİS Doğrulanmış)
+    // 1. Sınıf Temel Ders Varsayılan Metadata Bilgileri (AVESİS Doğrulanmış)
     const DEFAULT_COURSE_METADATA = {
       'CHM109': {
         name: 'General Chemistry (Genel Kimya)',
@@ -393,7 +770,7 @@
         email: 'ebicer@ankara.edu.tr',
         avesisUrl: 'https://avesis.ankara.edu.tr/emreb',
         credits: '3 Kredi • 6 AKTS',
-        color: 'from-emerald-600 to-teal-800',
+        icon: 'flask-conical',
         links: [
           { title: 'Periyodik Tablo (Ptable)', url: 'https://ptable.com', icon: 'external-link' }
         ]
@@ -404,7 +781,7 @@
         email: 'aeyilmaz@eng.ankara.edu.tr',
         avesisUrl: 'https://avesis.ankara.edu.tr/aeyilmaz',
         credits: '2 Kredi • 3 AKTS',
-        color: 'from-sky-600 to-indigo-800',
+        icon: 'cpu',
         links: [
           { title: 'Bölüm Web Sayfası', url: 'https://eee.ankara.edu.tr', icon: 'globe' }
         ]
@@ -415,7 +792,7 @@
         email: 'svarma@science.ankara.edu.tr',
         avesisUrl: 'https://avesis.ankara.edu.tr/svarma',
         credits: '4 Kredi • 7 AKTS',
-        color: 'from-indigo-600 to-blue-800',
+        icon: 'sigma',
         links: [
           { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'calculator' },
           { title: 'Essence of Calculus (3Blue1Brown)', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr', icon: 'youtube' }
@@ -427,7 +804,7 @@
         email: 'dkahveci@ankara.edu.tr',
         avesisUrl: 'https://avesis.ankara.edu.tr/dkahveci',
         credits: '3 Kredi • 6 AKTS',
-        color: 'from-blue-600 to-cyan-800',
+        icon: 'grid-3x3',
         links: [
           { title: 'Essence of Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab', icon: 'youtube' }
         ]
@@ -438,7 +815,7 @@
         email: 'akaratay@eng.ankara.edu.tr',
         avesisUrl: 'https://avesis.ankara.edu.tr/akaratay',
         credits: '3 Kredi • 6 AKTS',
-        color: 'from-amber-600 to-orange-800',
+        icon: 'atom',
         links: [
           { title: 'PhET Simülasyonları', url: 'https://phet.colorado.edu/tr/', icon: 'external-link' }
         ]
@@ -449,7 +826,7 @@
         email: 'mayabakan88@gmail.com',
         avesisUrl: 'https://avesis.ankara.edu.tr/ayabakan',
         credits: '2 Kredi • 2 AKTS',
-        color: 'from-rose-600 to-red-800',
+        icon: 'book-type',
         links: [
           { title: 'TDK Güncel Yazım Kılavuzu', url: 'https://sozluk.gov.tr', icon: 'book-open' }
         ]
@@ -460,7 +837,7 @@
         email: 'eee@ankara.edu.tr',
         avesisUrl: 'https://eee.ankara.edu.tr',
         credits: '0 Kredi • 0 AKTS',
-        color: 'from-purple-600 to-indigo-800',
+        icon: 'compass',
         links: [
           { title: 'Bölüm Web Sayfası', url: 'https://eee.ankara.edu.tr', icon: 'globe' }
         ]
@@ -479,7 +856,7 @@
       key: localStorage.getItem('anku_key') || CONFIG.API_KEY
     };
 
-    // Load and sanitize course metadata (synchronizes official AVESİS titles, emails & curriculum credits)
+    // Load and sanitize course metadata
     let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v6') || 'null') || DEFAULT_COURSE_METADATA;
     Object.keys(DEFAULT_COURSE_METADATA).forEach(code => {
       if (!courseMetadata[code]) {
@@ -489,8 +866,9 @@
         courseMetadata[code].email = DEFAULT_COURSE_METADATA[code].email;
         courseMetadata[code].avesisUrl = DEFAULT_COURSE_METADATA[code].avesisUrl;
         courseMetadata[code].credits = DEFAULT_COURSE_METADATA[code].credits;
+        courseMetadata[code].icon = DEFAULT_COURSE_METADATA[code].icon;
         if (courseMetadata[code].links) {
-          courseMetadata[code].links = courseMetadata[code].links.filter(l => 
+          courseMetadata[code].links = courseMetadata[code].links.filter(l =>
             !/obs/i.test(l.title) && !/izlence|syllabus/i.test(l.title)
           );
         }
@@ -498,9 +876,16 @@
     });
     localStorage.setItem('anku_course_meta_v6', JSON.stringify(courseMetadata));
 
-    let driveTree = null;          // Real Drive Tree
-    let activeCourseId = null;     // Selected Course Folder ID / Code
+    let driveTree = null;
+    let activeCourseId = null;
     let currentEditingCourseCode = null;
+
+    // DataTable Pagination & Filter State (AdminCN datatable-transaction style)
+    let tablePageIndex = 0;
+    const tablePageSize = 8;
+    let tableSearchQuery = '';
+    let tableCourseFilter = 'ALL';
+    let courseLocalSearch = '';
 
     // Helper: Escaping HTML
     const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -539,28 +924,26 @@
     }
 
     const KIND_CONFIG = {
-      pdf: { icon: 'file-text', color: 'text-rose-400', bg: 'bg-rose-950/40 border-rose-900/60', badge: 'PDF' },
-      slide: { icon: 'presentation', color: 'text-amber-400', bg: 'bg-amber-950/40 border-amber-900/60', badge: 'Slayt' },
-      word: { icon: 'file-type', color: 'text-blue-400', bg: 'bg-blue-950/40 border-blue-900/60', badge: 'Word' },
-      sheet: { icon: 'sheet', color: 'text-emerald-400', bg: 'bg-emerald-950/40 border-emerald-900/60', badge: 'Tablo' },
-      youtube: { icon: 'youtube', color: 'text-red-500', bg: 'bg-red-950/40 border-red-900/60', badge: 'YouTube' },
-      video: { icon: 'film', color: 'text-purple-400', bg: 'bg-purple-950/40 border-purple-900/60', badge: 'Video' },
-      image: { icon: 'image', color: 'text-pink-400', bg: 'bg-pink-950/40 border-pink-900/60', badge: 'Görsel' },
-      link: { icon: 'link', color: 'text-sky-400', bg: 'bg-sky-950/40 border-sky-900/60', badge: 'Link' },
-      file: { icon: 'file', color: 'text-slate-400', bg: 'bg-slate-900 border-slate-800', badge: 'Dosya' }
+      pdf: { icon: 'file-text', badge: 'PDF' },
+      slide: { icon: 'presentation', badge: 'Slayt' },
+      word: { icon: 'file-type', badge: 'Word' },
+      sheet: { icon: 'table', badge: 'Tablo' },
+      youtube: { icon: 'youtube', badge: 'YouTube' },
+      video: { icon: 'film', badge: 'Video' },
+      image: { icon: 'image', badge: 'Görsel' },
+      link: { icon: 'link', badge: 'Bağlantı' },
+      file: { icon: 'file', badge: 'Dosya' }
     };
 
-    // Helper: File Size Formatter
     function formatFileSize(bytes) {
-      if (!bytes || isNaN(bytes)) return '';
+      if (!bytes || isNaN(bytes)) return '—';
       const b = Number(bytes);
-      if (b <= 0) return '';
+      if (b <= 0) return '—';
       if (b < 1024) return b + ' B';
       if (b < 1024 * 1024) return (b / 1024).toFixed(0) + ' KB';
       return (b / (1024 * 1024)).toFixed(1) + ' MB';
     }
 
-    // Drive Preview URL Builder
     function getPreviewUrl(node) {
       const id = realId(node);
       const mime = realMime(node);
@@ -570,12 +953,33 @@
       return `https://drive.google.com/file/d/${id}/preview`;
     }
 
-    // Recursive File Counter
     function countFilesInFolder(nodes) {
       return (nodes || []).reduce((n, x) => {
         if (x.name.toLowerCase().startsWith('info.') || x.name.toLowerCase().startsWith('bilgi.')) return n;
         return n + (x.children ? countFilesInFolder(x.children) : (realMime(x) === FOLDER_MIME ? 0 : 1));
       }, 0);
+    }
+
+    // Flatten all files across the Drive tree for the AdminCN DataTable
+    function collectAllFiles(nodes, courseCode = '', folderPath = '') {
+      let list = [];
+      (nodes || []).forEach(node => {
+        if (/^(info|bilgi)\.(txt|json)$/i.test(node.name)) return;
+        if (realMime(node) === FOLDER_MIME) {
+          const nextCourse = courseCode || node.name.toUpperCase().trim();
+          const nextPath = courseCode ? (folderPath ? `${folderPath} / ${node.name}` : node.name) : 'Ana Klasör';
+          if (node.children) {
+            list = list.concat(collectAllFiles(node.children, nextCourse, nextPath));
+          }
+        } else {
+          list.push({
+            node,
+            courseCode: courseCode || 'GENEL',
+            folderPath: folderPath || 'Ana Klasör'
+          });
+        }
+      });
+      return list;
     }
 
     // ================= DRIVE API CALLS =================
@@ -615,14 +1019,13 @@
       }));
     }
 
-    // Parse info.txt if present in a course folder
     async function parseInfoTxt(fileNode, courseCode) {
       try {
         const id = realId(fileNode);
         const res = await fetch(`${API}/${id}?alt=media&key=${settings.key}`);
         if (!res.ok) return;
         const text = await res.text();
-        
+
         const lines = text.split('\n');
         const meta = courseMetadata[courseCode] || { links: [] };
 
@@ -654,39 +1057,40 @@
     // ================= LOAD DRIVE & INITIALIZE =================
     async function loadDriveData() {
       const folderId = parseFolderId(settings.folder);
-      $('headerDriveBtn').href = folderId ? `https://drive.google.com/drive/folders/${folderId}` : 'https://drive.google.com';
+      const driveUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : 'https://drive.google.com';
+      $('headerDriveBtn').href = driveUrl;
+      $('sidebarDriveLink').href = driveUrl;
 
       if (!folderId || !settings.key) {
         $('statusText').textContent = 'Ayar gerekli';
-        $('statusDot').className = 'w-2 h-2 rounded-full bg-amber-500';
+        $('statusDot').className = 'size-2 shrink-0 rounded-full bg-amber-500';
         openSettingsModal();
         return;
       }
 
-      // Check cache first
       const cache = JSON.parse(localStorage.getItem('anku_tree_cache_v3') || 'null');
       if (cache && cache.folderId === folderId && !driveTree) {
         driveTree = cache.tree;
         onTreeReady();
       }
 
-      $('statusText').textContent = 'Drive taranıyor...';
-      $('statusDot').className = 'w-2 h-2 rounded-full bg-sky-500 animate-pulse';
+      $('statusText').textContent = 'Senkronize ediliyor...';
+      $('statusDot').className = 'size-2 shrink-0 rounded-full bg-amber-500 animate-pulse';
       $('refreshBtn').querySelector('svg')?.classList.add('animate-spin');
 
       try {
         driveTree = await buildDriveTree(folderId);
         localStorage.setItem('anku_tree_cache_v3', JSON.stringify({ folderId, tree: driveTree, time: Date.now() }));
         onTreeReady();
-        
+
         const totalFiles = countFilesInFolder(driveTree);
-        $('statusText').textContent = 'Drive bağlı';
-        $('statusDot').className = 'w-2 h-2 rounded-full bg-emerald-500';
+        $('statusText').textContent = 'Drive Bağlı';
+        $('statusDot').className = 'size-2 shrink-0 rounded-full bg-emerald-500';
         $('totalFilesBadge').textContent = `${totalFiles} dosya`;
       } catch (err) {
         console.error('Drive yükleme hatası:', err);
         $('statusText').textContent = 'Bağlantı hatası';
-        $('statusDot').className = 'w-2 h-2 rounded-full bg-rose-500';
+        $('statusDot').className = 'size-2 shrink-0 rounded-full bg-rose-500';
       } finally {
         $('refreshBtn').querySelector('svg')?.classList.remove('animate-spin');
       }
@@ -695,7 +1099,6 @@
     function onTreeReady() {
       renderSidebarCourses();
 
-      // Look for info.txt files in courses
       driveTree.forEach(node => {
         if (realMime(node) === FOLDER_MIME && node.children) {
           const infoNode = node.children.find(f => /^(info|bilgi)\.(txt|json)$/i.test(f.name));
@@ -705,7 +1108,9 @@
         }
       });
 
-      // No course selected by default on initial startup - show welcome hub
+      const totalFiles = countFilesInFolder(driveTree);
+      $('totalFilesBadge').textContent = `${totalFiles} dosya`;
+
       if (activeCourseId) {
         renderCourseHub(activeCourseId);
       } else {
@@ -713,77 +1118,130 @@
       }
     }
 
-    // ================= RENDER LEFT SIDEBAR COURSES =================
+    // ================= HEADER BREADCRUMB UPDATER =================
+    function updateHeaderBreadcrumb(courseCode = null, courseTitle = null) {
+      const bc = $('headerBreadcrumb');
+      if (!bc) return;
+
+      if (!courseCode) {
+        bc.innerHTML = `
+          <li class="inline-flex items-center gap-1.5">
+            <button onclick="goHome()" class="hover:text-foreground transition">Dashboard</button>
+          </li>
+          <li><i data-lucide="chevron-right" class="size-3.5"></i></li>
+          <li class="text-foreground font-medium truncate">Genel Bakış & Dersler</li>
+        `;
+      } else {
+        bc.innerHTML = `
+          <li class="inline-flex items-center gap-1.5">
+            <button onclick="goHome()" class="hover:text-foreground transition">Dashboard</button>
+          </li>
+          <li><i data-lucide="chevron-right" class="size-3.5"></i></li>
+          <li class="inline-flex items-center gap-1.5">
+            <button onclick="goHome()" class="hover:text-foreground transition">Dersler</button>
+          </li>
+          <li><i data-lucide="chevron-right" class="size-3.5"></i></li>
+          <li class="text-foreground font-medium truncate">${esc(courseCode)}${courseTitle ? ' — ' + esc(courseTitle) : ''}</li>
+        `;
+      }
+      lucide.createIcons();
+    }
+
+    // ================= RENDER LEFT SIDEBAR (AdminCN Sidebar.tsx style) =================
     function renderSidebarCourses() {
+      const dashContainer = $('sidebarDashboardNav');
       const container = $('courseListNav');
       const searchVal = $('sidebarSearch').value.trim().toLowerCase();
 
-      const courses = driveTree.filter(n => realMime(n) === FOLDER_MIME);
+      const courses = (driveTree || []).filter(n => realMime(n) === FOLDER_MIME);
+      $('sidebarCoursesCountLabel').textContent = String(courses.length);
 
-      // Top Overview / Home Item
-      const overviewHtml = !searchVal ? `
-        <button 
-          onclick="goHome()"
-          class="w-full text-left p-2.5 mb-1.5 rounded-xl transition flex items-center justify-between gap-2.5 ${!activeCourseId ? 'bg-sky-950/80 text-sky-300 font-bold border-l-4 border-sky-500 shadow-sm' : 'text-slate-300 hover:bg-slate-800/60 border-l-4 border-transparent'}"
-        >
-          <div class="flex items-center gap-2.5 truncate">
-            <div class="w-7 h-7 rounded-lg bg-sky-950 text-sky-400 flex items-center justify-center shrink-0">
-              <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+      const isHomeActive = !activeCourseId;
+      dashContainer.innerHTML = `
+        <li>
+          <button
+            onclick="goHome()"
+            title="Tüm Dersler & Genel Bakış"
+            class="sidebar-nav-btn flex h-8 w-full items-center justify-between gap-2 rounded-md px-2 text-sm transition ${
+              isHomeActive
+                ? 'bg-primary-soft text-foreground font-medium'
+                : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+            }"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <i data-lucide="layout-dashboard" class="size-4 shrink-0"></i>
+              <span class="sidebar-hide-collapsed truncate">Genel Bakış (Portal)</span>
             </div>
-            <div class="truncate">
-              <div class="font-bold text-xs truncate">Tüm Dersler</div>
-              <div class="text-[10px] text-slate-400 truncate">Genel Bakış & Seçim</div>
-            </div>
-          </div>
-          <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-800 text-sky-400 font-semibold shrink-0">
-            ${courses.length}
-          </span>
-        </button>
-        <div class="border-t border-slate-800/80 my-1"></div>
-      ` : '';
+            <span class="sidebar-hide-collapsed rounded-full bg-primary-soft px-1.5 py-0.2 text-[11px] font-normal tabular-nums text-foreground">
+              ${courses.length}
+            </span>
+          </button>
+        </li>
+      `;
 
-      container.innerHTML = overviewHtml + courses.map(course => {
+      container.innerHTML = courses.map(course => {
         const count = countFilesInFolder(course.children);
         const isSelected = course.id === activeCourseId;
         const code = course.name.toUpperCase().trim();
-        const meta = courseMetadata[code] || { name: course.name };
+        const meta = courseMetadata[code] || { name: course.name, icon: 'book-open' };
+        const iconName = meta.icon || 'book-open';
 
-        // Search match filter
         if (searchVal && !code.toLowerCase().includes(searchVal) && !meta.name.toLowerCase().includes(searchVal)) {
           return '';
         }
 
-        const activeClasses = isSelected
-          ? 'bg-sky-950/80 text-sky-300 font-bold border-l-4 border-sky-500 shadow-sm'
-          : 'text-slate-300 hover:bg-slate-800/60 border-l-4 border-transparent';
+        const subfolders = (course.children || []).filter(n => realMime(n) === FOLDER_MIME);
 
         return `
-          <button 
-            onclick="selectCourse('${course.id}')"
-            class="w-full text-left p-2.5 rounded-r-xl transition flex items-center justify-between gap-2.5 ${activeClasses}"
-          >
-            <div class="flex items-center gap-2.5 truncate">
-              <div class="w-7 h-7 rounded-lg ${count ? 'bg-sky-950 text-sky-400' : 'bg-slate-800 text-slate-500'} flex items-center justify-center shrink-0 text-xs font-bold">
-                <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+          <li class="group/menu-item relative">
+            <button
+              onclick="selectCourse('${course.id}')"
+              title="${esc(code)} — ${esc(meta.name)}"
+              class="sidebar-nav-btn flex h-8 w-full items-center justify-between gap-2 rounded-md px-2 text-sm transition ${
+                isSelected
+                  ? 'bg-primary-soft text-foreground font-medium'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+              }"
+            >
+              <div class="flex items-center gap-2 min-w-0 flex-1">
+                <i data-lucide="${iconName}" class="size-4 shrink-0 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}"></i>
+                <span class="sidebar-hide-collapsed truncate">${esc(code)}</span>
+                <span class="sidebar-hide-collapsed text-xs text-muted-foreground truncate hidden lg:inline">• ${esc(meta.name.split('(')[0].trim())}</span>
               </div>
-              <div class="truncate">
-                <div class="font-bold text-xs truncate leading-snug">${esc(code)}</div>
-                <div class="text-[10px] text-slate-400 truncate">${esc(meta.name)}</div>
-              </div>
-            </div>
-            <span class="text-[10px] px-1.5 py-0.5 rounded-full ${count ? 'bg-slate-800 text-slate-400' : 'bg-slate-900 text-slate-600'} font-semibold shrink-0">
-              ${count}
-            </span>
-          </button>
+              <span class="sidebar-hide-collapsed rounded-full bg-primary-soft px-1.5 text-[11px] font-normal tabular-nums ${count > 0 ? 'text-foreground' : 'text-muted-foreground'} shrink-0">
+                ${count}
+              </span>
+            </button>
+
+            ${isSelected && subfolders.length > 0 ? `
+              <ul class="sidebar-hide-collapsed border-sidebar-border mx-3.5 mt-0.5 flex min-w-0 translate-x-px flex-col gap-0.5 border-l px-2.5 py-1">
+                ${subfolders.slice(0, 8).map(sub => {
+                  const subCount = countFilesInFolder(sub.children);
+                  return `
+                    <li>
+                      <a
+                        href="#folder-${sub.id}"
+                        class="flex h-6 min-w-0 items-center justify-between gap-2 rounded-md px-2 text-xs text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+                      >
+                        <span class="truncate">${esc(sub.name)}</span>
+                        <span class="font-mono text-[10px] opacity-70">${subCount}</span>
+                      </a>
+                    </li>
+                  `;
+                }).join('')}
+              </ul>
+            ` : ''}
+          </li>
         `;
       }).join('');
 
       lucide.createIcons();
     }
 
-    // Go to Welcome / All Courses Overview
     window.goHome = function() {
       activeCourseId = null;
+      courseLocalSearch = '';
+      updateHeaderBreadcrumb(null);
       renderSidebarCourses();
       renderWelcomeHub();
       if (window.innerWidth < 768) {
@@ -791,9 +1249,15 @@
       }
     };
 
-    // Course Selection
     window.selectCourse = function(courseId) {
       activeCourseId = courseId;
+      courseLocalSearch = '';
+      const courseNode = (driveTree || []).find(n => n.id === courseId);
+      if (courseNode) {
+        const code = courseNode.name.toUpperCase().trim();
+        const meta = courseMetadata[code] || { name: courseNode.name };
+        updateHeaderBreadcrumb(code, meta.name);
+      }
       renderSidebarCourses();
       if (courseId) {
         renderCourseHub(courseId);
@@ -803,106 +1267,322 @@
       if (window.innerWidth < 768) {
         toggleMobileSidebar(false);
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // ================= RENDER WELCOME / ALL COURSES OVERVIEW =================
+    // ================= RENDER WELCOME DASHBOARD (AdminCN OrdersDashboard style) =================
     function renderWelcomeHub() {
       const container = $('courseHubView');
       const courses = (driveTree || []).filter(n => realMime(n) === FOLDER_MIME);
       const totalFiles = countFilesInFolder(driveTree);
+      const allFilesFlat = collectAllFiles(driveTree);
+
+      // Compute per-course file statistics for the AdminCN TotalEarning-style widget & bar strip
+      const courseStats = courses.map(c => {
+        const code = c.name.toUpperCase().trim();
+        const meta = courseMetadata[code] || { name: c.name, instructor: 'Öğretim Üyesi', credits: '3 Kredi', icon: 'book-open' };
+        const count = countFilesInFolder(c.children);
+        const pct = totalFiles > 0 ? Math.round((count / totalFiles) * 100) : 0;
+        return { id: c.id, code, meta, count, pct };
+      });
+
+      const activeCoursesWithFiles = courseStats.filter(c => c.count > 0).length;
+      const coveragePct = courses.length > 0 ? Math.round((activeCoursesWithFiles / courses.length) * 100) : 100;
+      const totalBars = 24;
+      const filledBars = Math.max(4, Math.round((coveragePct * totalBars) / 100));
 
       container.innerHTML = `
-        <!-- WELCOME HERO BANNER -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-sky-950/60 to-slate-900 border border-slate-800 p-6 sm:p-8 text-white shadow-xl">
-          <div class="absolute -right-12 -top-12 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-          <div class="relative z-10 flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
-            <div class="w-20 h-20 rounded-2xl bg-slate-900 border border-slate-700/80 p-1.5 shadow-2xl flex items-center justify-center shrink-0">
-              <img src="assets/ankara-uni-logo.png" alt="Ankara Üniversitesi" class="w-full h-full object-contain" />
-            </div>
-            <div class="space-y-1.5 flex-1">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-950/80 border border-sky-800/60 text-sky-300 text-xs font-semibold">
-                <span>Ankara Üniversitesi</span>
-                <span>•</span>
-                <span>Elektrik-Elektronik Mühendisliği</span>
+        <!-- ROW 1: AdminCN Statistics Cards (statistics-card-01.tsx) -->
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="admincn-card p-6 flex flex-col justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+              <div class="bg-primary-soft text-primary flex size-8 shrink-0 items-center justify-center rounded-sm">
+                <i data-lucide="book-open" class="size-4"></i>
               </div>
-              <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                1. Sınıf Ders & Materyal Portalı
-              </h1>
-              <p class="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed">
-                1. Yarıyıl derslerine ait tüm slaytlara, haftalık ders akışına, kitaplara ve hoca iletişim bilgilerine ulaşmak için <b>aşağıdaki kartlardan veya sol menüden bir ders seçiniz</b>.
+              <span class="text-2xl font-semibold tracking-tight">${courses.length || 6}</span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-base font-semibold">Dönem Dersleri</span>
+              <p class="text-xs text-muted-foreground">
+                <span class="text-foreground font-medium">1. Sınıf • 1. Yarıyıl</span>
+                <span>• Zorunlu Müfredat</span>
               </p>
             </div>
           </div>
 
-          <!-- Quick Stats -->
-          <div class="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-slate-800/80 text-center">
-            <div class="p-3 rounded-2xl bg-slate-950/50 border border-slate-800/80">
-              <div class="text-lg font-black text-sky-400">6</div>
-              <div class="text-[11px] text-slate-400 font-medium">Dönem Dersi</div>
+          <div class="admincn-card p-6 flex flex-col justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+              <div class="bg-primary-soft text-primary flex size-8 shrink-0 items-center justify-center rounded-sm">
+                <i data-lucide="folder-check" class="size-4"></i>
+              </div>
+              <span class="text-2xl font-semibold tracking-tight">${totalFiles}</span>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-950/50 border border-slate-800/80">
-              <div class="text-lg font-black text-emerald-400">17.0 / 30.0</div>
-              <div class="text-[11px] text-slate-400 font-medium">Kredi / AKTS</div>
+            <div class="flex flex-col gap-1">
+              <span class="text-base font-semibold">Toplam Ders Materyali</span>
+              <p class="text-xs text-muted-foreground">
+                <span class="text-foreground font-medium">Canlı Drive</span>
+                <span>• PDF, Slayt ve Ders Kitapları</span>
+              </p>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-950/50 border border-slate-800/80">
-              <div class="text-lg font-black text-amber-400">${totalFiles}</div>
-              <div class="text-[11px] text-slate-400 font-medium">Toplam Dosya</div>
+          </div>
+
+          <div class="admincn-card p-6 flex flex-col justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+              <div class="bg-primary-soft text-primary flex size-8 shrink-0 items-center justify-center rounded-sm">
+                <i data-lucide="award" class="size-4"></i>
+              </div>
+              <span class="text-2xl font-semibold tracking-tight">17.0 / 30.0</span>
             </div>
-            <div class="p-3 rounded-2xl bg-slate-950/50 border border-slate-800/80">
-              <div class="text-lg font-black text-purple-400">%100</div>
-              <div class="text-[11px] text-slate-400 font-medium">İngilizce Müfredat</div>
+            <div class="flex flex-col gap-1">
+              <span class="text-base font-semibold">Toplam Kredi & AKTS</span>
+              <p class="text-xs text-muted-foreground">
+                <span class="text-foreground font-medium">%100 İngilizce</span>
+                <span>• AÜ EEM Lisans Programı</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="admincn-card p-6 flex flex-col justify-between gap-4">
+            <div class="flex items-center gap-2.5">
+              <div class="bg-primary-soft text-primary flex size-8 shrink-0 items-center justify-center rounded-sm">
+                <i data-lucide="users" class="size-4"></i>
+              </div>
+              <span class="text-2xl font-semibold tracking-tight">6</span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="text-base font-semibold">Öğretim Üyesi Kadrosu</span>
+              <p class="text-xs text-muted-foreground">
+                <span class="text-foreground font-medium">AVESİS Doğrulamalı</span>
+                <span>• Doğrudan E-posta</span>
+              </p>
             </div>
           </div>
         </div>
 
-        <!-- 6 DERS SEÇİM KARTLARI -->
-        <div>
-          <div class="flex items-center justify-between mb-4 px-1">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-              <i data-lucide="book-open" class="w-4 h-4 text-sky-400"></i>
-              <span>Ders Seçimi Yapınız (${courses.length} Ders)</span>
-            </h3>
-            <span class="text-[11px] text-slate-500">Detaylar ve haftalar için derse tıklayın</span>
+        <!-- ROW 2: AdminCN Overview Split (SalesMetricsCard + TotalEarningCard layout) -->
+        <div class="grid gap-6 xl:grid-cols-3">
+
+          <!-- Left 2 Columns: Portal Overview Card (chart-sales-metrics.tsx pattern) -->
+          <div class="admincn-card p-6 flex flex-col justify-between gap-6 xl:col-span-2">
+            <div class="grid gap-6 lg:grid-cols-5">
+              <div class="flex flex-col justify-between gap-5 lg:col-span-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-lg font-semibold">ANKU EEE Materyal Portalı</span>
+                  <span class="rounded-sm bg-primary-soft px-2 py-0.5 text-xs font-medium text-primary">2026-2027 Güz</span>
+                </div>
+
+                <div class="flex items-center gap-3.5">
+                  <div class="size-11 rounded-lg border border-border bg-muted/60 p-1.5 flex items-center justify-center shrink-0">
+                    <img src="assets/ankara-uni-logo.png" class="size-full object-contain" alt="Ankara Üniversitesi" />
+                  </div>
+                  <div class="flex flex-col gap-0.5 min-w-0">
+                    <span class="text-lg font-semibold leading-snug truncate">Ankara Üniversitesi • EEM</span>
+                    <span class="text-muted-foreground text-xs sm:text-sm truncate">1. Sınıf Ders Slaytları, Kitaplar & Haftalık Akış Merkezi</span>
+                  </div>
+                </div>
+
+                <!-- 4 Sub-Metric Cards (AdminCN MetricsData grid) -->
+                <div class="grid gap-3.5 sm:grid-cols-2">
+                  <div class="rounded-xl border border-border bg-card px-4 py-3 flex items-center gap-3">
+                    <div class="size-9 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                      <i data-lucide="zap" class="size-4"></i>
+                    </div>
+                    <div class="flex flex-col min-w-0">
+                      <span class="text-muted-foreground text-xs font-medium">Büyük PDF Motoru</span>
+                      <span class="text-sm font-semibold truncate">20MB+ Doğrudan Akış</span>
+                    </div>
+                  </div>
+
+                  <div class="rounded-xl border border-border bg-card px-4 py-3 flex items-center gap-3">
+                    <div class="size-9 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                      <i data-lucide="calendar-range" class="size-4"></i>
+                    </div>
+                    <div class="flex flex-col min-w-0">
+                      <span class="text-muted-foreground text-xs font-medium">Haftalık Sınıflandırma</span>
+                      <span class="text-sm font-semibold truncate">1-14. Hafta Otomatik</span>
+                    </div>
+                  </div>
+
+                  <div class="rounded-xl border border-border bg-card px-4 py-3 flex items-center gap-3">
+                    <div class="size-9 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                      <i data-lucide="youtube" class="size-4"></i>
+                    </div>
+                    <div class="flex flex-col min-w-0">
+                      <span class="text-muted-foreground text-xs font-medium">Video & Kaynaklar</span>
+                      <span class="text-sm font-semibold truncate">Site İçi Oynatıcı</span>
+                    </div>
+                  </div>
+
+                  <div class="rounded-xl border border-border bg-card px-4 py-3 flex items-center gap-3">
+                    <div class="size-9 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                      <i data-lucide="user-check" class="size-4"></i>
+                    </div>
+                    <div class="flex flex-col min-w-0">
+                      <span class="text-muted-foreground text-xs font-medium">Akademik Rehber</span>
+                      <span class="text-sm font-semibold truncate">AVESİS & Hoca İletişim</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Inner Card: Curriculum Overview Ring / Summary -->
+              <div class="rounded-xl border border-border bg-card p-5 flex flex-col justify-between gap-4 lg:col-span-2">
+                <div>
+                  <div class="text-base font-semibold">Akademik Dönem Özeti</div>
+                  <p class="text-xs text-muted-foreground mt-0.5">1. Yarıyıl ders ve materyal dağılım oranı</p>
+                </div>
+
+                <!-- SVG Donut Indicator (AdminCN Revenue Goal style) -->
+                <div class="relative mx-auto my-1 flex size-36 items-center justify-center">
+                  <svg class="size-full -rotate-90" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="48" fill="none" stroke="currentColor" class="text-muted" stroke-width="12" />
+                    <circle
+                      cx="60"
+                      cy="60"
+                      r="48"
+                      fill="none"
+                      stroke="currentColor"
+                      class="text-primary transition-all duration-500"
+                      stroke-width="12"
+                      stroke-dasharray="${Math.round((coveragePct / 100) * 301.6)} 301.6"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <span class="text-xl font-semibold">${totalFiles}</span>
+                    <span class="text-[11px] text-muted-foreground">Toplam Dosya</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-2 border-t border-border">
+                  <span class="text-xs text-muted-foreground">Aktif Ders Klasörü</span>
+                  <span class="text-base font-semibold">${activeCoursesWithFiles} / ${courses.length || 6} (%${coveragePct})</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Inner Strip: AdminCN Cohort Bar Indicator -->
+            <div class="rounded-xl border border-border p-4 sm:p-5">
+              <div class="grid gap-4 lg:grid-cols-5 items-center">
+                <div class="flex flex-col gap-1">
+                  <span class="text-xs font-medium text-muted-foreground uppercase tracking-wider">Senkron Durumu</span>
+                  <span class="text-3xl font-semibold">%${coveragePct}</span>
+                  <span class="text-xs text-muted-foreground">Drive klasör doluluk oranı</span>
+                </div>
+                <div class="flex flex-col gap-3 lg:col-span-4">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-sm font-medium">Derslere Göre Materyal Yoğunluğu ve Erişim Hızı</span>
+                    <span class="text-xs text-muted-foreground">Tıkladığınız her belge sayfa değiştirmeden açılır</span>
+                  </div>
+                  <!-- 24-Bar AdminCN Segmented Visualizer -->
+                  <div class="grid grid-cols-24 gap-1 h-7 items-center" style="grid-template-columns: repeat(24, minmax(0, 1fr));">
+                    ${Array.from({ length: totalBars }, (_, idx) => `
+                      <div class="h-full rounded-full ${idx < filledBars ? 'bg-primary' : 'bg-primary-soft'}"></div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Right 1 Column: Course Material Breakdown Widget (widget-total-earning.tsx pattern) -->
+          <div class="admincn-card p-6 flex flex-col justify-between gap-5">
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center justify-between">
+                <span class="text-lg font-semibold">Ders Materyal Dağılımı</span>
+                <button onclick="$('refreshBtn').click()" title="Yenile" class="size-7 rounded-full inline-flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground transition">
+                  <i data-lucide="refresh-cw" class="size-3.5"></i>
+                </button>
+              </div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span class="text-2xl font-semibold">${totalFiles} Dosya</span>
+                <span class="inline-flex items-center gap-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                  <i data-lucide="chevron-up" class="size-3.5"></i>
+                  Canlı
+                </span>
+              </div>
+              <span class="text-muted-foreground text-xs">Ders klasörlerindeki güncel belge sayıları</span>
+            </div>
+
+            <div class="flex flex-1 flex-col justify-evenly gap-3.5">
+              ${courseStats.slice(0, 6).map(item => `
+                <div onclick="selectCourse('${item.id}')" class="flex items-center justify-between gap-3 cursor-pointer group">
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="size-9 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition">
+                      <i data-lucide="${item.meta.icon || 'book-open'}" class="size-4"></i>
+                    </div>
+                    <div class="flex flex-col min-w-0">
+                      <span class="text-sm font-medium truncate group-hover:underline">${esc(item.code)}</span>
+                      <span class="text-muted-foreground text-xs truncate">${esc(item.meta.instructor || '')}</span>
+                    </div>
+                  </div>
+                  <div class="space-y-1.5 text-right shrink-0 w-28">
+                    <p class="text-xs font-mono font-medium">${item.count} dosya (%${item.pct})</p>
+                    <div class="h-1.5 w-full rounded-full bg-primary-soft overflow-hidden">
+                      <div class="h-full bg-primary rounded-full" style="width: ${Math.max(item.count > 0 ? 8 : 0, item.pct)}%"></div>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ROW 3: 6 DERS SEÇİM KARTLARI (AdminCN Card Grid) -->
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-semibold tracking-tight">1. Sınıf Dönem Dersleri (${courses.length})</h2>
+              <p class="text-xs text-muted-foreground">Haftalık ders materyalleri, slaytlar, ders kitapları ve hoca iletişim bilgileri için derse tıklayın</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             ${courses.map(course => {
               const code = course.name.toUpperCase().trim();
-              const meta = courseMetadata[code] || { name: course.name, color: 'from-slate-800 to-slate-900', credits: '' };
+              const meta = courseMetadata[code] || { name: course.name, credits: '', instructor: 'Öğretim Üyesi', icon: 'book-open' };
               const fileCount = countFilesInFolder(course.children);
+              const subfolderCount = (course.children || []).filter(n => realMime(n) === FOLDER_MIME).length;
+
               return `
-                <div 
+                <div
                   onclick="selectCourse('${course.id}')"
-                  class="p-5 rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-850 hover:shadow-xl hover:shadow-sky-950/20 transition-all duration-200 cursor-pointer flex flex-col justify-between group active:scale-[0.99]"
+                  class="admincn-card p-6 flex flex-col justify-between gap-5 cursor-pointer hover:border-foreground/30 transition-all group"
                 >
-                  <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                      <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-sky-950 text-sky-300 border border-sky-800/60 font-mono">
-                        ${esc(code)}
-                      </span>
-                      <span class="text-[11px] text-slate-400 font-medium flex items-center gap-1">
-                        <i data-lucide="file" class="w-3.5 h-3.5 text-slate-500"></i>
+                  <div class="space-y-4">
+                    <div class="flex items-center justify-between gap-2">
+                      <div class="flex items-center gap-2.5">
+                        <div class="size-9 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition">
+                          <i data-lucide="${meta.icon || 'book-open'}" class="size-4"></i>
+                        </div>
+                        <div>
+                          <span class="font-mono text-sm font-semibold text-foreground">${esc(code)}</span>
+                          <div class="text-[11px] text-muted-foreground">${esc(meta.credits || 'Zorunlu Ders')}</div>
+                        </div>
+                      </div>
+                      <span class="rounded-sm bg-primary-soft px-2 py-0.5 text-xs font-medium text-primary tabular-nums">
                         ${fileCount} dosya
                       </span>
                     </div>
 
                     <div>
-                      <h4 class="text-sm font-bold text-slate-100 group-hover:text-sky-300 transition line-clamp-2">
+                      <h3 class="text-base font-semibold text-foreground group-hover:underline line-clamp-1">
                         ${esc(meta.name)}
-                      </h4>
-                      <p class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
-                        <i data-lucide="user" class="w-3.5 h-3.5 text-slate-500 shrink-0"></i>
+                      </h3>
+                      <p class="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
+                        <i data-lucide="user" class="size-3.5 shrink-0"></i>
                         <span class="truncate">${esc(meta.instructor || 'Öğretim Üyesi')}</span>
                       </p>
                     </div>
                   </div>
 
-                  <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between text-[11px]">
-                    <span class="text-slate-400 font-medium">${esc(meta.credits || '')}</span>
-                    <span class="text-sky-400 font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                      Dersi Aç <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                  <div class="pt-4 border-t border-border flex items-center justify-between text-xs">
+                    <span class="text-muted-foreground">
+                      ${subfolderCount > 0 ? `${subfolderCount} alt klasör / hafta` : 'Doğrudan materyal erişimi'}
+                    </span>
+                    <span class="font-medium text-foreground inline-flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                      Dersi Aç <i data-lucide="arrow-right" class="size-3.5"></i>
                     </span>
                   </div>
                 </div>
@@ -910,15 +1590,221 @@
             }).join('')}
           </div>
         </div>
+
+        <!-- ROW 4: AdminCN All Materials DataTable (datatable-transaction.tsx pattern) -->
+        <div class="admincn-card overflow-hidden">
+          <div class="p-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-base font-semibold">Tüm Ders Materyalleri Tablosu</h3>
+              <p class="text-xs text-muted-foreground mt-0.5">Tüm derslerdeki PDF, slayt, kitap ve belgelere tek tablodan hızlı erişim</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="relative">
+                <i data-lucide="search" class="size-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+                <input
+                  id="datatableSearchInput"
+                  type="text"
+                  value="${esc(tableSearchQuery)}"
+                  oninput="handleTableSearch(this.value)"
+                  placeholder="Tabloda dosya ara..."
+                  class="h-8 w-48 sm:w-60 rounded-md bg-background border border-input pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+                >
+              </div>
+              <select
+                id="datatableCourseSelect"
+                onchange="handleTableCourseFilter(this.value)"
+                class="h-8 rounded-md bg-background border border-input px-2.5 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40"
+              >
+                <option value="ALL" ${tableCourseFilter === 'ALL' ? 'selected' : ''}>Tüm Dersler</option>
+                ${courses.map(c => {
+                  const code = c.name.toUpperCase().trim();
+                  return `<option value="${esc(code)}" ${tableCourseFilter === code ? 'selected' : ''}>${esc(code)}</option>`;
+                }).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div id="admincnDataTableBody">
+            ${renderDataTableContent(allFilesFlat)}
+          </div>
+        </div>
       `;
 
       lucide.createIcons();
     }
 
-    // ================= RENDER COURSE HUB (DERS ANA SAYFASI) =================
+    // Helper: Render AdminCN DataTable Content & Pagination
+    function renderDataTableContent(allFilesFlat) {
+      const q = tableSearchQuery.trim().toLowerCase();
+      const filtered = allFilesFlat.filter(item => {
+        if (tableCourseFilter !== 'ALL' && item.courseCode !== tableCourseFilter) return false;
+        if (q && !item.node.name.toLowerCase().includes(q) && !item.courseCode.toLowerCase().includes(q) && !item.folderPath.toLowerCase().includes(q)) {
+          return false;
+        }
+        return true;
+      });
+
+      const totalCount = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(totalCount / tablePageSize));
+      if (tablePageIndex >= totalPages) tablePageIndex = Math.max(0, totalPages - 1);
+
+      const startIdx = tablePageIndex * tablePageSize;
+      const pageItems = filtered.slice(startIdx, startIdx + tablePageSize);
+
+      return `
+        <div class="w-full overflow-x-auto border-b border-border">
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="border-b border-border text-muted-foreground text-xs">
+                <th class="h-12 px-4 font-medium">Materyal / Dosya Adı</th>
+                <th class="h-12 px-4 font-medium">Ders</th>
+                <th class="h-12 px-4 font-medium hidden md:table-cell">Klasör / Hafta</th>
+                <th class="h-12 px-4 font-medium">Tür</th>
+                <th class="h-12 px-4 font-medium hidden sm:table-cell">Boyut</th>
+                <th class="h-12 px-4 font-medium text-right">İşlemler</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              ${pageItems.length > 0 ? pageItems.map(({ node, courseCode, folderPath }) => {
+                const kind = getFileKind(node);
+                const conf = KIND_CONFIG[kind] || KIND_CONFIG.file;
+                const isLarge = node.size && Number(node.size) > 20 * 1024 * 1024;
+                return `
+                  <tr class="hover:bg-muted/40 transition">
+                    <td class="p-4">
+                      <div onclick="openViewerModal('${node.id}', '${esc(courseCode)}')" class="flex items-center gap-3 cursor-pointer group">
+                        <div class="size-9 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                          <i data-lucide="${conf.icon}" class="size-4"></i>
+                        </div>
+                        <div class="flex flex-col min-w-0 max-w-xs sm:max-w-md">
+                          <span class="text-card-foreground font-medium truncate group-hover:underline" title="${esc(node.name)}">${esc(node.name)}</span>
+                          <span class="text-muted-foreground text-xs truncate">
+                            ${isLarge ? '⚡ Doğrudan Akış Motoru' : 'Standart Önizleme'}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="p-4">
+                      <span class="rounded-sm bg-primary-soft text-primary px-2 py-0.5 text-xs font-mono font-medium">${esc(courseCode)}</span>
+                    </td>
+                    <td class="p-4 hidden md:table-cell text-xs text-muted-foreground">
+                      <span class="truncate block max-w-[200px]">${esc(folderPath)}</span>
+                    </td>
+                    <td class="p-4">
+                      <span class="rounded-sm bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-medium">${conf.badge}</span>
+                    </td>
+                    <td class="p-4 hidden sm:table-cell font-mono text-xs text-muted-foreground">
+                      ${formatFileSize(node.size)}
+                    </td>
+                    <td class="p-4 text-right">
+                      <div class="inline-flex items-center justify-end gap-1">
+                        <button
+                          onclick="openViewerModal('${node.id}', '${esc(courseCode)}')"
+                          class="h-7 px-2.5 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition"
+                        >
+                          Aç
+                        </button>
+                        ${kind !== 'youtube' ? `
+                          <a
+                            href="https://drive.google.com/uc?export=download&id=${realId(node)}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="İndir"
+                            class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+                          >
+                            <i data-lucide="download" class="size-3.5"></i>
+                          </a>
+                        ` : ''}
+                        <a
+                          href="${node.webViewLink || `https://drive.google.com/file/d/${realId(node)}/view`}"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Drive'da Aç"
+                          class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+                        >
+                          <i data-lucide="external-link" class="size-3.5"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join('') : `
+                <tr>
+                  <td colspan="6" class="h-24 text-center text-muted-foreground text-xs">
+                    Arama kriterlerine uygun materyal bulunamadı.
+                  </td>
+                </tr>
+              `}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Footer (AdminCN datatable-transaction.tsx pattern) -->
+        <div class="flex items-center justify-between gap-3 px-6 py-4 max-sm:flex-col">
+          <p class="text-muted-foreground text-xs sm:text-sm whitespace-nowrap" aria-live="polite">
+            Toplam <span class="font-medium text-foreground">${totalCount}</span> materyalden
+            <span class="font-medium text-foreground">${totalCount === 0 ? 0 : startIdx + 1} - ${Math.min(startIdx + tablePageSize, totalCount)}</span> arası gösteriliyor
+          </p>
+          <div class="flex items-center gap-1.5">
+            <button
+              type="button"
+              onclick="changeTablePage(${tablePageIndex - 1})"
+              ${tablePageIndex <= 0 ? 'disabled' : ''}
+              class="inline-flex h-8 items-center gap-1 rounded-md px-2.5 text-xs font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40 transition"
+            >
+              <i data-lucide="chevron-left" class="size-3.5"></i>
+              <span>Önceki</span>
+            </button>
+            <span class="px-2 text-xs font-mono text-muted-foreground">
+              Sayfa ${tablePageIndex + 1} / ${totalPages}
+            </span>
+            <button
+              type="button"
+              onclick="changeTablePage(${tablePageIndex + 1})"
+              ${tablePageIndex >= totalPages - 1 ? 'disabled' : ''}
+              class="inline-flex h-8 items-center gap-1 rounded-md px-2.5 text-xs font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40 transition"
+            >
+              <span>Sonraki</span>
+              <i data-lucide="chevron-right" class="size-3.5"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    window.handleTableSearch = function(val) {
+      tableSearchQuery = val;
+      tablePageIndex = 0;
+      const body = $('admincnDataTableBody');
+      if (body && driveTree) {
+        body.innerHTML = renderDataTableContent(collectAllFiles(driveTree));
+        lucide.createIcons();
+      }
+    };
+
+    window.handleTableCourseFilter = function(val) {
+      tableCourseFilter = val;
+      tablePageIndex = 0;
+      const body = $('admincnDataTableBody');
+      if (body && driveTree) {
+        body.innerHTML = renderDataTableContent(collectAllFiles(driveTree));
+        lucide.createIcons();
+      }
+    };
+
+    window.changeTablePage = function(newIndex) {
+      tablePageIndex = Math.max(0, newIndex);
+      const body = $('admincnDataTableBody');
+      if (body && driveTree) {
+        body.innerHTML = renderDataTableContent(collectAllFiles(driveTree));
+        lucide.createIcons();
+      }
+    };
+
+    // ================= RENDER COURSE HUB (AdminCN Course Dashboard View) =================
     function renderCourseHub(courseId) {
       const container = $('courseHubView');
-      const courseNode = driveTree.find(n => n.id === courseId);
+      const courseNode = (driveTree || []).find(n => n.id === courseId);
       if (!courseNode) return;
 
       const code = courseNode.name.toUpperCase().trim();
@@ -927,18 +1813,16 @@
         instructor: 'Öğretim Üyesi',
         email: '',
         credits: '3 Kredi • 5 AKTS',
-        color: 'from-sky-700 to-indigo-900',
+        icon: 'book-open',
         links: []
       };
 
       const totalFiles = countFilesInFolder(courseNode.children);
       const driveFolderUrl = `https://drive.google.com/drive/folders/${realId(courseNode)}`;
 
-      // Categorize Subfolders (Haftalık Akış vs Kategoriler)
       const subfolders = (courseNode.children || []).filter(n => realMime(n) === FOLDER_MIME);
       const rootFiles = (courseNode.children || []).filter(n => realMime(n) !== FOLDER_MIME && !/^(info|bilgi)\.(txt|json)$/i.test(n.name));
 
-      // Separate Weekly folders vs Category folders
       const weekFolders = [];
       const catFolders = [];
 
@@ -952,10 +1836,9 @@
         }
       });
 
-      // Sort weekly folders by week number
       weekFolders.sort((a, b) => a.weekNum - b.weekNum);
 
-      // Render Shortcut Buttons
+      // Render Shortcut Buttons in AdminCN outline button style
       const shortcutButtonsHtml = (meta.links || []).map(link => {
         let iconName = link.icon || 'external-link';
         if (link.url.includes('youtube.com') || link.url.includes('youtu.be')) iconName = 'youtube';
@@ -963,230 +1846,311 @@
         if (link.title.toLowerCase().includes('izlence') || link.title.toLowerCase().includes('syllabus')) iconName = 'file-text';
 
         return `
-          <a 
-            href="${esc(link.url)}" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-sky-500/50 hover:bg-slate-800/80 text-xs text-slate-200 transition shadow-sm group active:scale-95"
+          <a
+            href="${esc(link.url)}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex h-9 items-center gap-2 px-3 rounded-md border border-border bg-card hover:bg-muted text-xs font-medium text-foreground shadow-2xs transition"
           >
-            <i data-lucide="${iconName}" class="w-4 h-4 text-sky-400 group-hover:scale-110 transition-transform"></i>
-            <span class="font-medium">${esc(link.title)}</span>
+            <i data-lucide="${iconName}" class="size-3.5 text-primary"></i>
+            <span>${esc(link.title)}</span>
+            <i data-lucide="square-arrow-out-up-right" class="size-3 text-muted-foreground"></i>
           </a>
         `;
       }).join('');
 
       container.innerHTML = `
-        <!-- COURSE HERO HEADER -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r ${meta.color || 'from-sky-700 to-indigo-900'} p-6 sm:p-8 text-white shadow-xl">
-          <div class="absolute -right-8 -bottom-8 w-60 h-60 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
-          
-          <div class="relative z-10 flex flex-col md:flex-row md:items-start justify-between gap-4">
-            <div class="space-y-2">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/20 backdrop-blur border border-white/10 text-xs font-semibold">
-                <span>Ders Kodu: ${esc(code)}</span>
-                <span>•</span>
-                <span>${esc(meta.credits || 'Kredi Belirtilmedi')}</span>
+        <!-- TOP COURSE HEADER CARD (AdminCN Profile / Overview Header pattern) -->
+        <div class="admincn-card p-6">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div class="flex items-start gap-4">
+              <div class="size-12 sm:size-14 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                <i data-lucide="${meta.icon || 'book-open'}" class="size-6 sm:size-7"></i>
               </div>
-              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">${esc(meta.name)}</h1>
-              
-              <!-- Instructor & Copyable Email -->
-              <div class="flex flex-wrap items-center gap-2 pt-2 text-xs">
-                <!-- Instructor Chip with AVESİS link -->
-                <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/25 backdrop-blur border border-white/10 font-semibold text-amber-200 shadow-sm">
-                  <i data-lucide="user-check" class="w-4 h-4 text-amber-300"></i>
-                  <span>${esc(meta.instructor || 'Öğretim Üyesi')}</span>
-                  ${meta.avesisUrl ? `
-                    <a href="${esc(meta.avesisUrl)}" target="_blank" rel="noopener noreferrer" title="AVESİS Akademik Profili Aç" class="ml-1 p-0.5 rounded text-amber-300 hover:text-white hover:bg-white/10 transition">
-                      <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <div class="space-y-2 min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="rounded-sm bg-primary text-primary-foreground px-2 py-0.5 font-mono text-xs font-semibold">${esc(code)}</span>
+                  <span class="rounded-sm bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-medium">${esc(meta.credits || 'Kredi Belirtilmedi')}</span>
+                  <span class="rounded-sm bg-primary-soft text-primary px-2 py-0.5 text-xs font-medium">${totalFiles} Materyal</span>
+                </div>
+                <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">${esc(meta.name)}</h1>
+
+                <!-- Instructor & Email Row -->
+                <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                  <div class="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/50 px-2.5 py-1 font-medium text-foreground">
+                    <i data-lucide="user-check" class="size-3.5 text-primary"></i>
+                    <span>${esc(meta.instructor || 'Öğretim Üyesi')}</span>
+                    ${meta.avesisUrl ? `
+                      <a href="${esc(meta.avesisUrl)}" target="_blank" rel="noopener noreferrer" title="AVESİS Akademik Profili Aç" class="ml-1 text-muted-foreground hover:text-foreground transition">
+                        <i data-lucide="external-link" class="size-3.5"></i>
+                      </a>
+                    ` : ''}
+                  </div>
+
+                  ${meta.email ? `
+                    <button
+                      onclick="copyInstructorEmail('${esc(meta.email)}', this)"
+                      title="E-postayı Kopyalamak İçin Tıklayın"
+                      class="inline-flex items-center gap-1.5 rounded-md border border-border bg-background hover:bg-muted px-2.5 py-1 font-mono text-xs text-muted-foreground hover:text-foreground transition"
+                    >
+                      <i data-lucide="mail" class="size-3.5"></i>
+                      <span class="email-text">${esc(meta.email)}</span>
+                      <i data-lucide="copy" class="size-3 opacity-70"></i>
+                    </button>
+                    <a
+                      href="mailto:${esc(meta.email)}"
+                      title="Doğrudan E-posta Gönder"
+                      class="inline-flex size-7 items-center justify-center rounded-md border border-border bg-background hover:bg-muted text-muted-foreground hover:text-foreground transition"
+                    >
+                      <i data-lucide="send" class="size-3.5"></i>
                     </a>
                   ` : ''}
                 </div>
-
-                <!-- Click-to-Copy Email Button -->
-                ${meta.email ? `
-                  <button 
-                    onclick="copyInstructorEmail('${esc(meta.email)}', this)" 
-                    title="E-postayı Kopyalamak İçin Tıklayın"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/25 hover:bg-black/40 backdrop-blur border border-white/10 hover:border-sky-400/50 font-medium text-sky-200 hover:text-white transition group active:scale-95 shadow-sm"
-                  >
-                    <i data-lucide="mail" class="w-3.5 h-3.5 text-sky-300"></i>
-                    <span class="email-text font-mono text-[11px]">${esc(meta.email)}</span>
-                    <i data-lucide="copy" class="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 copy-icon"></i>
-                  </button>
-                  <a 
-                    href="mailto:${esc(meta.email)}" 
-                    title="Doğrudan E-posta Gönder" 
-                    class="p-1.5 rounded-xl bg-black/20 hover:bg-black/35 backdrop-blur border border-white/10 text-sky-200 hover:text-white transition"
-                  >
-                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                  </a>
-                ` : ''}
               </div>
             </div>
 
-            <!-- Action Buttons on Header -->
-            <div class="flex items-center gap-2 shrink-0 pt-2 md:pt-0">
-              <a 
-                href="${driveFolderUrl}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 text-white transition"
+            <!-- Header Action Buttons -->
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                onclick="goHome()"
+                class="inline-flex h-9 items-center gap-1.5 px-3 text-xs font-medium rounded-md border border-border bg-background hover:bg-muted text-foreground transition"
               >
-                <i data-lucide="folder-symlink" class="w-4 h-4 text-emerald-300"></i>
+                <i data-lucide="arrow-left" class="size-3.5"></i>
+                <span>Tüm Dersler</span>
+              </button>
+              <a
+                href="${driveFolderUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex h-9 items-center gap-1.5 px-3 text-xs font-medium rounded-md bg-secondary text-secondary-foreground hover:opacity-90 transition"
+              >
+                <i data-lucide="folder-symlink" class="size-3.5"></i>
                 <span>Drive'da Aç</span>
               </a>
-              <button 
+              <button
                 onclick="openEditCourseModal('${esc(code)}')"
-                class="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 text-white transition"
+                class="inline-flex h-9 items-center gap-1.5 px-3 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
               >
-                <i data-lucide="edit-3" class="w-4 h-4 text-sky-300"></i>
+                <i data-lucide="edit-3" class="size-3.5"></i>
                 <span>Bilgileri Düzenle</span>
               </button>
             </div>
           </div>
-        </div>
 
-        <!-- QUICK LINKS & SHORTCUT CHIPS -->
-        <div>
-          <div class="flex items-center justify-between mb-3 px-1">
-            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
-              Ders Kısayolları & Önemli Linkler
-            </h3>
-            <button 
-              onclick="openEditCourseModal('${esc(code)}')"
-              class="text-[11px] text-sky-400 hover:underline flex items-center gap-1 font-medium"
-            >
-              <i data-lucide="plus" class="w-3 h-3"></i> Link Ekle
-            </button>
-          </div>
-          <div class="flex flex-wrap items-center gap-2.5">
-            ${shortcutButtonsHtml || `
-              <div class="text-xs text-slate-500 italic p-3 bg-slate-900/60 rounded-xl border border-slate-800 w-full flex items-center justify-between">
-                <span>Henüz özel kısayol linki eklenmedi.</span>
-                <button onclick="openEditCourseModal('${esc(code)}')" class="text-sky-400 hover:underline font-semibold">Şimdi Ekle</button>
-              </div>
-            `}
-          </div>
-        </div>
-
-        <!-- COURSE CONTENT: WEEKLY BREAKDOWN OR CATEGORIES -->
-        <div class="space-y-6 pt-2">
-          
-          <!-- Section 1: Weekly Breakdown (Haftalık Akış) -->
-          ${weekFolders.length > 0 ? `
-            <div>
-              <div class="flex items-center justify-between mb-3 px-1">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                  <i data-lucide="calendar" class="w-4 h-4 text-sky-400"></i>
-                  Haftalık Ders Akışı (${weekFolders.length} Hafta)
-                </h3>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                ${weekFolders.map(w => renderFolderCard(w, code, true)).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          <!-- Section 2: Subject Categories (Slaytlar, Kitaplar, vb.) -->
-          ${catFolders.length > 0 ? `
-            <div>
-              <div class="flex items-center justify-between mb-3 px-1">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                  <i data-lucide="folder" class="w-4 h-4 text-emerald-400"></i>
-                  Ders Materyal Klasörleri (${catFolders.length})
-                </h3>
-              </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                ${catFolders.map(c => renderFolderCard(c, code, false)).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          <!-- Section 3: Root Loose Files (Ana Klasördeki Doğrudan Dosyalar) -->
-          ${rootFiles.length > 0 ? `
-            <div>
-              <div class="flex items-center justify-between mb-3 px-1">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                  <i data-lucide="files" class="w-4 h-4 text-blue-400"></i>
-                  Genel Dosyalar & Belgeler (${rootFiles.length})
-                </h3>
-              </div>
-              <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-3 divide-y divide-slate-800/80">
-                ${rootFiles.map(f => renderFileRow(f, code)).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          <!-- Empty Course State -->
-          ${totalFiles === 0 ? `
-            <div class="text-center py-16 px-4 bg-slate-900/30 rounded-3xl border border-slate-800/60">
-              <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-slate-800/60 flex items-center justify-center text-slate-400">
-                <i data-lucide="folder-dashed" class="w-8 h-8"></i>
-              </div>
-              <h4 class="font-bold text-sm text-slate-200 mb-1">Bu Ders İçin Henüz Materyal Yüklenmedi</h4>
-              <p class="text-xs text-slate-500 max-w-sm mx-auto mb-4 leading-relaxed">
-                Google Drive'daki <strong>${esc(code)}</strong> klasörüne PDF, slayt veya 'Hafta 1', 'Hafta 2' klasörleri eklediğinizde bu sayfada otomatik olarak görünecektir.
-              </p>
-              <a 
-                href="${driveFolderUrl}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition"
+          <!-- Quick Links & Course Filter Toolbar -->
+          <div class="mt-6 pt-5 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-medium text-muted-foreground mr-1 flex items-center gap-1.5">
+                <i data-lucide="bookmark" class="size-3.5"></i>
+                Hızlı Linkler:
+              </span>
+              ${shortcutButtonsHtml || `
+                <span class="text-xs text-muted-foreground italic">Özel link eklenmedi.</span>
+              `}
+              <button
+                onclick="openEditCourseModal('${esc(code)}')"
+                class="inline-flex h-8 items-center gap-1 px-2.5 rounded-md border border-dashed border-border hover:bg-muted text-xs text-muted-foreground hover:text-foreground transition"
               >
-                <i data-lucide="plus" class="w-4 h-4"></i>
-                <span>Drive'da Dosya / Hafta Klasörü Ekle</span>
-              </a>
+                <i data-lucide="plus" class="size-3.5"></i>
+                <span>Link Ekle</span>
+              </button>
             </div>
-          ` : ''}
 
+            <!-- In-Course Instant Filter -->
+            <div class="relative w-full sm:w-64 shrink-0">
+              <i data-lucide="search" class="size-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+              <input
+                type="text"
+                value="${esc(courseLocalSearch)}"
+                oninput="filterCourseMaterials(this.value)"
+                placeholder="${esc(code)} içinde materyal ara..."
+                class="h-8 w-full rounded-md bg-background border border-input pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- COURSE CONTENT SECTIONS -->
+        <div id="courseMaterialsContainer" class="space-y-6">
+          ${renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl)}
         </div>
       `;
 
       lucide.createIcons();
     }
 
-    // Helper: Render Folder Card (Weekly or Category)
-    function renderFolderCard(folder, courseCode, isWeekly) {
-      const items = (folder.children || []).filter(f => !/^(info|bilgi)\.(txt|json)$/i.test(f.name));
-      const count = items.length;
+    function renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl) {
+      const q = courseLocalSearch.trim().toLowerCase();
 
-      const headerIcon = isWeekly ? 'calendar' : 'folder';
-      const headerColor = isWeekly ? 'text-sky-400' : 'text-emerald-400';
-      const title = isWeekly ? `${folder.weekNum}. Hafta: ${folder.name.replace(/(hafta|week)\s*0?\d+[:\s-]*/i, '') || 'Ders Materyalleri'}` : folder.name;
+      const filterItems = (items) => {
+        if (!q) return items;
+        return items.filter(f => f.name.toLowerCase().includes(q));
+      };
+
+      const filteredWeeks = weekFolders.map(w => ({
+        ...w,
+        filteredChildren: filterItems((w.children || []).filter(f => !/^(info|bilgi)\.(txt|json)$/i.test(f.name)))
+      })).filter(w => !q || w.filteredChildren.length > 0 || w.name.toLowerCase().includes(q));
+
+      const filteredCats = catFolders.map(c => ({
+        ...c,
+        filteredChildren: filterItems((c.children || []).filter(f => !/^(info|bilgi)\.(txt|json)$/i.test(f.name)))
+      })).filter(c => !q || c.filteredChildren.length > 0 || c.name.toLowerCase().includes(q));
+
+      const filteredRoots = filterItems(rootFiles);
 
       return `
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 hover:border-slate-700 transition flex flex-col justify-between space-y-3">
-          <div>
-            <!-- Folder Title -->
-            <div class="flex items-center justify-between gap-2 mb-2.5 pb-2.5 border-b border-slate-800/60">
-              <div class="flex items-center gap-2 truncate">
-                <i data-lucide="${headerIcon}" class="w-4 h-4 ${headerColor} shrink-0"></i>
-                <h4 class="font-bold text-xs text-slate-200 truncate" title="${esc(folder.name)}">${esc(title)}</h4>
+        <!-- Section 1: Weekly Breakdown -->
+        ${filteredWeeks.length > 0 ? `
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="size-7 rounded-sm bg-primary-soft text-primary flex items-center justify-center">
+                  <i data-lucide="calendar" class="size-4"></i>
+                </div>
+                <h3 class="text-base font-semibold">Haftalık Ders Akışı (${filteredWeeks.length} Hafta)</h3>
               </div>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 font-semibold shrink-0">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              ${filteredWeeks.map(w => renderFolderCard(w, code, true, w.filteredChildren)).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Section 2: Subject Categories (Slaytlar, Kitaplar, vb.) -->
+        ${filteredCats.length > 0 ? `
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="size-7 rounded-sm bg-primary-soft text-primary flex items-center justify-center">
+                  <i data-lucide="folder" class="size-4"></i>
+                </div>
+                <h3 class="text-base font-semibold">Ders Materyal Klasörleri (${filteredCats.length})</h3>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              ${filteredCats.map(c => renderFolderCard(c, code, false, c.filteredChildren)).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Section 3: Root Loose Files -->
+        ${filteredRoots.length > 0 ? `
+          <div class="admincn-card overflow-hidden">
+            <div class="px-6 py-4 border-b border-border flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="size-7 rounded-sm bg-primary-soft text-primary flex items-center justify-center">
+                  <i data-lucide="files" class="size-4"></i>
+                </div>
+                <h3 class="text-base font-semibold">Genel Dosyalar & Belgeler (${filteredRoots.length})</h3>
+              </div>
+            </div>
+            <div class="divide-y divide-border px-4 py-2">
+              ${filteredRoots.map(f => renderFileRow(f, code)).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Empty Course State -->
+        ${totalFiles === 0 ? `
+          <div class="admincn-card text-center py-16 px-4">
+            <div class="size-12 mx-auto mb-3 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
+              <i data-lucide="folder-open" class="size-6"></i>
+            </div>
+            <h4 class="font-semibold text-base text-foreground mb-1">Bu Ders İçin Henüz Materyal Yüklenmedi</h4>
+            <p class="text-xs text-muted-foreground max-w-sm mx-auto mb-5 leading-relaxed">
+              Google Drive'daki <strong>${esc(code)}</strong> klasörüne PDF, slayt veya 'Hafta 1', 'Hafta 2' klasörleri eklediğinizde bu sayfada otomatik olarak görünecektir.
+            </p>
+            <a
+              href="${driveFolderUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex h-9 items-center gap-2 px-4 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition"
+            >
+              <i data-lucide="plus" class="size-4"></i>
+              <span>Drive'da Dosya / Hafta Klasörü Ekle</span>
+            </a>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    window.filterCourseMaterials = function(val) {
+      courseLocalSearch = val;
+      if (!activeCourseId || !driveTree) return;
+      const courseNode = driveTree.find(n => n.id === activeCourseId);
+      if (!courseNode) return;
+      const code = courseNode.name.toUpperCase().trim();
+      const meta = courseMetadata[code] || { name: courseNode.name };
+      const totalFiles = countFilesInFolder(courseNode.children);
+      const driveFolderUrl = `https://drive.google.com/drive/folders/${realId(courseNode)}`;
+      const subfolders = (courseNode.children || []).filter(n => realMime(n) === FOLDER_MIME);
+      const rootFiles = (courseNode.children || []).filter(n => realMime(n) !== FOLDER_MIME && !/^(info|bilgi)\.(txt|json)$/i.test(n.name));
+
+      const weekFolders = [];
+      const catFolders = [];
+      subfolders.forEach(sub => {
+        const nameLower = sub.name.toLowerCase();
+        if (/(hafta|week)\s*0?(\d+)/i.test(nameLower)) {
+          const match = nameLower.match(/(hafta|week)\s*0?(\d+)/i);
+          weekFolders.push({ ...sub, weekNum: parseInt(match[2], 10) });
+        } else {
+          catFolders.push(sub);
+        }
+      });
+      weekFolders.sort((a, b) => a.weekNum - b.weekNum);
+
+      const box = $('courseMaterialsContainer');
+      if (box) {
+        box.innerHTML = renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl);
+        lucide.createIcons();
+      }
+    };
+
+    // Helper: Render Folder Card (AdminCN Card pattern)
+    function renderFolderCard(folder, courseCode, isWeekly, overrideItems = null) {
+      const items = overrideItems || (folder.children || []).filter(f => !/^(info|bilgi)\.(txt|json)$/i.test(f.name));
+      const count = items.length;
+      const headerIcon = isWeekly ? 'calendar' : 'folder';
+      const title = isWeekly
+        ? `${folder.weekNum}. Hafta: ${folder.name.replace(/(hafta|week)\s*0?\d+[:\s-]*/i, '') || 'Ders Materyalleri'}`
+        : folder.name;
+
+      return `
+        <div id="folder-${folder.id}" class="admincn-card flex flex-col justify-between overflow-hidden">
+          <div>
+            <!-- CardHeader -->
+            <div class="px-5 py-4 border-b border-border flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="size-8 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                  <i data-lucide="${headerIcon}" class="size-4"></i>
+                </div>
+                <h4 class="font-semibold text-sm text-foreground truncate" title="${esc(folder.name)}">${esc(title)}</h4>
+              </div>
+              <span class="rounded-sm bg-primary-soft px-2 py-0.5 text-xs font-medium text-primary shrink-0 tabular-nums">
                 ${count} dosya
               </span>
             </div>
 
-            <!-- Items List -->
-            <div class="space-y-1.5">
+            <!-- CardContent -->
+            <div class="p-4 space-y-2">
               ${items.length > 0 ? items.map(item => renderFileItem(item, courseCode)).join('') : `
-                <div class="text-[11px] text-slate-500 italic py-2 text-center">Bu klasör henüz boş.</div>
+                <div class="text-xs text-muted-foreground italic py-4 text-center">Bu klasör henüz boş.</div>
               `}
             </div>
           </div>
 
-          <!-- Bottom Action: Open Folder on Drive -->
-          <div class="pt-2 flex justify-end border-t border-slate-800/40">
-            <a 
-              href="https://drive.google.com/drive/folders/${realId(folder)}" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="text-[10px] text-slate-400 hover:text-slate-200 flex items-center gap-1 font-medium transition"
+          <!-- CardFooter -->
+          <div class="px-5 py-3 border-t border-border bg-muted/20 flex items-center justify-between text-xs text-muted-foreground">
+            <span>Google Drive Klasörü</span>
+            <a
+              href="https://drive.google.com/drive/folders/${realId(folder)}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-foreground hover:underline inline-flex items-center gap-1 font-medium transition"
             >
               <span>Klasörü Drive'da Aç</span>
-              <i data-lucide="external-link" class="w-3 h-3"></i>
+              <i data-lucide="external-link" class="size-3"></i>
             </a>
           </div>
         </div>
@@ -1200,19 +2164,19 @@
       const yt = extractYouTubeId(item.name) || extractYouTubeId(item.description);
 
       return `
-        <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-950/60 border border-slate-800/80 hover:border-sky-500/40 hover:bg-slate-800/40 transition group">
-          <div class="flex items-center gap-2.5 truncate flex-1 cursor-pointer" onclick="openViewerModal('${item.id}', '${courseCode}')">
-            <div class="p-1.5 rounded-lg ${conf.bg} shrink-0">
-              <i data-lucide="${conf.icon}" class="w-3.5 h-3.5 ${conf.color}"></i>
+        <div class="flex items-center justify-between gap-2.5 p-2.5 rounded-lg border border-border bg-background hover:bg-muted/50 transition group">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer" onclick="openViewerModal('${item.id}', '${courseCode}')">
+            <div class="size-8 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+              <i data-lucide="${conf.icon}" class="size-4"></i>
             </div>
-            <div class="truncate">
-              <div class="text-xs font-semibold text-slate-200 truncate group-hover:text-sky-300 transition" title="${esc(item.name)}">
+            <div class="min-w-0 flex-1">
+              <div class="text-xs sm:text-sm font-medium text-foreground truncate group-hover:underline" title="${esc(item.name)}">
                 ${esc(item.name)}
               </div>
-              <div class="text-[10px] text-slate-500 capitalize flex items-center gap-1.5 flex-wrap">
+              <div class="text-[11px] text-muted-foreground flex items-center gap-1.5 flex-wrap">
                 <span>${conf.badge}${item.size ? ' • ' + formatFileSize(item.size) : ''}</span>
                 ${item.size && Number(item.size) > 20 * 1024 * 1024 ? `
-                  <span class="px-1.5 py-0.2 rounded bg-amber-950/70 border border-amber-800/40 text-[9px] text-amber-300 font-medium">⚡ Sitede Doğrudan Açılır</span>
+                  <span class="px-1.5 py-0.2 rounded-sm bg-primary-soft text-[10px] text-primary font-medium">⚡ Doğrudan Akış</span>
                 ` : ''}
               </div>
             </div>
@@ -1220,31 +2184,31 @@
 
           <!-- Action Buttons -->
           <div class="flex items-center gap-1 shrink-0">
-            <button 
-              onclick="openViewerModal('${item.id}', '${courseCode}')" 
-              class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-sky-600/20 text-sky-300 hover:bg-sky-600 hover:text-white transition"
+            <button
+              onclick="openViewerModal('${item.id}', '${courseCode}')"
+              class="h-7 px-2.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
             >
               ${kind === 'youtube' || yt ? 'İzle' : 'Aç'}
             </button>
             ${kind !== 'youtube' ? `
-              <a 
-                href="https://drive.google.com/uc?export=download&id=${realId(item)}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                title="Cihaza İndir (Hızlı)" 
-                class="p-1 text-slate-400 hover:text-emerald-400 transition"
+              <a
+                href="https://drive.google.com/uc?export=download&id=${realId(item)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Cihaza İndir (Hızlı)"
+                class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
               >
-                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <i data-lucide="download" class="size-3.5"></i>
               </a>
             ` : ''}
-            <a 
-              href="${item.webViewLink || `https://drive.google.com/file/d/${realId(item)}/view`}" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              title="Drive'da Aç" 
-              class="p-1 text-slate-400 hover:text-white transition"
+            <a
+              href="${item.webViewLink || `https://drive.google.com/file/d/${realId(item)}/view`}"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Drive'da Aç"
+              class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
             >
-              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <i data-lucide="external-link" class="size-3.5"></i>
             </a>
           </div>
         </div>
@@ -1257,46 +2221,46 @@
       const conf = KIND_CONFIG[kind] || KIND_CONFIG.file;
 
       return `
-        <div class="flex items-center justify-between gap-3 py-2 px-1">
-          <div class="flex items-center gap-2.5 truncate flex-1 cursor-pointer" onclick="openViewerModal('${item.id}', '${courseCode}')">
-            <div class="p-1.5 rounded-lg ${conf.bg} shrink-0">
-              <i data-lucide="${conf.icon}" class="w-3.5 h-3.5 ${conf.color}"></i>
+        <div class="flex items-center justify-between gap-3 py-2.5 px-2 hover:bg-muted/30 rounded-md transition">
+          <div class="flex items-center gap-3 min-w-0 flex-1 cursor-pointer" onclick="openViewerModal('${item.id}', '${courseCode}')">
+            <div class="size-8 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+              <i data-lucide="${conf.icon}" class="size-4"></i>
             </div>
-            <div class="truncate flex items-center gap-2">
-              <span class="text-xs font-medium text-slate-200 truncate hover:text-sky-300 transition" title="${esc(item.name)}">
+            <div class="min-w-0 flex items-center gap-2 flex-wrap">
+              <span class="text-xs sm:text-sm font-medium text-foreground truncate hover:underline" title="${esc(item.name)}">
                 ${esc(item.name)}
               </span>
-              ${item.size ? `<span class="text-[10px] text-slate-500 shrink-0 font-mono">${formatFileSize(item.size)}</span>` : ''}
+              ${item.size ? `<span class="text-xs text-muted-foreground shrink-0 font-mono">${formatFileSize(item.size)}</span>` : ''}
               ${item.size && Number(item.size) > 20 * 1024 * 1024 ? `
-                <span class="px-1.5 py-0.2 rounded bg-amber-950/70 border border-amber-800/40 text-[9px] text-amber-300 font-medium shrink-0">⚡ Sitede Açılır</span>
+                <span class="px-1.5 py-0.2 rounded-sm bg-primary-soft text-[10px] text-primary font-medium shrink-0">⚡ Doğrudan Akış</span>
               ` : ''}
             </div>
           </div>
           <div class="flex items-center gap-1 shrink-0">
-            <button 
-              onclick="openViewerModal('${item.id}', '${courseCode}')" 
-              class="px-2 py-0.5 text-[11px] font-semibold rounded bg-slate-800 text-sky-400 hover:bg-sky-600 hover:text-white transition"
+            <button
+              onclick="openViewerModal('${item.id}', '${courseCode}')"
+              class="h-7 px-2.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
             >
               Aç
             </button>
             ${kind !== 'youtube' ? `
-              <a 
-                href="https://drive.google.com/uc?export=download&id=${realId(item)}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                title="Cihaza İndir (Hızlı)" 
-                class="p-1 text-slate-400 hover:text-emerald-400 transition"
+              <a
+                href="https://drive.google.com/uc?export=download&id=${realId(item)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Cihaza İndir"
+                class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
               >
-                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <i data-lucide="download" class="size-3.5"></i>
               </a>
             ` : ''}
-            <a 
-              href="${item.webViewLink || `https://drive.google.com/file/d/${realId(item)}/view`}" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="p-1 text-slate-400 hover:text-white transition"
+            <a
+              href="${item.webViewLink || `https://drive.google.com/file/d/${realId(item)}/view`}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
             >
-              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <i data-lucide="external-link" class="size-3.5"></i>
             </a>
           </div>
         </div>
@@ -1338,7 +2302,6 @@
 
       loader.classList.add('hidden');
 
-      // Instant 0.0s reopening from in-memory session cache
       if (sessionBlobCache.has(id)) {
         streamBox.classList.add('hidden');
         frame.src = sessionBlobCache.get(id);
@@ -1387,7 +2350,6 @@
           serverBadge.textContent = '⚡ Doğrudan Motor';
           activeStreamXhr = null;
         } else {
-          console.warn('Doğrudan aktarım yanıt vermedi, Drive önizlemeye dönülüyor');
           streamBox.classList.add('hidden');
           frame.src = `https://drive.google.com/file/d/${id}/preview`;
           serverBadge.textContent = 'Drive Modu';
@@ -1396,7 +2358,6 @@
       };
 
       xhr.onerror = () => {
-        console.warn('Doğrudan aktarım hatası, Drive önizlemeye dönülüyor');
         streamBox.classList.add('hidden');
         frame.src = `https://drive.google.com/file/d/${id}/preview`;
         serverBadge.textContent = 'Drive Modu';
@@ -1426,13 +2387,12 @@
 
       const sizeStr = formatFileSize(fileNode.size);
       title.textContent = fileNode.name;
-      breadcrumb.textContent = `${courseCode} • Materyal Önizleme${sizeStr ? ' • ' + sizeStr : ''}`;
+      breadcrumb.textContent = `${courseCode} • Materyal Önizleme${sizeStr && sizeStr !== '—' ? ' • ' + sizeStr : ''}`;
       extBtn.href = fileNode.webViewLink || `https://drive.google.com/file/d/${realId(fileNode)}/view`;
 
       const id = realId(fileNode);
       downloadBtn.href = `https://drive.google.com/uc?export=download&id=${id}`;
 
-      // Check if it's Word / DOC file
       const kind = getFileKind(fileNode);
       const isDoc = kind === 'word' || fileNode.name.toLowerCase().endsWith('.doc') || fileNode.name.toLowerCase().endsWith('.docx');
       if (isDoc) {
@@ -1445,7 +2405,6 @@
       loader.classList.remove('hidden');
       frame.onload = () => loader.classList.add('hidden');
 
-      // Check for direct YouTube
       const yt = extractYouTubeId(fileNode.name) || extractYouTubeId(fileNode.description);
       if (yt) {
         extBtn.href = `https://www.youtube.com/watch?v=${yt}`;
@@ -1461,12 +2420,9 @@
         const isLarge = fileNode.size && Number(fileNode.size) > 20 * 1024 * 1024;
 
         if (isPdf && isLarge) {
-          // Large books (> 20 MB, e.g. Calculus 70MB, Physics 38-62MB, Chemistry 110-270MB)
-          // Google Drive's web preview server fails on these, so we stream directly via API
           currentViewerMode = 0;
           loadDirectStream(fileNode);
         } else {
-          // Regular files (< 20 MB), fast Google Drive preview
           currentViewerMode = 1;
           serverBadge.textContent = 'Drive Modu';
           frame.src = getPreviewUrl(fileNode);
@@ -1486,17 +2442,14 @@
       const serverBadge = $('viewerServerBadge');
 
       if (currentViewerMode === 0) {
-        // Direct Stream (Native Blob)
         loadDirectStream(currentViewingNode);
       } else if (currentViewerMode === 1) {
-        // Drive Mode
         if (activeStreamXhr) { activeStreamXhr.abort(); activeStreamXhr = null; }
         $('viewerStreamProgress').classList.add('hidden');
         loader.classList.remove('hidden');
         frame.src = `https://drive.google.com/file/d/${id}/preview`;
         serverBadge.textContent = 'Drive Modu';
       } else {
-        // Docs Mode
         if (activeStreamXhr) { activeStreamXhr.abort(); activeStreamXhr = null; }
         $('viewerStreamProgress').classList.add('hidden');
         loader.classList.remove('hidden');
@@ -1520,26 +2473,41 @@
       }
     };
 
-    function closeViewerModal() {
+    function cleanupViewerState() {
       if (activeStreamXhr) {
         activeStreamXhr.abort();
         activeStreamXhr = null;
       }
       $('viewerStreamProgress').classList.add('hidden');
-      const modal = $('viewerModal');
-      const frame = $('viewerFrame');
-      frame.src = 'about:blank';
-      modal.close();
+      $('viewerFrame').src = 'about:blank';
     }
 
+    function closeViewerModal() {
+      cleanupViewerState();
+      $('viewerModal').close();
+    }
+
+    $('viewerModal').addEventListener('close', cleanupViewerState);
     $('viewerCloseBtn').onclick = closeViewerModal;
     $('viewerBackBtn').onclick = closeViewerModal;
-    $('viewerModal').addEventListener('click', (e) => {
-      const rect = e.target.getBoundingClientRect();
-      if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
-        closeViewerModal();
-      }
-    });
+
+    // Fallback for browsers without <dialog closedby="any"> support
+    if (!('closedBy' in HTMLDialogElement.prototype)) {
+      document.querySelectorAll('dialog[closedby="any"]').forEach((dialog) => {
+        dialog.addEventListener('click', (event) => {
+          if (event.target !== dialog) return;
+          const rect = dialog.getBoundingClientRect();
+          const isDialogContent = (
+            rect.top <= event.clientY &&
+            event.clientY <= rect.top + rect.height &&
+            rect.left <= event.clientX &&
+            event.clientX <= rect.left + rect.width
+          );
+          if (isDialogContent) return;
+          dialog.close();
+        });
+      });
+    }
 
     $('viewerFullscreenBtn').onclick = () => {
       const stage = $('viewerStage');
@@ -1556,13 +2524,13 @@
       navigator.clipboard.writeText(email).then(() => {
         const textSpan = btnEl.querySelector('.email-text');
         const originalText = textSpan.textContent;
-        
+
         textSpan.textContent = 'Kopyalandı! ✓';
-        btnEl.classList.add('text-emerald-300', 'border-emerald-500/60');
-        
+        btnEl.classList.add('text-emerald-600', 'dark:text-emerald-400');
+
         setTimeout(() => {
           textSpan.textContent = originalText;
-          btnEl.classList.remove('text-emerald-300', 'border-emerald-500/60');
+          btnEl.classList.remove('text-emerald-600', 'dark:text-emerald-400');
         }, 1800);
       }).catch(() => {
         prompt('E-posta adresini kopyalayın:', email);
@@ -1587,12 +2555,12 @@
 
     function renderEditLinksRows(links) {
       const container = $('editLinksContainer');
-      container.innerHTML = links.map((link, idx) => `
+      container.innerHTML = links.map((link) => `
         <div class="flex items-center gap-2 link-row">
-          <input type="text" placeholder="Başlık (örn: OBS)" value="${esc(link.title)}" class="w-1/3 px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-white">
-          <input type="url" placeholder="https://..." value="${esc(link.url)}" class="flex-1 px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-white">
-          <button type="button" onclick="this.parentElement.remove()" class="p-1 text-slate-500 hover:text-rose-400">
-            <i data-lucide="trash-2" class="w-4 h-4"></i>
+          <input type="text" placeholder="Başlık (örn: Bölüm)" value="${esc(link.title)}" class="h-8 w-1/3 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
+          <input type="url" placeholder="https://..." value="${esc(link.url)}" class="h-8 flex-1 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
+          <button type="button" onclick="this.parentElement.remove()" class="size-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive">
+            <i data-lucide="trash-2" class="size-4"></i>
           </button>
         </div>
       `).join('');
@@ -1604,10 +2572,10 @@
       const div = document.createElement('div');
       div.className = 'flex items-center gap-2 link-row';
       div.innerHTML = `
-        <input type="text" placeholder="Başlık (örn: OBS)" value="" class="w-1/3 px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-white">
-        <input type="url" placeholder="https://..." value="" class="flex-1 px-2 py-1.5 bg-slate-800 border border-slate-700 rounded text-xs text-white">
-        <button type="button" onclick="this.parentElement.remove()" class="p-1 text-slate-500 hover:text-rose-400">
-          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        <input type="text" placeholder="Başlık (örn: Bölüm)" value="" class="h-8 w-1/3 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
+        <input type="url" placeholder="https://..." value="" class="h-8 flex-1 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
+        <button type="button" onclick="this.parentElement.remove()" class="size-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive">
+          <i data-lucide="trash-2" class="size-4"></i>
         </button>
       `;
       container.appendChild(div);
@@ -1629,7 +2597,6 @@
       meta.email = $('editCourseEmail').value.trim();
       meta.credits = $('editCourseCredits').value.trim();
 
-      // Read links
       const linkRows = document.querySelectorAll('.link-row');
       meta.links = [];
       linkRows.forEach(row => {
@@ -1646,14 +2613,16 @@
 
       $('editCourseModal').close();
       renderSidebarCourses();
-      renderCourseHub(activeCourseId);
+      if (activeCourseId) {
+        renderCourseHub(activeCourseId);
+      } else {
+        renderWelcomeHub();
+      }
     };
 
-    // Copy info.txt format helper
     $('copyInfoTxtBtn').onclick = () => {
       if (!currentEditingCourseCode) return;
       const code = currentEditingCourseCode;
-      const meta = courseMetadata[code] || {};
 
       let sample = `# ${code} Ders Bilgisi\n`;
       sample += `Hoca: ${$('editCourseInstructor').value.trim() || 'Öğretim Üyesi'}\n`;
@@ -1681,6 +2650,7 @@
       $('keyInput').value = settings.key;
       $('settingsModal').showModal();
     }
+    window.openSettingsModal = openSettingsModal;
     $('settingsBtn').onclick = openSettingsModal;
     $('closeSettingsBtn').onclick = () => $('settingsModal').close();
 
@@ -1696,7 +2666,48 @@
       loadDriveData();
     };
 
-    // ================= SEARCH & MOBILE TOGGLES =================
+    // ================= THEME TOGGLE (AdminCN ModeToggle + System Aware) =================
+    function applyResolvedTheme(storedVal) {
+      const meta = document.querySelector('meta[name="color-scheme"]');
+      if (meta) meta.content = storedVal ?? 'light dark';
+      const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = storedVal ? storedVal === 'dark' : sysDark;
+      document.documentElement.classList.toggle('dark', isDark);
+    }
+
+    $('themeToggleBtn').onclick = () => {
+      const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const sysScheme = sysDark ? 'dark' : 'light';
+      const currentlyDark = document.documentElement.classList.contains('dark');
+      const targetScheme = currentlyDark ? 'light' : 'dark';
+
+      try {
+        if (targetScheme === sysScheme) {
+          localStorage.removeItem('color-scheme');
+          applyResolvedTheme(null);
+        } else {
+          localStorage.setItem('color-scheme', targetScheme);
+          applyResolvedTheme(targetScheme);
+        }
+      } catch (e) {
+        applyResolvedTheme(targetScheme);
+      }
+    };
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'color-scheme') {
+        applyResolvedTheme(e.newValue);
+      }
+    });
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      try {
+        const stored = localStorage.getItem('color-scheme');
+        if (!stored) applyResolvedTheme(null);
+      } catch (e) {}
+    });
+
+    // ================= SIDEBAR & KEYBOARD SHORTCUTS (AdminCN SidebarProvider) =================
     $('sidebarSearch').oninput = () => {
       renderSidebarCourses();
     };
@@ -1710,8 +2721,31 @@
       $('sidebar').classList.toggle('-translate-x-full', !show);
       $('sidebarBackdrop').classList.toggle('hidden', !show);
     }
-    $('mobileMenuBtn').onclick = () => toggleMobileSidebar(true);
+
+    function toggleSidebarAction() {
+      if (window.innerWidth < 768) {
+        const isHidden = $('sidebar').classList.contains('-translate-x-full');
+        toggleMobileSidebar(isHidden);
+      } else {
+        const wrapper = $('sidebarWrapper');
+        const nextState = wrapper.getAttribute('data-state') === 'collapsed' ? 'expanded' : 'collapsed';
+        wrapper.setAttribute('data-state', nextState);
+      }
+    }
+
+    $('sidebarTriggerBtn').onclick = toggleSidebarAction;
+    $('mobileCloseSidebarBtn').onclick = () => toggleMobileSidebar(false);
     $('sidebarBackdrop').onclick = () => toggleMobileSidebar(false);
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        toggleSidebarAction();
+      } else if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        $('sidebarSearch')?.focus();
+      }
+    });
 
     // Initial Start
     lucide.createIcons();
