@@ -887,15 +887,6 @@
         links: [
           { title: 'TDK Sözlük', url: 'https://sozluk.gov.tr', icon: 'book-open' }
         ]
-      },
-      'OUL101': {
-        name: 'Orientation Programming to the University Life',
-        instructor: 'Bölüm Başkanlığı',
-        email: 'eee@ankara.edu.tr',
-        avesisUrl: 'https://eee.ankara.edu.tr',
-        credits: '0 Kredi • 0 AKTS',
-        icon: 'compass',
-        links: []
       }
     };
 
@@ -911,6 +902,7 @@
     };
 
     let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v6') || 'null') || DEFAULT_COURSE_METADATA;
+    delete courseMetadata['OUL101'];
     Object.keys(DEFAULT_COURSE_METADATA).forEach(code => {
       if (!courseMetadata[code]) {
         courseMetadata[code] = DEFAULT_COURSE_METADATA[code];
@@ -1204,6 +1196,7 @@
     }
 
     function onTreeReady() {
+      driveTree = (driveTree || []).filter(n => n.name.toUpperCase().trim() !== 'OUL101');
       $('mainLoader')?.classList.add('hidden');
       $('mainContainer')?.setAttribute('aria-busy', 'false');
       renderSidebarCourses();
