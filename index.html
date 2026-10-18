@@ -672,7 +672,7 @@
     <div data-slot="sidebar-inset" class="bg-background relative flex min-w-0 flex-1 flex-col">
 
       <header class="bg-card sticky top-0 z-30 border-b border-border">
-        <div class="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-2.5 sm:px-6">
+        <div class="flex w-full items-center justify-between gap-4 px-4 py-2.5 sm:px-6 lg:px-8">
           <div class="flex items-center gap-3 min-w-0">
             <button
               id="sidebarTriggerBtn"
@@ -745,7 +745,7 @@
         </div>
       </header>
 
-      <main id="mainContainer" aria-busy="true" class="mx-auto size-full max-w-[1440px] flex-1 px-4 py-6 sm:px-6">
+      <main id="mainContainer" aria-busy="true" class="w-full flex-1 px-4 py-6 sm:px-6 lg:px-8">
         <div id="mainLoader" class="hidden py-20 flex flex-col items-center justify-center gap-3 text-muted-foreground">
           <progress aria-label="Yükleniyor" class="loading-spinner"></progress>
           <span class="text-xs">Yükleniyor...</span>
@@ -754,8 +754,8 @@
         <div id="courseHubView" class="space-y-6"></div>
       </main>
 
-      <footer class="border-t border-border bg-card/40">
-        <div class="text-muted-foreground mx-auto flex w-full max-w-[1440px] items-center justify-between gap-3 px-4 py-3.5 max-sm:flex-col sm:px-6 text-xs">
+      <footer class="border-t border-border bg-card/40 mt-auto">
+        <div class="text-muted-foreground flex w-full items-center justify-between gap-3 px-4 py-3.5 max-sm:flex-col sm:px-6 lg:px-8 text-xs">
           <div class="flex items-center gap-3">
             <span>© 2026 ANKU EEE</span>
             <span>•</span>
@@ -770,7 +770,7 @@
 
 
   <!-- ================= IN-PAGE UNIVERSAL VIEWER MODAL ================= -->
-  <dialog id="viewerModal" closedby="any" aria-labelledby="viewerFileTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[96vw] max-w-6xl h-[92vh] max-h-[920px] overflow-hidden outline-none shadow-2xl">
+  <dialog id="viewerModal" closedby="any" aria-labelledby="viewerFileTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[96vw] max-w-6xl 2xl:max-w-7xl h-[92vh] max-h-[940px] overflow-hidden outline-none shadow-2xl">
     <div class="h-13 bg-card border-b border-border px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 shrink-0">
       <div class="flex items-center gap-3 overflow-hidden">
         <button id="viewerBackBtn" class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium text-secondary-foreground bg-secondary hover:opacity-85 transition">
@@ -1634,7 +1634,7 @@
         </div>
 
         <!-- COURSE CARDS GRID -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 min-[1800px]:grid-cols-6 gap-4">
           ${courses.map(course => {
             const code = course.name.toUpperCase().trim();
             const meta = courseMetadata[code] || { name: course.name, credits: '', instructor: '', icon: 'book-open' };
@@ -1762,14 +1762,14 @@
                         <div class="size-8 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
                           <i data-lucide="${conf.icon}" class="size-4"></i>
                         </div>
-                        <span class="text-card-foreground text-xs sm:text-sm font-medium truncate max-w-xs sm:max-w-md group-hover:underline" title="${esc(node.name)}">${esc(node.name)}</span>
+                        <span class="text-card-foreground text-xs sm:text-sm font-medium truncate max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-2xl 2xl:max-w-4xl group-hover:underline" title="${esc(node.name)}">${esc(node.name)}</span>
                       </div>
                     </td>
                     <td class="px-4 py-3">
                       <span class="rounded-sm bg-primary-soft text-primary px-2 py-0.5 text-xs font-mono font-medium">${esc(courseCode)}</span>
                     </td>
                     <td class="px-4 py-3 hidden md:table-cell text-xs text-muted-foreground">
-                      <span class="truncate block max-w-[200px]">${esc(folderPath)}</span>
+                      <span class="truncate block max-w-[200px] lg:max-w-[320px] xl:max-w-[480px]">${esc(folderPath)}</span>
                     </td>
                     <td class="px-4 py-3">
                       <span class="rounded-sm bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-medium">${conf.badge}</span>
@@ -1957,7 +1957,7 @@
             </div>
           ` : ''}
 
-          <div class="relative z-10 flex flex-col gap-4 sm:max-w-[64%] lg:max-w-[60%]">
+          <div class="relative z-10 flex flex-col gap-4 max-w-full sm:max-w-[68%] xl:max-w-[72%]">
             <div class="flex items-start gap-3.5">
               <div
                 class="size-11 rounded-xl flex items-center justify-center shrink-0 backdrop-blur-sm shadow-sm"
@@ -2064,15 +2064,27 @@
 
       const filteredRoots = filterItems(rootFiles);
 
+      const weekGridCols = filteredWeeks.length === 1
+        ? 'grid-cols-1'
+        : filteredWeeks.length === 2
+          ? 'grid-cols-1 md:grid-cols-2'
+          : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4';
+
+      const catGridCols = filteredCats.length === 1
+        ? 'grid-cols-1'
+        : filteredCats.length === 2
+          ? 'grid-cols-1 md:grid-cols-2'
+          : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4';
+
       return `
         ${filteredWeeks.length > 0 ? `
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid ${weekGridCols} gap-4">
             ${filteredWeeks.map(w => renderFolderCard(w, code, true, w.filteredChildren)).join('')}
           </div>
         ` : ''}
 
         ${filteredCats.length > 0 ? `
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid ${catGridCols} gap-4">
             ${filteredCats.map(c => renderFolderCard(c, code, false, c.filteredChildren)).join('')}
           </div>
         ` : ''}
