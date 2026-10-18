@@ -862,7 +862,8 @@
         <div class="size-11 rounded-xl bg-primary-soft flex items-center justify-center text-primary mb-3">
           <i data-lucide="zap" class="size-5 animate-pulse"></i>
         </div>
-        <h4 id="viewerStreamTitle" class="font-semibold text-sm text-foreground max-w-md truncate mb-3">Yükleniyor...</h4>
+        <h4 id="viewerStreamTitle" class="font-semibold text-sm text-foreground max-w-md truncate mb-1">Yükleniyor...</h4>
+        <div id="viewerStreamStatus" class="text-xs text-muted-foreground mb-3 font-medium">Sunucuya bağlanıyor...</div>
         <div class="w-72 max-w-[85vw] h-2 bg-muted rounded-full overflow-hidden mb-2">
           <div id="viewerProgressBar" class="h-full bg-primary rounded-full transition-all duration-150" style="width: 0%"></div>
         </div>
@@ -870,11 +871,15 @@
           <span id="viewerProgressMb">0.0 MB</span>
           <span id="viewerProgressPercent" class="text-foreground font-semibold">0%</span>
         </div>
-        <div class="mt-4">
-          <button type="button" id="cancelStreamBtn" class="h-8 px-3 rounded-md border border-border bg-card hover:bg-muted text-foreground text-xs font-medium transition">
-            Drive Önizleme
+        <div class="mt-4 flex items-center justify-center gap-2">
+          <button type="button" id="cancelStreamBtn" class="h-8 px-3 rounded-md border border-border bg-card hover:bg-muted text-foreground text-xs font-medium transition inline-flex items-center gap-1.5">
+            <i data-lucide="eye" class="size-3.5"></i>
+            <span>Drive Önizleme</span>
           </button>
         </div>
+        <p class="text-[11px] text-muted-foreground/80 mt-3 max-w-xs">
+          Kitap doğrudan tarayıcınıza aktarılıp önbelleğe alınıyor. İptal edip standart Drive önizlemesine de geçebilirsiniz.
+        </p>
       </div>
 
       <iframe
@@ -962,7 +967,11 @@
         <input id="keyInput" type="text" placeholder="AIza..."
                class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 font-mono text-xs text-foreground">
       </div>
-      <div class="flex justify-end gap-2 pt-2 border-t border-border">
+      <div class="flex items-center justify-between pt-2 border-t border-border">
+        <button type="button" id="clearCacheBtn" class="h-8 px-2.5 rounded-md border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground text-xs font-medium transition inline-flex items-center gap-1.5">
+          <i data-lucide="trash-2" class="size-3.5"></i>
+          <span>Önbelleği Temizle</span>
+        </button>
         <button type="submit" class="h-8 px-3.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 font-medium transition">Kaydet</button>
       </div>
     </form>
@@ -2319,12 +2328,81 @@
       return null;
     }
 
+    // ================= INDEXEDDB PERSISTENT PDF CACHE =================
+    const PDF_CACHE_DB = 'AnkuPdfCacheDB';
+    const PDF_CACHE_STORE = 'pdfs';
+
+    function openPdfCacheDB() {
+      return new Promise((resolve) => {
+        if (!window.indexedDB) {
+          resolve(null);
+          return;
+        }
+        try {
+          const request = indexedDB.open(PDF_CACHE_DB, 1);
+          request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(PDF_CACHE_STORE)) {
+              db.createObjectStore(PDF_CACHE_STORE, { keyPath: 'id' });
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => resolve(null);
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    }
+
+    async function getCachedPdfBlob(id) {
+      try {
+        const db = await openPdfCacheDB();
+        if (!db) return null;
+        return new Promise((resolve) => {
+          try {
+            const tx = db.transaction(PDF_CACHE_STORE, 'readonly');
+            const store = tx.objectStore(PDF_CACHE_STORE);
+            const req = store.get(id);
+            req.onsuccess = () => resolve(req.result ? req.result.blob : null);
+            req.onerror = () => resolve(null);
+          } catch (e) {
+            resolve(null);
+          }
+        });
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function saveCachedPdfBlob(id, blob, name) {
+      try {
+        const db = await openPdfCacheDB();
+        if (!db) return;
+        const tx = db.transaction(PDF_CACHE_STORE, 'readwrite');
+        const store = tx.objectStore(PDF_CACHE_STORE);
+        store.put({ id, blob, name, time: Date.now() });
+      } catch (e) {
+        console.warn('IndexedDB save failed:', e);
+      }
+    }
+
+    async function clearPdfCache() {
+      try {
+        sessionBlobCache.clear();
+        const db = await openPdfCacheDB();
+        if (!db) return;
+        const tx = db.transaction(PDF_CACHE_STORE, 'readwrite');
+        tx.objectStore(PDF_CACHE_STORE).clear();
+      } catch (e) {}
+    }
+    window.clearPdfCache = clearPdfCache;
+
     let currentViewingNode = null;
     let currentViewerMode = 0;
-    let activeStreamXhr = null;
+    let activeStreamAbort = null;
     const sessionBlobCache = new Map();
 
-    function loadDirectStream(node) {
+    async function loadDirectStream(node) {
       if (!node) return;
       const id = realId(node);
       const frame = $('viewerFrame');
@@ -2333,78 +2411,145 @@
       const bar = $('viewerProgressBar');
       const percentEl = $('viewerProgressPercent');
       const mbEl = $('viewerProgressMb');
+      const statusEl = $('viewerStreamStatus');
       const serverBadge = $('viewerServerBadge');
 
-      if (activeStreamXhr) {
-        activeStreamXhr.abort();
-        activeStreamXhr = null;
+      if (activeStreamAbort) {
+        activeStreamAbort.abort();
+        activeStreamAbort = null;
       }
 
       loader.classList.add('hidden');
 
+      // 1. Instant RAM cache check
       if (sessionBlobCache.has(id)) {
         streamBox.classList.add('hidden');
         frame.src = sessionBlobCache.get(id);
-        serverBadge.textContent = 'Doğrudan';
+        serverBadge.textContent = 'Önbellek';
         return;
       }
 
+      // 2. Persistent IndexedDB cache check
+      const cachedBlob = await getCachedPdfBlob(id);
+      if (cachedBlob) {
+        const blobUrl = URL.createObjectURL(cachedBlob);
+        sessionBlobCache.set(id, blobUrl);
+        streamBox.classList.add('hidden');
+        frame.src = blobUrl;
+        serverBadge.textContent = 'Önbellek';
+        return;
+      }
+
+      // 3. Initiate active stream
       streamBox.classList.remove('hidden');
       $('viewerStreamTitle').textContent = node.name;
-      bar.style.width = '0%';
+      if (statusEl) statusEl.textContent = 'Sunucuya bağlanılıyor...';
+      bar.style.width = '3%';
       percentEl.textContent = '0%';
-      const totalBytes = node.size ? Number(node.size) : 0;
+      const totalBytes = (node.size && !isNaN(node.size)) ? Number(node.size) : 0;
       const totalMbStr = totalBytes > 0 ? (totalBytes / (1024 * 1024)).toFixed(1) + ' MB' : '...';
       mbEl.textContent = `0.0 MB / ${totalMbStr}`;
       serverBadge.textContent = 'Aktarılıyor...';
       lucide.createIcons();
 
-      const xhr = new XMLHttpRequest();
-      activeStreamXhr = xhr;
-      xhr.open('GET', `https://www.googleapis.com/drive/v3/files/${id}?alt=media&key=${settings.key}`);
-      xhr.responseType = 'blob';
+      const controller = new AbortController();
+      activeStreamAbort = controller;
 
-      xhr.onprogress = (e) => {
-        const total = e.lengthComputable && e.total > 0 ? e.total : totalBytes;
-        if (total > 0) {
-          const percent = Math.min(100, Math.round((e.loaded / total) * 100));
-          const loadedMb = (e.loaded / (1024 * 1024)).toFixed(1);
-          const tMb = (total / (1024 * 1024)).toFixed(1);
-          bar.style.width = percent + '%';
-          percentEl.textContent = percent + '%';
-          mbEl.textContent = `${loadedMb} / ${tMb} MB`;
-        } else {
-          const loadedMb = (e.loaded / (1024 * 1024)).toFixed(1);
-          mbEl.textContent = `${loadedMb} MB`;
+      const timeoutId = setTimeout(() => {
+        if (activeStreamAbort === controller) {
+          console.warn('Bağlantı zaman aşımına uğradı, Drive önizlemeye geçiliyor');
+          controller.abort('timeout');
         }
-      };
+      }, 25000);
 
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          const mime = node.mimeType || 'application/pdf';
-          const blob = new Blob([xhr.response], { type: mime });
-          const blobUrl = URL.createObjectURL(blob);
-          sessionBlobCache.set(id, blobUrl);
-          streamBox.classList.add('hidden');
-          frame.src = blobUrl;
-          serverBadge.textContent = 'Doğrudan';
-          activeStreamXhr = null;
-        } else {
-          streamBox.classList.add('hidden');
-          frame.src = `https://drive.google.com/file/d/${id}/preview`;
-          serverBadge.textContent = 'Drive';
-          activeStreamXhr = null;
+      try {
+        const streamUrl = `https://www.googleapis.com/drive/v3/files/${id}?alt=media&key=${settings.key}`;
+        const response = await fetch(streamUrl, {
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-      };
 
-      xhr.onerror = () => {
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('text/html')) {
+          throw new Error('Geçersiz yanıt tipi (HTML)');
+        }
+
+        const headerLen = response.headers.get('content-length');
+        const expectedTotal = (headerLen && !isNaN(headerLen) && Number(headerLen) > 0)
+          ? Number(headerLen)
+          : totalBytes;
+
+        if (statusEl) statusEl.textContent = 'Tarayıcıya aktarılıyor...';
+
+        const reader = response.body.getReader();
+        const chunks = [];
+        let loaded = 0;
+        let lastUiUpdate = 0;
+        const startTime = Date.now();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          chunks.push(value);
+          loaded += value.length;
+
+          const now = Date.now();
+          if (now - lastUiUpdate > 30 || (expectedTotal > 0 && loaded >= expectedTotal)) {
+            lastUiUpdate = now;
+            const loadedMb = (loaded / (1024 * 1024)).toFixed(1);
+            if (expectedTotal > 0) {
+              const percent = Math.min(99, Math.round((loaded / expectedTotal) * 100));
+              const tMb = (expectedTotal / (1024 * 1024)).toFixed(1);
+              bar.style.width = Math.max(3, percent) + '%';
+              percentEl.textContent = percent + '%';
+
+              const elapsedSec = (now - startTime) / 1000;
+              const speedMb = elapsedSec > 0.4 ? (loaded / (1024 * 1024) / elapsedSec).toFixed(1) : null;
+              mbEl.textContent = speedMb
+                ? `${loadedMb} / ${tMb} MB • ${speedMb} MB/s`
+                : `${loadedMb} / ${tMb} MB`;
+            } else {
+              bar.style.width = '60%';
+              mbEl.textContent = `${loadedMb} MB aktarıldı`;
+            }
+          }
+        }
+
+        bar.style.width = '100%';
+        percentEl.textContent = '100%';
+        if (statusEl) statusEl.textContent = 'Açılıyor...';
+
+        const mime = node.mimeType || 'application/pdf';
+        const blob = new Blob(chunks, { type: mime });
+        const blobUrl = URL.createObjectURL(blob);
+
+        sessionBlobCache.set(id, blobUrl);
+        saveCachedPdfBlob(id, blob, node.name);
+
+        activeStreamAbort = null;
         streamBox.classList.add('hidden');
+        frame.src = blobUrl;
+        serverBadge.textContent = 'Doğrudan';
+
+      } catch (err) {
+        clearTimeout(timeoutId);
+        if (controller.signal.aborted && controller.signal.reason !== 'timeout') {
+          return;
+        }
+        console.warn('Doğrudan aktarım sağlanamadı, Drive moduna geçiliyor:', err);
+        activeStreamAbort = null;
+        streamBox.classList.add('hidden');
+        loader.classList.remove('hidden');
+        currentViewerMode = 1;
         frame.src = `https://drive.google.com/file/d/${id}/preview`;
         serverBadge.textContent = 'Drive';
-        activeStreamXhr = null;
-      };
-
-      xhr.send();
+      }
     }
 
     window.openViewerModal = function(fileId, courseCode) {
@@ -2480,13 +2625,13 @@
       if (currentViewerMode === 0) {
         loadDirectStream(currentViewingNode);
       } else if (currentViewerMode === 1) {
-        if (activeStreamXhr) { activeStreamXhr.abort(); activeStreamXhr = null; }
+        if (activeStreamAbort) { activeStreamAbort.abort(); activeStreamAbort = null; }
         $('viewerStreamProgress').classList.add('hidden');
         loader.classList.remove('hidden');
         frame.src = `https://drive.google.com/file/d/${id}/preview`;
         serverBadge.textContent = 'Drive';
       } else {
-        if (activeStreamXhr) { activeStreamXhr.abort(); activeStreamXhr = null; }
+        if (activeStreamAbort) { activeStreamAbort.abort(); activeStreamAbort = null; }
         $('viewerStreamProgress').classList.add('hidden');
         loader.classList.remove('hidden');
         frame.src = `https://docs.google.com/viewer?srcid=${id}&pid=explorer&efh=false&a=v&chrome=false&embedded=true`;
@@ -2495,9 +2640,9 @@
     };
 
     $('cancelStreamBtn').onclick = () => {
-      if (activeStreamXhr) {
-        activeStreamXhr.abort();
-        activeStreamXhr = null;
+      if (activeStreamAbort) {
+        activeStreamAbort.abort();
+        activeStreamAbort = null;
       }
       $('viewerStreamProgress').classList.add('hidden');
       if (currentViewingNode) {
@@ -2510,9 +2655,9 @@
     };
 
     function cleanupViewerState() {
-      if (activeStreamXhr) {
-        activeStreamXhr.abort();
-        activeStreamXhr = null;
+      if (activeStreamAbort) {
+        activeStreamAbort.abort();
+        activeStreamAbort = null;
       }
       hideFullscreenToast();
       if (isViewerFullscreen()) {
@@ -2787,6 +2932,18 @@
     window.openSettingsModal = openSettingsModal;
     $('settingsBtn').onclick = openSettingsModal;
     $('closeSettingsBtn').onclick = () => $('settingsModal').close();
+
+    $('clearCacheBtn').onclick = async () => {
+      await clearPdfCache();
+      const btn = $('clearCacheBtn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i data-lucide="check" class="size-3.5 text-emerald-500"></i><span>Temizlendi!</span>';
+      lucide.createIcons();
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        lucide.createIcons();
+      }, 2000);
+    };
 
     $('settingsForm').onsubmit = (e) => {
       e.preventDefault();
