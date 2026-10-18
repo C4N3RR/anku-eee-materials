@@ -527,6 +527,20 @@
       opacity: 1;
       transform: translate(-50%, 0);
     }
+
+    #viewerModal button,
+    #viewerModal a,
+    #viewerBackBtn {
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #viewerModal button:focus,
+    #viewerModal a:focus,
+    #viewerModal button:focus-visible,
+    #viewerModal a:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+    }
   </style>
 </head>
 <body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground antialiased select-none">
@@ -773,7 +787,7 @@
   <dialog id="viewerModal" closedby="any" aria-labelledby="viewerFileTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[96vw] max-w-6xl 2xl:max-w-7xl h-[92vh] max-h-[940px] overflow-hidden outline-none shadow-2xl">
     <div class="h-13 bg-card border-b border-border px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 shrink-0">
       <div class="flex items-center gap-3 overflow-hidden">
-        <button id="viewerBackBtn" class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium text-secondary-foreground bg-secondary hover:opacity-85 transition">
+        <button id="viewerBackBtn" class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium text-secondary-foreground bg-secondary hover:opacity-85 transition outline-none focus:outline-none focus-visible:outline-none focus:ring-0">
           <i data-lucide="arrow-left" class="size-3.5"></i>
           <span>Geri</span>
         </button>
@@ -2449,6 +2463,9 @@
       }
 
       modal.showModal();
+      if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+      }
       lucide.createIcons();
     };
 
