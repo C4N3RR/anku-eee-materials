@@ -413,6 +413,119 @@
         --_used-spinner-duration: 6s;
       }
     }
+
+    /* Course Hero Banner with Right Image, Tint & Left Black Vignette */
+    .course-hero-banner {
+      position: relative;
+      overflow: hidden;
+      background-color: #09090b;
+      color: #fafafa;
+      border-radius: calc(var(--radius) * 1.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+    }
+
+    .course-hero-banner-media {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 48%;
+      max-width: 500px;
+      pointer-events: none;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    @media (max-width: 639px) {
+      .course-hero-banner-media {
+        width: 62%;
+        opacity: 0.45;
+      }
+    }
+
+    .course-hero-banner-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.82) contrast(1.04) saturate(0.92);
+      transform: scale(1.01);
+    }
+
+    /* Tint + Left-edge Black Vignette where the photo ends on the left */
+    .course-hero-banner-vignette {
+      position: absolute;
+      inset: 0;
+      background:
+        /* Strong vignette fading into solid black on the left edge where the photo ends */
+        linear-gradient(
+          to right,
+          #09090b 0%,
+          rgba(9, 9, 11, 0.96) 8%,
+          rgba(9, 9, 11, 0.78) 20%,
+          rgba(9, 9, 11, 0.42) 38%,
+          rgba(9, 9, 11, 0.18) 62%,
+          rgba(9, 9, 11, 0.28) 100%
+        ),
+        /* Subtle vertical vignette on top and bottom edges */
+        linear-gradient(
+          to bottom,
+          rgba(9, 9, 11, 0.45) 0%,
+          rgba(9, 9, 11, 0.12) 25%,
+          rgba(9, 9, 11, 0.12) 75%,
+          rgba(9, 9, 11, 0.5) 100%
+        ),
+        /* Atmospheric dark-blue/slate tint over the photo */
+        radial-gradient(
+          circle at 75% 50%,
+          rgba(15, 23, 42, 0.18) 0%,
+          rgba(9, 9, 11, 0.48) 100%
+        );
+      box-shadow: inset 24px 0 36px -12px #09090b;
+    }
+
+    /* Fullscreen Viewer Top Exit Button & ESC Toast */
+    #viewerStage.is-fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      width: 100vw;
+      height: 100vh;
+    }
+    #viewerFullscreenTopZone {
+      display: none;
+    }
+    #viewerStage:fullscreen #viewerFullscreenTopZone,
+    #viewerStage:-webkit-full-screen #viewerFullscreenTopZone,
+    #viewerStage.is-fullscreen #viewerFullscreenTopZone {
+      display: flex;
+    }
+
+    #viewerFullscreenExitBtn {
+      opacity: 0;
+      transform: translateY(-14px) scale(0.96);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    #viewerFullscreenTopZone:hover #viewerFullscreenExitBtn,
+    #viewerFullscreenTopZone.show-exit-btn #viewerFullscreenExitBtn,
+    #viewerFullscreenExitBtn:focus-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    #viewerFullscreenToast {
+      opacity: 0;
+      transform: translate(-50%, -10px);
+      pointer-events: none;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+    #viewerFullscreenToast.show-toast {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
   </style>
 </head>
 <body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground antialiased select-none">
@@ -697,6 +810,34 @@
     </div>
 
     <div id="viewerStage" class="flex-1 relative bg-background flex items-center justify-center overflow-hidden">
+      <!-- Top hover zone & exit button for Fullscreen mode -->
+      <div
+        id="viewerFullscreenTopZone"
+        class="absolute inset-x-0 top-0 h-3.5 z-40 items-start justify-center pt-2.5 pointer-events-auto"
+      >
+        <button
+          type="button"
+          id="viewerFullscreenExitBtn"
+          title="Tam Ekrandan Çık (ESC)"
+          class="inline-flex items-center gap-2 rounded-full bg-neutral-950/90 hover:bg-neutral-900 text-white border border-white/15 px-4 py-2 text-xs font-medium shadow-2xl backdrop-blur-md transition"
+        >
+          <i data-lucide="minimize-2" class="size-3.5"></i>
+          <span>Tam Ekrandan Çık</span>
+        </button>
+      </div>
+
+      <!-- Small ESC hint toast shown briefly when entering Fullscreen -->
+      <div
+        id="viewerFullscreenToast"
+        role="status"
+        aria-live="polite"
+        class="absolute top-16 left-1/2 z-40 inline-flex items-center gap-2 rounded-full bg-neutral-950/85 text-zinc-100 border border-white/15 px-3.5 py-1.5 text-xs font-medium shadow-xl backdrop-blur-md select-none"
+      >
+        <span>Tam ekrandan çıkmak için</span>
+        <kbd class="rounded bg-white/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-white border border-white/20">ESC</kbd>
+        <span>tuşuna basın</span>
+      </div>
+
       <div id="viewerLoader" class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-background/90">
         <progress aria-label="Önizleme Yükleniyor" class="loading-spinner"></progress>
         <span class="text-xs text-muted-foreground">Yükleniyor...</span>
@@ -828,6 +969,9 @@
         avesisUrl: 'https://avesis.ankara.edu.tr/emreb',
         credits: '3 Kredi • 6 AKTS',
         icon: 'flask-conical',
+        banner: 'bannerlar/kimya.jpg',
+        bannerPos: 'center center',
+        bannerWidth: '420px',
         links: [
           { title: 'Ptable', url: 'https://ptable.com', icon: 'external-link' }
         ]
@@ -839,6 +983,9 @@
         avesisUrl: 'https://avesis.ankara.edu.tr/aeyilmaz',
         credits: '2 Kredi • 3 AKTS',
         icon: 'cpu',
+        banner: 'bannerlar/elektrik%20elektronik.jpeg',
+        bannerPos: 'center 50%',
+        bannerWidth: '280px',
         links: [
           { title: 'Bölüm', url: 'https://eee.ankara.edu.tr', icon: 'globe' }
         ]
@@ -850,9 +997,12 @@
         avesisUrl: 'https://avesis.ankara.edu.tr/svarma',
         credits: '4 Kredi • 7 AKTS',
         icon: 'sigma',
+        banner: 'bannerlar/calculus.png',
+        bannerPos: 'center 85%',
+        bannerWidth: '340px',
         links: [
           { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'calculator' },
-          { title: '3Blue1Brown Calculus', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr', icon: 'youtube' }
+          { title: '3Blue1Brown Calculus', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr', icon: 'play' }
         ]
       },
       'MTH103': {
@@ -862,8 +1012,11 @@
         avesisUrl: 'https://avesis.ankara.edu.tr/dkahveci',
         credits: '3 Kredi • 6 AKTS',
         icon: 'grid-3x3',
+        banner: 'bannerlar/lineer.jpg',
+        bannerPos: 'center 35%',
+        bannerWidth: '440px',
         links: [
-          { title: '3Blue1Brown Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab', icon: 'youtube' }
+          { title: '3Blue1Brown Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab', icon: 'play' }
         ]
       },
       'PHY0107': {
@@ -873,6 +1026,9 @@
         avesisUrl: 'https://avesis.ankara.edu.tr/akaratay',
         credits: '3 Kredi • 6 AKTS',
         icon: 'atom',
+        banner: 'bannerlar/fizik.jpg',
+        bannerPos: 'center 25%',
+        bannerWidth: '360px',
         links: [
           { title: 'PhET', url: 'https://phet.colorado.edu/tr/', icon: 'external-link' }
         ]
@@ -884,6 +1040,9 @@
         avesisUrl: 'https://avesis.ankara.edu.tr/ayabakan',
         credits: '2 Kredi • 2 AKTS',
         icon: 'book-type',
+        banner: 'bannerlar/tu%CC%88rkc%CC%A7e.jpg',
+        bannerPos: 'center 22%',
+        bannerWidth: '420px',
         links: [
           { title: 'TDK Sözlük', url: 'https://sozluk.gov.tr', icon: 'book-open' }
         ]
@@ -912,6 +1071,9 @@
         courseMetadata[code].avesisUrl = DEFAULT_COURSE_METADATA[code].avesisUrl;
         courseMetadata[code].credits = DEFAULT_COURSE_METADATA[code].credits;
         courseMetadata[code].icon = DEFAULT_COURSE_METADATA[code].icon;
+        courseMetadata[code].banner = DEFAULT_COURSE_METADATA[code].banner;
+        courseMetadata[code].bannerPos = DEFAULT_COURSE_METADATA[code].bannerPos;
+        courseMetadata[code].bannerWidth = DEFAULT_COURSE_METADATA[code].bannerWidth;
         if (courseMetadata[code].links) {
           courseMetadata[code].links = courseMetadata[code].links.filter(l =>
             !/obs/i.test(l.title) && !/izlence|syllabus/i.test(l.title)
@@ -1680,43 +1842,60 @@
 
       const shortcutButtonsHtml = (meta.links || []).map(link => {
         let iconName = link.icon || 'external-link';
-        if (link.url.includes('youtube.com') || link.url.includes('youtu.be')) iconName = 'youtube';
+        if (link.url.includes('youtube.com') || link.url.includes('youtu.be') || iconName === 'youtube') iconName = 'play';
 
         return `
           <a
             href="${esc(link.url)}"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex h-8 items-center gap-1.5 px-2.5 rounded-md border border-border bg-card hover:bg-muted text-xs font-medium text-foreground transition"
+            class="inline-flex h-8 items-center gap-1.5 px-2.5 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 text-xs font-medium text-zinc-100 backdrop-blur-sm transition"
           >
-            <i data-lucide="${iconName}" class="size-3.5 text-primary"></i>
+            <i data-lucide="${iconName}" class="size-3.5 text-zinc-200"></i>
             <span>${esc(link.title)}</span>
           </a>
         `;
       }).join('');
 
+      const bannerUrl = meta.banner || DEFAULT_COURSE_METADATA[code]?.banner || '';
+      const bannerPos = meta.bannerPos || DEFAULT_COURSE_METADATA[code]?.bannerPos || 'center center';
+      const bannerWidth = meta.bannerWidth || DEFAULT_COURSE_METADATA[code]?.bannerWidth || '420px';
+
       container.innerHTML = `
-        <div class="admincn-card p-5">
-          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div class="course-hero-banner p-5 sm:p-6">
+          ${bannerUrl ? `
+            <div class="course-hero-banner-media" style="max-width: ${bannerWidth};" aria-hidden="true">
+              <img
+                src="${bannerUrl}"
+                alt="${esc(meta.name)} Banner"
+                fetchpriority="high"
+                class="course-hero-banner-img"
+                style="object-position: ${bannerPos};"
+              />
+              <div class="course-hero-banner-vignette"></div>
+            </div>
+          ` : ''}
+
+          <div class="relative z-10 flex flex-col gap-4 sm:max-w-[64%] lg:max-w-[60%]">
             <div class="flex items-start gap-3.5">
-              <div class="size-11 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
+              <div class="size-11 rounded-xl bg-white/10 text-white border border-white/10 flex items-center justify-center shrink-0 backdrop-blur-sm">
                 <i data-lucide="${meta.icon || 'book-open'}" class="size-5"></i>
               </div>
               <div class="space-y-1.5 min-w-0">
                 <div class="flex flex-wrap items-center gap-1.5">
-                  <span class="rounded-sm bg-primary text-primary-foreground px-2 py-0.5 font-mono text-xs font-semibold">${esc(code)}</span>
-                  ${meta.credits ? `<span class="rounded-sm bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-medium">${esc(meta.credits)}</span>` : ''}
-                  <span class="rounded-sm bg-primary-soft text-primary px-2 py-0.5 text-xs font-medium">${totalFiles} dosya</span>
+                  <span class="rounded-sm bg-white text-zinc-950 px-2 py-0.5 font-mono text-xs font-semibold">${esc(code)}</span>
+                  ${meta.credits ? `<span class="rounded-sm bg-white/10 text-zinc-200 border border-white/10 px-2 py-0.5 text-xs font-medium">${esc(meta.credits)}</span>` : ''}
+                  <span class="rounded-sm bg-white/10 text-zinc-200 border border-white/10 px-2 py-0.5 text-xs font-medium">${totalFiles} dosya</span>
                 </div>
-                <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-foreground">${esc(meta.name)}</h1>
+                <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-white drop-shadow-sm">${esc(meta.name)}</h1>
 
                 <div class="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
                   ${meta.instructor ? `
-                    <div class="inline-flex items-center gap-1.5 rounded-md border border-border bg-muted/50 px-2.5 py-1 font-medium text-foreground">
-                      <i data-lucide="user" class="size-3.5 text-primary"></i>
+                    <div class="inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-white/5 px-2.5 py-1 font-medium text-zinc-100 backdrop-blur-sm">
+                      <i data-lucide="user" class="size-3.5 text-zinc-300"></i>
                       <span>${esc(meta.instructor)}</span>
                       ${meta.avesisUrl ? `
-                        <a href="${esc(meta.avesisUrl)}" target="_blank" rel="noopener noreferrer" title="AVESİS" class="ml-0.5 text-muted-foreground hover:text-foreground transition">
+                        <a href="${esc(meta.avesisUrl)}" target="_blank" rel="noopener noreferrer" title="AVESİS" class="ml-0.5 text-zinc-400 hover:text-white transition">
                           <i data-lucide="external-link" class="size-3"></i>
                         </a>
                       ` : ''}
@@ -1727,7 +1906,7 @@
                     <button
                       onclick="copyInstructorEmail('${esc(meta.email)}', this)"
                       title="Kopyala"
-                      class="inline-flex items-center gap-1.5 rounded-md border border-border bg-background hover:bg-muted px-2.5 py-1 font-mono text-xs text-muted-foreground hover:text-foreground transition"
+                      class="inline-flex items-center gap-1.5 rounded-md border border-white/15 bg-black/40 hover:bg-white/10 px-2.5 py-1 font-mono text-xs text-zinc-300 hover:text-white backdrop-blur-sm transition"
                     >
                       <i data-lucide="mail" class="size-3.5"></i>
                       <span class="email-text">${esc(meta.email)}</span>
@@ -1737,15 +1916,15 @@
               </div>
             </div>
 
-            <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <div class="flex flex-wrap items-center gap-2 pt-0.5">
               <div class="relative w-44 sm:w-52">
-                <i data-lucide="search" class="size-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2"></i>
+                <i data-lucide="search" class="size-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2"></i>
                 <input
                   type="text"
                   value="${esc(courseLocalSearch)}"
                   oninput="filterCourseMaterials(this.value)"
                   placeholder="Ara..."
-                  class="h-8 w-full rounded-md bg-background border border-input pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+                  class="h-8 w-full rounded-md bg-white/5 border border-white/15 pl-8 pr-3 text-xs text-white placeholder:text-zinc-400 outline-none focus:ring-2 focus:ring-white/30 backdrop-blur-sm"
                 >
               </div>
               ${shortcutButtonsHtml}
@@ -1753,7 +1932,7 @@
                 href="${driveFolderUrl}"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md bg-secondary text-secondary-foreground hover:opacity-90 transition"
+                class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md bg-white/10 hover:bg-white/15 text-zinc-100 border border-white/10 backdrop-blur-sm transition"
               >
                 <i data-lucide="folder-symlink" class="size-3.5"></i>
                 <span>Drive</span>
@@ -1761,7 +1940,7 @@
               <button
                 onclick="openEditCourseModal('${esc(code)}')"
                 title="Düzenle"
-                class="inline-flex size-8 items-center justify-center rounded-md border border-border bg-background hover:bg-muted text-muted-foreground hover:text-foreground transition"
+                class="inline-flex size-8 items-center justify-center rounded-md border border-white/15 bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white backdrop-blur-sm transition"
               >
                 <i data-lucide="edit-3" class="size-3.5"></i>
               </button>
@@ -2218,6 +2397,10 @@
         activeStreamXhr.abort();
         activeStreamXhr = null;
       }
+      hideFullscreenToast();
+      if (isViewerFullscreen()) {
+        exitViewerFullscreen();
+      }
       $('viewerStreamProgress').classList.add('hidden');
       $('viewerFrame').src = 'about:blank';
     }
@@ -2248,14 +2431,112 @@
       });
     }
 
-    $('viewerFullscreenBtn').onclick = () => {
+    let fullscreenToastTimer = null;
+    let fullscreenExitHideTimer = null;
+
+    function isViewerFullscreen() {
       const stage = $('viewerStage');
-      if (!document.fullscreenElement) {
-        stage.requestFullscreen().catch(() => {});
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      return fsEl === stage || stage.classList.contains('is-fullscreen');
+    }
+
+    function showFullscreenToast() {
+      const toast = $('viewerFullscreenToast');
+      if (!toast) return;
+      if (fullscreenToastTimer) clearTimeout(fullscreenToastTimer);
+      toast.classList.add('show-toast');
+      fullscreenToastTimer = setTimeout(() => {
+        toast.classList.remove('show-toast');
+      }, 3200);
+    }
+
+    function hideFullscreenToast() {
+      const toast = $('viewerFullscreenToast');
+      if (!toast) return;
+      if (fullscreenToastTimer) {
+        clearTimeout(fullscreenToastTimer);
+        fullscreenToastTimer = null;
+      }
+      toast.classList.remove('show-toast');
+    }
+
+    function enterViewerFullscreen() {
+      const stage = $('viewerStage');
+      const req = stage.requestFullscreen || stage.webkitRequestFullscreen;
+      if (req) {
+        req.call(stage).catch(() => {
+          stage.classList.add('is-fullscreen');
+          onViewerFullscreenChange();
+        });
       } else {
-        document.exitFullscreen();
+        stage.classList.add('is-fullscreen');
+        onViewerFullscreenChange();
+      }
+    }
+
+    function exitViewerFullscreen() {
+      const stage = $('viewerStage');
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      if (fsEl) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document).catch(() => {});
+      }
+      if (stage.classList.contains('is-fullscreen')) {
+        stage.classList.remove('is-fullscreen');
+        onViewerFullscreenChange();
+      }
+    }
+
+    function onViewerFullscreenChange() {
+      const topZone = $('viewerFullscreenTopZone');
+      if (isViewerFullscreen()) {
+        showFullscreenToast();
+      } else {
+        hideFullscreenToast();
+        topZone?.classList.remove('show-exit-btn');
+      }
+    }
+
+    document.addEventListener('fullscreenchange', onViewerFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', onViewerFullscreenChange);
+
+    $('viewerFullscreenBtn').onclick = () => {
+      if (!isViewerFullscreen()) {
+        enterViewerFullscreen();
+      } else {
+        exitViewerFullscreen();
       }
     };
+
+    $('viewerFullscreenExitBtn').onclick = () => {
+      exitViewerFullscreen();
+    };
+
+    const fsTopZone = $('viewerFullscreenTopZone');
+    if (fsTopZone) {
+      fsTopZone.addEventListener('mouseenter', () => {
+        if (!isViewerFullscreen()) return;
+        if (fullscreenExitHideTimer) clearTimeout(fullscreenExitHideTimer);
+        fsTopZone.classList.add('show-exit-btn');
+      });
+
+      fsTopZone.addEventListener('mouseleave', () => {
+        if (fullscreenExitHideTimer) clearTimeout(fullscreenExitHideTimer);
+        fullscreenExitHideTimer = setTimeout(() => {
+          fsTopZone.classList.remove('show-exit-btn');
+        }, 350);
+      });
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isViewerFullscreen() || !fsTopZone) return;
+      if (e.clientY <= 28) {
+        if (fullscreenExitHideTimer) clearTimeout(fullscreenExitHideTimer);
+        fsTopZone.classList.add('show-exit-btn');
+      } else if (e.clientY > 72 && !fsTopZone.matches(':hover')) {
+        fsTopZone.classList.remove('show-exit-btn');
+      }
+    });
 
     window.copyInstructorEmail = function(email, btnEl) {
       if (!email) return;
