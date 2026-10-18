@@ -421,8 +421,9 @@
       background-color: #09090b;
       color: #fafafa;
       border-radius: calc(var(--radius) * 1.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--course-border, rgba(255, 255, 255, 0.12));
+      box-shadow: 0 4px 24px -2px var(--course-glow, rgba(0, 0, 0, 0.35)), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .course-hero-banner-media {
@@ -475,11 +476,11 @@
           rgba(9, 9, 11, 0.12) 75%,
           rgba(9, 9, 11, 0.5) 100%
         ),
-        /* Atmospheric dark-blue/slate tint over the photo */
+        /* Atmospheric course theme color tint over the photo */
         radial-gradient(
           circle at 75% 50%,
-          rgba(15, 23, 42, 0.18) 0%,
-          rgba(9, 9, 11, 0.48) 100%
+          var(--course-tint, rgba(15, 23, 42, 0.18)) 0%,
+          rgba(9, 9, 11, 0.5) 100%
         );
       box-shadow: inset 24px 0 36px -12px #09090b;
     }
@@ -960,6 +961,75 @@
       FOLDER: 'https://drive.google.com/drive/folders/1n9cyf8eSj3OremDKF5BdQIBayaryPofN?usp=sharing',
       API_KEY: atob('QUl6YVN5QmpXcGkzZnc0YUFINUFienpmTFg0SllqOWlOYVpQU0JF')
     };
+
+    const COURSE_THEMES = {
+      'PHY0107': { // Koyu Mor
+        accent: '#c084fc',
+        border: 'rgba(168, 85, 247, 0.48)',
+        glow: 'rgba(147, 51, 234, 0.32)',
+        tint: 'rgba(126, 34, 206, 0.36)',
+        badgeBg: 'rgba(147, 51, 234, 0.22)',
+        badgeBorder: 'rgba(168, 85, 247, 0.42)',
+        badgeText: '#f3e8ff'
+      },
+      'MTH0101': { // Koyu Mavi
+        accent: '#60a5fa',
+        border: 'rgba(59, 130, 246, 0.48)',
+        glow: 'rgba(29, 78, 216, 0.32)',
+        tint: 'rgba(30, 64, 175, 0.34)',
+        badgeBg: 'rgba(37, 99, 235, 0.22)',
+        badgeBorder: 'rgba(59, 130, 246, 0.42)',
+        badgeText: '#dbeafe'
+      },
+      'MTH103': { // Koyu Turkuaz
+        accent: '#2dd4bf',
+        border: 'rgba(20, 184, 166, 0.48)',
+        glow: 'rgba(13, 148, 136, 0.32)',
+        tint: 'rgba(15, 118, 110, 0.34)',
+        badgeBg: 'rgba(13, 148, 136, 0.22)',
+        badgeBorder: 'rgba(20, 184, 166, 0.42)',
+        badgeText: '#ccfbf1'
+      },
+      'CHM109': { // Koyu Zümrüt Yeşili
+        accent: '#34d399',
+        border: 'rgba(16, 185, 129, 0.48)',
+        glow: 'rgba(5, 150, 105, 0.32)',
+        tint: 'rgba(4, 120, 87, 0.34)',
+        badgeBg: 'rgba(5, 150, 105, 0.22)',
+        badgeBorder: 'rgba(16, 185, 129, 0.42)',
+        badgeText: '#d1fae5'
+      },
+      'EEE1001': { // Koyu Kehribar/Altın
+        accent: '#fbbf24',
+        border: 'rgba(245, 158, 11, 0.48)',
+        glow: 'rgba(217, 119, 6, 0.32)',
+        tint: 'rgba(180, 83, 9, 0.34)',
+        badgeBg: 'rgba(217, 119, 6, 0.22)',
+        badgeBorder: 'rgba(245, 158, 11, 0.42)',
+        badgeText: '#fef3c7'
+      },
+      'TUR171': { // Koyu Bordo
+        accent: '#fb7185',
+        border: 'rgba(225, 29, 72, 0.50)',
+        glow: 'rgba(159, 18, 57, 0.35)',
+        tint: 'rgba(136, 19, 55, 0.38)',
+        badgeBg: 'rgba(159, 18, 57, 0.26)',
+        badgeBorder: 'rgba(225, 29, 72, 0.45)',
+        badgeText: '#ffe4e6'
+      }
+    };
+
+    function getCourseTheme(code) {
+      return COURSE_THEMES[code] || {
+        accent: '#ffffff',
+        border: 'rgba(255, 255, 255, 0.15)',
+        glow: 'rgba(0, 0, 0, 0.35)',
+        tint: 'rgba(15, 23, 42, 0.18)',
+        badgeBg: 'rgba(255, 255, 255, 0.1)',
+        badgeBorder: 'rgba(255, 255, 255, 0.15)',
+        badgeText: '#ffffff'
+      };
+    }
 
     const DEFAULT_COURSE_METADATA = {
       'CHM109': {
@@ -1569,6 +1639,7 @@
             const code = course.name.toUpperCase().trim();
             const meta = courseMetadata[code] || { name: course.name, credits: '', instructor: '', icon: 'book-open' };
             const fileCount = countFilesInFolder(course.children);
+            const theme = getCourseTheme(code);
 
             return `
               <div
@@ -1577,7 +1648,10 @@
               >
                 <div class="flex items-center justify-between gap-2">
                   <div class="flex items-center gap-2.5">
-                    <div class="size-9 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition">
+                    <div
+                      class="size-9 rounded-sm flex items-center justify-center shrink-0 transition"
+                      style="background-color: ${theme.badgeBg}; color: ${theme.accent}; border: 1px solid ${theme.badgeBorder};"
+                    >
                       <i data-lucide="${meta.icon || 'book-open'}" class="size-4"></i>
                     </div>
                     <div>
@@ -1585,7 +1659,10 @@
                       ${meta.credits ? `<div class="text-[11px] text-muted-foreground">${esc(meta.credits)}</div>` : ''}
                     </div>
                   </div>
-                  <span class="rounded-sm bg-primary-soft px-2 py-0.5 text-xs font-medium text-primary tabular-nums">
+                  <span
+                    class="rounded-sm px-2 py-0.5 text-xs font-medium tabular-nums"
+                    style="background-color: ${theme.badgeBg}; color: ${theme.accent}; border: 1px solid ${theme.badgeBorder};"
+                  >
                     ${fileCount} dosya
                   </span>
                 </div>
@@ -1860,9 +1937,13 @@
       const bannerUrl = meta.banner || DEFAULT_COURSE_METADATA[code]?.banner || '';
       const bannerPos = meta.bannerPos || DEFAULT_COURSE_METADATA[code]?.bannerPos || 'center center';
       const bannerWidth = meta.bannerWidth || DEFAULT_COURSE_METADATA[code]?.bannerWidth || '420px';
+      const theme = getCourseTheme(code);
 
       container.innerHTML = `
-        <div class="course-hero-banner p-5 sm:p-6">
+        <div
+          class="course-hero-banner p-5 sm:p-6"
+          style="--course-border: ${theme.border}; --course-glow: ${theme.glow}; --course-tint: ${theme.tint};"
+        >
           ${bannerUrl ? `
             <div class="course-hero-banner-media" style="max-width: ${bannerWidth};" aria-hidden="true">
               <img
@@ -1878,12 +1959,18 @@
 
           <div class="relative z-10 flex flex-col gap-4 sm:max-w-[64%] lg:max-w-[60%]">
             <div class="flex items-start gap-3.5">
-              <div class="size-11 rounded-xl bg-white/10 text-white border border-white/10 flex items-center justify-center shrink-0 backdrop-blur-sm">
+              <div
+                class="size-11 rounded-xl flex items-center justify-center shrink-0 backdrop-blur-sm shadow-sm"
+                style="background-color: ${theme.badgeBg}; color: ${theme.accent}; border: 1px solid ${theme.badgeBorder};"
+              >
                 <i data-lucide="${meta.icon || 'book-open'}" class="size-5"></i>
               </div>
               <div class="space-y-1.5 min-w-0">
                 <div class="flex flex-wrap items-center gap-1.5">
-                  <span class="rounded-sm bg-white text-zinc-950 px-2 py-0.5 font-mono text-xs font-semibold">${esc(code)}</span>
+                  <span
+                    class="rounded-sm px-2 py-0.5 font-mono text-xs font-semibold"
+                    style="background-color: ${theme.accent}; color: #09090b;"
+                  >${esc(code)}</span>
                   ${meta.credits ? `<span class="rounded-sm bg-white/10 text-zinc-200 border border-white/10 px-2 py-0.5 text-xs font-medium">${esc(meta.credits)}</span>` : ''}
                   <span class="rounded-sm bg-white/10 text-zinc-200 border border-white/10 px-2 py-0.5 text-xs font-medium">${totalFiles} dosya</span>
                 </div>
@@ -1924,7 +2011,8 @@
                   value="${esc(courseLocalSearch)}"
                   oninput="filterCourseMaterials(this.value)"
                   placeholder="Ara..."
-                  class="h-8 w-full rounded-md bg-white/5 border border-white/15 pl-8 pr-3 text-xs text-white placeholder:text-zinc-400 outline-none focus:ring-2 focus:ring-white/30 backdrop-blur-sm"
+                  class="h-8 w-full rounded-md bg-white/5 border border-white/15 pl-8 pr-3 text-xs text-white placeholder:text-zinc-400 outline-none focus:ring-2 backdrop-blur-sm transition"
+                  style="--tw-ring-color: ${theme.border};"
                 >
               </div>
               ${shortcutButtonsHtml}
