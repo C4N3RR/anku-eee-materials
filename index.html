@@ -764,16 +764,6 @@
                 <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
               </a>
             </li>
-            <li>
-              <button
-                type="button"
-                onclick="openSettingsModal()"
-                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
-              >
-                <i data-lucide="sliders-horizontal" class="size-4 shrink-0 text-muted-foreground"></i>
-                <span class="sidebar-hide-collapsed flex-1 text-left truncate">Ayarlar</span>
-              </button>
-            </li>
           </ul>
         </div>
       </div>
@@ -858,14 +848,6 @@
               <i data-lucide="sun" class="size-4 hidden dark:block"></i>
             </button>
 
-            <button
-              id="settingsBtn"
-              type="button"
-              title="Ayarlar"
-              class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
-            >
-              <i data-lucide="settings" class="size-4"></i>
-            </button>
           </div>
         </div>
       </header>
@@ -1058,35 +1040,6 @@
   </dialog>
 
 
-  <!-- ================= SETTINGS & DRIVE MODAL ================= -->
-  <dialog id="settingsModal" closedby="any" aria-labelledby="settingsModalTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[92vw] max-w-lg outline-none shadow-2xl">
-    <form id="settingsForm" class="p-5 space-y-3.5 text-xs">
-      <div class="flex items-center justify-between pb-3 border-b border-border">
-        <h3 id="settingsModalTitle" class="font-semibold text-sm">Drive & API Ayarları</h3>
-        <button type="button" id="closeSettingsBtn" class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
-          <i data-lucide="x" class="size-4"></i>
-        </button>
-      </div>
-
-      <div>
-        <label class="block font-medium mb-1 text-foreground">Drive Klasör Linki</label>
-        <input id="folderInput" type="text" placeholder="https://drive.google.com/drive/folders/..."
-               class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 font-mono text-xs text-foreground">
-      </div>
-      <div>
-        <label class="block font-medium mb-1 text-foreground">API Anahtarı</label>
-        <input id="keyInput" type="text" placeholder="AIza..."
-               class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 font-mono text-xs text-foreground">
-      </div>
-      <div class="flex items-center justify-between pt-2 border-t border-border">
-        <button type="button" id="clearCacheBtn" class="h-8 px-2.5 rounded-md border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground text-xs font-medium transition inline-flex items-center gap-1.5">
-          <i data-lucide="trash-2" class="size-3.5"></i>
-          <span>Önbelleği Temizle</span>
-        </button>
-        <button type="submit" class="h-8 px-3.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 font-medium transition">Kaydet</button>
-      </div>
-    </form>
-  </dialog>
 
 
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
@@ -1260,8 +1213,8 @@
     const YT_REGEX = /(?:youtube\.com\/(?:watch\?(?:[^\s]*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/;
 
     let settings = {
-      folder: localStorage.getItem('anku_folder') || CONFIG.FOLDER,
-      key: localStorage.getItem('anku_key') || CONFIG.API_KEY
+      folder: CONFIG.FOLDER,
+      key: CONFIG.API_KEY
     };
 
     let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v6') || 'null') || DEFAULT_COURSE_METADATA;
@@ -1524,9 +1477,8 @@
       $('sidebarDriveLink').href = driveUrl;
 
       if (!folderId || !settings.key) {
-        $('statusText').textContent = 'Ayar';
-        $('statusDot').className = 'size-2 shrink-0 rounded-full bg-amber-500';
-        openSettingsModal();
+        $('statusText').textContent = 'Hata';
+        $('statusDot').className = 'size-2 shrink-0 rounded-full bg-rose-500';
         return;
       }
 
@@ -3123,39 +3075,6 @@
       navigator.clipboard.writeText(sample);
     };
 
-    // ================= SETTINGS MODAL =================
-    function openSettingsModal() {
-      $('folderInput').value = settings.folder;
-      $('keyInput').value = settings.key;
-      $('settingsModal').showModal();
-    }
-    window.openSettingsModal = openSettingsModal;
-    $('settingsBtn').onclick = openSettingsModal;
-    $('closeSettingsBtn').onclick = () => $('settingsModal').close();
-
-    $('clearCacheBtn').onclick = async () => {
-      await clearPdfCache();
-      const btn = $('clearCacheBtn');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<i data-lucide="check" class="size-3.5 text-emerald-500"></i><span>Temizlendi!</span>';
-      lucide.createIcons();
-      setTimeout(() => {
-        btn.innerHTML = originalText;
-        lucide.createIcons();
-      }, 2000);
-    };
-
-    $('settingsForm').onsubmit = (e) => {
-      e.preventDefault();
-      settings.folder = $('folderInput').value.trim();
-      settings.key = $('keyInput').value.trim();
-      localStorage.setItem('anku_folder', settings.folder);
-      localStorage.setItem('anku_key', settings.key);
-      localStorage.removeItem('anku_tree_cache_v3');
-      driveTree = null;
-      $('settingsModal').close();
-      loadDriveData();
-    };
 
     // ================= THEME TOGGLE =================
     function applyResolvedTheme(storedVal) {
@@ -3253,8 +3172,9 @@
       renderSidebarCourses();
     };
 
-    $('refreshBtn').onclick = () => {
+    $('refreshBtn').onclick = async () => {
       localStorage.removeItem('anku_tree_cache_v3');
+      await clearPdfCache();
       loadDriveData();
     };
 
