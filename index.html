@@ -1622,8 +1622,6 @@
           return '';
         }
 
-        const subfolders = (course.children || []).filter(n => realMime(n) === FOLDER_MIME);
-
         return `
           <li class="group/menu-item relative">
             <button
@@ -1643,25 +1641,6 @@
                 ${count}
               </span>
             </button>
-
-            ${isSelected && subfolders.length > 0 ? `
-              <ul class="sidebar-hide-collapsed border-sidebar-border mx-3.5 mt-0.5 flex min-w-0 translate-x-px flex-col gap-0.5 border-l px-2.5 py-1">
-                ${subfolders.slice(0, 8).map(sub => {
-                  const subCount = countFilesInFolder(sub.children);
-                  return `
-                    <li>
-                      <a
-                        href="#folder-${sub.id}"
-                        class="flex h-6 min-w-0 items-center justify-between gap-2 rounded-md px-2 text-xs text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
-                      >
-                        <span class="truncate">${esc(sub.name)}</span>
-                        <span class="font-mono text-[10px] opacity-70">${subCount}</span>
-                      </a>
-                    </li>
-                  `;
-                }).join('')}
-              </ul>
-            ` : ''}
           </li>
         `;
       }).join('');
