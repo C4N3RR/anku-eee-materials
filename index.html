@@ -1616,8 +1616,22 @@
       updatePageMeta(code, meta);
     }
 
+    // A page reload keeps history.state; a stale viewer marker must not linger.
+    if (history.state && history.state.viewer) {
+      history.replaceState(null, '', location.href);
+    }
+
     window.addEventListener('popstate', () => {
-      if ($('viewerModal')?.open) closeViewerModal();
+      // History step caused by closing the preview via its own buttons: nothing to do.
+      if (skipNextViewerPop) {
+        skipNextViewerPop = false;
+        return;
+      }
+      // Back pressed while a preview is open: only close the preview.
+      if ($('viewerModal')?.open) {
+        closeViewerModal();
+        return;
+      }
       if (!driveTree) return;
       const courseId = getCourseIdFromHash();
       if (courseId) {
@@ -2481,7 +2495,7 @@
       // 1. Instant RAM cache check
       if (sessionBlobCache.has(id)) {
         streamBox.classList.add('hidden');
-        frame.src = sessionBlobCache.get(id);
+        setViewerFrameSrc(sessionBlobCache.get(id));
         serverBadge.textContent = 'Önbellek';
         return;
       }
@@ -2492,7 +2506,7 @@
         const blobUrl = URL.createObjectURL(cachedBlob);
         sessionBlobCache.set(id, blobUrl);
         streamBox.classList.add('hidden');
-        frame.src = blobUrl;
+        setViewerFrameSrc(blobUrl);
         serverBadge.textContent = 'Önbellek';
         return;
       }
@@ -2591,7 +2605,7 @@
 
         activeStreamAbort = null;
         streamBox.classList.add('hidden');
-        frame.src = blobUrl;
+        setViewerFrameSrc(blobUrl);
         serverBadge.textContent = 'Doğrudan';
 
       } catch (err) {
@@ -2604,7 +2618,7 @@
         streamBox.classList.add('hidden');
         loader.classList.remove('hidden');
         currentViewerMode = 1;
-        frame.src = `https://drive.google.com/file/d/${id}/preview`;
+        setViewerFrameSrc(`https://drive.google.com/file/d/${id}/preview`);
         serverBadge.textContent = 'Drive';
       }
     }
@@ -2646,7 +2660,7 @@
         downloadBtn.classList.add('hidden');
         $('viewerSwitchServerBtn').classList.add('hidden');
         const origin = encodeURIComponent(location.origin);
-        frame.src = `https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0&modestbranding=1&origin=${origin}`;
+        setViewerFrameSrc(`https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0&modestbranding=1&origin=${origin}`);
       } else {
         downloadBtn.classList.remove('hidden');
         $('viewerSwitchServerBtn').classList.remove('hidden');
@@ -2660,10 +2674,13 @@
         } else {
           currentViewerMode = 1;
           serverBadge.textContent = 'Drive';
-          frame.src = getPreviewUrl(fileNode);
+          setViewerFrameSrc(getPreviewUrl(fileNode));
         }
       }
 
+      if (!modal.open && !(history.state && history.state.viewer)) {
+        history.pushState({ viewer: true }, '', location.href);
+      }
       modal.showModal();
       if (document.activeElement && document.activeElement.blur) {
         document.activeElement.blur();
@@ -2685,13 +2702,13 @@
         if (activeStreamAbort) { activeStreamAbort.abort(); activeStreamAbort = null; }
         $('viewerStreamProgress').classList.add('hidden');
         loader.classList.remove('hidden');
-        frame.src = `https://drive.google.com/file/d/${id}/preview`;
+        setViewerFrameSrc(`https://drive.google.com/file/d/${id}/preview`);
         serverBadge.textContent = 'Drive';
       } else {
         if (activeStreamAbort) { activeStreamAbort.abort(); activeStreamAbort = null; }
         $('viewerStreamProgress').classList.add('hidden');
         loader.classList.remove('hidden');
-        frame.src = `https://docs.google.com/viewer?srcid=${id}&pid=explorer&efh=false&a=v&chrome=false&embedded=true`;
+        setViewerFrameSrc(`https://docs.google.com/viewer?srcid=${id}&pid=explorer&efh=false&a=v&chrome=false&embedded=true`);
         serverBadge.textContent = 'Docs';
       }
     };
@@ -2706,12 +2723,29 @@
         const id = realId(currentViewingNode);
         currentViewerMode = 1;
         $('viewerLoader').classList.remove('hidden');
-        $('viewerFrame').src = `https://drive.google.com/file/d/${id}/preview`;
+        setViewerFrameSrc(`https://drive.google.com/file/d/${id}/preview`);
         $('viewerServerBadge').textContent = 'Drive';
       }
     };
 
+    // Navigate the preview iframe without adding entries to the browser history,
+    // so the back button closes the preview instead of stepping through the iframe.
+    function setViewerFrameSrc(url) {
+      const frame = $('viewerFrame');
+      try {
+        frame.contentWindow.location.replace(url);
+      } catch (e) {
+        frame.src = url;
+      }
+    }
+
+    let skipNextViewerPop = false;
+
     function cleanupViewerState() {
+      if (!skipNextViewerPop && history.state && history.state.viewer) {
+        skipNextViewerPop = true;
+        history.back();
+      }
       if (activeStreamAbort) {
         activeStreamAbort.abort();
         activeStreamAbort = null;
@@ -2721,7 +2755,7 @@
         exitViewerFullscreen();
       }
       $('viewerStreamProgress').classList.add('hidden');
-      $('viewerFrame').src = 'about:blank';
+      setViewerFrameSrc('about:blank');
     }
 
     function closeViewerModal() {
