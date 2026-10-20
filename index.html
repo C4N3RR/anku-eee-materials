@@ -1454,6 +1454,7 @@
       driveTree = (driveTree || []).filter(n => n.name.toUpperCase().trim() !== 'OUL101');
       $('mainLoader')?.classList.add('hidden');
       $('mainContainer')?.setAttribute('aria-busy', 'false');
+      syncCourseFromHash();
       renderSidebarCourses();
 
       driveTree.forEach(node => {
@@ -1579,7 +1580,57 @@
       lucide.createIcons();
     }
 
-    window.goHome = function() {
+    // ================= ROUTING (URL hash + history) =================
+    // Each course gets its own URL (#CODE) so the browser back/forward buttons
+    // walk through the visited pages and a refresh restores the current page.
+    function getCourseCodeById(courseId) {
+      const node = (driveTree || []).find(n => n.id === courseId);
+      return node ? node.name.toUpperCase().trim() : null;
+    }
+
+    function getCourseIdFromHash() {
+      let code = '';
+      try { code = decodeURIComponent(location.hash.slice(1)); } catch (e) { code = location.hash.slice(1); }
+      code = code.toUpperCase().trim();
+      if (!code) return null;
+      const node = (driveTree || []).find(n => n.name.toUpperCase().trim() === code);
+      return node ? node.id : null;
+    }
+
+    // Called whenever the tree (re)loads: adopt the course in the URL hash.
+    function syncCourseFromHash() {
+      if (!location.hash) return;
+      const courseId = getCourseIdFromHash();
+      if (!courseId) {
+        // Unknown course code in URL: drop the hash and stay on home.
+        history.replaceState(null, '', location.pathname + location.search);
+        return;
+      }
+      if (courseId !== activeCourseId) {
+        activeCourseId = courseId;
+        courseLocalSearch = '';
+      }
+      const code = getCourseCodeById(courseId);
+      const meta = courseMetadata[code] || { name: code };
+      updateHeaderBreadcrumb(code, meta.name);
+      updatePageMeta(code, meta);
+    }
+
+    window.addEventListener('popstate', () => {
+      if ($('viewerModal')?.open) closeViewerModal();
+      if (!driveTree) return;
+      const courseId = getCourseIdFromHash();
+      if (courseId) {
+        selectCourse(courseId, { fromHistory: true });
+      } else {
+        goHome({ fromHistory: true });
+      }
+    });
+
+    window.goHome = function(opts = {}) {
+      if (!opts.fromHistory && location.hash) {
+        history.pushState(null, '', location.pathname + location.search);
+      }
       activeCourseId = null;
       courseLocalSearch = '';
       updateHeaderBreadcrumb(null);
@@ -1591,7 +1642,13 @@
       }
     };
 
-    window.selectCourse = function(courseId) {
+    window.selectCourse = function(courseId, opts = {}) {
+      if (!opts.fromHistory) {
+        const code = getCourseCodeById(courseId);
+        if (code && location.hash !== '#' + encodeURIComponent(code)) {
+          history.pushState(null, '', '#' + encodeURIComponent(code));
+        }
+      }
       activeCourseId = courseId;
       courseLocalSearch = '';
       const courseNode = (driveTree || []).find(n => n.id === courseId);
