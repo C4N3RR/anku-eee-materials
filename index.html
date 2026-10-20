@@ -3172,9 +3172,8 @@
       renderSidebarCourses();
     };
 
-    $('refreshBtn').onclick = async () => {
+    $('refreshBtn').onclick = () => {
       localStorage.removeItem('anku_tree_cache_v3');
-      await clearPdfCache();
       loadDriveData();
     };
 
