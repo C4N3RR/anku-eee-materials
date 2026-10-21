@@ -426,13 +426,17 @@
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
+    /* Media box sizes itself from the photo's own aspect ratio (--banner-ratio)
+       and the banner's current height, so the full image stays visible at any
+       window size. It only crops (horizontally) when it would exceed max-width. */
     .course-hero-banner-media {
       position: absolute;
       top: 0;
       right: 0;
-      bottom: 0;
-      width: 48%;
-      max-width: 500px;
+      height: 100%;
+      width: auto;
+      aspect-ratio: var(--banner-ratio, 16 / 9);
+      max-width: 58%;
       pointer-events: none;
       user-select: none;
       overflow: hidden;
@@ -440,17 +444,17 @@
 
     @media (max-width: 639px) {
       .course-hero-banner-media {
-        width: 62%;
+        max-width: 78%;
         opacity: 0.45;
       }
     }
 
     .course-hero-banner-img {
+      display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: brightness(0.82) contrast(1.04) saturate(0.92);
-      transform: scale(1.01);
+      filter: brightness(0.88) contrast(1.04) saturate(0.95);
     }
 
     /* Tint + Left-edge Black Vignette where the photo ends on the left */
@@ -462,27 +466,26 @@
         linear-gradient(
           to right,
           #09090b 0%,
-          rgba(9, 9, 11, 0.96) 8%,
-          rgba(9, 9, 11, 0.78) 20%,
-          rgba(9, 9, 11, 0.42) 38%,
-          rgba(9, 9, 11, 0.18) 62%,
-          rgba(9, 9, 11, 0.28) 100%
+          rgba(9, 9, 11, 0.7) 7%,
+          rgba(9, 9, 11, 0.3) 18%,
+          rgba(9, 9, 11, 0) 32%,
+          rgba(9, 9, 11, 0) 100%
         ),
-        /* Subtle vertical vignette on top and bottom edges */
+        /* Very light vertical vignette on top and bottom edges */
         linear-gradient(
           to bottom,
-          rgba(9, 9, 11, 0.45) 0%,
-          rgba(9, 9, 11, 0.12) 25%,
-          rgba(9, 9, 11, 0.12) 75%,
-          rgba(9, 9, 11, 0.5) 100%
+          rgba(9, 9, 11, 0.22) 0%,
+          rgba(9, 9, 11, 0) 14%,
+          rgba(9, 9, 11, 0) 86%,
+          rgba(9, 9, 11, 0.25) 100%
         ),
         /* Atmospheric course theme color tint over the photo */
         radial-gradient(
-          circle at 75% 50%,
+          circle at 70% 50%,
           var(--course-tint, rgba(15, 23, 42, 0.18)) 0%,
-          rgba(9, 9, 11, 0.5) 100%
+          rgba(9, 9, 11, 0.12) 100%
         );
-      box-shadow: inset 24px 0 36px -12px #09090b;
+      box-shadow: inset 14px 0 20px -10px #09090b;
     }
 
     /* Fullscreen Viewer Top Exit Button & ESC Toast */
@@ -1128,7 +1131,7 @@
         icon: 'flask-conical',
         banner: 'bannerlar/kimya.jpg',
         bannerPos: 'center center',
-        bannerWidth: '420px',
+        bannerRatio: 246 / 138,
         links: [
           { title: 'Ptable', url: 'https://ptable.com', icon: 'external-link' }
         ]
@@ -1142,7 +1145,7 @@
         icon: 'cpu',
         banner: 'bannerlar/elektrik%20elektronik.jpeg',
         bannerPos: 'center 50%',
-        bannerWidth: '280px',
+        bannerRatio: 415 / 739,
         links: [
           { title: 'Bölüm', url: 'https://eee.ankara.edu.tr', icon: 'globe' }
         ]
@@ -1156,7 +1159,7 @@
         icon: 'sigma',
         banner: 'bannerlar/calculus.png',
         bannerPos: 'center 44%',
-        bannerWidth: '380px',
+        bannerRatio: 1,
         links: [
           { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'calculator' },
           { title: '3Blue1Brown Calculus', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr', icon: 'play' }
@@ -1171,7 +1174,7 @@
         icon: 'grid-3x3',
         banner: 'bannerlar/lineer.jpg',
         bannerPos: 'center 35%',
-        bannerWidth: '440px',
+        bannerRatio: 800 / 450,
         links: [
           { title: '3Blue1Brown Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab', icon: 'play' }
         ]
@@ -1185,7 +1188,7 @@
         icon: 'atom',
         banner: 'bannerlar/fizik.jpg',
         bannerPos: 'center 25%',
-        bannerWidth: '360px',
+        bannerRatio: 1150 / 646,
         links: [
           { title: 'PhET', url: 'https://phet.colorado.edu/tr/', icon: 'external-link' }
         ]
@@ -1199,7 +1202,7 @@
         icon: 'book-type',
         banner: 'bannerlar/tu%CC%88rkc%CC%A7e.jpg',
         bannerPos: 'center 22%',
-        bannerWidth: '420px',
+        bannerRatio: 706 / 371,
         links: [
           { title: 'TDK Sözlük', url: 'https://sozluk.gov.tr', icon: 'book-open' }
         ]
@@ -1230,7 +1233,8 @@
         courseMetadata[code].icon = DEFAULT_COURSE_METADATA[code].icon;
         courseMetadata[code].banner = DEFAULT_COURSE_METADATA[code].banner;
         courseMetadata[code].bannerPos = DEFAULT_COURSE_METADATA[code].bannerPos;
-        courseMetadata[code].bannerWidth = DEFAULT_COURSE_METADATA[code].bannerWidth;
+        courseMetadata[code].bannerRatio = DEFAULT_COURSE_METADATA[code].bannerRatio;
+        delete courseMetadata[code].bannerWidth;
         if (courseMetadata[code].links) {
           courseMetadata[code].links = courseMetadata[code].links.filter(l =>
             !/obs/i.test(l.title) && !/izlence|syllabus/i.test(l.title)
@@ -2091,7 +2095,9 @@
 
       const bannerUrl = meta.banner || DEFAULT_COURSE_METADATA[code]?.banner || '';
       const bannerPos = meta.bannerPos || DEFAULT_COURSE_METADATA[code]?.bannerPos || 'center center';
-      const bannerWidth = meta.bannerWidth || DEFAULT_COURSE_METADATA[code]?.bannerWidth || '420px';
+      const bannerRatioRaw = Number(meta.bannerRatio || DEFAULT_COURSE_METADATA[code]?.bannerRatio) || (16 / 9);
+      // Very tall (portrait) photos would become a thin strip, so allow a mild crop below 0.8.
+      const bannerRatio = Math.max(bannerRatioRaw, 0.8);
       const theme = getCourseTheme(code);
 
       container.innerHTML = `
@@ -2100,13 +2106,14 @@
           style="--course-border: ${theme.border}; --course-glow: ${theme.glow}; --course-tint: ${theme.tint};"
         >
           ${bannerUrl ? `
-            <div class="course-hero-banner-media" style="max-width: ${bannerWidth};" aria-hidden="true">
+            <div class="course-hero-banner-media" style="--banner-ratio: ${bannerRatio};" aria-hidden="true">
               <img
                 src="${bannerUrl}"
                 alt="${esc(meta.name)} Banner"
                 fetchpriority="high"
                 class="course-hero-banner-img"
                 style="object-position: ${bannerPos};"
+                onload="if (this.naturalWidth && this.naturalHeight) this.parentElement.style.setProperty('--banner-ratio', Math.max(this.naturalWidth / this.naturalHeight, 0.8));"
               />
               <div class="course-hero-banner-vignette"></div>
             </div>
