@@ -43,6 +43,12 @@
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ANKU EEE">
 
   <!-- 12. Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-ANKUEEE2026"></script>
@@ -863,6 +869,16 @@
           </div>
 
           <div class="flex items-center gap-1.5 shrink-0">
+            <button
+              id="pwaInstallBtn"
+              type="button"
+              title="Uygulama Olarak Yükle"
+              class="hidden h-8 items-center gap-1.5 rounded-md border border-orange-500/35 bg-orange-500/10 px-2.5 text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 transition"
+            >
+              <i data-lucide="download" class="size-3.5"></i>
+              <span>Uygulama</span>
+            </button>
+
             <a
               href="https://obs.ankara.edu.tr"
               target="_blank"
@@ -1092,6 +1108,39 @@
         </div>
       </div>
     </form>
+  </dialog>
+
+  <!-- ================= PWA INSTALL GUIDE MODAL (iOS / Manual) ================= -->
+  <dialog id="pwaInstallModal" closedby="any" aria-labelledby="pwaModalTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[92vw] max-w-sm outline-none shadow-2xl">
+    <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="smartphone" class="size-4 text-orange-500"></i>
+        <h3 id="pwaModalTitle" class="font-semibold text-sm">Uygulama Olarak Yükle</h3>
+      </div>
+      <button type="button" onclick="$('pwaInstallModal').close()" class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+        <i data-lucide="x" class="size-4"></i>
+      </button>
+    </div>
+    <div class="p-5 space-y-3.5 text-xs leading-relaxed">
+      <p class="text-muted-foreground">
+        <strong class="text-foreground">ANKU EEE Ders Portalı</strong>'nı ana ekranına ekleyerek tam ekran uygulama olarak kullanabilirsin:
+      </p>
+      <ol class="space-y-2.5 text-foreground">
+        <li class="flex items-start gap-2.5 rounded-lg border border-border bg-background p-2.5">
+          <span class="flex size-5 shrink-0 items-center justify-center rounded-full bg-orange-500/15 text-orange-500 font-mono font-semibold text-xs">1</span>
+          <span>Tarayıcının alt (veya üst) çubuğundaki <strong>Paylaş</strong> <i data-lucide="share" class="inline size-3.5 mx-0.5"></i> butonuna dokun.</span>
+        </li>
+        <li class="flex items-start gap-2.5 rounded-lg border border-border bg-background p-2.5">
+          <span class="flex size-5 shrink-0 items-center justify-center rounded-full bg-orange-500/15 text-orange-500 font-mono font-semibold text-xs">2</span>
+          <span>Menüden <strong>"Ana Ekrana Ekle"</strong> <i data-lucide="plus-square" class="inline size-3.5 mx-0.5"></i> seçeneğine bas ve <strong>Ekle</strong>'ye dokun.</span>
+        </li>
+      </ol>
+      <div class="pt-1 flex justify-end">
+        <button type="button" onclick="$('pwaInstallModal').close()" class="h-8 px-4 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition">
+          Anladım
+        </button>
+      </div>
+    </div>
   </dialog>
 
 
@@ -3285,6 +3334,57 @@
 
     lucide.createIcons();
     loadDriveData();
+
+    // ================= PWA SERVICE WORKER & INSTALL PROMPT =================
+    let deferredPwaPrompt = null;
+    const pwaInstallBtn = $('pwaInstallBtn');
+    const isStandaloneApp =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+    const isIosDevice =
+      /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    if (!isStandaloneApp && pwaInstallBtn) {
+      // On iOS/iPadOS, beforeinstallprompt is not supported, so show button for manual guide
+      if (isIosDevice) {
+        pwaInstallBtn.classList.remove('hidden');
+        pwaInstallBtn.classList.add('inline-flex');
+      }
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPwaPrompt = e;
+        pwaInstallBtn.classList.remove('hidden');
+        pwaInstallBtn.classList.add('inline-flex');
+      });
+
+      window.addEventListener('appinstalled', () => {
+        deferredPwaPrompt = null;
+        pwaInstallBtn.classList.add('hidden');
+        pwaInstallBtn.classList.remove('inline-flex');
+      });
+
+      pwaInstallBtn.onclick = async () => {
+        if (deferredPwaPrompt) {
+          deferredPwaPrompt.prompt();
+          const { outcome } = await deferredPwaPrompt.userChoice;
+          if (outcome === 'accepted') {
+            deferredPwaPrompt = null;
+            pwaInstallBtn.classList.add('hidden');
+            pwaInstallBtn.classList.remove('inline-flex');
+          }
+        } else {
+          $('pwaInstallModal')?.showModal();
+        }
+      };
+    }
   </script>
 </body>
 </html>
