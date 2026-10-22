@@ -2104,7 +2104,8 @@
 
       weekFolders.sort((a, b) => a.weekNum - b.weekNum);
 
-      const shortcutButtonsHtml = (meta.links || []).map(link => {
+      // Course-related links shown as a thin card grid under the banner (6 per row on wide screens).
+      const courseLinkCardsHtml = (meta.links || []).map(link => {
         let iconName = link.icon || 'external-link';
         if (link.url.includes('youtube.com') || link.url.includes('youtu.be') || iconName === 'youtube') iconName = 'play';
 
@@ -2113,13 +2114,20 @@
             href="${esc(link.url)}"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex h-8 items-center gap-1.5 px-2.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-zinc-900/[0.03] dark:bg-white/5 hover:bg-zinc-900/10 dark:hover:bg-white/10 text-xs font-medium text-zinc-800 dark:text-zinc-100 backdrop-blur-sm transition"
+            title="${esc(link.title)}"
+            class="group flex h-10 min-w-0 items-center gap-2 rounded-lg border border-border bg-card px-3 text-xs font-medium text-foreground shadow-sm hover:bg-muted transition"
           >
-            <i data-lucide="${iconName}" class="size-3.5 text-zinc-700 dark:text-zinc-200"></i>
-            <span>${esc(link.title)}</span>
+            <i data-lucide="${iconName}" class="size-3.5 shrink-0 text-muted-foreground group-hover:text-foreground transition"></i>
+            <span class="flex-1 truncate">${esc(link.title)}</span>
+            <i data-lucide="square-arrow-out-up-right" class="size-3 shrink-0 opacity-40 group-hover:opacity-80 transition"></i>
           </a>
         `;
       }).join('');
+      const courseLinksSectionHtml = courseLinkCardsHtml ? `
+        <nav aria-label="Ders bağlantıları" class="!mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+          ${courseLinkCardsHtml}
+        </nav>
+      ` : '';
 
       const bannerUrl = meta.banner || DEFAULT_COURSE_METADATA[code]?.banner || '';
       const bannerPos = meta.bannerPos || DEFAULT_COURSE_METADATA[code]?.bannerPos || 'center center';
@@ -2205,7 +2213,6 @@
                   style="--tw-ring-color: ${theme.border};"
                 >
               </div>
-              ${shortcutButtonsHtml}
               <a
                 href="${driveFolderUrl}"
                 target="_blank"
@@ -2225,6 +2232,8 @@
             </div>
           </div>
         </div>
+
+        ${courseLinksSectionHtml}
 
         <div id="courseMaterialsContainer" class="space-y-6">
           ${renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl)}
