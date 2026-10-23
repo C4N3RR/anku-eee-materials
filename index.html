@@ -1247,7 +1247,9 @@
       'ptable.com': 'assets/link-icons/ptable.png',
       'eee.ankara.edu.tr': 'assets/link-icons/eee-ankara.png',
       'phet.colorado.edu': 'assets/link-icons/phet.png',
-      'sozluk.gov.tr': 'assets/link-icons/tdk.png'
+      'sozluk.gov.tr': 'assets/link-icons/tdk.png',
+      'tutorial.math.lamar.edu': 'assets/link-icons/lamar.png',
+      'lamar.edu': 'assets/link-icons/lamar.png'
     };
 
     function getLinkFavicon(link) {
@@ -1306,6 +1308,7 @@
         bannerRatio: 1,
         links: [
           { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'assets/link-icons/wolframalpha.png' },
+          { title: "Paul's Math Notes", url: 'https://tutorial.math.lamar.edu', icon: 'assets/link-icons/lamar.png' },
           { title: '3Blue1Brown Calculus', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr', icon: 'assets/link-icons/youtube.png' }
         ]
       },
@@ -1320,6 +1323,7 @@
         bannerPos: 'center 35%',
         bannerRatio: 800 / 450,
         links: [
+          { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'assets/link-icons/wolframalpha.png' },
           { title: '3Blue1Brown Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab', icon: 'assets/link-icons/youtube.png' }
         ]
       },
@@ -1364,7 +1368,7 @@
       key: CONFIG.API_KEY
     };
 
-    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v6') || 'null') || DEFAULT_COURSE_METADATA;
+    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v7') || 'null') || DEFAULT_COURSE_METADATA;
     delete courseMetadata['OUL101'];
     Object.keys(DEFAULT_COURSE_METADATA).forEach(code => {
       if (!courseMetadata[code]) {
@@ -1379,6 +1383,13 @@
         courseMetadata[code].bannerPos = DEFAULT_COURSE_METADATA[code].bannerPos;
         courseMetadata[code].bannerRatio = DEFAULT_COURSE_METADATA[code].bannerRatio;
         delete courseMetadata[code].bannerWidth;
+        const existingUrls = new Set((courseMetadata[code].links || []).map(l => (l.url || '').toLowerCase()));
+        (DEFAULT_COURSE_METADATA[code].links || []).forEach(defLink => {
+          if (!existingUrls.has((defLink.url || '').toLowerCase())) {
+            if (!courseMetadata[code].links) courseMetadata[code].links = [];
+            courseMetadata[code].links.push(defLink);
+          }
+        });
         if (courseMetadata[code].links) {
           courseMetadata[code].links = courseMetadata[code].links.filter(l =>
             !/obs/i.test(l.title) && !/izlence|syllabus/i.test(l.title)
@@ -1386,7 +1397,7 @@
         }
       }
     });
-    localStorage.setItem('anku_course_meta_v6', JSON.stringify(courseMetadata));
+    localStorage.setItem('anku_course_meta_v7', JSON.stringify(courseMetadata));
 
     let driveTree = null;
     let activeCourseId = null;
@@ -1557,7 +1568,7 @@
         });
 
         courseMetadata[courseCode] = meta;
-        localStorage.setItem('anku_course_meta_v6', JSON.stringify(courseMetadata));
+        localStorage.setItem('anku_course_meta_v7', JSON.stringify(courseMetadata));
       } catch (e) {}
     }
 
@@ -3202,7 +3213,7 @@
       });
 
       courseMetadata[code] = meta;
-      localStorage.setItem('anku_course_meta_v6', JSON.stringify(courseMetadata));
+      localStorage.setItem('anku_course_meta_v7', JSON.stringify(courseMetadata));
 
       $('editCourseModal').close();
       renderSidebarCourses();
