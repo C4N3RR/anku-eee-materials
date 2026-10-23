@@ -2302,72 +2302,76 @@
               >
                 <i data-lucide="${meta.icon || 'book-open'}" class="size-5"></i>
               </div>
-              <div class="space-y-1.5 min-w-0">
-                <div class="flex flex-wrap items-center gap-1.5">
-                  <span
-                    class="rounded-sm px-2 py-0.5 font-mono text-xs font-semibold"
-                    style="background-color: ${theme.accent}; color: #09090b;"
-                  >${esc(code)}</span>
-                  ${meta.credits ? `<span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${esc(meta.credits)}</span>` : ''}
-                  <span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${totalFiles} dosya</span>
-                </div>
-                <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-zinc-950 dark:text-white drop-shadow-sm">${esc(meta.name)}</h1>
+              <div class="space-y-3 min-w-0 flex-1">
+                <div class="space-y-1.5 min-w-0">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span
+                      class="rounded-sm px-2 py-0.5 font-mono text-xs font-semibold"
+                      style="background-color: ${theme.accent}; color: #09090b;"
+                    >${esc(code)}</span>
+                    ${meta.credits ? `<span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${esc(meta.credits)}</span>` : ''}
+                    <span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${totalFiles} dosya</span>
+                  </div>
+                  <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-zinc-950 dark:text-white drop-shadow-sm">${esc(meta.name)}</h1>
 
-                <div class="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
-                  ${meta.instructor ? `
-                    <div class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 px-2.5 py-1 font-medium text-zinc-800 dark:text-zinc-100">
-                      <i data-lucide="user" class="size-3.5 text-zinc-600 dark:text-zinc-300"></i>
-                      <span>${esc(meta.instructor)}</span>
-                      ${meta.avesisUrl ? `
-                        <a href="${esc(meta.avesisUrl)}" target="_blank" rel="noopener noreferrer" title="AVESİS" class="ml-0.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition">
-                          <i data-lucide="external-link" class="size-3"></i>
-                        </a>
+                  ${(meta.instructor || meta.email) ? `
+                    <div class="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
+                      ${meta.instructor ? `
+                        <div class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 px-2.5 py-1 font-medium text-zinc-800 dark:text-zinc-100">
+                          <i data-lucide="user" class="size-3.5 text-zinc-600 dark:text-zinc-300"></i>
+                          <span>${esc(meta.instructor)}</span>
+                          ${meta.avesisUrl ? `
+                            <a href="${esc(meta.avesisUrl)}" target="_blank" rel="noopener noreferrer" title="AVESİS" class="ml-0.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition">
+                              <i data-lucide="external-link" class="size-3"></i>
+                            </a>
+                          ` : ''}
+                        </div>
+                      ` : ''}
+
+                      ${meta.email ? `
+                        <button
+                          onclick="copyInstructorEmail('${esc(meta.email)}', this)"
+                          title="Kopyala"
+                          class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 px-2.5 py-1 font-mono text-xs text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
+                        >
+                          <i data-lucide="mail" class="size-3.5"></i>
+                          <span class="email-text">${esc(meta.email)}</span>
+                        </button>
                       ` : ''}
                     </div>
                   ` : ''}
+                </div>
 
-                  ${meta.email ? `
-                    <button
-                      onclick="copyInstructorEmail('${esc(meta.email)}', this)"
-                      title="Kopyala"
-                      class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 px-2.5 py-1 font-mono text-xs text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
+                <div class="flex flex-wrap items-center gap-2 pt-0.5">
+                  <div class="relative w-44 sm:w-52">
+                    <i data-lucide="search" class="size-3.5 text-zinc-500 dark:text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2 z-10 pointer-events-none"></i>
+                    <input
+                      type="text"
+                      value="${esc(courseLocalSearch)}"
+                      oninput="filterCourseMaterials(this.value)"
+                      placeholder="Ara..."
+                      class="h-8 w-full rounded-md bg-white/85 dark:bg-white/10 border border-zinc-900/15 dark:border-white/15 pl-8 pr-3 text-xs text-zinc-950 dark:text-white placeholder:text-zinc-400 outline-none focus:ring-2 transition"
+                      style="--tw-ring-color: ${theme.border};"
                     >
-                      <i data-lucide="mail" class="size-3.5"></i>
-                      <span class="email-text">${esc(meta.email)}</span>
-                    </button>
-                  ` : ''}
+                  </div>
+                  <a
+                    href="${driveFolderUrl}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-800 dark:text-zinc-100 border border-zinc-900/10 dark:border-white/15 transition"
+                  >
+                    <i data-lucide="folder-symlink" class="size-3.5"></i>
+                    <span>Drive</span>
+                  </a>
+                  <button
+                    onclick="openEditCourseModal('${esc(code)}')"
+                    title="Düzenle"
+                    class="inline-flex size-8 items-center justify-center rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
+                  >
+                    <i data-lucide="edit-3" class="size-3.5"></i>
+                  </button>
                 </div>
               </div>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2 pt-0.5">
-              <div class="relative w-44 sm:w-52">
-                <i data-lucide="search" class="size-3.5 text-zinc-500 dark:text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2 z-10 pointer-events-none"></i>
-                <input
-                  type="text"
-                  value="${esc(courseLocalSearch)}"
-                  oninput="filterCourseMaterials(this.value)"
-                  placeholder="Ara..."
-                  class="h-8 w-full rounded-md bg-white/85 dark:bg-white/10 border border-zinc-900/15 dark:border-white/15 pl-8 pr-3 text-xs text-zinc-950 dark:text-white placeholder:text-zinc-400 outline-none focus:ring-2 transition"
-                  style="--tw-ring-color: ${theme.border};"
-                >
-              </div>
-              <a
-                href="${driveFolderUrl}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-800 dark:text-zinc-100 border border-zinc-900/10 dark:border-white/15 transition"
-              >
-                <i data-lucide="folder-symlink" class="size-3.5"></i>
-                <span>Drive</span>
-              </a>
-              <button
-                onclick="openEditCourseModal('${esc(code)}')"
-                title="Düzenle"
-                class="inline-flex size-8 items-center justify-center rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
-              >
-                <i data-lucide="edit-3" class="size-3.5"></i>
-              </button>
             </div>
           </div>
         </div>
