@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anku-eee-shell-v4';
+const CACHE_NAME = 'anku-eee-shell-v5';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -16,7 +16,11 @@ const PRECACHE_URLS = [
   './assets/link-icons/youtube.png',
   './assets/link-icons/phet.png',
   './assets/link-icons/tdk.png',
-  './assets/link-icons/lamar.png'
+  './assets/link-icons/lamar.png',
+  './assets/link-icons/tuba.png',
+  './assets/link-icons/dildernegi.png',
+  './assets/link-icons/millikutuphane.png',
+  './assets/link-icons/turkoloji.png'
 ];
 
 self.addEventListener('install', (event) => {

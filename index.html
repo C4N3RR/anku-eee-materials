@@ -1248,8 +1248,16 @@
       'eee.ankara.edu.tr': 'assets/link-icons/eee-ankara.png',
       'phet.colorado.edu': 'assets/link-icons/phet.png',
       'sozluk.gov.tr': 'assets/link-icons/tdk.png',
+      'tdk.gov.tr': 'assets/link-icons/tdk.png',
       'tutorial.math.lamar.edu': 'assets/link-icons/lamar.png',
-      'lamar.edu': 'assets/link-icons/lamar.png'
+      'lamar.edu': 'assets/link-icons/lamar.png',
+      'terim.tuba.gov.tr': 'assets/link-icons/tuba.png',
+      'tuba.gov.tr': 'assets/link-icons/tuba.png',
+      'dildernegi.org.tr': 'assets/link-icons/dildernegi.png',
+      'millikutuphane.gov.tr': 'assets/link-icons/millikutuphane.png',
+      'millikutuphane.org.tr': 'assets/link-icons/millikutuphane.png',
+      'turkoloji.cu.edu.tr': 'assets/link-icons/turkoloji.png',
+      'cu.edu.tr': 'assets/link-icons/turkoloji.png'
     };
 
     function getLinkFavicon(link) {
@@ -1352,7 +1360,11 @@
         bannerPos: 'center 22%',
         bannerRatio: 706 / 371,
         links: [
-          { title: 'TDK Sözlük', url: 'https://sozluk.gov.tr', icon: 'assets/link-icons/tdk.png' }
+          { title: 'TDK Sözlük', url: 'https://sozluk.gov.tr', icon: 'assets/link-icons/tdk.png' },
+          { title: 'TÜBA Terim', url: 'https://terim.tuba.gov.tr', icon: 'assets/link-icons/tuba.png' },
+          { title: 'Dil Derneği', url: 'https://www.dildernegi.org.tr', icon: 'assets/link-icons/dildernegi.png' },
+          { title: 'Milli Kütüphane', url: 'https://www.millikutuphane.gov.tr', icon: 'assets/link-icons/millikutuphane.png' },
+          { title: 'ÇÜ Türkoloji', url: 'http://turkoloji.cu.edu.tr/', icon: 'assets/link-icons/turkoloji.png' }
         ]
       }
     };
@@ -1368,7 +1380,7 @@
       key: CONFIG.API_KEY
     };
 
-    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v8') || 'null') || DEFAULT_COURSE_METADATA;
+    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v9') || 'null') || DEFAULT_COURSE_METADATA;
     delete courseMetadata['OUL101'];
     Object.keys(DEFAULT_COURSE_METADATA).forEach(code => {
       if (!courseMetadata[code]) {
@@ -1397,7 +1409,7 @@
         }
       }
     });
-    localStorage.setItem('anku_course_meta_v8', JSON.stringify(courseMetadata));
+    localStorage.setItem('anku_course_meta_v9', JSON.stringify(courseMetadata));
 
     let driveTree = null;
     let activeCourseId = null;
@@ -1568,7 +1580,7 @@
         });
 
         courseMetadata[courseCode] = meta;
-        localStorage.setItem('anku_course_meta_v8', JSON.stringify(courseMetadata));
+        localStorage.setItem('anku_course_meta_v9', JSON.stringify(courseMetadata));
       } catch (e) {}
     }
 
@@ -3213,7 +3225,7 @@
       });
 
       courseMetadata[code] = meta;
-      localStorage.setItem('anku_course_meta_v8', JSON.stringify(courseMetadata));
+      localStorage.setItem('anku_course_meta_v9', JSON.stringify(courseMetadata));
 
       $('editCourseModal').close();
       renderSidebarCourses();
