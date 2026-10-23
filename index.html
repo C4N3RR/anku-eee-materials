@@ -716,6 +716,41 @@
     ::view-transition-new(root) {
       z-index: 9999;
     }
+
+    /* ================= ACADEMIC CALENDAR & AGENDA WIDGET ================= */
+    .calendar-day-popover {
+      position: fixed;
+      z-index: 9999;
+      width: 290px;
+      max-width: calc(100vw - 24px);
+      background-color: var(--card);
+      color: var(--card-foreground);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) * 1.2);
+      box-shadow: 0 14px 35px -4px rgba(0, 0, 0, 0.3), 0 4px 12px -2px rgba(0, 0, 0, 0.12);
+      pointer-events: auto;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      display: none;
+    }
+    .calendar-day-popover.is-open {
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+    }
+    .calendar-day-cell {
+      position: relative;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .event-agenda-item {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .event-agenda-item:hover {
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 <body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground select-none">
@@ -1148,6 +1183,111 @@
     </div>
   </dialog>
 
+  <!-- ================= CALENDAR DAY HOVER/TAP POPOVER ================= -->
+  <div
+    id="calendarDayPopover"
+    class="calendar-day-popover"
+    role="tooltip"
+    onmouseenter="clearTimeout(calendarPopoverHideTimer)"
+    onmouseleave="handleCalendarDayLeave()"
+  ></div>
+
+  <!-- ================= ADD / EDIT ACADEMIC EVENT MODAL ================= -->
+  <dialog id="addAcademicEventModal" closedby="any" aria-labelledby="addEventModalTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[92vw] max-w-md outline-none shadow-2xl">
+    <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="calendar-plus" class="size-4 text-primary"></i>
+        <h3 id="addEventModalTitle" class="font-semibold text-sm">Etkinlik / Sınav Ekle</h3>
+      </div>
+      <button type="button" onclick="$('addAcademicEventModal').close()" class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+        <i data-lucide="x" class="size-4"></i>
+      </button>
+    </div>
+
+    <form onsubmit="handleSaveAcademicEvent(event)" class="p-5 space-y-4 text-xs">
+      <div class="space-y-1.5">
+        <label for="eventInputCourse" class="font-medium text-foreground">Ders / Kategori</label>
+        <select id="eventInputCourse" class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40">
+          <option value="CHM109">CHM109 - General Chemistry (Kimya)</option>
+          <option value="MTH0101">MTH0101 - Calculus I (Matematik I)</option>
+          <option value="PHY0107">PHY0107 - Physics I (Fizik I)</option>
+          <option value="MTH103">MTH103 - Linear Algebra (Lineer Cebir)</option>
+          <option value="EEE1001">EEE1001 - Giriş ve Tanıtım</option>
+          <option value="TUR171">TUR171 - Türk Dili I</option>
+          <option value="GENEL">GENEL - Akademik Takvim / Tatil</option>
+        </select>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="eventInputTitle" class="font-medium text-foreground">Etkinlik Başlığı</label>
+        <input
+          id="eventInputTitle"
+          type="text"
+          required
+          placeholder="Örn: Kimya Vizesi, Laboratuvar Sınavı..."
+          class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="space-y-1.5">
+          <label for="eventInputDate" class="font-medium text-foreground">Tarih</label>
+          <input
+            id="eventInputDate"
+            type="date"
+            required
+            class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40"
+          />
+        </div>
+        <div class="space-y-1.5">
+          <label for="eventInputTime" class="font-medium text-foreground">Saat</label>
+          <input
+            id="eventInputTime"
+            type="time"
+            value="09:00"
+            required
+            class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="eventInputLocation" class="font-medium text-foreground">Yer / Sınıf / Not (İsteğe bağlı)</label>
+        <input
+          id="eventInputLocation"
+          type="text"
+          placeholder="Örn: Amfi 1 (D-101), Online..."
+          class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+        />
+      </div>
+
+      <div class="pt-2 flex items-center justify-between border-t border-border">
+        <button
+          type="button"
+          onclick="handleResetAcademicEvents()"
+          class="h-8 px-2.5 text-muted-foreground hover:text-rose-500 font-medium text-[11px] transition"
+        >
+          Varsayılana Sıfırla
+        </button>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            onclick="$('addAcademicEventModal').close()"
+            class="h-8 px-3 rounded-md border border-input hover:bg-muted text-muted-foreground hover:text-foreground font-medium transition"
+          >
+            İptal
+          </button>
+          <button
+            type="submit"
+            class="h-8 px-4 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition"
+          >
+            Kaydet
+          </button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
 
 
 
@@ -1212,6 +1352,15 @@
         badgeBg: 'rgba(159, 18, 57, 0.26)',
         badgeBorder: 'rgba(225, 29, 72, 0.45)',
         badgeText: '#ffe4e6'
+      },
+      'GENEL': { // Turuncu / Akademik
+        accent: '#f97316',
+        border: 'rgba(249, 115, 22, 0.48)',
+        glow: 'rgba(234, 88, 12, 0.32)',
+        tint: 'rgba(194, 65, 12, 0.34)',
+        badgeBg: 'rgba(234, 88, 12, 0.22)',
+        badgeBorder: 'rgba(249, 115, 22, 0.42)',
+        badgeText: '#ffedd5'
       }
     };
 
@@ -1892,6 +2041,576 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    // ================= ACADEMIC CALENDAR & AGENDA =================
+    const MONTH_NAMES_TR = [
+      'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+    ];
+    const MONTH_NAMES_TR_SHORT = [
+      'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+      'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'
+    ];
+    const DAY_NAMES_TR = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+    const DAY_NAMES_TR_SHORT = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
+
+    let calendarViewDate = new Date();
+    calendarViewDate.setDate(1); // 1st of month
+    let calendarActiveDateStr = null;
+    let calendarPopoverHideTimer = null;
+
+    function getAcademicEvents() {
+      const raw = localStorage.getItem('anku_academic_events_v2');
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch (e) {}
+      }
+
+      const curYear = new Date().getFullYear();
+      const years = Array.from(new Set([2024, 2025, 2026, curYear]));
+      const defaultEvents = [];
+
+      years.forEach(yr => {
+        defaultEvents.push(
+          // Ekim / October
+          { id: `eee-${yr}-10-15`, date: `${yr}-10-15`, time: '14:00', courseCode: 'EEE1001', title: 'Bölüm Oryantasyon & Tanışma', location: 'EEE Amfi', type: 'etkinlik' },
+          { id: `phy-${yr}-10-23`, date: `${yr}-10-23`, time: '13:30', courseCode: 'PHY0107', title: 'Fizik I Lab Güvenlik Sınavı', location: 'Fizik Lab 1', type: 'lab' },
+          { id: `mth1-${yr}-10-28`, date: `${yr}-10-28`, time: '10:30', courseCode: 'MTH0101', title: 'Calculus I Quiz 1', location: 'Merkez Amfi', type: 'quiz' },
+
+          // Kasım / November (Specifically user requested 16 Kasım: Kimya Sınavı!)
+          { id: `chm-${yr}-11-16`, date: `${yr}-11-16`, time: '09:00', courseCode: 'CHM109', title: 'Kimya Vizesi', location: 'Amfi 1 (D-101)', type: 'vize' },
+          { id: `mth1-${yr}-11-19`, date: `${yr}-11-19`, time: '10:30', courseCode: 'MTH0101', title: 'Calculus I Vize Sınavı', location: 'Merkez Amfi', type: 'vize' },
+          { id: `phy-${yr}-11-22`, date: `${yr}-11-22`, time: '13:30', courseCode: 'PHY0107', title: 'Fizik I Vize Sınavı', location: 'Fizik D-204', type: 'vize' },
+          { id: `mth2-${yr}-11-26`, date: `${yr}-11-26`, time: '11:00', courseCode: 'MTH103', title: 'Lineer Cebir Vizesi', location: 'D-302', type: 'vize' },
+          { id: `tur-${yr}-11-29`, date: `${yr}-11-29`, time: '15:30', courseCode: 'TUR171', title: 'Türk Dili I Ara Sınavı', location: 'Online / e-Kampüs', type: 'vize' },
+          { id: `eee-${yr}-11-30`, date: `${yr}-11-30`, time: '23:59', courseCode: 'EEE1001', title: 'Giriş Proje Raporu Teslimi', location: 'e-Kampüs / Drive', type: 'odev' },
+
+          // Aralık / December
+          { id: `phy-${yr}-12-05`, date: `${yr}-12-05`, time: '14:30', courseCode: 'PHY0107', title: 'Fizik I Laboratuvar Sınavı', location: 'Fizik Lab 2', type: 'lab' },
+          { id: `chm-${yr}-12-11`, date: `${yr}-12-11`, time: '11:00', courseCode: 'CHM109', title: 'Genel Kimya Kısa Sınav', location: 'D-101', type: 'quiz' },
+          { id: `mth2-${yr}-12-16`, date: `${yr}-12-16`, time: '10:00', courseCode: 'MTH103', title: 'Lineer Cebir Quiz 2', location: 'D-302', type: 'quiz' },
+          { id: `eee-${yr}-12-25`, date: `${yr}-12-25`, time: '13:00', courseCode: 'EEE1001', title: 'Dönem Sonu Proje Sunumları', location: 'EEE Konferans Salonu', type: 'proje' }
+        );
+      });
+
+      localStorage.setItem('anku_academic_events_v2', JSON.stringify(defaultEvents));
+      return defaultEvents;
+    }
+
+    function navigateCalendarMonth(delta) {
+      calendarViewDate.setMonth(calendarViewDate.getMonth() + delta);
+      refreshCalendarWidget();
+    }
+
+    function resetCalendarToToday() {
+      calendarViewDate = new Date();
+      calendarViewDate.setDate(1);
+      calendarActiveDateStr = null;
+      refreshCalendarWidget();
+    }
+
+    function refreshCalendarWidget() {
+      const container = document.getElementById('academicCalendarContainer');
+      if (container) {
+        container.outerHTML = renderCalendarAndAgendaWidget();
+        lucide.createIcons();
+      }
+    }
+
+    function renderCalendarAndAgendaWidget() {
+      const allEvents = getAcademicEvents();
+
+      const m1Date = new Date(calendarViewDate);
+      const m1Year = m1Date.getFullYear();
+      const m1Month = m1Date.getMonth();
+
+      const m2Date = new Date(m1Year, m1Month + 1, 1);
+      const m2Year = m2Date.getFullYear();
+      const m2Month = m2Date.getMonth();
+
+      const m1Str = `${m1Year}-${String(m1Month + 1).padStart(2, '0')}`;
+      const m2Str = `${m2Year}-${String(m2Month + 1).padStart(2, '0')}`;
+
+      const visibleEvents = allEvents.filter(e => {
+        return e.date && (e.date.startsWith(m1Str) || e.date.startsWith(m2Str));
+      }).sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''));
+
+      return `
+        <div id="academicCalendarContainer" class="space-y-4">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+            <!-- Box 1: Month 1 (Current / Selected Month) -->
+            ${renderMonthCalendarBox(m1Year, m1Month, false, allEvents)}
+
+            <!-- Box 2: Month 2 (Next Month) - Hidden on mobile! -->
+            ${renderMonthCalendarBox(m2Year, m2Month, true, allEvents)}
+
+            <!-- Box 3: Agenda / Event Descriptions -->
+            ${renderAgendaBox(visibleEvents, m1Year, m1Month, m2Year, m2Month)}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMonthCalendarBox(year, month, isMonthTwo, allEvents) {
+      const today = new Date();
+      const todayY = today.getFullYear();
+      const todayM = today.getMonth();
+      const todayD = today.getDate();
+
+      const firstDayIndex = (new Date(year, month, 1).getDay() + 6) % 7; // 0 = Pzt, 6 = Paz
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const prevMonthDays = new Date(year, month, 0).getDate();
+
+      const monthEvents = allEvents.filter(e => e.date && e.date.startsWith(`${year}-${String(month + 1).padStart(2, '0')}`));
+
+      let headerHtml = '';
+      if (!isMonthTwo) {
+        headerHtml = `
+          <div class="flex items-center justify-between pb-3 border-b border-border mb-2">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <button
+                type="button"
+                onclick="navigateCalendarMonth(-1)"
+                title="Önceki Ay"
+                class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+              >
+                <i data-lucide="chevron-left" class="size-4"></i>
+              </button>
+              <h2 class="font-bold text-sm sm:text-base text-foreground tracking-tight truncate">
+                ${MONTH_NAMES_TR[month]} ${year}
+              </h2>
+            </div>
+
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onclick="navigateCalendarMonth(1)"
+                title="Sonraki Ay"
+                class="lg:hidden size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+              >
+                <i data-lucide="chevron-right" class="size-4"></i>
+              </button>
+              <button
+                type="button"
+                onclick="resetCalendarToToday()"
+                title="Bugüne Dön"
+                class="text-[11px] font-medium px-2 py-1 rounded-md bg-muted/70 hover:bg-muted text-muted-foreground hover:text-foreground transition"
+              >
+                Bugün
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        headerHtml = `
+          <div class="flex items-center justify-between pb-3 border-b border-border mb-2">
+            <h2 class="font-bold text-sm sm:text-base text-foreground tracking-tight truncate">
+              ${MONTH_NAMES_TR[month]} ${year}
+            </h2>
+            <div class="flex items-center gap-1.5">
+              <button
+                type="button"
+                onclick="navigateCalendarMonth(1)"
+                title="Sonraki Ay"
+                class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+              >
+                <i data-lucide="chevron-right" class="size-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      const weekdaysHtml = `
+        <div class="grid grid-cols-7 gap-1 text-center py-1.5 text-[11px] font-semibold text-muted-foreground select-none">
+          ${DAY_NAMES_TR_SHORT.map(d => `<div>${d}</div>`).join('')}
+        </div>
+      `;
+
+      let daysHtml = '<div class="grid grid-cols-7 gap-1 sm:gap-1.5 text-center flex-1 content-start">';
+
+      for (let i = firstDayIndex - 1; i >= 0; i--) {
+        const d = prevMonthDays - i;
+        daysHtml += `<div class="aspect-square flex items-center justify-center text-[11px] text-muted-foreground/35 select-none">${d}</div>`;
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const dayEvs = monthEvents.filter(e => e.date === dateStr);
+        const isToday = (year === todayY && month === todayM && d === todayD);
+
+        if (dayEvs.length > 0) {
+          const firstEv = dayEvs[0];
+          const th = getCourseTheme(firstEv.courseCode);
+          const isSelected = (calendarActiveDateStr === dateStr);
+
+          daysHtml += `
+            <div class="aspect-square flex items-center justify-center relative">
+              <button
+                type="button"
+                class="calendar-day-cell relative size-7 sm:size-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm cursor-pointer transition-all duration-150 hover:scale-115 active:scale-95 focus:outline-none ${isSelected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}"
+                style="background-color: ${th.badgeBg}; border: 1.5px solid ${th.accent}; color: ${th.accent}; box-shadow: 0 0 10px ${th.glow || 'rgba(0,0,0,0.2)'};"
+                data-date="${dateStr}"
+                onmouseenter="handleCalendarDayHover(event, '${dateStr}')"
+                onmouseleave="handleCalendarDayLeave()"
+                onclick="handleCalendarDayClick(event, '${dateStr}')"
+                aria-label="${d} ${MONTH_NAMES_TR[month]}, ${dayEvs.map(e => e.title).join(', ')}"
+              >
+                ${d}
+                ${dayEvs.length > 1 ? `
+                  <span class="absolute -bottom-0.5 flex items-center justify-center gap-0.5">
+                    ${dayEvs.slice(0, 3).map(e => {
+                      const subTh = getCourseTheme(e.courseCode);
+                      return `<span class="size-1 rounded-full" style="background-color: ${subTh.accent}"></span>`;
+                    }).join('')}
+                  </span>
+                ` : ''}
+              </button>
+            </div>
+          `;
+        } else if (isToday) {
+          daysHtml += `
+            <div class="aspect-square flex items-center justify-center">
+              <span class="size-7 sm:size-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm border border-primary text-primary bg-primary/10">
+                ${d}
+              </span>
+            </div>
+          `;
+        } else {
+          daysHtml += `
+            <div class="aspect-square flex items-center justify-center">
+              <span class="size-7 sm:size-8 rounded-full flex items-center justify-center text-xs sm:text-sm text-foreground/80 hover:bg-muted/60 transition">
+                ${d}
+              </span>
+            </div>
+          `;
+        }
+      }
+
+      const totalRendered = firstDayIndex + daysInMonth;
+      const remaining = (7 - (totalRendered % 7)) % 7;
+      for (let d = 1; d <= remaining; d++) {
+        daysHtml += `<div class="aspect-square flex items-center justify-center text-[11px] text-muted-foreground/35 select-none">${d}</div>`;
+      }
+
+      daysHtml += '</div>';
+
+      return `
+        <div class="admincn-card p-4 sm:p-5 flex flex-col justify-between ${isMonthTwo ? 'hidden lg:flex' : ''}">
+          ${headerHtml}
+          ${weekdaysHtml}
+          ${daysHtml}
+        </div>
+      `;
+    }
+
+    function renderAgendaBox(visibleEvents, m1Year, m1Month, m2Year, m2Month) {
+      const rangeTitle = (m1Month === m2Month && m1Year === m2Year)
+        ? `${MONTH_NAMES_TR[m1Month]} ${m1Year}`
+        : `${MONTH_NAMES_TR[m1Month]} - ${MONTH_NAMES_TR[m2Month]} ${m2Year}`;
+
+      let listHtml = '';
+      if (visibleEvents.length === 0) {
+        listHtml = `
+          <div class="py-10 text-center flex flex-col items-center justify-center text-muted-foreground space-y-2 flex-1">
+            <i data-lucide="calendar-off" class="size-8 opacity-40"></i>
+            <p class="text-xs sm:text-sm font-medium">Bu dönemde kayıtlı etkinlik bulunmuyor.</p>
+            <button
+              type="button"
+              onclick="openAddAcademicEventModal()"
+              class="text-xs text-primary hover:underline font-semibold"
+            >
+              + Yeni Etkinlik Ekle
+            </button>
+          </div>
+        `;
+      } else {
+        listHtml = `
+          <div class="space-y-2 overflow-y-auto max-h-[330px] pr-1 flex-1">
+            ${visibleEvents.map(ev => {
+              const th = getCourseTheme(ev.courseCode);
+              const [y, m, d] = ev.date.split('-').map(Number);
+              const dateObj = new Date(y, m - 1, d);
+              const dayOfWeekIndex = (dateObj.getDay() + 6) % 7;
+              const dayOfWeekTr = DAY_NAMES_TR[dayOfWeekIndex];
+              const isHighlighted = (calendarActiveDateStr === ev.date);
+
+              return `
+                <div
+                  id="agenda-item-${esc(ev.id)}"
+                  data-date="${esc(ev.date)}"
+                  onclick="handleAgendaItemClick('${esc(ev.date)}', '${esc(ev.courseCode)}')"
+                  class="event-agenda-item group p-2.5 rounded-lg border border-border/80 bg-card/60 hover:bg-muted/40 transition-all flex items-start gap-2.5 cursor-pointer ${isHighlighted ? 'ring-2 ring-primary border-primary' : ''}"
+                >
+                  <!-- Date Box in course theme color -->
+                  <div
+                    class="shrink-0 flex flex-col items-center justify-center px-2 py-1 rounded-md min-w-[54px] text-center transition"
+                    style="background-color: ${th.badgeBg}; border: 1.5px solid ${th.border}; color: ${th.accent};"
+                  >
+                    <span class="text-xs font-bold leading-none">${d} ${MONTH_NAMES_TR_SHORT[m - 1]}</span>
+                    <span class="text-[10px] opacity-80 mt-1 leading-none">${dayOfWeekTr.slice(0, 3)}</span>
+                  </div>
+
+                  <!-- Event Details -->
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span
+                        class="text-[10px] font-bold px-1.5 py-0.5 rounded cursor-pointer hover:opacity-80 transition"
+                        style="background-color: ${th.badgeBg}; color: ${th.accent}; border: 1px solid ${th.badgeBorder};"
+                        onclick="event.stopPropagation(); selectCourseByCode('${esc(ev.courseCode)}');"
+                        title="${esc(ev.courseCode)} dersine git"
+                      >
+                        ${esc(ev.courseCode)}
+                      </span>
+                      <h3 class="text-xs sm:text-sm font-semibold text-foreground group-hover:underline truncate">
+                        ${esc(ev.title)}
+                      </h3>
+                    </div>
+
+                    <div class="text-[11px] text-muted-foreground flex items-center gap-2 mt-1">
+                      <span class="flex items-center gap-1 font-mono">
+                        <i data-lucide="clock" class="size-3"></i> ${esc(ev.time)}
+                      </span>
+                      ${ev.location ? `
+                        <span class="flex items-center gap-1 truncate">
+                          • <i data-lucide="map-pin" class="size-3"></i> ${esc(ev.location)}
+                        </span>
+                      ` : ''}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      return `
+        <div class="admincn-card p-4 sm:p-5 flex flex-col justify-between h-full">
+          <div class="flex items-center justify-between pb-3 border-b border-border mb-3">
+            <div class="flex items-center gap-2 min-w-0">
+              <i data-lucide="calendar-check-2" class="size-4 text-primary shrink-0"></i>
+              <div>
+                <h2 class="font-bold text-sm sm:text-base text-foreground tracking-tight truncate">
+                  Önemli Tarihler & Sınavlar
+                </h2>
+                <div class="text-[11px] text-muted-foreground mt-0.5">
+                  ${rangeTitle} • ${visibleEvents.length} Etkinlik
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onclick="openAddAcademicEventModal()"
+              title="Yeni Etkinlik Ekle"
+              class="shrink-0 h-7 px-2.5 rounded-md bg-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1 hover:opacity-90 transition"
+            >
+              <i data-lucide="plus" class="size-3.5"></i>
+              <span>Ekle</span>
+            </button>
+          </div>
+
+          ${listHtml}
+        </div>
+      `;
+    }
+
+    function selectCourseByCode(code) {
+      if (!code || code === 'GENEL') return;
+      const c = (driveTree || []).find(n => n.name.toUpperCase().trim() === code.toUpperCase().trim());
+      if (c) {
+        selectCourse(c.id);
+      } else {
+        location.hash = '#' + code;
+      }
+    }
+
+    function handleAgendaItemClick(dateStr, courseCode) {
+      calendarActiveDateStr = (calendarActiveDateStr === dateStr) ? null : dateStr;
+      refreshCalendarWidget();
+      if (calendarActiveDateStr) {
+        setTimeout(() => {
+          const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
+          if (targetCell) {
+            showCalendarDayPopover(targetCell, dateStr, true);
+          }
+        }, 50);
+      } else {
+        hideCalendarDayPopover();
+      }
+    }
+
+    function handleCalendarDayHover(event, dateStr) {
+      clearTimeout(calendarPopoverHideTimer);
+      showCalendarDayPopover(event.currentTarget, dateStr, false);
+    }
+
+    function handleCalendarDayLeave() {
+      calendarPopoverHideTimer = setTimeout(() => {
+        hideCalendarDayPopover();
+      }, 250);
+    }
+
+    function handleCalendarDayClick(event, dateStr) {
+      event.stopPropagation();
+      clearTimeout(calendarPopoverHideTimer);
+      calendarActiveDateStr = (calendarActiveDateStr === dateStr) ? null : dateStr;
+      refreshCalendarWidget();
+      if (calendarActiveDateStr) {
+        setTimeout(() => {
+          const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
+          if (targetCell) {
+            showCalendarDayPopover(targetCell, dateStr, true);
+          }
+        }, 50);
+      } else {
+        hideCalendarDayPopover();
+      }
+    }
+
+    function showCalendarDayPopover(targetEl, dateStr, isPinned) {
+      const popover = document.getElementById('calendarDayPopover');
+      if (!popover || !targetEl) return;
+
+      const events = getAcademicEvents().filter(e => e.date === dateStr);
+      if (events.length === 0) return;
+
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dateObj = new Date(y, m - 1, d);
+      const dayOfWeekIndex = (dateObj.getDay() + 6) % 7;
+      const dayOfWeek = DAY_NAMES_TR[dayOfWeekIndex];
+      const monthName = MONTH_NAMES_TR[m - 1];
+
+      popover.innerHTML = `
+        <div class="p-3 space-y-2.5">
+          <div class="flex items-center justify-between border-b border-border pb-2">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <i data-lucide="calendar" class="size-3.5 text-primary shrink-0"></i>
+              <span class="font-bold text-xs text-foreground truncate">${d} ${monthName} ${y}, ${dayOfWeek}</span>
+            </div>
+            <button
+              type="button"
+              onclick="hideCalendarDayPopover()"
+              class="size-5 rounded flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground shrink-0"
+              aria-label="Kapat"
+            >
+              <i data-lucide="x" class="size-3"></i>
+            </button>
+          </div>
+
+          <div class="space-y-2 max-h-56 overflow-y-auto pr-0.5">
+            ${events.map(ev => {
+              const th = getCourseTheme(ev.courseCode);
+              return `
+                <div class="p-2 rounded-md bg-muted/40 border border-border/60 space-y-1">
+                  <div class="flex items-center justify-between gap-1.5">
+                    <span
+                      class="text-[10px] font-bold px-1.5 py-0.5 rounded cursor-pointer hover:opacity-80 transition"
+                      style="background-color: ${th.badgeBg}; color: ${th.accent}; border: 1px solid ${th.badgeBorder};"
+                      onclick="hideCalendarDayPopover(); selectCourseByCode('${esc(ev.courseCode)}');"
+                    >
+                      ${esc(ev.courseCode)}
+                    </span>
+                    <span class="text-[10px] font-mono text-muted-foreground flex items-center gap-1">
+                      <i data-lucide="clock" class="size-3"></i> ${esc(ev.time)}
+                    </span>
+                  </div>
+                  <div class="text-xs font-semibold text-foreground leading-snug">
+                    ${esc(ev.title)}
+                  </div>
+                  ${ev.location ? `
+                    <div class="text-[11px] text-muted-foreground flex items-center gap-1">
+                      <i data-lucide="map-pin" class="size-3"></i> ${esc(ev.location)}
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      popover.classList.add('is-open');
+      lucide.createIcons({ root: popover });
+
+      const rect = targetEl.getBoundingClientRect();
+      const popoverWidth = Math.min(290, window.innerWidth - 24);
+      let left = rect.left + rect.width / 2 - popoverWidth / 2;
+      left = Math.max(12, Math.min(left, window.innerWidth - popoverWidth - 12));
+
+      const popoverHeight = popover.offsetHeight || 190;
+      let top = rect.top - popoverHeight - 8;
+      if (top < 12) {
+        top = rect.bottom + 8;
+      }
+
+      popover.style.left = `${left}px`;
+      popover.style.top = `${top}px`;
+    }
+
+    function hideCalendarDayPopover() {
+      const popover = document.getElementById('calendarDayPopover');
+      if (popover) {
+        popover.classList.remove('is-open');
+      }
+    }
+
+    function openAddAcademicEventModal(defaultDate = null) {
+      const modal = document.getElementById('addAcademicEventModal');
+      if (!modal) return;
+      const dateInput = document.getElementById('eventInputDate');
+      if (dateInput) {
+        dateInput.value = defaultDate || new Date().toISOString().split('T')[0];
+      }
+      modal.showModal();
+    }
+
+    function handleSaveAcademicEvent(e) {
+      e.preventDefault();
+      const courseCode = document.getElementById('eventInputCourse').value;
+      const title = document.getElementById('eventInputTitle').value.trim();
+      const date = document.getElementById('eventInputDate').value;
+      const time = document.getElementById('eventInputTime').value || '09:00';
+      const location = document.getElementById('eventInputLocation').value.trim();
+
+      if (!title || !date) return;
+
+      const events = getAcademicEvents();
+      events.push({
+        id: 'ev-user-' + Date.now(),
+        date,
+        time,
+        courseCode,
+        title,
+        location,
+        type: 'etkinlik'
+      });
+
+      localStorage.setItem('anku_academic_events_v2', JSON.stringify(events));
+      document.getElementById('addAcademicEventModal').close();
+      refreshCalendarWidget();
+    }
+
+    function handleResetAcademicEvents() {
+      if (confirm('Etkinlik takvimini varsayılan sınav ve ödev tarihlerine sıfırlamak istiyor musunuz?')) {
+        localStorage.removeItem('anku_academic_events_v2');
+        document.getElementById('addAcademicEventModal')?.close();
+        refreshCalendarWidget();
+      }
+    }
+
+    // Dismiss popover when clicking anywhere outside
+    document.addEventListener('click', (e) => {
+      const popover = document.getElementById('calendarDayPopover');
+      if (popover && popover.classList.contains('is-open')) {
+        if (!popover.contains(e.target) && !e.target.closest('.calendar-day-cell')) {
+          hideCalendarDayPopover();
+        }
+      }
+    });
+
     // ================= RENDER HOME VIEW =================
     function renderWelcomeHub() {
       const container = $('courseHubView');
@@ -1952,45 +2671,8 @@
           </div>
         </div>
 
-        <!-- COURSE CARDS GRID -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          ${courses.map(course => {
-            const code = course.name.toUpperCase().trim();
-            const meta = courseMetadata[code] || { name: course.name, credits: '', instructor: '', icon: 'book-open' };
-            const theme = getCourseTheme(code);
-
-            return `
-              <div
-                onclick="selectCourse('${course.id}')"
-                class="admincn-card p-5 flex flex-col justify-between gap-4 cursor-pointer hover:border-foreground/30 transition-all group"
-              >
-                <div class="flex items-center gap-3">
-                  <div
-                    class="size-9 rounded-sm flex items-center justify-center shrink-0 transition"
-                    style="background-color: ${theme.badgeBg}; color: ${theme.accent}; border: 1px solid ${theme.badgeBorder};"
-                  >
-                    <i data-lucide="${meta.icon || 'book-open'}" class="size-4"></i>
-                  </div>
-                  <div class="min-w-0">
-                    <span class="font-bold text-sm text-foreground tracking-tight block">${esc(code)}</span>
-                    ${meta.credits ? `<div class="text-xs text-muted-foreground mt-0.5">${esc(meta.credits)}</div>` : ''}
-                  </div>
-                </div>
-
-                <div>
-                  <h2 class="text-sm font-semibold text-foreground group-hover:underline line-clamp-1 leading-snug">
-                    ${esc(meta.name)}
-                  </h2>
-                  ${meta.instructor ? `
-                    <p class="text-xs text-muted-foreground mt-1 truncate">
-                      ${esc(meta.instructor)}
-                    </p>
-                  ` : ''}
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
+        <!-- ACADEMIC CALENDAR & AGENDA WIDGET -->
+        ${renderCalendarAndAgendaWidget()}
 
         <!-- ALL MATERIALS TABLE -->
         <div id="allMaterialsSection" class="admincn-card overflow-hidden">
