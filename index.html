@@ -805,26 +805,13 @@
             </li>
             <li>
               <a
-                id="sidebarDriveLink"
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
-              >
-                <i data-lucide="folder-git-2" class="size-4 shrink-0 text-muted-foreground"></i>
-                <span class="sidebar-hide-collapsed flex-1 truncate">Drive</span>
-                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
-              </a>
-            </li>
-            <li>
-              <a
                 href="https://eee.ankara.edu.tr"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
               >
                 <i data-lucide="globe" class="size-4 shrink-0 text-muted-foreground"></i>
-                <span class="sidebar-hide-collapsed flex-1 truncate">Bölüm</span>
+                <span class="sidebar-hide-collapsed flex-1 truncate">Bölüm Sayfası</span>
                 <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
               </a>
             </li>
@@ -1301,7 +1288,7 @@
         bannerPos: 'center 50%',
         bannerRatio: 832 / 1104,
         links: [
-          { title: 'Bölüm', url: 'https://eee.ankara.edu.tr', icon: 'assets/link-icons/eee-ankara.png' }
+          { title: 'Bölüm Sayfası', url: 'https://eee.ankara.edu.tr', icon: 'assets/link-icons/eee-ankara.png' }
         ]
       },
       'MTH0101': {
@@ -1380,7 +1367,7 @@
       key: CONFIG.API_KEY
     };
 
-    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v10') || 'null') || DEFAULT_COURSE_METADATA;
+    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v11') || 'null') || DEFAULT_COURSE_METADATA;
     delete courseMetadata['OUL101'];
     Object.keys(DEFAULT_COURSE_METADATA).forEach(code => {
       if (!courseMetadata[code]) {
@@ -1395,11 +1382,16 @@
         courseMetadata[code].bannerPos = DEFAULT_COURSE_METADATA[code].bannerPos;
         courseMetadata[code].bannerRatio = DEFAULT_COURSE_METADATA[code].bannerRatio;
         delete courseMetadata[code].bannerWidth;
-        const existingUrls = new Set((courseMetadata[code].links || []).map(l => (l.url || '').toLowerCase()));
+        const existingLinksByUrl = new Map((courseMetadata[code].links || []).map(l => [(l.url || '').toLowerCase(), l]));
         (DEFAULT_COURSE_METADATA[code].links || []).forEach(defLink => {
-          if (!existingUrls.has((defLink.url || '').toLowerCase())) {
+          const u = (defLink.url || '').toLowerCase();
+          if (!existingLinksByUrl.has(u)) {
             if (!courseMetadata[code].links) courseMetadata[code].links = [];
             courseMetadata[code].links.push(defLink);
+          } else {
+            const existing = existingLinksByUrl.get(u);
+            existing.title = defLink.title;
+            existing.icon = defLink.icon;
           }
         });
         if (courseMetadata[code].links) {
@@ -1409,7 +1401,7 @@
         }
       }
     });
-    localStorage.setItem('anku_course_meta_v10', JSON.stringify(courseMetadata));
+    localStorage.setItem('anku_course_meta_v11', JSON.stringify(courseMetadata));
 
     let driveTree = null;
     let activeCourseId = null;
@@ -1580,7 +1572,7 @@
         });
 
         courseMetadata[courseCode] = meta;
-        localStorage.setItem('anku_course_meta_v10', JSON.stringify(courseMetadata));
+        localStorage.setItem('anku_course_meta_v11', JSON.stringify(courseMetadata));
       } catch (e) {}
     }
 
@@ -1645,7 +1637,8 @@
       const folderId = parseFolderId(settings.folder);
       const driveUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : 'https://drive.google.com';
       $('headerDriveBtn').href = driveUrl;
-      $('sidebarDriveLink').href = driveUrl;
+      const sDrive = $('sidebarDriveLink');
+      if (sDrive) sDrive.href = driveUrl;
 
       if (!folderId || !settings.key) {
         $('statusText').textContent = 'Hata';
@@ -3229,7 +3222,7 @@
       });
 
       courseMetadata[code] = meta;
-      localStorage.setItem('anku_course_meta_v10', JSON.stringify(courseMetadata));
+      localStorage.setItem('anku_course_meta_v11', JSON.stringify(courseMetadata));
 
       $('editCourseModal').close();
       renderSidebarCourses();
