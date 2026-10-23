@@ -1,0 +1,4148 @@
+<!DOCTYPE html>
+<html lang="tr" class="flex min-h-full w-full" data-scroll-behavior="smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try {
+      const storedScheme = localStorage.getItem("color-scheme");
+      document.querySelector('meta[name="color-scheme"]').content = storedScheme ?? "light dark";
+      const isDark = storedScheme ? storedScheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.classList.toggle("dark", isDark);
+    } catch (e) {}
+  </script>
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+
+  <!-- 3 & 4. Meta Title & Meta Description -->
+  <title>ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı</title>
+  <meta id="metaDescription" name="description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
+  <link rel="canonical" href="https://c4n3rr.github.io/anku-eee-materials/">
+
+  <!-- 5. Open Graph & Twitter Card -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ANKU EEE Ders Portalı">
+  <meta property="og:locale" content="tr_TR">
+  <meta id="ogTitle" property="og:title" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+  <meta id="ogDescription" property="og:description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
+  <meta property="og:url" content="https://c4n3rr.github.io/anku-eee-materials/">
+  <meta property="og:image" content="https://c4n3rr.github.io/anku-eee-materials/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta id="twitterTitle" name="twitter:title" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+  <meta id="twitterDescription" name="twitter:description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
+  <meta name="twitter:image" content="https://c4n3rr.github.io/anku-eee-materials/assets/og-image.png">
+  <meta name="twitter:image:alt" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+
+  <!-- 6. Favicon Set -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ANKU EEE">
+
+  <!-- 12. Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-570V5G977T"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-570V5G977T', { page_title: document.title, page_path: location.pathname });
+  </script>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+            heading: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'sans-serif'],
+          },
+          colors: {
+            background: 'var(--background)',
+            foreground: 'var(--foreground)',
+            card: {
+              DEFAULT: 'var(--card)',
+              foreground: 'var(--card-foreground)',
+            },
+            popover: {
+              DEFAULT: 'var(--popover)',
+              foreground: 'var(--popover-foreground)',
+            },
+            primary: {
+              DEFAULT: 'var(--primary)',
+              foreground: 'var(--primary-foreground)',
+            },
+            secondary: {
+              DEFAULT: 'var(--secondary)',
+              foreground: 'var(--secondary-foreground)',
+            },
+            muted: {
+              DEFAULT: 'var(--muted)',
+              foreground: 'var(--muted-foreground)',
+            },
+            accent: {
+              DEFAULT: 'var(--accent)',
+              foreground: 'var(--accent-foreground)',
+            },
+            destructive: {
+              DEFAULT: 'var(--destructive)',
+            },
+            border: 'var(--border)',
+            input: 'var(--input)',
+            ring: 'var(--ring)',
+            sidebar: {
+              DEFAULT: 'var(--sidebar)',
+              foreground: 'var(--sidebar-foreground)',
+              primary: 'var(--sidebar-primary)',
+              'primary-foreground': 'var(--sidebar-primary-foreground)',
+              accent: 'var(--sidebar-accent)',
+              'accent-foreground': 'var(--sidebar-accent-foreground)',
+              border: 'var(--sidebar-border)',
+              ring: 'var(--sidebar-ring)',
+            }
+          },
+          borderRadius: {
+            sm: 'calc(var(--radius) * 0.6)',
+            md: 'calc(var(--radius) * 0.8)',
+            lg: 'var(--radius)',
+            xl: 'calc(var(--radius) * 1.4)',
+            '2xl': 'calc(var(--radius) * 1.8)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      color-scheme: light dark;
+      --background: oklch(1 0 0);
+      --foreground: oklch(0.145 0 0);
+      --card: oklch(1 0 0);
+      --card-foreground: oklch(0.145 0 0);
+      --popover: oklch(1 0 0);
+      --popover-foreground: oklch(0.145 0 0);
+      --primary: oklch(0.205 0 0);
+      --primary-foreground: oklch(0.985 0 0);
+      --secondary: oklch(0.97 0 0);
+      --secondary-foreground: oklch(0.205 0 0);
+      --muted: oklch(0.97 0 0);
+      --muted-foreground: oklch(0.556 0 0);
+      --accent: oklch(0.97 0 0);
+      --accent-foreground: oklch(0.205 0 0);
+      --destructive: oklch(0.577 0.245 27.325);
+      --border: oklch(0.922 0 0);
+      --input: oklch(0.922 0 0);
+      --ring: oklch(0.708 0 0);
+      --radius: 0.625rem;
+      --sidebar: oklch(0.985 0 0);
+      --sidebar-foreground: oklch(0.145 0 0);
+      --sidebar-primary: oklch(0.205 0 0);
+      --sidebar-primary-foreground: oklch(0.985 0 0);
+      --sidebar-accent: oklch(0.97 0 0);
+      --sidebar-accent-foreground: oklch(0.205 0 0);
+      --sidebar-border: oklch(0.922 0 0);
+      --sidebar-ring: oklch(0.708 0 0);
+      --sidebar-width: 15.5rem;
+      --sidebar-width-icon: 3.25rem;
+    }
+
+    :root:has(> head > meta[name="color-scheme"][content="dark"]) {
+      color-scheme: dark;
+    }
+    :root:has(> head > meta[name="color-scheme"][content="light"]) {
+      color-scheme: light;
+    }
+
+    .dark {
+      --background: oklch(0.145 0 0);
+      --foreground: oklch(0.985 0 0);
+      --card: oklch(0.205 0 0);
+      --card-foreground: oklch(0.985 0 0);
+      --popover: oklch(0.205 0 0);
+      --popover-foreground: oklch(0.985 0 0);
+      --primary: oklch(0.922 0 0);
+      --primary-foreground: oklch(0.205 0 0);
+      --secondary: oklch(0.269 0 0);
+      --secondary-foreground: oklch(0.985 0 0);
+      --muted: oklch(0.269 0 0);
+      --muted-foreground: oklch(0.708 0 0);
+      --accent: oklch(0.269 0 0);
+      --accent-foreground: oklch(0.985 0 0);
+      --destructive: oklch(0.704 0.191 22.216);
+      --border: oklch(1 0 0 / 10%);
+      --input: oklch(1 0 0 / 15%);
+      --ring: oklch(0.556 0 0);
+      --sidebar: oklch(0.205 0 0);
+      --sidebar-foreground: oklch(0.985 0 0);
+      --sidebar-primary: oklch(0.488 0.243 264.376);
+      --sidebar-primary-foreground: oklch(0.985 0 0);
+      --sidebar-accent: oklch(0.269 0 0);
+      --sidebar-accent-foreground: oklch(0.985 0 0);
+      --sidebar-border: oklch(1 0 0 / 10%);
+      --sidebar-ring: oklch(0.556 0 0);
+    }
+
+    * {
+      border-color: var(--border);
+    }
+
+    html,
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      text-rendering: optimizeLegibility;
+    }
+
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      html,
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--foreground);
+    }
+
+    code, kbd, samp, pre, .font-mono {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-optical-sizing: auto;
+      font-variant-ligatures: none;
+    }
+
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+      cursor: pointer;
+    }
+
+    .admincn-card {
+      background-color: var(--card);
+      color: var(--card-foreground);
+      border-radius: calc(var(--radius) * 1.4);
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .bg-primary-soft {
+      background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+    }
+    .border-sidebar-border\/60 {
+      border-color: color-mix(in oklab, var(--sidebar-border) 60%, transparent);
+    }
+    .text-sidebar-foreground\/50 {
+      color: color-mix(in oklab, var(--sidebar-foreground) 50%, transparent);
+    }
+    .bg-sidebar-accent\/70 {
+      background-color: color-mix(in oklab, var(--sidebar-accent) 70%, transparent);
+    }
+    .bg-card\/40 {
+      background-color: color-mix(in oklab, var(--card) 40%, transparent);
+    }
+    .bg-background\/90 {
+      background-color: color-mix(in oklab, var(--background) 90%, transparent);
+    }
+    .bg-background\/95 {
+      background-color: color-mix(in oklab, var(--background) 95%, transparent);
+    }
+    .bg-muted\/60 {
+      background-color: color-mix(in oklab, var(--muted) 60%, transparent);
+    }
+    .bg-muted\/50 {
+      background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+    }
+    .bg-muted\/20 {
+      background-color: color-mix(in oklab, var(--muted) 20%, transparent);
+    }
+    .hover\:bg-muted\/50:hover {
+      background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+    }
+    .hover\:bg-muted\/40:hover {
+      background-color: color-mix(in oklab, var(--muted) 40%, transparent);
+    }
+    .hover\:bg-muted\/30:hover {
+      background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+    }
+    .hover\:bg-destructive\/15:hover {
+      background-color: color-mix(in oklab, var(--destructive) 15%, transparent);
+    }
+    .hover\:border-foreground\/30:hover {
+      border-color: color-mix(in oklab, var(--foreground) 30%, transparent);
+    }
+    .focus\:ring-ring\/40:focus {
+      --tw-ring-color: color-mix(in oklab, var(--ring) 40%, transparent);
+    }
+
+    #sidebarWrapper[data-state="collapsed"] #sidebarDesktopGap,
+    #sidebarWrapper[data-state="collapsed"] #sidebar {
+      width: var(--sidebar-width-icon);
+    }
+    #sidebarWrapper[data-state="collapsed"] .sidebar-hide-collapsed {
+      display: none !important;
+    }
+    #sidebarWrapper[data-state="collapsed"] .sidebar-brand-btn {
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    #sidebarWrapper[data-state="collapsed"] .sidebar-nav-btn {
+      justify-content: center;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--muted-foreground) 35%, transparent); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: color-mix(in oklab, var(--muted-foreground) 60%, transparent); }
+
+    dialog:not([open]) { display: none !important; }
+    dialog[open] { display: flex !important; flex-direction: column; }
+    dialog:modal {
+      overscroll-behavior: contain;
+    }
+    dialog::backdrop {
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(3px);
+      overflow: hidden;
+      overscroll-behavior: contain;
+    }
+
+    /* 10. Semantic Indeterminate <progress> Spinner (modern-web-guidance: spinner) */
+    progress.loading-spinner:indeterminate::-webkit-progress-bar {
+      display: none;
+      background: none;
+    }
+    progress.loading-spinner:indeterminate::-webkit-progress-value {
+      display: none;
+      background: none;
+    }
+    progress.loading-spinner:indeterminate::-moz-progress-bar {
+      display: none;
+      background: none;
+    }
+    progress.loading-spinner:indeterminate::slider-fill {
+      display: none;
+      background: none;
+    }
+
+    @property --arc-start {
+      syntax: "<angle>";
+      inherits: false;
+      initial-value: 0deg;
+    }
+    @property --arc-end {
+      syntax: "<angle>";
+      inherits: false;
+      initial-value: 0deg;
+    }
+    @property --progress-dash-animation {
+      syntax: "*";
+      inherits: false;
+      initial-value: , progress-dash 3s ease-in-out infinite;
+    }
+
+    progress.loading-spinner:indeterminate {
+      --_from: calc(90deg + var(--arc-start, 0deg));
+      --_to: calc(90deg + var(--arc-end, 158deg));
+      --size: 32px;
+      --thickness: 3px;
+      --spinner-color: var(--primary);
+      --track-color: var(--muted);
+      --spinner-duration: 1.5s;
+      --_used-spinner-duration: var(--spinner-duration);
+
+      position: relative;
+      display: inline-block;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      appearance: none;
+      background: conic-gradient(
+          from var(--_from),
+          var(--spinner-color) calc(var(--_to) - var(--_from)),
+          transparent 0
+        )
+        var(--track-color);
+      animation:
+        progress-spin var(--_used-spinner-duration) linear infinite
+        var(--progress-dash-animation, );
+    }
+
+    @supports (background-clip: border-area) {
+      progress.loading-spinner:indeterminate {
+        background-clip: border-area;
+        border: var(--thickness) solid transparent;
+        background-origin: border-box;
+      }
+    }
+
+    @supports not (background-clip: border-area) {
+      progress.loading-spinner:indeterminate {
+        --clip-boundary: calc(100% - var(--thickness));
+        mask-image: radial-gradient(
+          farthest-side,
+          transparent var(--clip-boundary),
+          black var(--clip-boundary)
+        );
+        border: 0;
+      }
+    }
+
+    @keyframes progress-spin {
+      to {
+        rotate: 1turn;
+      }
+    }
+
+    @keyframes progress-dash {
+      from {
+        --arc-start: 0deg;
+        --arc-end: 3deg;
+      }
+      50% {
+        --arc-start: 100deg;
+        --arc-end: 358deg;
+      }
+      to {
+        --arc-start: 360deg;
+        --arc-end: 363deg;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      progress.loading-spinner:indeterminate {
+        --_used-spinner-duration: 6s;
+      }
+    }
+
+    /* Course Hero Banner with Right Image, Tint & Left Vignette.
+       Background follows the site theme: white in light mode, near-black in dark mode. */
+    .course-hero-banner {
+      --banner-bg-rgb: 255, 255, 255;
+      position: relative;
+      overflow: hidden;
+      background-color: rgb(var(--banner-bg-rgb));
+      color: #09090b;
+      border-radius: calc(var(--radius) * 1.4);
+      border: 1px solid var(--course-border, rgba(9, 9, 11, 0.12));
+      box-shadow: 0 4px 24px -2px var(--course-glow, rgba(0, 0, 0, 0.12)), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dark .course-hero-banner {
+      --banner-bg-rgb: 9, 9, 11;
+      color: #fafafa;
+    }
+
+    /* Mobile drawer: sidebar height comes from top/bottom insets (follows the dynamic
+       viewport on iOS/Android), and page scroll is locked while it is open. */
+    html.mobile-sidebar-open,
+    html.mobile-sidebar-open body {
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    #sidebar [data-slot="sidebar-content"] {
+      overscroll-behavior: contain;
+    }
+
+    /* Media box sizes itself from the photo's own aspect ratio (--banner-ratio)
+       and the banner's current height, so the full image stays visible at any
+       window size. It only crops (horizontally) when it would exceed max-width. */
+    .course-hero-banner-media {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: auto;
+      aspect-ratio: var(--banner-ratio, 16 / 9);
+      max-width: 58%;
+      pointer-events: none;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    @media (max-width: 639px) {
+      .course-hero-banner-media {
+        max-width: 75%;
+        opacity: 0.4;
+      }
+      .course-hero-banner-vignette {
+        background:
+          linear-gradient(
+            to right,
+            rgb(var(--banner-bg-rgb)) 0%,
+            rgba(var(--banner-bg-rgb), 0.85) 20%,
+            rgba(var(--banner-bg-rgb), 0.45) 55%,
+            rgba(var(--banner-bg-rgb), 0.15) 100%
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(var(--banner-bg-rgb), 0.2) 0%,
+            rgba(var(--banner-bg-rgb), 0) 20%,
+            rgba(var(--banner-bg-rgb), 0.35) 75%,
+            rgb(var(--banner-bg-rgb)) 100%
+          ),
+          radial-gradient(
+            circle at 75% 40%,
+            var(--course-tint, rgba(15, 23, 42, 0.18)) 0%,
+            rgba(var(--banner-bg-rgb), 0.15) 100%
+          ),
+          linear-gradient(rgba(var(--banner-bg-rgb), 0.3), rgba(var(--banner-bg-rgb), 0.3)) !important;
+      }
+    }
+
+    .course-hero-banner-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.88) contrast(1.04) saturate(0.95);
+    }
+
+    /* Tint + Left-edge Vignette where the photo ends on the left */
+    .course-hero-banner-vignette {
+      position: absolute;
+      inset: 0;
+      background:
+        /* Strong vignette fading into the solid banner background on the left edge where the photo ends */
+        linear-gradient(
+          to right,
+          rgb(var(--banner-bg-rgb)) 0%,
+          rgba(var(--banner-bg-rgb), 0.7) 7%,
+          rgba(var(--banner-bg-rgb), 0.3) 18%,
+          rgba(var(--banner-bg-rgb), 0) 32%,
+          rgba(var(--banner-bg-rgb), 0) 100%
+        ),
+        /* Very light vertical vignette on top and bottom edges */
+        linear-gradient(
+          to bottom,
+          rgba(var(--banner-bg-rgb), 0.22) 0%,
+          rgba(var(--banner-bg-rgb), 0) 14%,
+          rgba(var(--banner-bg-rgb), 0) 86%,
+          rgba(var(--banner-bg-rgb), 0.25) 100%
+        ),
+        /* Atmospheric course theme color tint over the photo */
+        radial-gradient(
+          circle at 70% 50%,
+          var(--course-tint, rgba(15, 23, 42, 0.18)) 0%,
+          rgba(var(--banner-bg-rgb), 0.12) 100%
+        ),
+        /* Uniform 30% tint (banner background colour: dark in dark mode, white in light mode) over the whole photo */
+        linear-gradient(rgba(var(--banner-bg-rgb), 0.3), rgba(var(--banner-bg-rgb), 0.3));
+      box-shadow: inset 14px 0 20px -10px rgb(var(--banner-bg-rgb));
+    }
+
+    /* Fullscreen Viewer Top Exit Button & ESC Toast */
+    #viewerStage.is-fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      width: 100vw;
+      height: 100vh;
+    }
+    #viewerFullscreenTopZone {
+      display: none;
+    }
+    #viewerStage:fullscreen #viewerFullscreenTopZone,
+    #viewerStage:-webkit-full-screen #viewerFullscreenTopZone,
+    #viewerStage.is-fullscreen #viewerFullscreenTopZone {
+      display: flex;
+    }
+
+    #viewerFullscreenExitBtn {
+      opacity: 0;
+      transform: translateY(-14px) scale(0.96);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    #viewerFullscreenTopZone:hover #viewerFullscreenExitBtn,
+    #viewerFullscreenTopZone.show-exit-btn #viewerFullscreenExitBtn,
+    #viewerFullscreenExitBtn:focus-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    #viewerFullscreenToast {
+      opacity: 0;
+      transform: translate(-50%, -10px);
+      pointer-events: none;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+    #viewerFullscreenToast.show-toast {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    #viewerModal button,
+    #viewerModal a,
+    #viewerBackBtn {
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #viewerModal button:focus,
+    #viewerModal a:focus,
+    #viewerModal button:focus-visible,
+    #viewerModal a:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    /* ================= HOME HERO (theme-independent orange) ================= */
+    /* Colors are hard-coded on purpose: the hero looks identical in light & dark. */
+    .portal-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1rem;
+      color: #ffffff;
+      color-scheme: dark;
+      background:
+        radial-gradient(120% 140% at 100% 0%, rgba(255, 214, 153, 0.35) 0%, rgba(255, 214, 153, 0) 55%),
+        radial-gradient(90% 120% at 0% 100%, rgba(124, 45, 18, 0.45) 0%, rgba(124, 45, 18, 0) 60%),
+        linear-gradient(135deg, #fb923c 0%, #f97316 45%, #ea580c 100%);
+      box-shadow: 0 18px 40px -18px rgba(234, 88, 12, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .portal-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+      background-size: 18px 18px;
+      mask-image: linear-gradient(to left, #000 0%, transparent 70%);
+    }
+    .portal-hero > * { position: relative; z-index: 1; }
+    .portal-hero-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 4.5rem;
+      height: 4.5rem;
+      padding: 0.3rem;
+      border-radius: 9999px;
+      background: #ffffff;
+      box-shadow: 0 8px 22px -8px rgba(124, 45, 18, 0.6), 0 0 0 4px rgba(255, 255, 255, 0.25);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+      cursor: pointer;
+    }
+    .portal-hero-logo:hover {
+      transform: scale(1.08);
+      box-shadow: 0 12px 28px -6px rgba(124, 45, 18, 0.75), 0 0 0 6px rgba(255, 255, 255, 0.38);
+    }
+    .portal-hero-logo:active {
+      transform: scale(1.02);
+    }
+    @media (min-width: 640px) {
+      .portal-hero-logo { width: 5.5rem; height: 5.5rem; }
+    }
+    .portal-hero-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 0.375rem;
+      padding: 0.2rem 0.55rem;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+    .portal-hero-sub { color: rgba(255, 255, 255, 0.85); }
+    .portal-hero-btn-primary,
+    .portal-hero-btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      height: 2.5rem;
+      padding: 0 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+    .portal-hero-btn-primary { background: #ffffff; color: #c2410c; }
+    .portal-hero-btn-primary:hover { background: #fff7ed; transform: translateY(-1px); }
+    .portal-hero-btn-secondary {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .portal-hero-btn-secondary:hover { background: rgba(255, 255, 255, 0.26); transform: translateY(-1px); }
+
+    /* ================= THEME "RIPPLE" VIEW TRANSITION ================= */
+    /* Seamless circular reveal: as the circle boundary expands, the site content
+       inside the circle is already rendered in the new theme. */
+    html.theme-transitioning *,
+    html.theme-transitioning *::before,
+    html.theme-transitioning *::after {
+      transition: none !important;
+    }
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+    ::view-transition-old(root) {
+      z-index: 1;
+    }
+    ::view-transition-new(root) {
+      z-index: 9999;
+    }
+
+    /* ================= ACADEMIC CALENDAR & AGENDA WIDGET ================= */
+    .calendar-day-popover {
+      position: fixed;
+      z-index: 9999;
+      width: 290px;
+      max-width: calc(100vw - 24px);
+      background-color: var(--card);
+      color: var(--card-foreground);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) * 1.2);
+      box-shadow: 0 14px 35px -4px rgba(0, 0, 0, 0.3), 0 4px 12px -2px rgba(0, 0, 0, 0.12);
+      pointer-events: auto;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      display: none;
+    }
+    .calendar-day-popover.is-open {
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+    }
+    .calendar-day-cell {
+      position: relative;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .event-agenda-item {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .event-agenda-item:hover {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground select-none">
+
+  <div id="sidebarWrapper" data-state="expanded" class="group/sidebar-wrapper flex min-h-svh w-full">
+
+    <div id="sidebarDesktopGap" class="hidden md:block w-[15.5rem] shrink-0 transition-[width] duration-200 ease-linear"></div>
+
+    <!-- ================= LEFT SIDEBAR ================= -->
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 z-40 flex w-[15.5rem] flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border -translate-x-full md:translate-x-0 transition-[transform,width] duration-200 ease-linear"
+    >
+      <div data-slot="sidebar-header" class="flex flex-col gap-2 p-2 border-b border-sidebar-border/60">
+        <div class="flex items-center justify-between gap-1">
+          <button
+            onclick="goHome()"
+            title="Ana Sayfa"
+            class="sidebar-brand-btn flex w-full items-center gap-2.5 rounded-md p-2 text-left hover:bg-sidebar-accent transition overflow-hidden"
+          >
+            <div class="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground overflow-hidden p-0.5">
+              <img
+                src="assets/ankara-uni-logo.png"
+                alt="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği Logosu"
+                width="32"
+                height="32"
+                class="size-full object-contain rounded-full"
+                onerror="this.style.display='none';"
+              />
+            </div>
+            <div class="sidebar-hide-collapsed flex flex-col items-start min-w-0 flex-1">
+              <span class="text-base font-semibold tracking-tight leading-none text-sidebar-foreground truncate">ANKU EEE</span>
+              <span class="text-xs font-normal text-muted-foreground truncate mt-0.5">Ders Portalı</span>
+            </div>
+          </button>
+
+          <button
+            id="mobileCloseSidebarBtn"
+            class="md:hidden size-8 flex items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
+            aria-label="Kapat"
+          >
+            <i data-lucide="x" class="size-4"></i>
+          </button>
+        </div>
+
+        <div class="sidebar-hide-collapsed px-1 pb-1">
+          <div class="relative">
+            <i data-lucide="search" class="size-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            <input
+              id="sidebarSearch"
+              type="text"
+              placeholder="Ara..."
+              class="h-8 w-full rounded-md bg-background border border-input pl-8 pr-6 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40 transition"
+            >
+          </div>
+        </div>
+      </div>
+
+      <div data-slot="sidebar-content" class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-2">
+        <div data-slot="sidebar-group" class="flex flex-col">
+          <ul class="flex flex-col gap-0.5" id="sidebarDashboardNav"></ul>
+        </div>
+
+        <div data-slot="sidebar-group" class="flex flex-col mt-2">
+          <div class="sidebar-hide-collapsed flex h-7 shrink-0 items-center justify-between px-2 text-[11px] font-medium text-sidebar-foreground/50 tracking-wider uppercase">
+            <span>Dersler</span>
+          </div>
+          <ul id="courseListNav" class="flex flex-col gap-0.5"></ul>
+        </div>
+
+        <div data-slot="sidebar-group" class="flex flex-col mt-2">
+          <div class="sidebar-hide-collapsed flex h-7 shrink-0 items-center px-2 text-[11px] font-medium text-sidebar-foreground/50 tracking-wider uppercase">
+            Bağlantılar
+          </div>
+          <ul class="flex flex-col gap-0.5">
+            <li>
+              <a
+                href="https://obs.ankara.edu.tr"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="graduation-cap" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">OBS</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://eee.ankara.edu.tr"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="globe" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">Bölüm Sayfası</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://ekampus.ankara.edu.tr"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Ankara Üniversitesi e-KAMPÜS Giriş"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="laptop" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">e-KAMPÜS</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div data-slot="sidebar-footer" class="border-t border-sidebar-border p-2.5">
+        <div class="flex items-center justify-between gap-2 rounded-lg bg-sidebar-accent/70 px-2.5 py-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <span id="statusDot" class="size-2 shrink-0 rounded-full bg-emerald-500"></span>
+            <span id="statusText" class="sidebar-hide-collapsed truncate text-xs font-medium text-sidebar-foreground">Drive</span>
+          </div>
+          <span id="totalFilesBadge" class="sidebar-hide-collapsed rounded-full bg-primary-soft px-2 py-0.5 font-mono text-[11px] font-medium text-primary shrink-0">
+            0 dosya
+          </span>
+        </div>
+      </div>
+    </aside>
+
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 hidden md:hidden"></div>
+
+    <!-- ================= RIGHT INSET ================= -->
+    <div data-slot="sidebar-inset" class="bg-background relative flex min-w-0 flex-1 flex-col">
+
+      <header class="bg-card sticky top-0 z-30 border-b border-border">
+        <div class="flex w-full items-center justify-between gap-4 px-4 py-2.5 sm:px-6 lg:px-8">
+          <div class="flex items-center gap-3 min-w-0">
+            <button
+              id="sidebarTriggerBtn"
+              type="button"
+              title="Menü (Ctrl+B)"
+              aria-label="Dersler menüsü"
+              class="inline-flex h-8 min-w-8 shrink-0 items-center justify-center gap-1.5 rounded-md px-2 sm:w-8 sm:px-0 text-foreground hover:bg-muted transition"
+            >
+              <i data-lucide="panel-left" class="size-4"></i>
+              <span class="sm:hidden text-sm font-medium">Dersler</span>
+            </button>
+
+            <div class="hidden sm:block h-4 w-px bg-border self-center"></div>
+
+            <nav aria-label="breadcrumb" class="hidden sm:block min-w-0">
+              <ol id="headerBreadcrumb" class="flex items-center gap-1.5 text-sm text-muted-foreground truncate">
+                <li class="text-foreground font-medium truncate">Dersler</li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button
+              id="pwaInstallBtn"
+              type="button"
+              title="Uygulama Olarak Yükle"
+              class="hidden h-8 items-center gap-1.5 rounded-md border border-orange-500/35 bg-orange-500/10 px-2.5 text-xs font-medium text-orange-600 dark:text-orange-400 hover:bg-orange-500/20 transition"
+            >
+              <i data-lucide="download" class="size-3.5"></i>
+              <span>Uygulama</span>
+            </button>
+
+            <a
+              href="https://obs.ankara.edu.tr"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-xs font-medium text-foreground hover:bg-muted transition"
+            >
+              <i data-lucide="graduation-cap" class="size-3.5 text-primary"></i>
+              <span>OBS</span>
+            </a>
+
+            <a
+              id="headerDriveBtn"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hidden sm:inline-flex h-8 items-center gap-1.5 rounded-md bg-secondary px-2.5 text-xs font-medium text-secondary-foreground hover:opacity-90 transition"
+            >
+              <i data-lucide="folder-symlink" class="size-3.5"></i>
+              <span>Drive</span>
+            </a>
+
+            <button
+              id="refreshBtn"
+              type="button"
+              title="Yenile"
+              class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+            >
+              <i data-lucide="refresh-cw" class="size-4"></i>
+            </button>
+
+            <button
+              id="themeToggleBtn"
+              type="button"
+              title="Tema"
+              class="relative inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+            >
+              <i data-lucide="moon-star" class="size-4 block dark:hidden"></i>
+              <i data-lucide="sun" class="size-4 hidden dark:block"></i>
+            </button>
+
+          </div>
+        </div>
+      </header>
+
+      <main id="mainContainer" aria-busy="true" class="w-full flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <div id="mainLoader" class="hidden py-20 flex flex-col items-center justify-center gap-3 text-muted-foreground">
+          <progress aria-label="Yükleniyor" class="loading-spinner"></progress>
+          <span class="text-xs">Yükleniyor...</span>
+        </div>
+
+        <div id="courseHubView" class="space-y-6"></div>
+      </main>
+
+      <footer class="border-t border-border bg-card/40 mt-auto">
+        <div class="text-muted-foreground flex w-full items-center justify-between gap-3 px-4 py-3.5 max-sm:flex-col sm:px-6 lg:px-8 text-xs">
+          <div class="flex items-center gap-3">
+            <span>© 2026 ANKU EEE</span>
+            <span>•</span>
+            <a href="privacy.html" class="hover:text-foreground transition">Gizlilik Politikası</a>
+          </div>
+          <span class="font-medium text-foreground">Built by Caner Davarcı</span>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+
+  <!-- ================= IN-PAGE UNIVERSAL VIEWER MODAL ================= -->
+  <dialog id="viewerModal" closedby="any" aria-labelledby="viewerFileTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[96vw] max-w-6xl 2xl:max-w-7xl h-[92vh] max-h-[940px] overflow-hidden outline-none shadow-2xl">
+    <div class="h-13 bg-card border-b border-border px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 shrink-0">
+      <div class="flex items-center gap-3 overflow-hidden">
+        <button id="viewerBackBtn" class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium text-secondary-foreground bg-secondary hover:opacity-85 transition outline-none focus:outline-none focus-visible:outline-none focus:ring-0">
+          <i data-lucide="arrow-left" class="size-3.5"></i>
+          <span>Geri</span>
+        </button>
+        <div class="truncate border-l border-border pl-3">
+          <h2 id="viewerFileTitle" class="text-xs sm:text-sm font-semibold text-foreground truncate">Dosya</h2>
+          <div id="viewerFileBreadcrumb" class="text-[11px] text-muted-foreground truncate"></div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <a id="viewerDownloadBtn" href="#" target="_blank" rel="noopener noreferrer" title="İndir"
+           class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium bg-primary text-primary-foreground hover:opacity-90 transition">
+          <i data-lucide="download" class="size-3.5"></i>
+          <span class="hidden sm:inline">İndir</span>
+        </a>
+
+        <button id="viewerSwitchServerBtn" title="Önizleme Motorunu Değiştir"
+           class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium border border-border bg-background hover:bg-muted text-foreground transition">
+          <i data-lucide="refresh-cw" class="size-3.5 text-muted-foreground"></i>
+          <span id="viewerServerBadge" class="hidden md:inline">Motor</span>
+        </button>
+
+        <a id="viewerExternalBtn" href="#" target="_blank" rel="noopener noreferrer" title="Drive'da Aç"
+           class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium border border-border bg-background hover:bg-muted text-foreground transition">
+          <i data-lucide="external-link" class="size-3.5"></i>
+          <span class="hidden sm:inline">Drive</span>
+        </a>
+        <button id="viewerFullscreenBtn" title="Tam Ekran" class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition">
+          <i data-lucide="maximize-2" class="size-4"></i>
+        </button>
+        <button id="viewerCloseBtn" title="Kapat" class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/15 hover:text-destructive transition">
+          <i data-lucide="x" class="size-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="viewerStage" class="flex-1 relative bg-background flex items-center justify-center overflow-hidden">
+      <!-- Top hover zone & exit button for Fullscreen mode -->
+      <div
+        id="viewerFullscreenTopZone"
+        class="absolute inset-x-0 top-0 h-3.5 z-40 items-start justify-center pt-2.5 pointer-events-auto"
+      >
+        <button
+          type="button"
+          id="viewerFullscreenExitBtn"
+          title="Tam Ekrandan Çık (ESC)"
+          class="inline-flex items-center gap-2 rounded-full bg-neutral-950/90 hover:bg-neutral-900 text-white border border-white/15 px-4 py-2 text-xs font-medium shadow-2xl backdrop-blur-md transition"
+        >
+          <i data-lucide="minimize-2" class="size-3.5"></i>
+          <span>Tam Ekrandan Çık</span>
+        </button>
+      </div>
+
+      <!-- Small ESC hint toast shown briefly when entering Fullscreen -->
+      <div
+        id="viewerFullscreenToast"
+        role="status"
+        aria-live="polite"
+        class="absolute top-16 left-1/2 z-40 inline-flex items-center gap-2 rounded-full bg-neutral-950/85 text-zinc-100 border border-white/15 px-3.5 py-1.5 text-xs font-medium shadow-xl backdrop-blur-md select-none"
+      >
+        <span>Tam ekrandan çıkmak için</span>
+        <kbd class="rounded bg-white/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-white border border-white/20">ESC</kbd>
+        <span>tuşuna basın</span>
+      </div>
+
+      <div id="viewerLoader" class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-background/90">
+        <progress aria-label="Önizleme Yükleniyor" class="loading-spinner"></progress>
+        <span class="text-xs text-muted-foreground">Yükleniyor...</span>
+      </div>
+
+      <div id="viewerStreamProgress" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/95 p-6 text-center select-none">
+        <div class="size-11 rounded-xl bg-primary-soft flex items-center justify-center text-primary mb-3">
+          <i data-lucide="zap" class="size-5 animate-pulse"></i>
+        </div>
+        <h4 id="viewerStreamTitle" class="font-semibold text-sm text-foreground max-w-md truncate mb-1">Yükleniyor...</h4>
+        <div id="viewerStreamStatus" class="text-xs text-muted-foreground mb-3 font-medium">Sunucuya bağlanıyor...</div>
+        <div class="w-72 max-w-[85vw] h-2 bg-muted rounded-full overflow-hidden mb-2">
+          <div id="viewerProgressBar" class="h-full bg-primary rounded-full transition-all duration-150" style="width: 0%"></div>
+        </div>
+        <div class="flex items-center justify-between w-72 max-w-[85vw] text-xs font-mono text-muted-foreground">
+          <span id="viewerProgressMb">0.0 MB</span>
+          <span id="viewerProgressPercent" class="text-foreground font-semibold">0%</span>
+        </div>
+        <div class="mt-4 flex items-center justify-center gap-2">
+          <button type="button" id="cancelStreamBtn" class="h-8 px-3 rounded-md border border-border bg-card hover:bg-muted text-foreground text-xs font-medium transition inline-flex items-center gap-1.5">
+            <i data-lucide="eye" class="size-3.5"></i>
+            <span>Drive Önizleme</span>
+          </button>
+        </div>
+        <p class="text-[11px] text-muted-foreground/80 mt-3 max-w-xs">
+          Kitap doğrudan tarayıcınıza aktarılıp önbelleğe alınıyor. İptal edip standart Drive önizlemesine de geçebilirsiniz.
+        </p>
+      </div>
+
+      <iframe
+        id="viewerFrame"
+        class="w-full h-full border-0 bg-neutral-900"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </dialog>
+
+
+  <!-- ================= EDIT COURSE METADATA MODAL ================= -->
+  <dialog id="editCourseModal" closedby="any" aria-labelledby="editModalCourseCode" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[92vw] max-w-lg outline-none shadow-2xl">
+    <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
+      <h3 id="editModalCourseCode" class="font-semibold text-sm">Ders Bilgileri</h3>
+      <button id="closeEditCourseBtn" class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+        <i data-lucide="x" class="size-4"></i>
+      </button>
+    </div>
+
+    <form id="editCourseForm" class="p-5 space-y-3.5 text-xs">
+      <div>
+        <label class="block font-medium mb-1 text-foreground">Ders Adı</label>
+        <input id="editCourseName" type="text" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block font-medium mb-1 text-foreground">Öğretim Üyesi</label>
+          <input id="editCourseInstructor" type="text" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
+        </div>
+        <div>
+          <label class="block font-medium mb-1 text-foreground">E-Posta</label>
+          <input id="editCourseEmail" type="email" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1 text-foreground">Kredi & AKTS</label>
+        <input id="editCourseCredits" type="text" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
+      </div>
+
+      <div class="pt-2 border-t border-border">
+        <div class="flex items-center justify-between mb-2">
+          <label class="font-medium text-foreground">Kısayol Linkleri</label>
+          <button type="button" id="addNewLinkRowBtn" class="text-xs text-primary hover:underline flex items-center gap-1 font-medium">
+            <i data-lucide="plus" class="size-3.5"></i> Ekle
+          </button>
+        </div>
+        <div id="editLinksContainer" class="space-y-2 max-h-44 overflow-y-auto pr-1"></div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-border">
+        <button type="button" id="copyInfoTxtBtn" class="h-8 px-2.5 rounded-md bg-secondary text-secondary-foreground hover:opacity-85 font-mono text-[11px] inline-flex items-center gap-1.5">
+          <i data-lucide="copy" class="size-3"></i> info.txt Kopyala
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" id="cancelEditCourseBtn" class="h-8 px-3 rounded-md border border-border bg-background hover:bg-muted text-foreground font-medium transition">İptal</button>
+          <button type="submit" class="h-8 px-3.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 font-medium transition">Kaydet</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ================= PWA INSTALL GUIDE MODAL (iOS / Manual) ================= -->
+  <dialog id="pwaInstallModal" closedby="any" aria-labelledby="pwaModalTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[92vw] max-w-sm outline-none shadow-2xl">
+    <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="smartphone" class="size-4 text-orange-500"></i>
+        <h3 id="pwaModalTitle" class="font-semibold text-sm">Uygulama Olarak Yükle</h3>
+      </div>
+      <button type="button" onclick="$('pwaInstallModal').close()" class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+        <i data-lucide="x" class="size-4"></i>
+      </button>
+    </div>
+    <div class="p-5 space-y-3.5 text-xs leading-relaxed">
+      <p class="text-muted-foreground">
+        <strong class="text-foreground">ANKU EEE Ders Portalı</strong>'nı ana ekranına ekleyerek tam ekran uygulama olarak kullanabilirsin:
+      </p>
+      <ol class="space-y-2.5 text-foreground">
+        <li class="flex items-start gap-2.5 rounded-lg border border-border bg-background p-2.5">
+          <span class="flex size-5 shrink-0 items-center justify-center rounded-full bg-orange-500/15 text-orange-500 font-mono font-semibold text-xs">1</span>
+          <span>Tarayıcının alt (veya üst) çubuğundaki <strong>Paylaş</strong> <i data-lucide="share" class="inline size-3.5 mx-0.5"></i> butonuna dokun.</span>
+        </li>
+        <li class="flex items-start gap-2.5 rounded-lg border border-border bg-background p-2.5">
+          <span class="flex size-5 shrink-0 items-center justify-center rounded-full bg-orange-500/15 text-orange-500 font-mono font-semibold text-xs">2</span>
+          <span>Menüden <strong>"Ana Ekrana Ekle"</strong> <i data-lucide="plus-square" class="inline size-3.5 mx-0.5"></i> seçeneğine bas ve <strong>Ekle</strong>'ye dokun.</span>
+        </li>
+      </ol>
+      <div class="pt-1 flex justify-end">
+        <button type="button" onclick="$('pwaInstallModal').close()" class="h-8 px-4 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition">
+          Anladım
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ================= CALENDAR DAY HOVER/TAP POPOVER ================= -->
+  <div
+    id="calendarDayPopover"
+    class="calendar-day-popover"
+    role="tooltip"
+    onmouseenter="clearTimeout(calendarPopoverHideTimer)"
+    onmouseleave="handleCalendarDayLeave()"
+  ></div>
+
+  <!-- ================= ADD / EDIT ACADEMIC EVENT MODAL ================= -->
+  <dialog id="addAcademicEventModal" closedby="any" aria-labelledby="addEventModalTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[92vw] max-w-md outline-none shadow-2xl">
+    <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="calendar-plus" class="size-4 text-primary"></i>
+        <h3 id="addEventModalTitle" class="font-semibold text-sm">Etkinlik / Sınav Ekle</h3>
+      </div>
+      <button type="button" onclick="$('addAcademicEventModal').close()" class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+        <i data-lucide="x" class="size-4"></i>
+      </button>
+    </div>
+
+    <form onsubmit="handleSaveAcademicEvent(event)" class="p-5 space-y-4 text-xs">
+      <div class="space-y-1.5">
+        <label for="eventInputCourse" class="font-medium text-foreground">Ders / Kategori</label>
+        <select id="eventInputCourse" class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40">
+          <option value="CHM109">CHM109 - General Chemistry (Kimya)</option>
+          <option value="MTH0101">MTH0101 - Calculus I (Matematik I)</option>
+          <option value="PHY0107">PHY0107 - Physics I (Fizik I)</option>
+          <option value="MTH103">MTH103 - Linear Algebra (Lineer Cebir)</option>
+          <option value="EEE1001">EEE1001 - Giriş ve Tanıtım</option>
+          <option value="TUR171">TUR171 - Türk Dili I</option>
+          <option value="GENEL">GENEL - Akademik Takvim / Tatil</option>
+        </select>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="eventInputTitle" class="font-medium text-foreground">Etkinlik Başlığı</label>
+        <input
+          id="eventInputTitle"
+          type="text"
+          required
+          placeholder="Örn: Kimya Vizesi, Laboratuvar Sınavı..."
+          class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="space-y-1.5">
+          <label for="eventInputDate" class="font-medium text-foreground">Tarih</label>
+          <input
+            id="eventInputDate"
+            type="date"
+            required
+            class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40"
+          />
+        </div>
+        <div class="space-y-1.5">
+          <label for="eventInputTime" class="font-medium text-foreground">Saat</label>
+          <input
+            id="eventInputTime"
+            type="time"
+            value="09:00"
+            required
+            class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="eventInputLocation" class="font-medium text-foreground">Yer / Sınıf / Not (İsteğe bağlı)</label>
+        <input
+          id="eventInputLocation"
+          type="text"
+          placeholder="Örn: Amfi 1 (D-101), Online..."
+          class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+        />
+      </div>
+
+      <div class="pt-2 flex items-center justify-between border-t border-border">
+        <button
+          type="button"
+          onclick="handleResetAcademicEvents()"
+          class="h-8 px-2.5 text-muted-foreground hover:text-rose-500 font-medium text-[11px] transition"
+        >
+          Varsayılana Sıfırla
+        </button>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            onclick="$('addAcademicEventModal').close()"
+            class="h-8 px-3 rounded-md border border-input hover:bg-muted text-muted-foreground hover:text-foreground font-medium transition"
+          >
+            İptal
+          </button>
+          <button
+            type="submit"
+            class="h-8 px-4 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition"
+          >
+            Kaydet
+          </button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+
+
+
+  <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
+  <script>
+    const CONFIG = {
+      FOLDER: 'https://drive.google.com/drive/folders/1n9cyf8eSj3OremDKF5BdQIBayaryPofN?usp=sharing',
+      API_KEY: atob('QUl6YVN5QmpXcGkzZnc0YUFINUFienpmTFg0SllqOWlOYVpQU0JF')
+    };
+
+    const COURSE_THEMES = {
+      'PHY0107': { // Koyu Mor
+        accent: '#c084fc',
+        border: 'rgba(168, 85, 247, 0.48)',
+        glow: 'rgba(147, 51, 234, 0.32)',
+        tint: 'rgba(126, 34, 206, 0.36)',
+        badgeBg: 'rgba(147, 51, 234, 0.22)',
+        badgeBorder: 'rgba(168, 85, 247, 0.42)',
+        badgeText: '#f3e8ff'
+      },
+      'MTH0101': { // Koyu Mavi
+        accent: '#60a5fa',
+        border: 'rgba(59, 130, 246, 0.48)',
+        glow: 'rgba(29, 78, 216, 0.32)',
+        tint: 'rgba(30, 64, 175, 0.34)',
+        badgeBg: 'rgba(37, 99, 235, 0.22)',
+        badgeBorder: 'rgba(59, 130, 246, 0.42)',
+        badgeText: '#dbeafe'
+      },
+      'MTH103': { // Koyu Turkuaz
+        accent: '#2dd4bf',
+        border: 'rgba(20, 184, 166, 0.48)',
+        glow: 'rgba(13, 148, 136, 0.32)',
+        tint: 'rgba(15, 118, 110, 0.34)',
+        badgeBg: 'rgba(13, 148, 136, 0.22)',
+        badgeBorder: 'rgba(20, 184, 166, 0.42)',
+        badgeText: '#ccfbf1'
+      },
+      'CHM109': { // Koyu Zümrüt Yeşili
+        accent: '#34d399',
+        border: 'rgba(16, 185, 129, 0.48)',
+        glow: 'rgba(5, 150, 105, 0.32)',
+        tint: 'rgba(4, 120, 87, 0.34)',
+        badgeBg: 'rgba(5, 150, 105, 0.22)',
+        badgeBorder: 'rgba(16, 185, 129, 0.42)',
+        badgeText: '#d1fae5'
+      },
+      'EEE1001': { // Koyu Kehribar/Altın
+        accent: '#fbbf24',
+        border: 'rgba(245, 158, 11, 0.48)',
+        glow: 'rgba(217, 119, 6, 0.32)',
+        tint: 'rgba(180, 83, 9, 0.34)',
+        badgeBg: 'rgba(217, 119, 6, 0.22)',
+        badgeBorder: 'rgba(245, 158, 11, 0.42)',
+        badgeText: '#fef3c7'
+      },
+      'TUR171': { // Koyu Bordo
+        accent: '#fb7185',
+        border: 'rgba(225, 29, 72, 0.50)',
+        glow: 'rgba(159, 18, 57, 0.35)',
+        tint: 'rgba(136, 19, 55, 0.38)',
+        badgeBg: 'rgba(159, 18, 57, 0.26)',
+        badgeBorder: 'rgba(225, 29, 72, 0.45)',
+        badgeText: '#ffe4e6'
+      },
+      'GENEL': { // Turuncu / Akademik
+        accent: '#f97316',
+        border: 'rgba(249, 115, 22, 0.48)',
+        glow: 'rgba(234, 88, 12, 0.32)',
+        tint: 'rgba(194, 65, 12, 0.34)',
+        badgeBg: 'rgba(234, 88, 12, 0.22)',
+        badgeBorder: 'rgba(249, 115, 22, 0.42)',
+        badgeText: '#ffedd5'
+      }
+    };
+
+    function getCourseTheme(code) {
+      return COURSE_THEMES[code] || {
+        accent: '#ffffff',
+        border: 'rgba(255, 255, 255, 0.15)',
+        glow: 'rgba(0, 0, 0, 0.35)',
+        tint: 'rgba(15, 23, 42, 0.18)',
+        badgeBg: 'rgba(255, 255, 255, 0.1)',
+        badgeBorder: 'rgba(255, 255, 255, 0.15)',
+        badgeText: '#ffffff'
+      };
+    }
+
+    const KNOWN_LINK_FAVICONS = {
+      'wolframalpha.com': 'assets/link-icons/wolframalpha.png',
+      'youtube.com': 'assets/link-icons/youtube.png',
+      'youtu.be': 'assets/link-icons/youtube.png',
+      'ptable.com': 'assets/link-icons/ptable.png',
+      'eee.ankara.edu.tr': 'assets/link-icons/eee-ankara.png',
+      'phet.colorado.edu': 'assets/link-icons/phet.png',
+      'sozluk.gov.tr': 'assets/link-icons/tdk.png',
+      'tdk.gov.tr': 'assets/link-icons/tdk.png',
+      'tutorial.math.lamar.edu': 'assets/link-icons/lamar.png',
+      'lamar.edu': 'assets/link-icons/lamar.png',
+      'terim.tuba.gov.tr': 'assets/link-icons/tuba.png',
+      'tuba.gov.tr': 'assets/link-icons/tuba.png',
+      'dildernegi.org.tr': 'assets/link-icons/dildernegi.png',
+      'millikutuphane.gov.tr': 'assets/link-icons/millikutuphane.png',
+      'millikutuphane.org.tr': 'assets/link-icons/millikutuphane.png',
+      'turkoloji.cu.edu.tr': 'assets/link-icons/turkoloji.png',
+      'cu.edu.tr': 'assets/link-icons/turkoloji.png'
+    };
+
+    function getLinkFavicon(link) {
+      if (link && link.icon && (link.icon.startsWith('assets/') || link.icon.startsWith('/') || link.icon.startsWith('data:') || link.icon.startsWith('http'))) {
+        return link.icon;
+      }
+      try {
+        const host = new URL(link.url).hostname.toLowerCase().replace(/^www\./, '');
+        for (const [domain, iconPath] of Object.entries(KNOWN_LINK_FAVICONS)) {
+          if (host === domain || host.endsWith('.' + domain)) {
+            return iconPath;
+          }
+        }
+      } catch (e) {}
+      return `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(link.url)}&sz=32`;
+    }
+
+    const DEFAULT_COURSE_METADATA = {
+      'CHM109': {
+        name: 'General Chemistry (Genel Kimya)',
+        instructor: 'Prof. Dr. Emre BİÇER',
+        email: 'ebicer@ankara.edu.tr',
+        avesisUrl: 'https://avesis.ankara.edu.tr/emreb',
+        credits: '3 Kredi • 6 AKTS',
+        icon: 'flask-conical',
+        banner: 'bannerlar/kimya.jpg',
+        bannerPos: 'center center',
+        bannerRatio: 246 / 138,
+        links: [
+          { title: 'Periodic Table', url: 'https://ptable.com', icon: 'assets/link-icons/ptable.png' }
+        ]
+      },
+      'EEE1001': {
+        name: 'Introduction to Electrical & Electronics Engineering',
+        instructor: 'Prof. Dr. Asım Egemen YILMAZ',
+        email: 'aeyilmaz@eng.ankara.edu.tr',
+        avesisUrl: 'https://avesis.ankara.edu.tr/aeyilmaz',
+        credits: '2 Kredi • 3 AKTS',
+        icon: 'cpu',
+        banner: 'bannerlar/elektrik%20elektronik.png',
+        bannerPos: 'center 50%',
+        bannerRatio: 832 / 1104,
+        links: [
+          { title: 'Bölüm Sayfası', url: 'https://eee.ankara.edu.tr', icon: 'assets/link-icons/eee-ankara.png' }
+        ]
+      },
+      'MTH0101': {
+        name: 'Calculus I (Matematik I)',
+        instructor: 'Prof. Dr. Serhan VARMA',
+        email: 'svarma@science.ankara.edu.tr',
+        avesisUrl: 'https://avesis.ankara.edu.tr/svarma',
+        credits: '4 Kredi • 7 AKTS',
+        icon: 'sigma',
+        banner: 'bannerlar/calculus.png',
+        bannerPos: 'center 44%',
+        bannerRatio: 1,
+        links: [
+          { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'assets/link-icons/wolframalpha.png' },
+          { title: "Paul's Math Notes", url: 'https://tutorial.math.lamar.edu', icon: 'assets/link-icons/lamar.png' },
+          { title: '3Blue1Brown Calculus', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr', icon: 'assets/link-icons/youtube.png' }
+        ]
+      },
+      'MTH103': {
+        name: 'Linear Algebra (Lineer Cebir)',
+        instructor: 'Dr. Öğr. Üyesi Derya KAHVECİ',
+        email: 'dkahveci@ankara.edu.tr',
+        avesisUrl: 'https://avesis.ankara.edu.tr/dkahveci',
+        credits: '3 Kredi • 6 AKTS',
+        icon: 'grid-3x3',
+        banner: 'bannerlar/lineer.jpg',
+        bannerPos: 'center 35%',
+        bannerRatio: 800 / 450,
+        links: [
+          { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'assets/link-icons/wolframalpha.png' },
+          { title: '3Blue1Brown Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab', icon: 'assets/link-icons/youtube.png' }
+        ]
+      },
+      'PHY0107': {
+        name: 'Physics I (Genel Fizik I)',
+        instructor: 'Doç. Dr. Ahmet KARATAY',
+        email: 'akaratay@eng.ankara.edu.tr',
+        avesisUrl: 'https://avesis.ankara.edu.tr/akaratay',
+        credits: '3 Kredi • 6 AKTS',
+        icon: 'atom',
+        banner: 'bannerlar/fizik.jpg',
+        bannerPos: 'center 25%',
+        bannerRatio: 1150 / 646,
+        links: [
+          { title: 'Phet Simülasyonları', url: 'https://phet.colorado.edu/tr/', icon: 'assets/link-icons/phet.png' }
+        ]
+      },
+      'TUR171': {
+        name: 'Turkish Language I (Türk Dili I)',
+        instructor: 'Öğr. Gör. Dr. Meltem AYABAKAN İPEK',
+        email: 'mayabakan88@gmail.com',
+        avesisUrl: 'https://avesis.ankara.edu.tr/ayabakan',
+        credits: '2 Kredi • 2 AKTS',
+        icon: 'book-type',
+        banner: 'bannerlar/tu%CC%88rkc%CC%A7e.jpg',
+        bannerPos: 'center 22%',
+        bannerRatio: 706 / 371,
+        links: [
+          { title: 'TDK Sözlük', url: 'https://sozluk.gov.tr', icon: 'assets/link-icons/tdk.png' },
+          { title: 'TÜBA Terim', url: 'https://terim.tuba.gov.tr', icon: 'assets/link-icons/tuba.png' },
+          { title: 'Dil Derneği', url: 'https://www.dildernegi.org.tr', icon: 'assets/link-icons/dildernegi.png' },
+          { title: 'Milli Kütüphane', url: 'https://www.millikutuphane.gov.tr', icon: 'assets/link-icons/millikutuphane.png' },
+          { title: 'ÇÜ Türkoloji', url: 'http://turkoloji.cu.edu.tr/', icon: 'assets/link-icons/turkoloji.png' }
+        ]
+      }
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const API = 'https://www.googleapis.com/drive/v3/files';
+    const FOLDER_MIME = 'application/vnd.google-apps.folder';
+    const SHORTCUT_MIME = 'application/vnd.google-apps.shortcut';
+    const YT_REGEX = /(?:youtube\.com\/(?:watch\?(?:[^\s]*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/;
+
+    let settings = {
+      folder: CONFIG.FOLDER,
+      key: CONFIG.API_KEY
+    };
+
+    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v11') || 'null') || DEFAULT_COURSE_METADATA;
+    delete courseMetadata['OUL101'];
+    Object.keys(DEFAULT_COURSE_METADATA).forEach(code => {
+      if (!courseMetadata[code]) {
+        courseMetadata[code] = DEFAULT_COURSE_METADATA[code];
+      } else {
+        courseMetadata[code].instructor = DEFAULT_COURSE_METADATA[code].instructor;
+        courseMetadata[code].email = DEFAULT_COURSE_METADATA[code].email;
+        courseMetadata[code].avesisUrl = DEFAULT_COURSE_METADATA[code].avesisUrl;
+        courseMetadata[code].credits = DEFAULT_COURSE_METADATA[code].credits;
+        courseMetadata[code].icon = DEFAULT_COURSE_METADATA[code].icon;
+        courseMetadata[code].banner = DEFAULT_COURSE_METADATA[code].banner;
+        courseMetadata[code].bannerPos = DEFAULT_COURSE_METADATA[code].bannerPos;
+        courseMetadata[code].bannerRatio = DEFAULT_COURSE_METADATA[code].bannerRatio;
+        delete courseMetadata[code].bannerWidth;
+        const existingLinksByUrl = new Map((courseMetadata[code].links || []).map(l => [(l.url || '').toLowerCase(), l]));
+        (DEFAULT_COURSE_METADATA[code].links || []).forEach(defLink => {
+          const u = (defLink.url || '').toLowerCase();
+          if (!existingLinksByUrl.has(u)) {
+            if (!courseMetadata[code].links) courseMetadata[code].links = [];
+            courseMetadata[code].links.push(defLink);
+          } else {
+            const existing = existingLinksByUrl.get(u);
+            existing.title = defLink.title;
+            existing.icon = defLink.icon;
+          }
+        });
+        if (courseMetadata[code].links) {
+          courseMetadata[code].links = courseMetadata[code].links.filter(l =>
+            !/obs/i.test(l.title) && !/izlence|syllabus/i.test(l.title)
+          );
+        }
+      }
+    });
+    localStorage.setItem('anku_course_meta_v11', JSON.stringify(courseMetadata));
+
+    let driveTree = null;
+    let activeCourseId = null;
+    let currentEditingCourseCode = null;
+
+    let tablePageIndex = 0;
+    const tablePageSize = 10;
+    let tableSearchQuery = '';
+    let tableCourseFilter = 'ALL';
+    let courseLocalSearch = '';
+
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    function parseFolderId(input) {
+      if (!input) return '';
+      const m = input.match(/folders\/([\w-]+)/) || input.match(/[?&]id=([\w-]+)/);
+      return m ? m[1] : input.trim();
+    }
+
+    function realMime(node) {
+      return node.mimeType === SHORTCUT_MIME ? (node.shortcutDetails?.targetMimeType || '') : node.mimeType;
+    }
+    function realId(node) {
+      return node.mimeType === SHORTCUT_MIME ? (node.shortcutDetails?.targetId || node.id) : node.id;
+    }
+
+    function extractYouTubeId(text) {
+      const m = String(text || '').match(YT_REGEX);
+      return m ? m[1] : null;
+    }
+
+    function getFileKind(node) {
+      const mime = realMime(node);
+      const name = node.name.toLowerCase();
+      if (extractYouTubeId(node.name) || extractYouTubeId(node.description)) return 'youtube';
+      if (mime === FOLDER_MIME) return 'folder';
+      if (mime === 'application/pdf' || name.endsWith('.pdf')) return 'pdf';
+      if (mime.includes('presentation') || /\.(pptx?|odp)$/.test(name)) return 'slide';
+      if (mime.includes('document') || mime.includes('msword') || /\.(docx?|odt|rtf)$/.test(name)) return 'word';
+      if (mime.includes('spreadsheet') || /\.(xlsx?|csv)$/.test(name)) return 'sheet';
+      if (mime.startsWith('video/')) return 'video';
+      if (mime.startsWith('image/')) return 'image';
+      if (/\.(url|webloc|txt)$/.test(name) || mime === 'text/plain') return 'link';
+      return 'file';
+    }
+
+    const KIND_CONFIG = {
+      pdf: { icon: 'file-text', badge: 'PDF' },
+      slide: { icon: 'presentation', badge: 'Slayt' },
+      word: { icon: 'file-type', badge: 'Word' },
+      sheet: { icon: 'table', badge: 'Tablo' },
+      youtube: { icon: 'youtube', badge: 'YouTube' },
+      video: { icon: 'film', badge: 'Video' },
+      image: { icon: 'image', badge: 'Görsel' },
+      link: { icon: 'link', badge: 'Link' },
+      file: { icon: 'file', badge: 'Dosya' }
+    };
+
+    function formatFileSize(bytes) {
+      if (!bytes || isNaN(bytes)) return '—';
+      const b = Number(bytes);
+      if (b <= 0) return '—';
+      if (b < 1024) return b + ' B';
+      if (b < 1024 * 1024) return (b / 1024).toFixed(0) + ' KB';
+      return (b / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function getPreviewUrl(node) {
+      const id = realId(node);
+      const mime = realMime(node);
+      if (mime === 'application/vnd.google-apps.document') return `https://docs.google.com/document/d/${id}/preview`;
+      if (mime === 'application/vnd.google-apps.presentation') return `https://docs.google.com/presentation/d/${id}/embed?start=false&loop=false`;
+      if (mime === 'application/vnd.google-apps.spreadsheet') return `https://docs.google.com/spreadsheets/d/${id}/preview`;
+      return `https://drive.google.com/file/d/${id}/preview`;
+    }
+
+    function countFilesInFolder(nodes) {
+      return (nodes || []).reduce((n, x) => {
+        if (x.name.toLowerCase().startsWith('info.') || x.name.toLowerCase().startsWith('bilgi.')) return n;
+        return n + (x.children ? countFilesInFolder(x.children) : (realMime(x) === FOLDER_MIME ? 0 : 1));
+      }, 0);
+    }
+
+    function collectAllFiles(nodes, courseCode = '', folderPath = '') {
+      let list = [];
+      (nodes || []).forEach(node => {
+        if (/^(info|bilgi)\.(txt|json)$/i.test(node.name)) return;
+        if (realMime(node) === FOLDER_MIME) {
+          const nextCourse = courseCode || node.name.toUpperCase().trim();
+          const nextPath = courseCode ? (folderPath ? `${folderPath} / ${node.name}` : node.name) : '—';
+          if (node.children) {
+            list = list.concat(collectAllFiles(node.children, nextCourse, nextPath));
+          }
+        } else {
+          list.push({
+            node,
+            courseCode: courseCode || 'GENEL',
+            folderPath: folderPath || '—'
+          });
+        }
+      });
+      return list;
+    }
+
+    // ================= DRIVE API CALLS =================
+    async function fetchDriveFolder(folderId) {
+      const files = [];
+      let pageToken = '';
+      do {
+        const params = new URLSearchParams({
+          q: `'${folderId}' in parents and trashed = false`,
+          fields: 'nextPageToken, files(id, name, mimeType, size, description, webViewLink, shortcutDetails)',
+          orderBy: 'folder, name',
+          pageSize: '1000',
+          supportsAllDrives: 'true',
+          includeItemsFromAllDrives: 'true',
+          key: settings.key
+        });
+        if (pageToken) params.set('pageToken', pageToken);
+        const res = await fetch(`${API}?${params}`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error?.message || res.statusText);
+        }
+        const data = await res.json();
+        files.push(...data.files);
+        pageToken = data.nextPageToken;
+      } while (pageToken);
+      return files;
+    }
+
+    async function buildDriveTree(folderId, depth = 0) {
+      const items = await fetchDriveFolder(folderId);
+      return Promise.all(items.map(async (item) => {
+        if (realMime(item) === FOLDER_MIME && depth < 4) {
+          item.children = await buildDriveTree(realId(item), depth + 1);
+        }
+        return item;
+      }));
+    }
+
+    async function parseInfoTxt(fileNode, courseCode) {
+      try {
+        const id = realId(fileNode);
+        const res = await fetch(`${API}/${id}?alt=media&key=${settings.key}`);
+        if (!res.ok) return;
+        const text = await res.text();
+
+        const lines = text.split('\n');
+        const meta = courseMetadata[courseCode] || { links: [] };
+
+        lines.forEach(line => {
+          const l = line.trim();
+          if (!l || l.startsWith('#')) return;
+
+          if (/^(hoca|instructor):/i.test(l)) {
+            meta.instructor = l.replace(/^(hoca|instructor):/i, '').trim();
+          } else if (/^(email|mail):/i.test(l)) {
+            meta.email = l.replace(/^(email|mail):/i, '').trim();
+          } else if (/^(kredi|akts|credits):/i.test(l)) {
+            meta.credits = l.replace(/^(kredi|akts|credits):/i, '').trim();
+          } else if (/^(link|buton):\s*(.*?)\s*\|\s*(http.*)/i.test(l)) {
+            const m = l.match(/^(link|buton):\s*(.*?)\s*\|\s*(http.*)/i);
+            if (m && !meta.links.some(x => x.url === m[3])) {
+              meta.links.push({ title: m[2].trim(), url: m[3].trim(), icon: 'external-link' });
+            }
+          }
+        });
+
+        courseMetadata[courseCode] = meta;
+        localStorage.setItem('anku_course_meta_v11', JSON.stringify(courseMetadata));
+      } catch (e) {}
+    }
+
+    // ================= LOADING STATE & DYNAMIC META =================
+    function renderLoadingSkeleton() {
+      const container = $('courseHubView');
+      if (!container) return;
+      $('mainContainer')?.setAttribute('aria-busy', 'true');
+      $('mainLoader')?.classList.remove('hidden');
+      container.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 opacity-60 pointer-events-none">
+          ${Array.from({ length: 6 }).map(() => `
+            <div class="admincn-card p-5 space-y-4 animate-pulse">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="size-9 rounded-sm bg-muted"></div>
+                  <div class="space-y-1.5">
+                    <div class="h-3.5 w-16 rounded bg-muted"></div>
+                    <div class="h-2.5 w-20 rounded bg-muted"></div>
+                  </div>
+                </div>
+                <div class="h-5 w-14 rounded-sm bg-muted"></div>
+              </div>
+              <div class="space-y-1.5">
+                <div class="h-4 w-3/4 rounded bg-muted"></div>
+                <div class="h-3 w-1/2 rounded bg-muted"></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function updatePageMeta(courseCode = null, meta = null) {
+      const defaultTitle = 'ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı';
+      const defaultDesc = 'Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.';
+
+      const title = courseCode && meta
+        ? `${courseCode} • ${meta.name} — ANKU EEE Ders Portalı`
+        : defaultTitle;
+      const desc = courseCode && meta
+        ? `${courseCode} ${meta.name}${meta.instructor ? ' (' + meta.instructor + ')' : ''} ders materyalleri ve kaynak arşivi.`
+        : defaultDesc;
+
+      document.title = title;
+      if ($('metaDescription')) $('metaDescription').setAttribute('content', desc);
+      if ($('ogTitle')) $('ogTitle').setAttribute('content', title);
+      if ($('ogDescription')) $('ogDescription').setAttribute('content', desc);
+      if ($('twitterTitle')) $('twitterTitle').setAttribute('content', title);
+      if ($('twitterDescription')) $('twitterDescription').setAttribute('content', desc);
+
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'page_view', {
+          page_title: title,
+          page_path: courseCode ? `${location.pathname}#${courseCode}` : location.pathname
+        });
+      }
+    }
+
+    // ================= LOAD DRIVE & INITIALIZE =================
+    async function loadDriveData() {
+      const folderId = parseFolderId(settings.folder);
+      const driveUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : 'https://drive.google.com';
+      $('headerDriveBtn').href = driveUrl;
+      const sDrive = $('sidebarDriveLink');
+      if (sDrive) sDrive.href = driveUrl;
+
+      if (!folderId || !settings.key) {
+        $('statusText').textContent = 'Hata';
+        $('statusDot').className = 'size-2 shrink-0 rounded-full bg-rose-500';
+        return;
+      }
+
+      const cache = JSON.parse(localStorage.getItem('anku_tree_cache_v3') || 'null');
+      if (cache && cache.folderId === folderId && !driveTree) {
+        driveTree = cache.tree;
+        onTreeReady();
+      } else if (!driveTree) {
+        renderLoadingSkeleton();
+      }
+
+      $('statusText').textContent = 'Yükleniyor';
+      $('statusDot').className = 'size-2 shrink-0 rounded-full bg-amber-500 animate-pulse';
+      $('refreshBtn').querySelector('svg')?.classList.add('animate-spin');
+
+      try {
+        driveTree = await buildDriveTree(folderId);
+        localStorage.setItem('anku_tree_cache_v3', JSON.stringify({ folderId, tree: driveTree, time: Date.now() }));
+        onTreeReady();
+
+        const totalFiles = countFilesInFolder(driveTree);
+        $('statusText').textContent = 'Drive';
+        $('statusDot').className = 'size-2 shrink-0 rounded-full bg-emerald-500';
+        $('totalFilesBadge').textContent = `${totalFiles} dosya`;
+      } catch (err) {
+        $('statusText').textContent = 'Hata';
+        $('statusDot').className = 'size-2 shrink-0 rounded-full bg-rose-500';
+        $('mainLoader')?.classList.add('hidden');
+        $('mainContainer')?.setAttribute('aria-busy', 'false');
+      } finally {
+        $('refreshBtn').querySelector('svg')?.classList.remove('animate-spin');
+      }
+    }
+
+    function onTreeReady() {
+      driveTree = (driveTree || []).filter(n => n.name.toUpperCase().trim() !== 'OUL101');
+      $('mainLoader')?.classList.add('hidden');
+      $('mainContainer')?.setAttribute('aria-busy', 'false');
+      syncCourseFromHash();
+      renderSidebarCourses();
+
+      driveTree.forEach(node => {
+        if (realMime(node) === FOLDER_MIME && node.children) {
+          const infoNode = node.children.find(f => /^(info|bilgi)\.(txt|json)$/i.test(f.name));
+          if (infoNode) {
+            parseInfoTxt(infoNode, node.name.toUpperCase().trim());
+          }
+        }
+      });
+
+      const totalFiles = countFilesInFolder(driveTree);
+      $('totalFilesBadge').textContent = `${totalFiles} dosya`;
+
+      if (activeCourseId) {
+        renderCourseHub(activeCourseId);
+      } else {
+        renderWelcomeHub();
+      }
+    }
+
+    function updateHeaderBreadcrumb(courseCode = null, courseTitle = null) {
+      const bc = $('headerBreadcrumb');
+      if (!bc) return;
+
+      if (!courseCode) {
+        bc.innerHTML = `<li class="text-foreground font-medium truncate">Dersler</li>`;
+      } else {
+        bc.innerHTML = `
+          <li class="inline-flex items-center gap-1.5">
+            <button onclick="goHome()" class="hover:text-foreground transition">Dersler</button>
+          </li>
+          <li><i data-lucide="chevron-right" class="size-3.5"></i></li>
+          <li class="text-foreground font-medium truncate">${esc(courseCode)}${courseTitle ? ' • ' + esc(courseTitle.split('(')[0].trim()) : ''}</li>
+        `;
+      }
+      lucide.createIcons();
+    }
+
+    // ================= RENDER LEFT SIDEBAR =================
+    function renderSidebarCourses() {
+      const dashContainer = $('sidebarDashboardNav');
+      const container = $('courseListNav');
+      const searchVal = $('sidebarSearch').value.trim().toLowerCase();
+
+      const courses = (driveTree || []).filter(n => realMime(n) === FOLDER_MIME);
+
+      const isHomeActive = !activeCourseId;
+      dashContainer.innerHTML = `
+        <li>
+          <button
+            onclick="goHome()"
+            title="Tüm Dersler"
+            class="sidebar-nav-btn flex h-8 w-full items-center justify-between gap-2 rounded-md px-2 text-sm transition ${
+              isHomeActive
+                ? 'bg-primary-soft text-foreground font-medium'
+                : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+            }"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <i data-lucide="layout-grid" class="size-4 shrink-0"></i>
+              <span class="sidebar-hide-collapsed truncate">Tüm Dersler</span>
+            </div>
+          </button>
+        </li>
+      `;
+
+      container.innerHTML = courses.map(course => {
+        const count = countFilesInFolder(course.children);
+        const isSelected = course.id === activeCourseId;
+        const code = course.name.toUpperCase().trim();
+        const meta = courseMetadata[code] || { name: course.name, icon: 'book-open' };
+        const iconName = meta.icon || 'book-open';
+
+        if (searchVal && !code.toLowerCase().includes(searchVal) && !meta.name.toLowerCase().includes(searchVal)) {
+          return '';
+        }
+
+        return `
+          <li class="group/menu-item relative">
+            <button
+              onclick="selectCourse('${course.id}')"
+              title="${esc(code)} — ${esc(meta.name)}"
+              class="sidebar-nav-btn flex h-8 w-full items-center justify-between gap-2 rounded-md px-2 text-sm transition ${
+                isSelected
+                  ? 'bg-primary-soft text-foreground font-medium'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+              }"
+            >
+              <div class="flex items-center gap-2 min-w-0 flex-1">
+                <i data-lucide="${iconName}" class="size-4 shrink-0 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}"></i>
+                <span class="sidebar-hide-collapsed truncate">${esc(code)}</span>
+              </div>
+              <span class="sidebar-hide-collapsed rounded-full bg-primary-soft px-1.5 text-[11px] font-normal tabular-nums ${count > 0 ? 'text-foreground' : 'text-muted-foreground'} shrink-0">
+                ${count}
+              </span>
+            </button>
+          </li>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // ================= ROUTING (URL hash + history) =================
+    // Each course gets its own URL (#CODE) so the browser back/forward buttons
+    // walk through the visited pages and a refresh restores the current page.
+    function getCourseCodeById(courseId) {
+      const node = (driveTree || []).find(n => n.id === courseId);
+      return node ? node.name.toUpperCase().trim() : null;
+    }
+
+    function getCourseIdFromHash() {
+      let code = '';
+      try { code = decodeURIComponent(location.hash.slice(1)); } catch (e) { code = location.hash.slice(1); }
+      code = code.toUpperCase().trim();
+      if (!code) return null;
+      const node = (driveTree || []).find(n => n.name.toUpperCase().trim() === code);
+      return node ? node.id : null;
+    }
+
+    // Called whenever the tree (re)loads: adopt the course in the URL hash.
+    function syncCourseFromHash() {
+      if (!location.hash) return;
+      const courseId = getCourseIdFromHash();
+      if (!courseId) {
+        // Unknown course code in URL: drop the hash and stay on home.
+        history.replaceState(null, '', location.pathname + location.search);
+        return;
+      }
+      if (courseId !== activeCourseId) {
+        activeCourseId = courseId;
+        courseLocalSearch = '';
+      }
+      const code = getCourseCodeById(courseId);
+      const meta = courseMetadata[code] || { name: code };
+      updateHeaderBreadcrumb(code, meta.name);
+      updatePageMeta(code, meta);
+    }
+
+    // A page reload keeps history.state; a stale viewer marker must not linger.
+    if (history.state && history.state.viewer) {
+      history.replaceState(null, '', location.href);
+    }
+
+    window.addEventListener('popstate', () => {
+      // History step caused by closing the preview via its own buttons: nothing to do.
+      if (skipNextViewerPop) {
+        skipNextViewerPop = false;
+        return;
+      }
+      // Back pressed while a preview is open: only close the preview.
+      if ($('viewerModal')?.open) {
+        closeViewerModal();
+        return;
+      }
+      if (!driveTree) return;
+      const courseId = getCourseIdFromHash();
+      if (courseId) {
+        selectCourse(courseId, { fromHistory: true });
+      } else {
+        goHome({ fromHistory: true });
+      }
+    });
+
+    window.goHome = function(opts = {}) {
+      if (!opts.fromHistory && location.hash) {
+        history.pushState(null, '', location.pathname + location.search);
+      }
+      activeCourseId = null;
+      courseLocalSearch = '';
+      updateHeaderBreadcrumb(null);
+      updatePageMeta(null, null);
+      renderSidebarCourses();
+      renderWelcomeHub();
+      if (window.innerWidth < 768) {
+        toggleMobileSidebar(false);
+      }
+    };
+
+    window.selectCourse = function(courseId, opts = {}) {
+      if (!opts.fromHistory) {
+        const code = getCourseCodeById(courseId);
+        if (code && location.hash !== '#' + encodeURIComponent(code)) {
+          history.pushState(null, '', '#' + encodeURIComponent(code));
+        }
+      }
+      activeCourseId = courseId;
+      courseLocalSearch = '';
+      const courseNode = (driveTree || []).find(n => n.id === courseId);
+      if (courseNode) {
+        const code = courseNode.name.toUpperCase().trim();
+        const meta = courseMetadata[code] || { name: courseNode.name };
+        updateHeaderBreadcrumb(code, meta.name);
+        updatePageMeta(code, meta);
+      } else {
+        updatePageMeta(null, null);
+      }
+      renderSidebarCourses();
+      if (courseId) {
+        renderCourseHub(courseId);
+      } else {
+        renderWelcomeHub();
+      }
+      if (window.innerWidth < 768) {
+        toggleMobileSidebar(false);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // ================= ACADEMIC CALENDAR & AGENDA =================
+    const MONTH_NAMES_TR = [
+      'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+    ];
+    const MONTH_NAMES_TR_SHORT = [
+      'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
+      'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'
+    ];
+    const DAY_NAMES_TR = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+    const DAY_NAMES_TR_SHORT = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
+
+    let calendarViewDate = new Date();
+    calendarViewDate.setDate(1); // 1st of month
+    let calendarActiveDateStr = null;
+    let calendarPopoverHideTimer = null;
+
+    function getAcademicEvents() {
+      const raw = localStorage.getItem('anku_academic_events_v2');
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch (e) {}
+      }
+
+      const curYear = new Date().getFullYear();
+      const years = Array.from(new Set([2024, 2025, 2026, curYear]));
+      const defaultEvents = [];
+
+      years.forEach(yr => {
+        defaultEvents.push(
+          // Ekim / October
+          { id: `eee-${yr}-10-15`, date: `${yr}-10-15`, time: '14:00', courseCode: 'EEE1001', title: 'Bölüm Oryantasyon & Tanışma', location: 'EEE Amfi', type: 'etkinlik' },
+          { id: `phy-${yr}-10-23`, date: `${yr}-10-23`, time: '13:30', courseCode: 'PHY0107', title: 'Fizik I Lab Güvenlik Sınavı', location: 'Fizik Lab 1', type: 'lab' },
+          { id: `mth1-${yr}-10-28`, date: `${yr}-10-28`, time: '10:30', courseCode: 'MTH0101', title: 'Calculus I Quiz 1', location: 'Merkez Amfi', type: 'quiz' },
+
+          // Kasım / November (Specifically user requested 16 Kasım: Kimya Sınavı!)
+          { id: `chm-${yr}-11-16`, date: `${yr}-11-16`, time: '09:00', courseCode: 'CHM109', title: 'Kimya Vizesi', location: 'Amfi 1 (D-101)', type: 'vize' },
+          { id: `mth1-${yr}-11-19`, date: `${yr}-11-19`, time: '10:30', courseCode: 'MTH0101', title: 'Calculus I Vize Sınavı', location: 'Merkez Amfi', type: 'vize' },
+          { id: `phy-${yr}-11-22`, date: `${yr}-11-22`, time: '13:30', courseCode: 'PHY0107', title: 'Fizik I Vize Sınavı', location: 'Fizik D-204', type: 'vize' },
+          { id: `mth2-${yr}-11-26`, date: `${yr}-11-26`, time: '11:00', courseCode: 'MTH103', title: 'Lineer Cebir Vizesi', location: 'D-302', type: 'vize' },
+          { id: `tur-${yr}-11-29`, date: `${yr}-11-29`, time: '15:30', courseCode: 'TUR171', title: 'Türk Dili I Ara Sınavı', location: 'Online / e-Kampüs', type: 'vize' },
+          { id: `eee-${yr}-11-30`, date: `${yr}-11-30`, time: '23:59', courseCode: 'EEE1001', title: 'Giriş Proje Raporu Teslimi', location: 'e-Kampüs / Drive', type: 'odev' },
+
+          // Aralık / December
+          { id: `phy-${yr}-12-05`, date: `${yr}-12-05`, time: '14:30', courseCode: 'PHY0107', title: 'Fizik I Laboratuvar Sınavı', location: 'Fizik Lab 2', type: 'lab' },
+          { id: `chm-${yr}-12-11`, date: `${yr}-12-11`, time: '11:00', courseCode: 'CHM109', title: 'Genel Kimya Kısa Sınav', location: 'D-101', type: 'quiz' },
+          { id: `mth2-${yr}-12-16`, date: `${yr}-12-16`, time: '10:00', courseCode: 'MTH103', title: 'Lineer Cebir Quiz 2', location: 'D-302', type: 'quiz' },
+          { id: `eee-${yr}-12-25`, date: `${yr}-12-25`, time: '13:00', courseCode: 'EEE1001', title: 'Dönem Sonu Proje Sunumları', location: 'EEE Konferans Salonu', type: 'proje' }
+        );
+      });
+
+      localStorage.setItem('anku_academic_events_v2', JSON.stringify(defaultEvents));
+      return defaultEvents;
+    }
+
+    function navigateCalendarMonth(delta) {
+      calendarViewDate.setMonth(calendarViewDate.getMonth() + delta);
+      refreshCalendarWidget();
+    }
+
+    function resetCalendarToToday() {
+      calendarViewDate = new Date();
+      calendarViewDate.setDate(1);
+      calendarActiveDateStr = null;
+      refreshCalendarWidget();
+    }
+
+    function refreshCalendarWidget() {
+      const container = document.getElementById('academicCalendarContainer');
+      if (container) {
+        container.outerHTML = renderCalendarAndAgendaWidget();
+        lucide.createIcons();
+      }
+    }
+
+    function renderCalendarAndAgendaWidget() {
+      const allEvents = getAcademicEvents();
+
+      const m1Date = new Date(calendarViewDate);
+      const m1Year = m1Date.getFullYear();
+      const m1Month = m1Date.getMonth();
+
+      const m2Date = new Date(m1Year, m1Month + 1, 1);
+      const m2Year = m2Date.getFullYear();
+      const m2Month = m2Date.getMonth();
+
+      const m1Str = `${m1Year}-${String(m1Month + 1).padStart(2, '0')}`;
+      const m2Str = `${m2Year}-${String(m2Month + 1).padStart(2, '0')}`;
+
+      const visibleEvents = allEvents.filter(e => {
+        return e.date && (e.date.startsWith(m1Str) || e.date.startsWith(m2Str));
+      }).sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''));
+
+      return `
+        <div id="academicCalendarContainer" class="space-y-4">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
+            <!-- Box 1: Month 1 (Current / Selected Month) -->
+            ${renderMonthCalendarBox(m1Year, m1Month, false, allEvents)}
+
+            <!-- Box 2: Month 2 (Next Month) - Hidden on mobile! -->
+            ${renderMonthCalendarBox(m2Year, m2Month, true, allEvents)}
+
+            <!-- Box 3: Agenda / Event Descriptions -->
+            ${renderAgendaBox(visibleEvents, m1Year, m1Month, m2Year, m2Month)}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderMonthCalendarBox(year, month, isMonthTwo, allEvents) {
+      const today = new Date();
+      const todayY = today.getFullYear();
+      const todayM = today.getMonth();
+      const todayD = today.getDate();
+
+      const firstDayIndex = (new Date(year, month, 1).getDay() + 6) % 7; // 0 = Pzt, 6 = Paz
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const prevMonthDays = new Date(year, month, 0).getDate();
+
+      const monthEvents = allEvents.filter(e => e.date && e.date.startsWith(`${year}-${String(month + 1).padStart(2, '0')}`));
+
+      let headerHtml = '';
+      if (!isMonthTwo) {
+        headerHtml = `
+          <div class="flex items-center justify-between pb-3 border-b border-border mb-2">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <button
+                type="button"
+                onclick="navigateCalendarMonth(-1)"
+                title="Önceki Ay"
+                class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+              >
+                <i data-lucide="chevron-left" class="size-4"></i>
+              </button>
+              <h2 class="font-bold text-sm sm:text-base text-foreground tracking-tight truncate">
+                ${MONTH_NAMES_TR[month]} ${year}
+              </h2>
+            </div>
+
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onclick="navigateCalendarMonth(1)"
+                title="Sonraki Ay"
+                class="lg:hidden size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+              >
+                <i data-lucide="chevron-right" class="size-4"></i>
+              </button>
+              <button
+                type="button"
+                onclick="resetCalendarToToday()"
+                title="Bugüne Dön"
+                class="text-[11px] font-medium px-2 py-1 rounded-md bg-muted/70 hover:bg-muted text-muted-foreground hover:text-foreground transition"
+              >
+                Bugün
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        headerHtml = `
+          <div class="flex items-center justify-between pb-3 border-b border-border mb-2">
+            <h2 class="font-bold text-sm sm:text-base text-foreground tracking-tight truncate">
+              ${MONTH_NAMES_TR[month]} ${year}
+            </h2>
+            <div class="flex items-center gap-1.5">
+              <button
+                type="button"
+                onclick="navigateCalendarMonth(1)"
+                title="Sonraki Ay"
+                class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+              >
+                <i data-lucide="chevron-right" class="size-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      const weekdaysHtml = `
+        <div class="grid grid-cols-7 gap-1 text-center py-1.5 text-[11px] font-semibold text-muted-foreground select-none">
+          ${DAY_NAMES_TR_SHORT.map(d => `<div>${d}</div>`).join('')}
+        </div>
+      `;
+
+      let daysHtml = '<div class="grid grid-cols-7 gap-1 sm:gap-1.5 text-center flex-1 content-start">';
+
+      for (let i = firstDayIndex - 1; i >= 0; i--) {
+        const d = prevMonthDays - i;
+        daysHtml += `<div class="aspect-square flex items-center justify-center text-[11px] text-muted-foreground/35 select-none">${d}</div>`;
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const dayEvs = monthEvents.filter(e => e.date === dateStr);
+        const isToday = (year === todayY && month === todayM && d === todayD);
+
+        if (dayEvs.length > 0) {
+          const firstEv = dayEvs[0];
+          const th = getCourseTheme(firstEv.courseCode);
+          const isSelected = (calendarActiveDateStr === dateStr);
+
+          daysHtml += `
+            <div class="aspect-square flex items-center justify-center relative">
+              <button
+                type="button"
+                class="calendar-day-cell relative size-7 sm:size-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm cursor-pointer transition-all duration-150 hover:scale-115 active:scale-95 focus:outline-none ${isSelected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}"
+                style="background-color: ${th.badgeBg}; border: 1.5px solid ${th.accent}; color: ${th.accent}; box-shadow: 0 0 10px ${th.glow || 'rgba(0,0,0,0.2)'};"
+                data-date="${dateStr}"
+                onmouseenter="handleCalendarDayHover(event, '${dateStr}')"
+                onmouseleave="handleCalendarDayLeave()"
+                onclick="handleCalendarDayClick(event, '${dateStr}')"
+                aria-label="${d} ${MONTH_NAMES_TR[month]}, ${dayEvs.map(e => e.title).join(', ')}"
+              >
+                ${d}
+                ${dayEvs.length > 1 ? `
+                  <span class="absolute -bottom-0.5 flex items-center justify-center gap-0.5">
+                    ${dayEvs.slice(0, 3).map(e => {
+                      const subTh = getCourseTheme(e.courseCode);
+                      return `<span class="size-1 rounded-full" style="background-color: ${subTh.accent}"></span>`;
+                    }).join('')}
+                  </span>
+                ` : ''}
+              </button>
+            </div>
+          `;
+        } else if (isToday) {
+          daysHtml += `
+            <div class="aspect-square flex items-center justify-center">
+              <span class="size-7 sm:size-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm border border-primary text-primary bg-primary/10">
+                ${d}
+              </span>
+            </div>
+          `;
+        } else {
+          daysHtml += `
+            <div class="aspect-square flex items-center justify-center">
+              <span class="size-7 sm:size-8 rounded-full flex items-center justify-center text-xs sm:text-sm text-foreground/80 hover:bg-muted/60 transition">
+                ${d}
+              </span>
+            </div>
+          `;
+        }
+      }
+
+      const totalRendered = firstDayIndex + daysInMonth;
+      const remaining = (7 - (totalRendered % 7)) % 7;
+      for (let d = 1; d <= remaining; d++) {
+        daysHtml += `<div class="aspect-square flex items-center justify-center text-[11px] text-muted-foreground/35 select-none">${d}</div>`;
+      }
+
+      daysHtml += '</div>';
+
+      return `
+        <div class="admincn-card p-4 sm:p-5 flex flex-col justify-between ${isMonthTwo ? 'hidden lg:flex' : ''}">
+          ${headerHtml}
+          ${weekdaysHtml}
+          ${daysHtml}
+        </div>
+      `;
+    }
+
+    function renderAgendaBox(visibleEvents, m1Year, m1Month, m2Year, m2Month) {
+      const rangeTitle = (m1Month === m2Month && m1Year === m2Year)
+        ? `${MONTH_NAMES_TR[m1Month]} ${m1Year}`
+        : `${MONTH_NAMES_TR[m1Month]} - ${MONTH_NAMES_TR[m2Month]} ${m2Year}`;
+
+      let listHtml = '';
+      if (visibleEvents.length === 0) {
+        listHtml = `
+          <div class="py-10 text-center flex flex-col items-center justify-center text-muted-foreground space-y-2 flex-1">
+            <i data-lucide="calendar-off" class="size-8 opacity-40"></i>
+            <p class="text-xs sm:text-sm font-medium">Bu dönemde kayıtlı etkinlik bulunmuyor.</p>
+            <button
+              type="button"
+              onclick="openAddAcademicEventModal()"
+              class="text-xs text-primary hover:underline font-semibold"
+            >
+              + Yeni Etkinlik Ekle
+            </button>
+          </div>
+        `;
+      } else {
+        listHtml = `
+          <div class="space-y-2 overflow-y-auto max-h-[330px] pr-1 flex-1">
+            ${visibleEvents.map(ev => {
+              const th = getCourseTheme(ev.courseCode);
+              const [y, m, d] = ev.date.split('-').map(Number);
+              const dateObj = new Date(y, m - 1, d);
+              const dayOfWeekIndex = (dateObj.getDay() + 6) % 7;
+              const dayOfWeekTr = DAY_NAMES_TR[dayOfWeekIndex];
+              const isHighlighted = (calendarActiveDateStr === ev.date);
+
+              return `
+                <div
+                  id="agenda-item-${esc(ev.id)}"
+                  data-date="${esc(ev.date)}"
+                  onclick="handleAgendaItemClick('${esc(ev.date)}', '${esc(ev.courseCode)}')"
+                  class="event-agenda-item group p-2.5 rounded-lg border border-border/80 bg-card/60 hover:bg-muted/40 transition-all flex items-start gap-2.5 cursor-pointer ${isHighlighted ? 'ring-2 ring-primary border-primary' : ''}"
+                >
+                  <!-- Date Box in course theme color -->
+                  <div
+                    class="shrink-0 flex flex-col items-center justify-center px-2 py-1 rounded-md min-w-[54px] text-center transition"
+                    style="background-color: ${th.badgeBg}; border: 1.5px solid ${th.border}; color: ${th.accent};"
+                  >
+                    <span class="text-xs font-bold leading-none">${d} ${MONTH_NAMES_TR_SHORT[m - 1]}</span>
+                    <span class="text-[10px] opacity-80 mt-1 leading-none">${dayOfWeekTr.slice(0, 3)}</span>
+                  </div>
+
+                  <!-- Event Details -->
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span
+                        class="text-[10px] font-bold px-1.5 py-0.5 rounded cursor-pointer hover:opacity-80 transition"
+                        style="background-color: ${th.badgeBg}; color: ${th.accent}; border: 1px solid ${th.badgeBorder};"
+                        onclick="event.stopPropagation(); selectCourseByCode('${esc(ev.courseCode)}');"
+                        title="${esc(ev.courseCode)} dersine git"
+                      >
+                        ${esc(ev.courseCode)}
+                      </span>
+                      <h3 class="text-xs sm:text-sm font-semibold text-foreground group-hover:underline truncate">
+                        ${esc(ev.title)}
+                      </h3>
+                    </div>
+
+                    <div class="text-[11px] text-muted-foreground flex items-center gap-2 mt-1">
+                      <span class="flex items-center gap-1 font-mono">
+                        <i data-lucide="clock" class="size-3"></i> ${esc(ev.time)}
+                      </span>
+                      ${ev.location ? `
+                        <span class="flex items-center gap-1 truncate">
+                          • <i data-lucide="map-pin" class="size-3"></i> ${esc(ev.location)}
+                        </span>
+                      ` : ''}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      return `
+        <div class="admincn-card p-4 sm:p-5 flex flex-col justify-between h-full">
+          <div class="flex items-center justify-between pb-3 border-b border-border mb-3">
+            <div class="flex items-center gap-2 min-w-0">
+              <i data-lucide="calendar-check-2" class="size-4 text-primary shrink-0"></i>
+              <div>
+                <h2 class="font-bold text-sm sm:text-base text-foreground tracking-tight truncate">
+                  Önemli Tarihler & Sınavlar
+                </h2>
+                <div class="text-[11px] text-muted-foreground mt-0.5">
+                  ${rangeTitle} • ${visibleEvents.length} Etkinlik
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onclick="openAddAcademicEventModal()"
+              title="Yeni Etkinlik Ekle"
+              class="shrink-0 h-7 px-2.5 rounded-md bg-primary text-primary-foreground text-xs font-medium inline-flex items-center gap-1 hover:opacity-90 transition"
+            >
+              <i data-lucide="plus" class="size-3.5"></i>
+              <span>Ekle</span>
+            </button>
+          </div>
+
+          ${listHtml}
+        </div>
+      `;
+    }
+
+    function selectCourseByCode(code) {
+      if (!code || code === 'GENEL') return;
+      const c = (driveTree || []).find(n => n.name.toUpperCase().trim() === code.toUpperCase().trim());
+      if (c) {
+        selectCourse(c.id);
+      } else {
+        location.hash = '#' + code;
+      }
+    }
+
+    function handleAgendaItemClick(dateStr, courseCode) {
+      calendarActiveDateStr = (calendarActiveDateStr === dateStr) ? null : dateStr;
+      refreshCalendarWidget();
+      if (calendarActiveDateStr) {
+        setTimeout(() => {
+          const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
+          if (targetCell) {
+            showCalendarDayPopover(targetCell, dateStr, true);
+          }
+        }, 50);
+      } else {
+        hideCalendarDayPopover();
+      }
+    }
+
+    function handleCalendarDayHover(event, dateStr) {
+      clearTimeout(calendarPopoverHideTimer);
+      showCalendarDayPopover(event.currentTarget, dateStr, false);
+    }
+
+    function handleCalendarDayLeave() {
+      calendarPopoverHideTimer = setTimeout(() => {
+        hideCalendarDayPopover();
+      }, 250);
+    }
+
+    function handleCalendarDayClick(event, dateStr) {
+      event.stopPropagation();
+      clearTimeout(calendarPopoverHideTimer);
+      calendarActiveDateStr = (calendarActiveDateStr === dateStr) ? null : dateStr;
+      refreshCalendarWidget();
+      if (calendarActiveDateStr) {
+        setTimeout(() => {
+          const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
+          if (targetCell) {
+            showCalendarDayPopover(targetCell, dateStr, true);
+          }
+        }, 50);
+      } else {
+        hideCalendarDayPopover();
+      }
+    }
+
+    function showCalendarDayPopover(targetEl, dateStr, isPinned) {
+      const popover = document.getElementById('calendarDayPopover');
+      if (!popover || !targetEl) return;
+
+      const events = getAcademicEvents().filter(e => e.date === dateStr);
+      if (events.length === 0) return;
+
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const dateObj = new Date(y, m - 1, d);
+      const dayOfWeekIndex = (dateObj.getDay() + 6) % 7;
+      const dayOfWeek = DAY_NAMES_TR[dayOfWeekIndex];
+      const monthName = MONTH_NAMES_TR[m - 1];
+
+      popover.innerHTML = `
+        <div class="p-3 space-y-2.5">
+          <div class="flex items-center justify-between border-b border-border pb-2">
+            <div class="flex items-center gap-1.5 min-w-0">
+              <i data-lucide="calendar" class="size-3.5 text-primary shrink-0"></i>
+              <span class="font-bold text-xs text-foreground truncate">${d} ${monthName} ${y}, ${dayOfWeek}</span>
+            </div>
+            <button
+              type="button"
+              onclick="hideCalendarDayPopover()"
+              class="size-5 rounded flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground shrink-0"
+              aria-label="Kapat"
+            >
+              <i data-lucide="x" class="size-3"></i>
+            </button>
+          </div>
+
+          <div class="space-y-2 max-h-56 overflow-y-auto pr-0.5">
+            ${events.map(ev => {
+              const th = getCourseTheme(ev.courseCode);
+              return `
+                <div class="p-2 rounded-md bg-muted/40 border border-border/60 space-y-1">
+                  <div class="flex items-center justify-between gap-1.5">
+                    <span
+                      class="text-[10px] font-bold px-1.5 py-0.5 rounded cursor-pointer hover:opacity-80 transition"
+                      style="background-color: ${th.badgeBg}; color: ${th.accent}; border: 1px solid ${th.badgeBorder};"
+                      onclick="hideCalendarDayPopover(); selectCourseByCode('${esc(ev.courseCode)}');"
+                    >
+                      ${esc(ev.courseCode)}
+                    </span>
+                    <span class="text-[10px] font-mono text-muted-foreground flex items-center gap-1">
+                      <i data-lucide="clock" class="size-3"></i> ${esc(ev.time)}
+                    </span>
+                  </div>
+                  <div class="text-xs font-semibold text-foreground leading-snug">
+                    ${esc(ev.title)}
+                  </div>
+                  ${ev.location ? `
+                    <div class="text-[11px] text-muted-foreground flex items-center gap-1">
+                      <i data-lucide="map-pin" class="size-3"></i> ${esc(ev.location)}
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+
+      popover.classList.add('is-open');
+      lucide.createIcons({ root: popover });
+
+      const rect = targetEl.getBoundingClientRect();
+      const popoverWidth = Math.min(290, window.innerWidth - 24);
+      let left = rect.left + rect.width / 2 - popoverWidth / 2;
+      left = Math.max(12, Math.min(left, window.innerWidth - popoverWidth - 12));
+
+      const popoverHeight = popover.offsetHeight || 190;
+      let top = rect.top - popoverHeight - 8;
+      if (top < 12) {
+        top = rect.bottom + 8;
+      }
+
+      popover.style.left = `${left}px`;
+      popover.style.top = `${top}px`;
+    }
+
+    function hideCalendarDayPopover() {
+      const popover = document.getElementById('calendarDayPopover');
+      if (popover) {
+        popover.classList.remove('is-open');
+      }
+    }
+
+    function openAddAcademicEventModal(defaultDate = null) {
+      const modal = document.getElementById('addAcademicEventModal');
+      if (!modal) return;
+      const dateInput = document.getElementById('eventInputDate');
+      if (dateInput) {
+        dateInput.value = defaultDate || new Date().toISOString().split('T')[0];
+      }
+      modal.showModal();
+    }
+
+    function handleSaveAcademicEvent(e) {
+      e.preventDefault();
+      const courseCode = document.getElementById('eventInputCourse').value;
+      const title = document.getElementById('eventInputTitle').value.trim();
+      const date = document.getElementById('eventInputDate').value;
+      const time = document.getElementById('eventInputTime').value || '09:00';
+      const location = document.getElementById('eventInputLocation').value.trim();
+
+      if (!title || !date) return;
+
+      const events = getAcademicEvents();
+      events.push({
+        id: 'ev-user-' + Date.now(),
+        date,
+        time,
+        courseCode,
+        title,
+        location,
+        type: 'etkinlik'
+      });
+
+      localStorage.setItem('anku_academic_events_v2', JSON.stringify(events));
+      document.getElementById('addAcademicEventModal').close();
+      refreshCalendarWidget();
+    }
+
+    function handleResetAcademicEvents() {
+      if (confirm('Etkinlik takvimini varsayılan sınav ve ödev tarihlerine sıfırlamak istiyor musunuz?')) {
+        localStorage.removeItem('anku_academic_events_v2');
+        document.getElementById('addAcademicEventModal')?.close();
+        refreshCalendarWidget();
+      }
+    }
+
+    // Dismiss popover when clicking anywhere outside
+    document.addEventListener('click', (e) => {
+      const popover = document.getElementById('calendarDayPopover');
+      if (popover && popover.classList.contains('is-open')) {
+        if (!popover.contains(e.target) && !e.target.closest('.calendar-day-cell')) {
+          hideCalendarDayPopover();
+        }
+      }
+    });
+
+    // ================= RENDER HOME VIEW =================
+    function renderWelcomeHub() {
+      const container = $('courseHubView');
+      const courses = (driveTree || []).filter(n => realMime(n) === FOLDER_MIME);
+      const allFilesFlat = collectAllFiles(driveTree);
+      const folderId = parseFolderId(settings.folder);
+      const driveUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : 'https://drive.google.com';
+
+      container.innerHTML = `
+        <!-- 2. CTA ABOVE THE FOLD -->
+        <div class="portal-hero p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="flex items-center gap-4 sm:gap-5 min-w-0">
+            <a
+              href="https://www.ankara.edu.tr"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Ankara Üniversitesi"
+              class="portal-hero-logo"
+            >
+              <img
+                src="assets/ankara-uni-logo.png"
+                alt="Ankara Üniversitesi Logosu"
+                width="88"
+                height="88"
+                class="size-full object-contain rounded-full"
+                onerror="this.parentElement.style.display='none';"
+              />
+            </a>
+            <div class="space-y-2 min-w-0">
+              <span class="portal-hero-badge">ANKARA ÜNİVERSİTESİ • EEE</span>
+              <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
+                Ders Materyalleri Portalı
+              </h1>
+              <p class="portal-hero-sub text-sm sm:text-base">
+                Elektrik-Elektronik Mühendisliği ders notları, slaytlar ve kaynaklar tek yerde.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onclick="document.getElementById('allMaterialsSection')?.scrollIntoView({ behavior: 'smooth' }); setTimeout(() => document.getElementById('datatableSearchInput')?.focus(), 250);"
+              class="portal-hero-btn-primary"
+            >
+              <i data-lucide="search" class="size-4"></i>
+              <span>Materyal Ara</span>
+            </button>
+            <a
+              href="${driveUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="portal-hero-btn-secondary"
+            >
+              <i data-lucide="folder-symlink" class="size-4"></i>
+              <span>Drive Arşivi</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- ACADEMIC CALENDAR & AGENDA WIDGET -->
+        ${renderCalendarAndAgendaWidget()}
+
+        <!-- ALL MATERIALS TABLE -->
+        <div id="allMaterialsSection" class="admincn-card overflow-hidden">
+          <div class="px-5 py-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <h2 class="text-sm font-semibold">Tüm Materyaller</h2>
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="relative">
+                <i data-lucide="search" class="size-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 z-10 pointer-events-none"></i>
+                <input
+                  id="datatableSearchInput"
+                  type="text"
+                  value="${esc(tableSearchQuery)}"
+                  oninput="handleTableSearch(this.value)"
+                  placeholder="Dosya ara..."
+                  class="h-8 w-44 sm:w-56 rounded-md bg-background border border-input pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+                >
+              </div>
+              <select
+                id="datatableCourseSelect"
+                onchange="handleTableCourseFilter(this.value)"
+                class="h-8 rounded-md bg-background border border-input px-2.5 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40"
+              >
+                <option value="ALL" ${tableCourseFilter === 'ALL' ? 'selected' : ''}>Tüm Dersler</option>
+                ${courses.map(c => {
+                  const code = c.name.toUpperCase().trim();
+                  return `<option value="${esc(code)}" ${tableCourseFilter === code ? 'selected' : ''}>${esc(code)}</option>`;
+                }).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div id="admincnDataTableBody">
+            ${renderDataTableContent(allFilesFlat)}
+          </div>
+        </div>
+      `;
+
+      lucide.createIcons();
+    }
+
+    function renderDataTableContent(allFilesFlat) {
+      const q = tableSearchQuery.trim().toLowerCase();
+      const filtered = allFilesFlat.filter(item => {
+        if (tableCourseFilter !== 'ALL' && item.courseCode !== tableCourseFilter) return false;
+        if (q && !item.node.name.toLowerCase().includes(q) && !item.courseCode.toLowerCase().includes(q) && !item.folderPath.toLowerCase().includes(q)) {
+          return false;
+        }
+        return true;
+      });
+
+      const totalCount = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(totalCount / tablePageSize));
+      if (tablePageIndex >= totalPages) tablePageIndex = Math.max(0, totalPages - 1);
+
+      const startIdx = tablePageIndex * tablePageSize;
+      const pageItems = filtered.slice(startIdx, startIdx + tablePageSize);
+
+      return `
+        <div class="w-full overflow-x-auto border-b border-border">
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="border-b border-border text-muted-foreground text-xs">
+                <th class="h-10 px-4 font-medium">Dosya</th>
+                <th class="h-10 px-4 font-medium">Ders</th>
+                <th class="h-10 px-4 font-medium hidden md:table-cell">Klasör</th>
+                <th class="h-10 px-4 font-medium">Tür</th>
+                <th class="h-10 px-4 font-medium hidden sm:table-cell">Boyut</th>
+                <th class="h-10 px-4 font-medium text-right"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              ${pageItems.length > 0 ? pageItems.map(({ node, courseCode, folderPath }) => {
+                const kind = getFileKind(node);
+                const conf = KIND_CONFIG[kind] || KIND_CONFIG.file;
+                return `
+                  <tr class="hover:bg-muted/40 transition">
+                    <td class="px-4 py-3">
+                      <div onclick="openViewerModal('${node.id}', '${esc(courseCode)}')" class="flex items-center gap-2.5 cursor-pointer group">
+                        <div class="size-8 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                          <i data-lucide="${conf.icon}" class="size-4"></i>
+                        </div>
+                        <span class="text-card-foreground text-xs sm:text-sm font-medium truncate max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-2xl 2xl:max-w-4xl group-hover:underline" title="${esc(node.name)}">${esc(node.name)}</span>
+                      </div>
+                    </td>
+                    <td class="px-4 py-3">
+                      <span class="rounded-sm bg-primary-soft text-primary px-2 py-0.5 text-xs font-mono font-medium">${esc(courseCode)}</span>
+                    </td>
+                    <td class="px-4 py-3 hidden md:table-cell text-xs text-muted-foreground">
+                      <span class="truncate block max-w-[200px] lg:max-w-[320px] xl:max-w-[480px]">${esc(folderPath)}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                      <span class="rounded-sm bg-secondary text-secondary-foreground px-2 py-0.5 text-xs font-medium">${conf.badge}</span>
+                    </td>
+                    <td class="px-4 py-3 hidden sm:table-cell font-mono text-xs text-muted-foreground">
+                      ${formatFileSize(node.size)}
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                      <div class="inline-flex items-center justify-end gap-1">
+                        <button
+                          onclick="openViewerModal('${node.id}', '${esc(courseCode)}')"
+                          class="h-7 px-2.5 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition"
+                        >
+                          Aç
+                        </button>
+                        ${kind !== 'youtube' ? `
+                          <a
+                            href="https://drive.google.com/uc?export=download&id=${realId(node)}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="İndir"
+                            class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+                          >
+                            <i data-lucide="download" class="size-3.5"></i>
+                          </a>
+                        ` : ''}
+                        <a
+                          href="${node.webViewLink || `https://drive.google.com/file/d/${realId(node)}/view`}"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Drive"
+                          class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+                        >
+                          <i data-lucide="external-link" class="size-3.5"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join('') : `
+                <tr>
+                  <td colspan="6" class="h-20 text-center text-muted-foreground text-xs">
+                    Sonuç bulunamadı.
+                  </td>
+                </tr>
+              `}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 px-5 py-3">
+          <span class="text-muted-foreground text-xs font-mono">
+            ${totalCount === 0 ? '0' : `${startIdx + 1}-${Math.min(startIdx + tablePageSize, totalCount)} / ${totalCount}`}
+          </span>
+          <div class="flex items-center gap-1">
+            <button
+              type="button"
+              onclick="changeTablePage(${tablePageIndex - 1})"
+              ${tablePageIndex <= 0 ? 'disabled' : ''}
+              class="inline-flex h-7 items-center gap-1 rounded-md px-2 text-xs font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40 transition"
+            >
+              <i data-lucide="chevron-left" class="size-3.5"></i>
+              <span>Önceki</span>
+            </button>
+            <span class="px-2 text-xs font-mono text-muted-foreground">
+              ${tablePageIndex + 1} / ${totalPages}
+            </span>
+            <button
+              type="button"
+              onclick="changeTablePage(${tablePageIndex + 1})"
+              ${tablePageIndex >= totalPages - 1 ? 'disabled' : ''}
+              class="inline-flex h-7 items-center gap-1 rounded-md px-2 text-xs font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40 transition"
+            >
+              <span>Sonraki</span>
+              <i data-lucide="chevron-right" class="size-3.5"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    window.handleTableSearch = function(val) {
+      tableSearchQuery = val;
+      tablePageIndex = 0;
+      const body = $('admincnDataTableBody');
+      if (body && driveTree) {
+        body.innerHTML = renderDataTableContent(collectAllFiles(driveTree));
+        lucide.createIcons();
+      }
+    };
+
+    window.handleTableCourseFilter = function(val) {
+      tableCourseFilter = val;
+      tablePageIndex = 0;
+      const body = $('admincnDataTableBody');
+      if (body && driveTree) {
+        body.innerHTML = renderDataTableContent(collectAllFiles(driveTree));
+        lucide.createIcons();
+      }
+    };
+
+    window.changeTablePage = function(newIndex) {
+      tablePageIndex = Math.max(0, newIndex);
+      const body = $('admincnDataTableBody');
+      if (body && driveTree) {
+        body.innerHTML = renderDataTableContent(collectAllFiles(driveTree));
+        lucide.createIcons();
+      }
+    };
+
+    // ================= RENDER COURSE HUB =================
+    function renderCourseHub(courseId) {
+      const container = $('courseHubView');
+      const courseNode = (driveTree || []).find(n => n.id === courseId);
+      if (!courseNode) return;
+
+      const code = courseNode.name.toUpperCase().trim();
+      const meta = courseMetadata[code] || {
+        name: courseNode.name,
+        instructor: '',
+        email: '',
+        credits: '',
+        icon: 'book-open',
+        links: []
+      };
+
+      const totalFiles = countFilesInFolder(courseNode.children);
+      const driveFolderUrl = `https://drive.google.com/drive/folders/${realId(courseNode)}`;
+
+      const subfolders = (courseNode.children || []).filter(n => realMime(n) === FOLDER_MIME);
+      const rootFiles = (courseNode.children || []).filter(n => realMime(n) !== FOLDER_MIME && !/^(info|bilgi)\.(txt|json)$/i.test(n.name));
+
+      const weekFolders = [];
+      const catFolders = [];
+
+      subfolders.forEach(sub => {
+        const nameLower = sub.name.toLowerCase();
+        if (/(hafta|week)\s*0?(\d+)/i.test(nameLower)) {
+          const match = nameLower.match(/(hafta|week)\s*0?(\d+)/i);
+          weekFolders.push({ ...sub, weekNum: parseInt(match[2], 10) });
+        } else {
+          catFolders.push(sub);
+        }
+      });
+
+      weekFolders.sort((a, b) => a.weekNum - b.weekNum);
+
+      // Course-related links shown as a card grid under the banner
+      const courseLinkCardsHtml = (meta.links || []).map(link => {
+        let iconName = link.icon || 'external-link';
+        if (link.url.includes('youtube.com') || link.url.includes('youtu.be') || iconName === 'youtube') iconName = 'play';
+        const faviconUrl = getLinkFavicon(link);
+
+        return `
+          <a
+            href="${esc(link.url)}"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="${esc(link.title)}"
+            class="group flex h-10 min-w-0 items-center gap-2 rounded-lg border border-border bg-card px-2.5 sm:px-3 text-xs font-medium text-foreground shadow-sm hover:bg-muted transition"
+          >
+            <img
+              src="${faviconUrl}"
+              alt=""
+              width="16"
+              height="16"
+              class="size-4 shrink-0 rounded-sm object-contain"
+              loading="eager"
+              onerror="this.style.display='none'; const fb = this.nextElementSibling; if (fb) fb.classList.remove('hidden');"
+            />
+            <i data-lucide="${iconName}" class="size-4 shrink-0 text-muted-foreground group-hover:text-foreground transition hidden"></i>
+            <span class="flex-1 truncate">${esc(link.title)}</span>
+          </a>
+        `;
+      }).join('');
+      const courseLinksSectionHtml = courseLinkCardsHtml ? `
+        <nav aria-label="Ders bağlantıları" class="!mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+          ${courseLinkCardsHtml}
+        </nav>
+      ` : '';
+
+      const bannerUrl = meta.banner || DEFAULT_COURSE_METADATA[code]?.banner || '';
+      const bannerPos = meta.bannerPos || DEFAULT_COURSE_METADATA[code]?.bannerPos || 'center center';
+      const bannerRatioRaw = Number(meta.bannerRatio || DEFAULT_COURSE_METADATA[code]?.bannerRatio) || (16 / 9);
+      // Very tall (portrait) photos would become a thin strip, so allow a mild crop below 0.8.
+      const bannerRatio = Math.max(bannerRatioRaw, 0.8);
+      const theme = getCourseTheme(code);
+
+      container.innerHTML = `
+        <div
+          class="course-hero-banner p-5 sm:p-6"
+          style="--course-border: ${theme.border}; --course-glow: ${theme.glow}; --course-tint: ${theme.tint};"
+        >
+          ${bannerUrl ? `
+            <div class="course-hero-banner-media" style="--banner-ratio: ${bannerRatio};" aria-hidden="true">
+              <img
+                src="${bannerUrl}"
+                alt="${esc(meta.name)} Banner"
+                fetchpriority="high"
+                class="course-hero-banner-img"
+                style="object-position: ${bannerPos};"
+                onload="if (this.naturalWidth && this.naturalHeight) this.parentElement.style.setProperty('--banner-ratio', Math.max(this.naturalWidth / this.naturalHeight, 0.8));"
+              />
+              <div class="course-hero-banner-vignette"></div>
+            </div>
+          ` : ''}
+
+          <div class="relative z-10 flex flex-col gap-4 max-w-full sm:max-w-[68%] xl:max-w-[72%]">
+            <div class="flex items-start gap-3.5">
+              <div
+                class="course-hero-icon size-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
+                style="background-color: ${theme.badgeBg}; color: ${theme.accent}; border: 1px solid ${theme.badgeBorder};"
+              >
+                <i data-lucide="${meta.icon || 'book-open'}" class="size-5"></i>
+              </div>
+              <div class="space-y-3 min-w-0 flex-1">
+                <div class="space-y-1.5 min-w-0">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span
+                      class="rounded-sm px-2 py-0.5 font-mono text-xs font-semibold"
+                      style="background-color: ${theme.accent}; color: #09090b;"
+                    >${esc(code)}</span>
+                    ${meta.credits ? `<span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${esc(meta.credits)}</span>` : ''}
+                    <span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${totalFiles} dosya</span>
+                  </div>
+                  <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-zinc-950 dark:text-white drop-shadow-sm">${esc(meta.name)}</h1>
+
+                  ${(meta.instructor || meta.email) ? `
+                    <div class="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
+                      ${meta.instructor ? `
+                        <div class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 px-2.5 py-1 font-medium text-zinc-800 dark:text-zinc-100">
+                          <i data-lucide="user" class="size-3.5 text-zinc-600 dark:text-zinc-300"></i>
+                          <span>${esc(meta.instructor)}</span>
+                          ${meta.avesisUrl ? `
+                            <a href="${esc(meta.avesisUrl)}" target="_blank" rel="noopener noreferrer" title="AVESİS" class="ml-0.5 text-zinc-500 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition">
+                              <i data-lucide="external-link" class="size-3"></i>
+                            </a>
+                          ` : ''}
+                        </div>
+                      ` : ''}
+
+                      ${meta.email ? `
+                        <button
+                          onclick="copyInstructorEmail('${esc(meta.email)}', this)"
+                          title="Kopyala"
+                          class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 px-2.5 py-1 font-mono text-xs text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
+                        >
+                          <i data-lucide="mail" class="size-3.5"></i>
+                          <span class="email-text">${esc(meta.email)}</span>
+                        </button>
+                      ` : ''}
+                    </div>
+                  ` : ''}
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2 pt-0.5">
+                  <div class="relative w-44 sm:w-52">
+                    <i data-lucide="search" class="size-3.5 text-zinc-500 dark:text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2 z-10 pointer-events-none"></i>
+                    <input
+                      type="text"
+                      value="${esc(courseLocalSearch)}"
+                      oninput="filterCourseMaterials(this.value)"
+                      placeholder="Ara..."
+                      class="h-8 w-full rounded-md bg-white/85 dark:bg-white/10 border border-zinc-900/15 dark:border-white/15 pl-8 pr-3 text-xs text-zinc-950 dark:text-white placeholder:text-zinc-400 outline-none focus:ring-2 transition"
+                      style="--tw-ring-color: ${theme.border};"
+                    >
+                  </div>
+                  <a
+                    href="${driveFolderUrl}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-800 dark:text-zinc-100 border border-zinc-900/10 dark:border-white/15 transition"
+                  >
+                    <i data-lucide="folder-symlink" class="size-3.5"></i>
+                    <span>Drive</span>
+                  </a>
+                  <button
+                    onclick="openEditCourseModal('${esc(code)}')"
+                    title="Düzenle"
+                    class="inline-flex size-8 items-center justify-center rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
+                  >
+                    <i data-lucide="edit-3" class="size-3.5"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        ${courseLinksSectionHtml}
+
+        <div id="courseMaterialsContainer" class="space-y-6">
+          ${renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl)}
+        </div>
+      `;
+
+      lucide.createIcons();
+    }
+
+    function renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl) {
+      const q = courseLocalSearch.trim().toLowerCase();
+
+      const filterItems = (items) => {
+        if (!q) return items;
+        return items.filter(f => f.name.toLowerCase().includes(q));
+      };
+
+      const filteredWeeks = weekFolders.map(w => ({
+        ...w,
+        filteredChildren: filterItems((w.children || []).filter(f => !/^(info|bilgi)\.(txt|json)$/i.test(f.name)))
+      })).filter(w => !q || w.filteredChildren.length > 0 || w.name.toLowerCase().includes(q));
+
+      const filteredCats = catFolders.map(c => ({
+        ...c,
+        filteredChildren: filterItems((c.children || []).filter(f => !/^(info|bilgi)\.(txt|json)$/i.test(f.name)))
+      })).filter(c => !q || c.filteredChildren.length > 0 || c.name.toLowerCase().includes(q));
+
+      const filteredRoots = filterItems(rootFiles);
+
+      const weekGridCols = filteredWeeks.length === 1
+        ? 'grid-cols-1'
+        : filteredWeeks.length === 2
+          ? 'grid-cols-1 md:grid-cols-2'
+          : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4';
+
+      const catGridCols = filteredCats.length === 1
+        ? 'grid-cols-1'
+        : filteredCats.length === 2
+          ? 'grid-cols-1 md:grid-cols-2'
+          : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4';
+
+      return `
+        ${filteredWeeks.length > 0 ? `
+          <div class="grid ${weekGridCols} gap-4">
+            ${filteredWeeks.map(w => renderFolderCard(w, code, true, w.filteredChildren)).join('')}
+          </div>
+        ` : ''}
+
+        ${filteredCats.length > 0 ? `
+          <div class="grid ${catGridCols} gap-4">
+            ${filteredCats.map(c => renderFolderCard(c, code, false, c.filteredChildren)).join('')}
+          </div>
+        ` : ''}
+
+        ${filteredRoots.length > 0 ? `
+          <div class="admincn-card overflow-hidden">
+            <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
+              <h3 class="text-sm font-semibold">Dosyalar (${filteredRoots.length})</h3>
+            </div>
+            <div class="divide-y divide-border px-3 py-1.5">
+              ${filteredRoots.map(f => renderFileRow(f, code)).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        ${totalFiles === 0 ? `
+          <div class="admincn-card text-center py-12 px-4">
+            <p class="text-xs text-muted-foreground mb-3">Henüz materyal yok.</p>
+            <a
+              href="${driveFolderUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex h-8 items-center gap-1.5 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition"
+            >
+              <i data-lucide="external-link" class="size-3.5"></i>
+              <span>Drive'da Aç</span>
+            </a>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    window.filterCourseMaterials = function(val) {
+      courseLocalSearch = val;
+      if (!activeCourseId || !driveTree) return;
+      const courseNode = driveTree.find(n => n.id === activeCourseId);
+      if (!courseNode) return;
+      const code = courseNode.name.toUpperCase().trim();
+      const meta = courseMetadata[code] || { name: courseNode.name };
+      const totalFiles = countFilesInFolder(courseNode.children);
+      const driveFolderUrl = `https://drive.google.com/drive/folders/${realId(courseNode)}`;
+      const subfolders = (courseNode.children || []).filter(n => realMime(n) === FOLDER_MIME);
+      const rootFiles = (courseNode.children || []).filter(n => realMime(n) !== FOLDER_MIME && !/^(info|bilgi)\.(txt|json)$/i.test(n.name));
+
+      const weekFolders = [];
+      const catFolders = [];
+      subfolders.forEach(sub => {
+        const nameLower = sub.name.toLowerCase();
+        if (/(hafta|week)\s*0?(\d+)/i.test(nameLower)) {
+          const match = nameLower.match(/(hafta|week)\s*0?(\d+)/i);
+          weekFolders.push({ ...sub, weekNum: parseInt(match[2], 10) });
+        } else {
+          catFolders.push(sub);
+        }
+      });
+      weekFolders.sort((a, b) => a.weekNum - b.weekNum);
+
+      const box = $('courseMaterialsContainer');
+      if (box) {
+        box.innerHTML = renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl);
+        lucide.createIcons();
+      }
+    };
+
+    function renderFolderCard(folder, courseCode, isWeekly, overrideItems = null) {
+      const items = overrideItems || (folder.children || []).filter(f => !/^(info|bilgi)\.(txt|json)$/i.test(f.name));
+      const count = items.length;
+      const headerIcon = isWeekly ? 'calendar' : 'folder';
+      const stripped = folder.name.replace(/(hafta|week)\s*0?\d+[:\s-]*/i, '').trim();
+      const title = isWeekly
+        ? (stripped ? `${folder.weekNum}. Hafta — ${stripped}` : `${folder.weekNum}. Hafta`)
+        : folder.name;
+
+      return `
+        <div id="folder-${folder.id}" class="admincn-card flex flex-col overflow-hidden">
+          <div class="px-4 py-3 border-b border-border flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="size-7 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                <i data-lucide="${headerIcon}" class="size-3.5"></i>
+              </div>
+              <h4 class="font-semibold text-sm text-foreground truncate" title="${esc(folder.name)}">${esc(title)}</h4>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <span class="rounded-sm bg-primary-soft px-2 py-0.5 text-xs font-medium text-primary tabular-nums">
+                ${count}
+              </span>
+              <a
+                href="https://drive.google.com/drive/folders/${realId(folder)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Drive'da Aç"
+                class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+              >
+                <i data-lucide="external-link" class="size-3.5"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="p-3 space-y-1.5">
+            ${items.length > 0 ? items.map(item => renderFileItem(item, courseCode)).join('') : `
+              <div class="text-xs text-muted-foreground py-3 text-center">Boş</div>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFileItem(item, courseCode) {
+      const kind = getFileKind(item);
+      const conf = KIND_CONFIG[kind] || KIND_CONFIG.file;
+      const yt = extractYouTubeId(item.name) || extractYouTubeId(item.description);
+      const sizeStr = formatFileSize(item.size);
+
+      return `
+        <div class="flex items-center justify-between gap-2 p-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition group">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer" onclick="openViewerModal('${item.id}', '${courseCode}')">
+            <div class="size-7 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+              <i data-lucide="${conf.icon}" class="size-3.5"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-xs sm:text-sm font-medium text-foreground truncate group-hover:underline" title="${esc(item.name)}">
+                ${esc(item.name)}
+              </div>
+              <div class="text-[11px] text-muted-foreground">
+                ${conf.badge}${sizeStr !== '—' ? ' • ' + sizeStr : ''}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 shrink-0">
+            <button
+              onclick="openViewerModal('${item.id}', '${courseCode}')"
+              class="h-7 px-2.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
+            >
+              ${kind === 'youtube' || yt ? 'İzle' : 'Aç'}
+            </button>
+            ${kind !== 'youtube' ? `
+              <a
+                href="https://drive.google.com/uc?export=download&id=${realId(item)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="İndir"
+                class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+              >
+                <i data-lucide="download" class="size-3.5"></i>
+              </a>
+            ` : ''}
+            <a
+              href="${item.webViewLink || `https://drive.google.com/file/d/${realId(item)}/view`}"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Drive"
+              class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+            >
+              <i data-lucide="external-link" class="size-3.5"></i>
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFileRow(item, courseCode) {
+      const kind = getFileKind(item);
+      const conf = KIND_CONFIG[kind] || KIND_CONFIG.file;
+      const sizeStr = formatFileSize(item.size);
+
+      return `
+        <div class="flex items-center justify-between gap-3 py-2 px-2 hover:bg-muted/30 rounded-md transition">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer" onclick="openViewerModal('${item.id}', '${courseCode}')">
+            <div class="size-7 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
+              <i data-lucide="${conf.icon}" class="size-3.5"></i>
+            </div>
+            <span class="text-xs sm:text-sm font-medium text-foreground truncate hover:underline" title="${esc(item.name)}">
+              ${esc(item.name)}
+            </span>
+            ${sizeStr !== '—' ? `<span class="text-xs text-muted-foreground shrink-0 font-mono">${sizeStr}</span>` : ''}
+          </div>
+          <div class="flex items-center gap-1 shrink-0">
+            <button
+              onclick="openViewerModal('${item.id}', '${courseCode}')"
+              class="h-7 px-2.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
+            >
+              Aç
+            </button>
+            ${kind !== 'youtube' ? `
+              <a
+                href="https://drive.google.com/uc?export=download&id=${realId(item)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="İndir"
+                class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+              >
+                <i data-lucide="download" class="size-3.5"></i>
+              </a>
+            ` : ''}
+            <a
+              href="${item.webViewLink || `https://drive.google.com/file/d/${realId(item)}/view`}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+            >
+              <i data-lucide="external-link" class="size-3.5"></i>
+            </a>
+          </div>
+        </div>
+      `;
+    }
+
+    // ================= IN-PAGE UNIVERSAL VIEWER MODAL =================
+    function findNodeRecursively(nodes, targetId) {
+      for (const node of nodes) {
+        if (node.id === targetId) return node;
+        if (node.children) {
+          const found = findNodeRecursively(node.children, targetId);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    // ================= INDEXEDDB PERSISTENT PDF CACHE =================
+    const PDF_CACHE_DB = 'AnkuPdfCacheDB';
+    const PDF_CACHE_STORE = 'pdfs';
+
+    function openPdfCacheDB() {
+      return new Promise((resolve) => {
+        if (!window.indexedDB) {
+          resolve(null);
+          return;
+        }
+        try {
+          const request = indexedDB.open(PDF_CACHE_DB, 1);
+          request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(PDF_CACHE_STORE)) {
+              db.createObjectStore(PDF_CACHE_STORE, { keyPath: 'id' });
+            }
+          };
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => resolve(null);
+        } catch (e) {
+          resolve(null);
+        }
+      });
+    }
+
+    async function getCachedPdfBlob(id) {
+      try {
+        const db = await openPdfCacheDB();
+        if (!db) return null;
+        return new Promise((resolve) => {
+          try {
+            const tx = db.transaction(PDF_CACHE_STORE, 'readonly');
+            const store = tx.objectStore(PDF_CACHE_STORE);
+            const req = store.get(id);
+            req.onsuccess = () => resolve(req.result ? req.result.blob : null);
+            req.onerror = () => resolve(null);
+          } catch (e) {
+            resolve(null);
+          }
+        });
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function saveCachedPdfBlob(id, blob, name) {
+      try {
+        const db = await openPdfCacheDB();
+        if (!db) return;
+        const tx = db.transaction(PDF_CACHE_STORE, 'readwrite');
+        const store = tx.objectStore(PDF_CACHE_STORE);
+        store.put({ id, blob, name, time: Date.now() });
+      } catch (e) {
+        console.warn('IndexedDB save failed:', e);
+      }
+    }
+
+    async function clearPdfCache() {
+      try {
+        sessionBlobCache.clear();
+        const db = await openPdfCacheDB();
+        if (!db) return;
+        const tx = db.transaction(PDF_CACHE_STORE, 'readwrite');
+        tx.objectStore(PDF_CACHE_STORE).clear();
+      } catch (e) {}
+    }
+    window.clearPdfCache = clearPdfCache;
+
+    let currentViewingNode = null;
+    let currentViewerMode = 0;
+    let activeStreamAbort = null;
+    const sessionBlobCache = new Map();
+
+    async function loadDirectStream(node) {
+      if (!node) return;
+      const id = realId(node);
+      const frame = $('viewerFrame');
+      const loader = $('viewerLoader');
+      const streamBox = $('viewerStreamProgress');
+      const bar = $('viewerProgressBar');
+      const percentEl = $('viewerProgressPercent');
+      const mbEl = $('viewerProgressMb');
+      const statusEl = $('viewerStreamStatus');
+      const serverBadge = $('viewerServerBadge');
+
+      if (activeStreamAbort) {
+        activeStreamAbort.abort();
+        activeStreamAbort = null;
+      }
+
+      loader.classList.add('hidden');
+
+      // 1. Instant RAM cache check
+      if (sessionBlobCache.has(id)) {
+        streamBox.classList.add('hidden');
+        setViewerFrameSrc(sessionBlobCache.get(id));
+        serverBadge.textContent = 'Önbellek';
+        return;
+      }
+
+      // 2. Persistent IndexedDB cache check
+      const cachedBlob = await getCachedPdfBlob(id);
+      if (cachedBlob) {
+        const blobUrl = URL.createObjectURL(cachedBlob);
+        sessionBlobCache.set(id, blobUrl);
+        streamBox.classList.add('hidden');
+        setViewerFrameSrc(blobUrl);
+        serverBadge.textContent = 'Önbellek';
+        return;
+      }
+
+      // 3. Initiate active stream
+      streamBox.classList.remove('hidden');
+      $('viewerStreamTitle').textContent = node.name;
+      if (statusEl) statusEl.textContent = 'Sunucuya bağlanılıyor...';
+      bar.style.width = '3%';
+      percentEl.textContent = '0%';
+      const totalBytes = (node.size && !isNaN(node.size)) ? Number(node.size) : 0;
+      const totalMbStr = totalBytes > 0 ? (totalBytes / (1024 * 1024)).toFixed(1) + ' MB' : '...';
+      mbEl.textContent = `0.0 MB / ${totalMbStr}`;
+      serverBadge.textContent = 'Aktarılıyor...';
+      lucide.createIcons();
+
+      const controller = new AbortController();
+      activeStreamAbort = controller;
+
+      const timeoutId = setTimeout(() => {
+        if (activeStreamAbort === controller) {
+          console.warn('Bağlantı zaman aşımına uğradı, Drive önizlemeye geçiliyor');
+          controller.abort('timeout');
+        }
+      }, 25000);
+
+      try {
+        const streamUrl = `https://www.googleapis.com/drive/v3/files/${id}?alt=media&key=${settings.key}`;
+        const response = await fetch(streamUrl, {
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('text/html')) {
+          throw new Error('Geçersiz yanıt tipi (HTML)');
+        }
+
+        const headerLen = response.headers.get('content-length');
+        const expectedTotal = (headerLen && !isNaN(headerLen) && Number(headerLen) > 0)
+          ? Number(headerLen)
+          : totalBytes;
+
+        if (statusEl) statusEl.textContent = 'Tarayıcıya aktarılıyor...';
+
+        const reader = response.body.getReader();
+        const chunks = [];
+        let loaded = 0;
+        let lastUiUpdate = 0;
+        const startTime = Date.now();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          chunks.push(value);
+          loaded += value.length;
+
+          const now = Date.now();
+          if (now - lastUiUpdate > 30 || (expectedTotal > 0 && loaded >= expectedTotal)) {
+            lastUiUpdate = now;
+            const loadedMb = (loaded / (1024 * 1024)).toFixed(1);
+            if (expectedTotal > 0) {
+              const percent = Math.min(99, Math.round((loaded / expectedTotal) * 100));
+              const tMb = (expectedTotal / (1024 * 1024)).toFixed(1);
+              bar.style.width = Math.max(3, percent) + '%';
+              percentEl.textContent = percent + '%';
+
+              const elapsedSec = (now - startTime) / 1000;
+              const speedMb = elapsedSec > 0.4 ? (loaded / (1024 * 1024) / elapsedSec).toFixed(1) : null;
+              mbEl.textContent = speedMb
+                ? `${loadedMb} / ${tMb} MB • ${speedMb} MB/s`
+                : `${loadedMb} / ${tMb} MB`;
+            } else {
+              bar.style.width = '60%';
+              mbEl.textContent = `${loadedMb} MB aktarıldı`;
+            }
+          }
+        }
+
+        bar.style.width = '100%';
+        percentEl.textContent = '100%';
+        if (statusEl) statusEl.textContent = 'Açılıyor...';
+
+        const mime = node.mimeType || 'application/pdf';
+        const blob = new Blob(chunks, { type: mime });
+        const blobUrl = URL.createObjectURL(blob);
+
+        sessionBlobCache.set(id, blobUrl);
+        saveCachedPdfBlob(id, blob, node.name);
+
+        activeStreamAbort = null;
+        streamBox.classList.add('hidden');
+        setViewerFrameSrc(blobUrl);
+        serverBadge.textContent = 'Doğrudan';
+
+      } catch (err) {
+        clearTimeout(timeoutId);
+        if (controller.signal.aborted && controller.signal.reason !== 'timeout') {
+          return;
+        }
+        console.warn('Doğrudan aktarım sağlanamadı, Drive moduna geçiliyor:', err);
+        activeStreamAbort = null;
+        streamBox.classList.add('hidden');
+        loader.classList.remove('hidden');
+        currentViewerMode = 1;
+        setViewerFrameSrc(`https://drive.google.com/file/d/${id}/preview`);
+        serverBadge.textContent = 'Drive';
+      }
+    }
+
+    window.openViewerModal = function(fileId, courseCode) {
+      if (!driveTree) return;
+      const fileNode = findNodeRecursively(driveTree, fileId);
+      if (!fileNode) return;
+
+      currentViewingNode = fileNode;
+
+      const modal = $('viewerModal');
+      const frame = $('viewerFrame');
+      const loader = $('viewerLoader');
+      const streamBox = $('viewerStreamProgress');
+      const title = $('viewerFileTitle');
+      const breadcrumb = $('viewerFileBreadcrumb');
+      const extBtn = $('viewerExternalBtn');
+      const downloadBtn = $('viewerDownloadBtn');
+      const serverBadge = $('viewerServerBadge');
+
+      const sizeStr = formatFileSize(fileNode.size);
+      title.textContent = fileNode.name;
+      breadcrumb.textContent = `${courseCode}${sizeStr && sizeStr !== '—' ? ' • ' + sizeStr : ''}`;
+      extBtn.href = fileNode.webViewLink || `https://drive.google.com/file/d/${realId(fileNode)}/view`;
+
+      const id = realId(fileNode);
+      downloadBtn.href = `https://drive.google.com/uc?export=download&id=${id}`;
+
+      const kind = getFileKind(fileNode);
+
+      streamBox.classList.add('hidden');
+      loader.classList.remove('hidden');
+      frame.onload = () => loader.classList.add('hidden');
+
+      const yt = extractYouTubeId(fileNode.name) || extractYouTubeId(fileNode.description);
+      if (yt) {
+        extBtn.href = `https://www.youtube.com/watch?v=${yt}`;
+        downloadBtn.classList.add('hidden');
+        $('viewerSwitchServerBtn').classList.add('hidden');
+        const origin = encodeURIComponent(location.origin);
+        setViewerFrameSrc(`https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0&modestbranding=1&origin=${origin}`);
+      } else {
+        downloadBtn.classList.remove('hidden');
+        $('viewerSwitchServerBtn').classList.remove('hidden');
+
+        const isPdf = kind === 'pdf' || (fileNode.mimeType && fileNode.mimeType.includes('pdf')) || fileNode.name.toLowerCase().endsWith('.pdf');
+        const isLarge = fileNode.size && Number(fileNode.size) > 20 * 1024 * 1024;
+
+        if (isPdf && isLarge) {
+          currentViewerMode = 0;
+          loadDirectStream(fileNode);
+        } else {
+          currentViewerMode = 1;
+          serverBadge.textContent = 'Drive';
+          setViewerFrameSrc(getPreviewUrl(fileNode));
+        }
+      }
+
+      if (!modal.open && !(history.state && history.state.viewer)) {
+        history.pushState({ viewer: true }, '', location.href);
+      }
+      modal.showModal();
+      if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+      }
+      lucide.createIcons();
+    };
+
+    $('viewerSwitchServerBtn').onclick = () => {
+      if (!currentViewingNode) return;
+      currentViewerMode = (currentViewerMode + 1) % 3;
+      const frame = $('viewerFrame');
+      const loader = $('viewerLoader');
+      const id = realId(currentViewingNode);
+      const serverBadge = $('viewerServerBadge');
+
+      if (currentViewerMode === 0) {
+        loadDirectStream(currentViewingNode);
+      } else if (currentViewerMode === 1) {
+        if (activeStreamAbort) { activeStreamAbort.abort(); activeStreamAbort = null; }
+        $('viewerStreamProgress').classList.add('hidden');
+        loader.classList.remove('hidden');
+        setViewerFrameSrc(`https://drive.google.com/file/d/${id}/preview`);
+        serverBadge.textContent = 'Drive';
+      } else {
+        if (activeStreamAbort) { activeStreamAbort.abort(); activeStreamAbort = null; }
+        $('viewerStreamProgress').classList.add('hidden');
+        loader.classList.remove('hidden');
+        setViewerFrameSrc(`https://docs.google.com/viewer?srcid=${id}&pid=explorer&efh=false&a=v&chrome=false&embedded=true`);
+        serverBadge.textContent = 'Docs';
+      }
+    };
+
+    $('cancelStreamBtn').onclick = () => {
+      if (activeStreamAbort) {
+        activeStreamAbort.abort();
+        activeStreamAbort = null;
+      }
+      $('viewerStreamProgress').classList.add('hidden');
+      if (currentViewingNode) {
+        const id = realId(currentViewingNode);
+        currentViewerMode = 1;
+        $('viewerLoader').classList.remove('hidden');
+        setViewerFrameSrc(`https://drive.google.com/file/d/${id}/preview`);
+        $('viewerServerBadge').textContent = 'Drive';
+      }
+    };
+
+    // Navigate the preview iframe without adding entries to the browser history,
+    // so the back button closes the preview instead of stepping through the iframe.
+    function setViewerFrameSrc(url) {
+      const frame = $('viewerFrame');
+      try {
+        frame.contentWindow.location.replace(url);
+      } catch (e) {
+        frame.src = url;
+      }
+    }
+
+    let skipNextViewerPop = false;
+
+    function cleanupViewerState() {
+      if (!skipNextViewerPop && history.state && history.state.viewer) {
+        skipNextViewerPop = true;
+        history.back();
+      }
+      if (activeStreamAbort) {
+        activeStreamAbort.abort();
+        activeStreamAbort = null;
+      }
+      hideFullscreenToast();
+      if (isViewerFullscreen()) {
+        exitViewerFullscreen();
+      }
+      $('viewerStreamProgress').classList.add('hidden');
+      setViewerFrameSrc('about:blank');
+    }
+
+    function closeViewerModal() {
+      cleanupViewerState();
+      $('viewerModal').close();
+    }
+
+    $('viewerModal').addEventListener('close', cleanupViewerState);
+    $('viewerCloseBtn').onclick = closeViewerModal;
+    $('viewerBackBtn').onclick = closeViewerModal;
+
+    if (!('closedBy' in HTMLDialogElement.prototype)) {
+      document.querySelectorAll('dialog[closedby="any"]').forEach((dialog) => {
+        dialog.addEventListener('click', (event) => {
+          if (event.target !== dialog) return;
+          const rect = dialog.getBoundingClientRect();
+          const isDialogContent = (
+            rect.top <= event.clientY &&
+            event.clientY <= rect.top + rect.height &&
+            rect.left <= event.clientX &&
+            event.clientX <= rect.left + rect.width
+          );
+          if (isDialogContent) return;
+          dialog.close();
+        });
+      });
+    }
+
+    let fullscreenToastTimer = null;
+    let fullscreenExitHideTimer = null;
+
+    function isViewerFullscreen() {
+      const stage = $('viewerStage');
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      return fsEl === stage || stage.classList.contains('is-fullscreen');
+    }
+
+    function showFullscreenToast() {
+      const toast = $('viewerFullscreenToast');
+      if (!toast) return;
+      if (fullscreenToastTimer) clearTimeout(fullscreenToastTimer);
+      toast.classList.add('show-toast');
+      fullscreenToastTimer = setTimeout(() => {
+        toast.classList.remove('show-toast');
+      }, 3200);
+    }
+
+    function hideFullscreenToast() {
+      const toast = $('viewerFullscreenToast');
+      if (!toast) return;
+      if (fullscreenToastTimer) {
+        clearTimeout(fullscreenToastTimer);
+        fullscreenToastTimer = null;
+      }
+      toast.classList.remove('show-toast');
+    }
+
+    function enterViewerFullscreen() {
+      const stage = $('viewerStage');
+      const req = stage.requestFullscreen || stage.webkitRequestFullscreen;
+      if (req) {
+        req.call(stage).catch(() => {
+          stage.classList.add('is-fullscreen');
+          onViewerFullscreenChange();
+        });
+      } else {
+        stage.classList.add('is-fullscreen');
+        onViewerFullscreenChange();
+      }
+    }
+
+    function exitViewerFullscreen() {
+      const stage = $('viewerStage');
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      if (fsEl) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document).catch(() => {});
+      }
+      if (stage.classList.contains('is-fullscreen')) {
+        stage.classList.remove('is-fullscreen');
+        onViewerFullscreenChange();
+      }
+    }
+
+    function onViewerFullscreenChange() {
+      const topZone = $('viewerFullscreenTopZone');
+      if (isViewerFullscreen()) {
+        showFullscreenToast();
+      } else {
+        hideFullscreenToast();
+        topZone?.classList.remove('show-exit-btn');
+      }
+    }
+
+    document.addEventListener('fullscreenchange', onViewerFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', onViewerFullscreenChange);
+
+    $('viewerFullscreenBtn').onclick = () => {
+      if (!isViewerFullscreen()) {
+        enterViewerFullscreen();
+      } else {
+        exitViewerFullscreen();
+      }
+    };
+
+    $('viewerFullscreenExitBtn').onclick = () => {
+      exitViewerFullscreen();
+    };
+
+    const fsTopZone = $('viewerFullscreenTopZone');
+    if (fsTopZone) {
+      fsTopZone.addEventListener('mouseenter', () => {
+        if (!isViewerFullscreen()) return;
+        if (fullscreenExitHideTimer) clearTimeout(fullscreenExitHideTimer);
+        fsTopZone.classList.add('show-exit-btn');
+      });
+
+      fsTopZone.addEventListener('mouseleave', () => {
+        if (fullscreenExitHideTimer) clearTimeout(fullscreenExitHideTimer);
+        fullscreenExitHideTimer = setTimeout(() => {
+          fsTopZone.classList.remove('show-exit-btn');
+        }, 350);
+      });
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isViewerFullscreen() || !fsTopZone) return;
+      if (e.clientY <= 28) {
+        if (fullscreenExitHideTimer) clearTimeout(fullscreenExitHideTimer);
+        fsTopZone.classList.add('show-exit-btn');
+      } else if (e.clientY > 72 && !fsTopZone.matches(':hover')) {
+        fsTopZone.classList.remove('show-exit-btn');
+      }
+    });
+
+    window.copyInstructorEmail = function(email, btnEl) {
+      if (!email) return;
+      navigator.clipboard.writeText(email).then(() => {
+        const textSpan = btnEl.querySelector('.email-text');
+        const originalText = textSpan.textContent;
+
+        textSpan.textContent = 'Kopyalandı ✓';
+        btnEl.classList.add('text-emerald-600', 'dark:text-emerald-400');
+
+        setTimeout(() => {
+          textSpan.textContent = originalText;
+          btnEl.classList.remove('text-emerald-600', 'dark:text-emerald-400');
+        }, 1500);
+      }).catch(() => {
+        prompt('E-posta:', email);
+      });
+    };
+
+    // ================= EDIT COURSE METADATA =================
+    window.openEditCourseModal = function(courseCode) {
+      currentEditingCourseCode = courseCode;
+      const meta = courseMetadata[courseCode] || { name: courseCode, instructor: '', email: '', credits: '', links: [] };
+
+      $('editModalCourseCode').textContent = `${courseCode} Düzenle`;
+      $('editCourseName').value = meta.name || '';
+      $('editCourseInstructor').value = meta.instructor || '';
+      $('editCourseEmail').value = meta.email || '';
+      $('editCourseCredits').value = meta.credits || '';
+
+      renderEditLinksRows(meta.links || []);
+      $('editCourseModal').showModal();
+      lucide.createIcons();
+    };
+
+    function renderEditLinksRows(links) {
+      const container = $('editLinksContainer');
+      container.innerHTML = links.map((link) => `
+        <div class="flex items-center gap-2 link-row">
+          <input type="text" placeholder="Başlık" value="${esc(link.title)}" class="h-8 w-1/3 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
+          <input type="url" placeholder="https://..." value="${esc(link.url)}" class="h-8 flex-1 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
+          <button type="button" onclick="this.parentElement.remove()" class="size-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive">
+            <i data-lucide="trash-2" class="size-4"></i>
+          </button>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    $('addNewLinkRowBtn').onclick = () => {
+      const container = $('editLinksContainer');
+      const div = document.createElement('div');
+      div.className = 'flex items-center gap-2 link-row';
+      div.innerHTML = `
+        <input type="text" placeholder="Başlık" value="" class="h-8 w-1/3 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
+        <input type="url" placeholder="https://..." value="" class="h-8 flex-1 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
+        <button type="button" onclick="this.parentElement.remove()" class="size-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive">
+          <i data-lucide="trash-2" class="size-4"></i>
+        </button>
+      `;
+      container.appendChild(div);
+      lucide.createIcons();
+    };
+
+    $('closeEditCourseBtn').onclick = () => $('editCourseModal').close();
+    $('cancelEditCourseBtn').onclick = () => $('editCourseModal').close();
+
+    $('editCourseForm').onsubmit = (e) => {
+      e.preventDefault();
+      if (!currentEditingCourseCode) return;
+
+      const code = currentEditingCourseCode;
+      const meta = courseMetadata[code] || {};
+
+      meta.name = $('editCourseName').value.trim() || code;
+      meta.instructor = $('editCourseInstructor').value.trim();
+      meta.email = $('editCourseEmail').value.trim();
+      meta.credits = $('editCourseCredits').value.trim();
+
+      const linkRows = document.querySelectorAll('.link-row');
+      meta.links = [];
+      linkRows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const title = inputs[0].value.trim();
+        const url = inputs[1].value.trim();
+        if (title && url) {
+          meta.links.push({ title, url, icon: 'external-link' });
+        }
+      });
+
+      courseMetadata[code] = meta;
+      localStorage.setItem('anku_course_meta_v11', JSON.stringify(courseMetadata));
+
+      $('editCourseModal').close();
+      renderSidebarCourses();
+      if (activeCourseId) {
+        renderCourseHub(activeCourseId);
+      } else {
+        renderWelcomeHub();
+      }
+    };
+
+    $('copyInfoTxtBtn').onclick = () => {
+      if (!currentEditingCourseCode) return;
+      const code = currentEditingCourseCode;
+
+      let sample = `# ${code}\n`;
+      sample += `Hoca: ${$('editCourseInstructor').value.trim()}\n`;
+      sample += `Email: ${$('editCourseEmail').value.trim()}\n`;
+      sample += `Kredi: ${$('editCourseCredits').value.trim()}\n`;
+
+      const linkRows = document.querySelectorAll('.link-row');
+      linkRows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const title = inputs[0].value.trim();
+        const url = inputs[1].value.trim();
+        if (title && url) {
+          sample += `Link: ${title} | ${url}\n`;
+        }
+      });
+
+      navigator.clipboard.writeText(sample);
+    };
+
+
+    // ================= THEME TOGGLE =================
+    function applyResolvedTheme(storedVal) {
+      const meta = document.querySelector('meta[name="color-scheme"]');
+      if (meta) meta.content = storedVal ?? 'light dark';
+      const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = storedVal ? storedVal === 'dark' : sysDark;
+      document.documentElement.classList.toggle('dark', isDark);
+    }
+
+    function switchTheme() {
+      const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const sysScheme = sysDark ? 'dark' : 'light';
+      const currentlyDark = document.documentElement.classList.contains('dark');
+      const targetScheme = currentlyDark ? 'light' : 'dark';
+
+      try {
+        if (targetScheme === sysScheme) {
+          localStorage.removeItem('color-scheme');
+          applyResolvedTheme(null);
+        } else {
+          localStorage.setItem('color-scheme', targetScheme);
+          applyResolvedTheme(targetScheme);
+        }
+      } catch (e) {
+        applyResolvedTheme(targetScheme);
+      }
+    }
+
+    // ---------- Seamless Circular Theme Transition ----------
+    let isThemeSwitching = false;
+
+    $('themeToggleBtn').onclick = async (event) => {
+      if (isThemeSwitching) return;
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!document.startViewTransition || reduceMotion) {
+        switchTheme();
+        return;
+      }
+
+      isThemeSwitching = true;
+      const rect = $('themeToggleBtn').getBoundingClientRect();
+      const x = event && typeof event.clientX === 'number' && event.clientX > 0 ? event.clientX : rect.left + rect.width / 2;
+      const y = event && typeof event.clientY === 'number' && event.clientY > 0 ? event.clientY : rect.top + rect.height / 2;
+      const radius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+
+      try {
+        const transition = document.startViewTransition(() => {
+          document.documentElement.classList.add('theme-transitioning');
+          switchTheme();
+          void document.documentElement.offsetHeight;
+        });
+
+        await transition.ready;
+        document.documentElement.classList.remove('theme-transitioning');
+
+        const anim = document.documentElement.animate(
+          {
+            clipPath: [
+              `circle(0px at ${x}px ${y}px)`,
+              `circle(${radius}px at ${x}px ${y}px)`
+            ]
+          },
+          {
+            duration: 480,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            pseudoElement: '::view-transition-new(root)'
+          }
+        );
+
+        await anim.finished;
+      } catch (e) {
+        // Graceful handling of transition cancellation
+      } finally {
+        document.documentElement.classList.remove('theme-transitioning');
+        isThemeSwitching = false;
+      }
+    };
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'color-scheme') {
+        applyResolvedTheme(e.newValue);
+      }
+    });
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      try {
+        const stored = localStorage.getItem('color-scheme');
+        if (!stored) applyResolvedTheme(null);
+      } catch (e) {}
+    });
+
+    // ================= SIDEBAR & SHORTCUTS =================
+    $('sidebarSearch').oninput = () => {
+      renderSidebarCourses();
+    };
+
+    $('refreshBtn').onclick = () => {
+      localStorage.removeItem('anku_tree_cache_v3');
+      loadDriveData();
+    };
+
+    function toggleMobileSidebar(show) {
+      $('sidebar').classList.toggle('-translate-x-full', !show);
+      $('sidebarBackdrop').classList.toggle('hidden', !show);
+      // Lock page scroll behind the open drawer so the browser toolbars don't
+      // collapse/expand and leave an empty strip under the sidebar.
+      document.documentElement.classList.toggle('mobile-sidebar-open', !!show);
+    }
+
+    // If the window is widened to desktop while the drawer is open, release the scroll lock.
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 768) document.documentElement.classList.remove('mobile-sidebar-open');
+    });
+
+    function toggleSidebarAction() {
+      if (window.innerWidth < 768) {
+        const isHidden = $('sidebar').classList.contains('-translate-x-full');
+        toggleMobileSidebar(isHidden);
+      } else {
+        const wrapper = $('sidebarWrapper');
+        const nextState = wrapper.getAttribute('data-state') === 'collapsed' ? 'expanded' : 'collapsed';
+        wrapper.setAttribute('data-state', nextState);
+      }
+    }
+
+    $('sidebarTriggerBtn').onclick = toggleSidebarAction;
+    $('mobileCloseSidebarBtn').onclick = () => toggleMobileSidebar(false);
+    $('sidebarBackdrop').onclick = () => toggleMobileSidebar(false);
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        toggleSidebarAction();
+      } else if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        $('sidebarSearch')?.focus();
+      }
+    });
+
+    lucide.createIcons();
+    loadDriveData();
+
+    // ================= PWA SERVICE WORKER & INSTALL PROMPT =================
+    let deferredPwaPrompt = null;
+    const pwaInstallBtn = $('pwaInstallBtn');
+    const isStandaloneApp =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+    const isIosDevice =
+      /iphone|ipad|ipod/i.test(window.navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          reg.update().catch(() => {});
+        }).catch(() => {});
+      });
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+    }
+
+    if (!isStandaloneApp && pwaInstallBtn) {
+      // On iOS/iPadOS, beforeinstallprompt is not supported, so show button for manual guide
+      if (isIosDevice) {
+        pwaInstallBtn.classList.remove('hidden');
+        pwaInstallBtn.classList.add('inline-flex');
+      }
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPwaPrompt = e;
+        pwaInstallBtn.classList.remove('hidden');
+        pwaInstallBtn.classList.add('inline-flex');
+      });
+
+      window.addEventListener('appinstalled', () => {
+        deferredPwaPrompt = null;
+        pwaInstallBtn.classList.add('hidden');
+        pwaInstallBtn.classList.remove('inline-flex');
+      });
+
+      pwaInstallBtn.onclick = async () => {
+        if (deferredPwaPrompt) {
+          deferredPwaPrompt.prompt();
+          const { outcome } = await deferredPwaPrompt.userChoice;
+          if (outcome === 'accepted') {
+            deferredPwaPrompt = null;
+            pwaInstallBtn.classList.add('hidden');
+            pwaInstallBtn.classList.remove('inline-flex');
+          }
+        } else {
+          $('pwaInstallModal')?.showModal();
+        }
+      };
+    }
+  </script>
+</body>
+</html>
