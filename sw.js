@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anku-eee-shell-v2';
+const CACHE_NAME = 'anku-eee-shell-v3';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -9,7 +9,13 @@ const PRECACHE_URLS = [
   './assets/ankara-uni-logo.png',
   './assets/android-chrome-192x192.png',
   './assets/android-chrome-512x512.png',
-  './assets/apple-touch-icon.png'
+  './assets/apple-touch-icon.png',
+  './assets/link-icons/ptable.png',
+  './assets/link-icons/eee-ankara.png',
+  './assets/link-icons/wolframalpha.png',
+  './assets/link-icons/youtube.png',
+  './assets/link-icons/phet.png',
+  './assets/link-icons/tdk.png'
 ];
 
 self.addEventListener('install', (event) => {

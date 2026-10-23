@@ -1240,6 +1240,31 @@
       };
     }
 
+    const KNOWN_LINK_FAVICONS = {
+      'wolframalpha.com': 'assets/link-icons/wolframalpha.png',
+      'youtube.com': 'assets/link-icons/youtube.png',
+      'youtu.be': 'assets/link-icons/youtube.png',
+      'ptable.com': 'assets/link-icons/ptable.png',
+      'eee.ankara.edu.tr': 'assets/link-icons/eee-ankara.png',
+      'phet.colorado.edu': 'assets/link-icons/phet.png',
+      'sozluk.gov.tr': 'assets/link-icons/tdk.png'
+    };
+
+    function getLinkFavicon(link) {
+      if (link && link.icon && (link.icon.startsWith('assets/') || link.icon.startsWith('/') || link.icon.startsWith('data:') || link.icon.startsWith('http'))) {
+        return link.icon;
+      }
+      try {
+        const host = new URL(link.url).hostname.toLowerCase().replace(/^www\./, '');
+        for (const [domain, iconPath] of Object.entries(KNOWN_LINK_FAVICONS)) {
+          if (host === domain || host.endsWith('.' + domain)) {
+            return iconPath;
+          }
+        }
+      } catch (e) {}
+      return `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(link.url)}&sz=32`;
+    }
+
     const DEFAULT_COURSE_METADATA = {
       'CHM109': {
         name: 'General Chemistry (Genel Kimya)',
@@ -1252,7 +1277,7 @@
         bannerPos: 'center center',
         bannerRatio: 246 / 138,
         links: [
-          { title: 'Ptable', url: 'https://ptable.com', icon: 'external-link' }
+          { title: 'Ptable', url: 'https://ptable.com', icon: 'assets/link-icons/ptable.png' }
         ]
       },
       'EEE1001': {
@@ -1266,7 +1291,7 @@
         bannerPos: 'center 50%',
         bannerRatio: 832 / 1104,
         links: [
-          { title: 'Bölüm', url: 'https://eee.ankara.edu.tr', icon: 'globe' }
+          { title: 'Bölüm', url: 'https://eee.ankara.edu.tr', icon: 'assets/link-icons/eee-ankara.png' }
         ]
       },
       'MTH0101': {
@@ -1280,8 +1305,8 @@
         bannerPos: 'center 44%',
         bannerRatio: 1,
         links: [
-          { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'calculator' },
-          { title: '3Blue1Brown Calculus', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr', icon: 'play' }
+          { title: 'WolframAlpha', url: 'https://www.wolframalpha.com', icon: 'assets/link-icons/wolframalpha.png' },
+          { title: '3Blue1Brown Calculus', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr', icon: 'assets/link-icons/youtube.png' }
         ]
       },
       'MTH103': {
@@ -1295,7 +1320,7 @@
         bannerPos: 'center 35%',
         bannerRatio: 800 / 450,
         links: [
-          { title: '3Blue1Brown Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab', icon: 'play' }
+          { title: '3Blue1Brown Linear Algebra', url: 'https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab', icon: 'assets/link-icons/youtube.png' }
         ]
       },
       'PHY0107': {
@@ -1309,7 +1334,7 @@
         bannerPos: 'center 25%',
         bannerRatio: 1150 / 646,
         links: [
-          { title: 'PhET', url: 'https://phet.colorado.edu/tr/', icon: 'external-link' }
+          { title: 'PhET', url: 'https://phet.colorado.edu/tr/', icon: 'assets/link-icons/phet.png' }
         ]
       },
       'TUR171': {
@@ -1323,7 +1348,7 @@
         bannerPos: 'center 22%',
         bannerRatio: 706 / 371,
         links: [
-          { title: 'TDK Sözlük', url: 'https://sozluk.gov.tr', icon: 'book-open' }
+          { title: 'TDK Sözlük', url: 'https://sozluk.gov.tr', icon: 'assets/link-icons/tdk.png' }
         ]
       }
     };
@@ -2190,7 +2215,7 @@
       const courseLinkCardsHtml = (meta.links || []).map(link => {
         let iconName = link.icon || 'external-link';
         if (link.url.includes('youtube.com') || link.url.includes('youtu.be') || iconName === 'youtube') iconName = 'play';
-        const faviconUrl = `https://www.google.com/s2/favicons?domain_url=${encodeURIComponent(link.url)}&sz=32`;
+        const faviconUrl = getLinkFavicon(link);
 
         return `
           <a
@@ -2206,7 +2231,7 @@
               width="16"
               height="16"
               class="size-4 shrink-0 rounded-sm object-contain"
-              loading="lazy"
+              loading="eager"
               onerror="this.style.display='none'; const fb = this.nextElementSibling; if (fb) fb.classList.remove('hidden');"
             />
             <i data-lucide="${iconName}" class="size-4 shrink-0 text-muted-foreground group-hover:text-foreground transition hidden"></i>
