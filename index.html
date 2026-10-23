@@ -1287,7 +1287,7 @@
         bannerPos: 'center center',
         bannerRatio: 246 / 138,
         links: [
-          { title: 'Ptable', url: 'https://ptable.com', icon: 'assets/link-icons/ptable.png' }
+          { title: 'Periodic Table', url: 'https://ptable.com', icon: 'assets/link-icons/ptable.png' }
         ]
       },
       'EEE1001': {
@@ -1380,7 +1380,7 @@
       key: CONFIG.API_KEY
     };
 
-    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v9') || 'null') || DEFAULT_COURSE_METADATA;
+    let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v10') || 'null') || DEFAULT_COURSE_METADATA;
     delete courseMetadata['OUL101'];
     Object.keys(DEFAULT_COURSE_METADATA).forEach(code => {
       if (!courseMetadata[code]) {
@@ -1409,7 +1409,7 @@
         }
       }
     });
-    localStorage.setItem('anku_course_meta_v9', JSON.stringify(courseMetadata));
+    localStorage.setItem('anku_course_meta_v10', JSON.stringify(courseMetadata));
 
     let driveTree = null;
     let activeCourseId = null;
@@ -1580,7 +1580,7 @@
         });
 
         courseMetadata[courseCode] = meta;
-        localStorage.setItem('anku_course_meta_v9', JSON.stringify(courseMetadata));
+        localStorage.setItem('anku_course_meta_v10', JSON.stringify(courseMetadata));
       } catch (e) {}
     }
 
@@ -3229,7 +3229,7 @@
       });
 
       courseMetadata[code] = meta;
-      localStorage.setItem('anku_course_meta_v9', JSON.stringify(courseMetadata));
+      localStorage.setItem('anku_course_meta_v10', JSON.stringify(courseMetadata));
 
       $('editCourseModal').close();
       renderSidebarCourses();
