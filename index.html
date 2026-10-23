@@ -458,11 +458,6 @@
       color: #fafafa;
     }
 
-    /* Course accent colours are tuned for dark backgrounds; deepen the icon a bit on white. */
-    html:not(.dark) .course-hero-icon {
-      filter: brightness(0.8) saturate(1.3);
-    }
-
     /* Mobile drawer: sidebar height comes from top/bottom insets (follows the dynamic
        viewport on iOS/Android), and page scroll is locked while it is open. */
     html.mobile-sidebar-open,
@@ -493,8 +488,31 @@
 
     @media (max-width: 639px) {
       .course-hero-banner-media {
-        max-width: 78%;
-        opacity: 0.45;
+        max-width: 75%;
+        opacity: 0.4;
+      }
+      .course-hero-banner-vignette {
+        background:
+          linear-gradient(
+            to right,
+            rgb(var(--banner-bg-rgb)) 0%,
+            rgba(var(--banner-bg-rgb), 0.85) 20%,
+            rgba(var(--banner-bg-rgb), 0.45) 55%,
+            rgba(var(--banner-bg-rgb), 0.15) 100%
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(var(--banner-bg-rgb), 0.2) 0%,
+            rgba(var(--banner-bg-rgb), 0) 20%,
+            rgba(var(--banner-bg-rgb), 0.35) 75%,
+            rgb(var(--banner-bg-rgb)) 100%
+          ),
+          radial-gradient(
+            circle at 75% 40%,
+            var(--course-tint, rgba(15, 23, 42, 0.18)) 0%,
+            rgba(var(--banner-bg-rgb), 0.15) 100%
+          ),
+          linear-gradient(rgba(var(--banner-bg-rgb), 0.3), rgba(var(--banner-bg-rgb), 0.3)) !important;
       }
     }
 
@@ -682,6 +700,11 @@
     /* ================= THEME "RIPPLE" VIEW TRANSITION ================= */
     /* Seamless circular reveal: as the circle boundary expands, the site content
        inside the circle is already rendered in the new theme. */
+    html.theme-transitioning *,
+    html.theme-transitioning *::before,
+    html.theme-transitioning *::after {
+      transition: none !important;
+    }
     ::view-transition-old(root),
     ::view-transition-new(root) {
       animation: none;
@@ -2217,7 +2240,7 @@
           <div class="relative z-10 flex flex-col gap-4 max-w-full sm:max-w-[68%] xl:max-w-[72%]">
             <div class="flex items-start gap-3.5">
               <div
-                class="course-hero-icon size-11 rounded-xl flex items-center justify-center shrink-0 backdrop-blur-sm shadow-sm"
+                class="course-hero-icon size-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
                 style="background-color: ${theme.badgeBg}; color: ${theme.accent}; border: 1px solid ${theme.badgeBorder};"
               >
                 <i data-lucide="${meta.icon || 'book-open'}" class="size-5"></i>
@@ -2235,7 +2258,7 @@
 
                 <div class="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
                   ${meta.instructor ? `
-                    <div class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-zinc-900/[0.03] dark:bg-white/5 px-2.5 py-1 font-medium text-zinc-800 dark:text-zinc-100 backdrop-blur-sm">
+                    <div class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 px-2.5 py-1 font-medium text-zinc-800 dark:text-zinc-100">
                       <i data-lucide="user" class="size-3.5 text-zinc-600 dark:text-zinc-300"></i>
                       <span>${esc(meta.instructor)}</span>
                       ${meta.avesisUrl ? `
@@ -2250,7 +2273,7 @@
                     <button
                       onclick="copyInstructorEmail('${esc(meta.email)}', this)"
                       title="Kopyala"
-                      class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/60 dark:bg-black/40 hover:bg-zinc-900/10 dark:hover:bg-white/10 px-2.5 py-1 font-mono text-xs text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white backdrop-blur-sm transition"
+                      class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 px-2.5 py-1 font-mono text-xs text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
                     >
                       <i data-lucide="mail" class="size-3.5"></i>
                       <span class="email-text">${esc(meta.email)}</span>
@@ -2268,7 +2291,7 @@
                   value="${esc(courseLocalSearch)}"
                   oninput="filterCourseMaterials(this.value)"
                   placeholder="Ara..."
-                  class="h-8 w-full rounded-md bg-zinc-900/[0.03] dark:bg-white/5 border border-zinc-900/10 dark:border-white/15 pl-8 pr-3 text-xs text-zinc-950 dark:text-white placeholder:text-zinc-400 outline-none focus:ring-2 backdrop-blur-sm transition"
+                  class="h-8 w-full rounded-md bg-white/85 dark:bg-white/10 border border-zinc-900/15 dark:border-white/15 pl-8 pr-3 text-xs text-zinc-950 dark:text-white placeholder:text-zinc-400 outline-none focus:ring-2 transition"
                   style="--tw-ring-color: ${theme.border};"
                 >
               </div>
@@ -2276,7 +2299,7 @@
                 href="${driveFolderUrl}"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md bg-zinc-900/5 dark:bg-white/10 hover:bg-zinc-900/10 dark:hover:bg-white/15 text-zinc-800 dark:text-zinc-100 border border-zinc-900/10 dark:border-white/10 backdrop-blur-sm transition"
+                class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-800 dark:text-zinc-100 border border-zinc-900/10 dark:border-white/15 transition"
               >
                 <i data-lucide="folder-symlink" class="size-3.5"></i>
                 <span>Drive</span>
@@ -2284,7 +2307,7 @@
               <button
                 onclick="openEditCourseModal('${esc(code)}')"
                 title="Düzenle"
-                class="inline-flex size-8 items-center justify-center rounded-md border border-zinc-900/10 dark:border-white/15 bg-zinc-900/[0.03] dark:bg-white/5 hover:bg-zinc-900/10 dark:hover:bg-white/10 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white backdrop-blur-sm transition"
+                class="inline-flex size-8 items-center justify-center rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
               >
                 <i data-lucide="edit-3" class="size-3.5"></i>
               </button>
@@ -3230,10 +3253,13 @@
 
       try {
         const transition = document.startViewTransition(() => {
+          document.documentElement.classList.add('theme-transitioning');
           switchTheme();
+          void document.documentElement.offsetHeight;
         });
 
         await transition.ready;
+        document.documentElement.classList.remove('theme-transitioning');
 
         const anim = document.documentElement.animate(
           {
@@ -3253,6 +3279,7 @@
       } catch (e) {
         // Graceful handling of transition cancellation
       } finally {
+        document.documentElement.classList.remove('theme-transitioning');
         isThemeSwitching = false;
       }
     };
