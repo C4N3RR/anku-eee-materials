@@ -2537,9 +2537,10 @@
     }
 
     function handleCalendarDayLeave() {
-      calendarPopoverHideTimer = setTimeout(() => {
+      clearTimeout(calendarPopoverHideTimer);
+      if (!calendarActiveDateStr) {
         hideCalendarDayPopover();
-      }, 250);
+      }
     }
 
     function handleCalendarDayClick(event, dateStr) {
