@@ -819,7 +819,7 @@
       id="sidebar"
       class="fixed inset-y-0 left-0 z-40 flex w-[15.5rem] flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border -translate-x-full md:translate-x-0 transition-[transform,width] duration-200 ease-linear"
     >
-      <div data-slot="sidebar-header" class="flex flex-col gap-1.5 p-2 border-b border-sidebar-border/60">
+      <div data-slot="sidebar-header" class="flex flex-col gap-1.5 p-2 border-b border-sidebar-border">
         <div class="flex items-center justify-between gap-1">
           <button
             onclick="goHome()"
@@ -4068,7 +4068,7 @@
             </div>
 
             <!-- Contact Info (Email & Phone) -->
-            <div class="space-y-1.5 pt-1 border-t border-border/70 text-xs">
+            <div class="space-y-1.5 pt-2 border-t border-border text-xs">
               ${staff.email ? `
                 <div class="flex items-center justify-between gap-2">
                   <button
@@ -4106,7 +4106,7 @@
           </div>
 
           <!-- Courses Taught / Assisted (Clickable Course Code Badges -> Course Page) -->
-          <div class="pt-2.5 border-t border-border/70 space-y-1.5">
+          <div class="pt-2.5 border-t border-border space-y-1.5">
             <div class="text-[11px] font-medium text-muted-foreground flex items-center justify-between">
               <span>${staff.category === 'assistant' ? 'Desteklediği Lab / Dersler' : 'Verdiği Dersler'}</span>
               ${staff.courses && staff.courses.length > 0 ? `<span class="font-mono text-[10px]">${staff.courses.length} ders</span>` : ''}
