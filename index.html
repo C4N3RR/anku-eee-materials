@@ -769,6 +769,24 @@
     .event-agenda-item:hover {
       transform: translateY(-1px);
     }
+    .agenda-scroll-container {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(150, 150, 150, 0.4) transparent;
+      -webkit-overflow-scrolling: touch;
+    }
+    .agenda-scroll-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .agenda-scroll-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .agenda-scroll-container::-webkit-scrollbar-thumb {
+      background-color: rgba(150, 150, 150, 0.35);
+      border-radius: 9999px;
+    }
+    .agenda-scroll-container::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(150, 150, 150, 0.65);
+    }
   </style>
 </head>
 <body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground select-none">
@@ -2190,9 +2208,11 @@
             <div class="hidden lg:block w-[3px] bg-black/15 dark:bg-white/10 rounded-full self-stretch my-1 shrink-0"></div>
             <div class="lg:hidden h-[3px] w-full bg-black/15 dark:bg-white/10 rounded-full my-2 shrink-0"></div>
 
-            <!-- RIGHT: CLEAN MINIMAL EVENT ROWS (full height utilization!) -->
-            <div class="lg:w-72 xl:w-80 shrink-0 flex flex-col justify-between self-stretch">
-              ${renderMinimalAgendaList(visibleEvents)}
+            <!-- RIGHT: CLEAN MINIMAL EVENT ROWS (fixed box height matching 6-week calendar + scroll slider) -->
+            <div class="lg:w-72 xl:w-80 shrink-0 flex flex-col relative self-stretch">
+              <div class="lg:absolute lg:inset-0 flex flex-col overflow-y-auto max-h-[170px] sm:max-h-[200px] lg:max-h-none agenda-scroll-container pr-1">
+                ${renderMinimalAgendaList(visibleEvents)}
+              </div>
             </div>
 
           </div>
@@ -2343,9 +2363,9 @@
         }
       }
 
-      // Pad next month days to complete row (Soluk / Faded)
+      // Pad next month days to complete 6 weeks (exactly 42 cells = 6 rows)
       const totalRendered = firstDayIndex + daysInMonth;
-      const remaining = (7 - (totalRendered % 7)) % 7;
+      const remaining = 42 - totalRendered;
       for (let d = 1; d <= remaining; d++) {
         daysHtml += `<div class="aspect-square flex items-center justify-center text-xs sm:text-sm font-medium calendar-other-month">${d}</div>`;
       }
@@ -2371,7 +2391,7 @@
       }
 
       return `
-        <div class="space-y-1.5 flex-1 flex flex-col justify-start overflow-y-auto pr-1">
+        <div class="space-y-1 flex flex-col justify-start">
           ${visibleEvents.map(ev => {
             const solid = getCourseSolidColor(ev.courseCode);
             const [y, m, d] = ev.date.split('-').map(Number);
@@ -2382,24 +2402,24 @@
                 id="agenda-item-${esc(ev.id)}"
                 data-date="${esc(ev.date)}"
                 onclick="handleAgendaItemClick('${esc(ev.date)}')"
-                class="flex items-center gap-2.5 py-1.5 px-2 rounded-md hover:bg-muted/50 transition cursor-pointer text-xs sm:text-sm ${isHighlighted ? 'bg-muted/70 ring-1 ring-border' : ''}"
+                class="event-agenda-item flex items-center gap-2 py-1 px-1.5 rounded-md hover:bg-muted/50 transition cursor-pointer text-xs ${isHighlighted ? 'bg-muted/70 ring-1 ring-primary/40' : ''}"
               >
                 <!-- Date solid badge matching calendar circle -->
                 <span
-                  class="inline-flex items-center justify-center px-2 py-0.5 rounded-full font-bold text-[11px] shrink-0"
+                  class="inline-flex items-center justify-center px-1.5 py-0.5 rounded font-bold text-[10px] sm:text-[11px] leading-none shrink-0"
                   style="background-color: ${solid.bg}; color: ${solid.text};"
                 >
                   ${d} ${MONTH_NAMES_TR_SHORT[m - 1]}
                 </span>
 
                 <!-- Event Title -->
-                <span class="font-medium text-foreground truncate flex-1">
+                <span class="font-medium text-foreground truncate flex-1 leading-tight">
                   ${esc(ev.title)}
                 </span>
 
                 <!-- Time (if present) -->
                 ${ev.time ? `
-                  <span class="text-xs text-muted-foreground font-mono shrink-0">
+                  <span class="text-[11px] text-muted-foreground font-mono shrink-0 leading-none">
                     ${esc(ev.time)}
                   </span>
                 ` : ''}
