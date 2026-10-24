@@ -2654,23 +2654,23 @@
             </div>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <div class="grid grid-cols-2 lg:flex items-center gap-2.5 w-full lg:w-auto shrink-0">
             <button
               type="button"
               onclick="document.getElementById('allMaterialsSection')?.scrollIntoView({ behavior: 'smooth' }); setTimeout(() => document.getElementById('datatableSearchInput')?.focus(), 250);"
-              class="portal-hero-btn-primary"
+              class="portal-hero-btn-primary justify-center text-center"
             >
-              <i data-lucide="search" class="size-4"></i>
-              <span>Materyal Ara</span>
+              <i data-lucide="search" class="size-4 shrink-0"></i>
+              <span class="truncate">Materyal Ara</span>
             </button>
             <a
               href="${driveUrl}"
               target="_blank"
               rel="noopener noreferrer"
-              class="portal-hero-btn-secondary portal-hero-drive-btn lg:!hidden"
+              class="portal-hero-btn-secondary portal-hero-drive-btn justify-center text-center lg:!hidden"
             >
-              <i data-lucide="folder-symlink" class="size-4"></i>
-              <span>Drive Arşivi</span>
+              <i data-lucide="folder-symlink" class="size-4 shrink-0"></i>
+              <span class="truncate">Drive Arşivi</span>
             </a>
           </div>
         </div>
