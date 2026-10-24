@@ -787,6 +787,23 @@
     .agenda-scroll-container::-webkit-scrollbar-thumb:hover {
       background-color: rgba(150, 150, 150, 0.65);
     }
+    .calendar-past-event {
+      background-color: rgba(140, 140, 150, 0.22) !important;
+      color: #71717a !important;
+      opacity: 0.6;
+    }
+    .dark .calendar-past-event {
+      background-color: rgba(255, 255, 255, 0.08) !important;
+      color: #a1a1aa !important;
+      opacity: 0.5;
+    }
+    .calendar-past-event:hover {
+      opacity: 1 !important;
+      background-color: rgba(140, 140, 150, 0.35) !important;
+    }
+    .dark .calendar-past-event:hover {
+      background-color: rgba(255, 255, 255, 0.16) !important;
+    }
   </style>
 </head>
 <body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground select-none">
@@ -2102,13 +2119,21 @@
       return COURSE_SOLID_COLORS[code] || { bg: '#ff453a', text: '#ffffff' };
     }
 
+    function getTodayDateStr() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
     let calendarViewDate = new Date();
     calendarViewDate.setDate(1); // 1st of month
     let calendarActiveDateStr = null;
     let calendarPopoverHideTimer = null;
 
     function getAcademicEvents() {
-      const raw = localStorage.getItem('anku_academic_events_v3');
+      const raw = localStorage.getItem('anku_academic_events_v4');
       if (raw) {
         try {
           const parsed = JSON.parse(raw);
@@ -2143,7 +2168,7 @@
         );
       });
 
-      localStorage.setItem('anku_academic_events_v3', JSON.stringify(defaultEvents));
+      localStorage.setItem('anku_academic_events_v4', JSON.stringify(defaultEvents));
       return defaultEvents;
     }
 
@@ -2181,8 +2206,12 @@
       const m1Str = `${m1Year}-${String(m1Month + 1).padStart(2, '0')}`;
       const m2Str = `${m2Year}-${String(m2Month + 1).padStart(2, '0')}`;
 
+      const todayDateStr = getTodayDateStr();
       const visibleEvents = allEvents.filter(e => {
-        return e.date && (e.date.startsWith(m1Str) || e.date.startsWith(m2Str));
+        if (!e.date) return false;
+        const inVisibleMonths = e.date.startsWith(m1Str) || e.date.startsWith(m2Str);
+        const isUpcomingOrToday = e.date >= todayDateStr;
+        return inVisibleMonths && isUpcomingOrToday;
       }).sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''));
 
       return `
@@ -2221,10 +2250,8 @@
     }
 
     function renderMonthCalendarApple(year, month, isMonthTwo, allEvents) {
-      const today = new Date();
-      const todayY = today.getFullYear();
-      const todayM = today.getMonth();
-      const todayD = today.getDate();
+      const todayDateStr = getTodayDateStr();
+      const [todayY, todayM, todayD] = todayDateStr.split('-').map(Number);
 
       const firstDayIndex = (new Date(year, month, 1).getDay() + 6) % 7; // 0 = Pzt, 6 = Paz
       const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -2321,38 +2348,72 @@
       for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
         const dayEvs = monthEvents.filter(e => e.date === dateStr);
-        const isToday = (year === todayY && month === todayM && d === todayD);
+        const isToday = (dateStr === todayDateStr);
+        const isPast = (dateStr < todayDateStr);
 
-        if (dayEvs.length > 0) {
+        if (isToday) {
+          // USER REQUEST: "bugünü gösteren günü ayların yazıldığı renkte önemli günlerdeki gibi işaretle"
+          const isSelected = (calendarActiveDateStr === dateStr);
+          if (dayEvs.length > 0) {
+            daysHtml += `
+              <div class="aspect-square flex items-center justify-center">
+                <button
+                  type="button"
+                  class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm transition-transform hover:scale-110 active:scale-95 cursor-pointer ${isSelected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}"
+                  style="background-color: #ff453a; color: #ffffff;"
+                  data-date="${dateStr}"
+                  onmouseenter="handleCalendarDayHover(event, '${dateStr}')"
+                  onmouseleave="handleCalendarDayLeave()"
+                  onclick="handleCalendarDayClick(event, '${dateStr}')"
+                  aria-label="${d} ${MONTH_NAMES_TR[month]} (Bugün), ${dayEvs.map(e => e.title).join(', ')}"
+                  title="Bugün: ${dayEvs.map(e => e.title).join(', ')}"
+                >
+                  ${d}
+                </button>
+              </div>
+            `;
+          } else {
+            daysHtml += `
+              <div class="aspect-square flex items-center justify-center">
+                <span
+                  class="size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm select-none"
+                  style="background-color: #ff453a; color: #ffffff;"
+                  title="Bugün (${d} ${MONTH_NAMES_TR[month]})"
+                >
+                  ${d}
+                </span>
+              </div>
+            `;
+          }
+        } else if (dayEvs.length > 0) {
+          // Event day (not today)
           const firstEv = dayEvs[0];
           const solid = getCourseSolidColor(firstEv.courseCode);
           const isSelected = (calendarActiveDateStr === dateStr);
+
+          // USER REQUEST: "bugünden önceki geçmiş önemli günlerin hepsinin rengi gri bir şekilde soluk gözüksün."
+          const badgeClass = isPast ? 'calendar-past-event' : '';
+          const badgeStyle = isPast ? '' : `background-color: ${solid.bg}; color: ${solid.text};`;
 
           daysHtml += `
             <div class="aspect-square flex items-center justify-center">
               <button
                 type="button"
-                class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-transform hover:scale-110 active:scale-95 cursor-pointer ${isSelected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}"
-                style="background-color: ${solid.bg}; color: ${solid.text};"
+                class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-transform hover:scale-110 active:scale-95 cursor-pointer ${badgeClass} ${isSelected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}"
+                style="${badgeStyle}"
                 data-date="${dateStr}"
                 onmouseenter="handleCalendarDayHover(event, '${dateStr}')"
                 onmouseleave="handleCalendarDayLeave()"
                 onclick="handleCalendarDayClick(event, '${dateStr}')"
-                aria-label="${d} ${MONTH_NAMES_TR[month]}, ${dayEvs.map(e => e.title).join(', ')}"
+                aria-label="${d} ${MONTH_NAMES_TR[month]}${isPast ? ' (Geçmiş)' : ''}, ${dayEvs.map(e => e.title).join(', ')}"
+                title="${d} ${MONTH_NAMES_TR[month]}${isPast ? ' (Geçmiş)' : ''}: ${dayEvs.map(e => e.title).join(', ')}"
               >
                 ${d}
               </button>
             </div>
           `;
-        } else if (isToday) {
-          daysHtml += `
-            <div class="aspect-square flex items-center justify-center">
-              <span class="size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm border border-primary text-primary">
-                ${d}
-              </span>
-            </div>
-          `;
         } else {
+          // Regular day
           daysHtml += `
             <div class="aspect-square flex items-center justify-center">
               <span class="size-7 sm:size-7.5 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold text-foreground/90">
@@ -2480,6 +2541,10 @@
       const events = getAcademicEvents().filter(e => e.date === dateStr);
       if (events.length === 0) return;
 
+      const todayDateStr = getTodayDateStr();
+      const isPast = (dateStr < todayDateStr);
+      const isToday = (dateStr === todayDateStr);
+
       const [y, m, d] = dateStr.split('-').map(Number);
       const dateObj = new Date(y, m - 1, d);
       const dayOfWeekIndex = (dateObj.getDay() + 6) % 7;
@@ -2489,14 +2554,14 @@
       popover.innerHTML = `
         <div class="p-2.5 space-y-1.5 text-xs">
           <div class="flex items-center justify-between border-b border-border/60 pb-1.5 text-[11px] font-semibold text-muted-foreground">
-            <span>${d} ${monthName}, ${dayOfWeek}</span>
+            <span>${d} ${monthName}, ${dayOfWeek} ${isToday ? '<span class="text-[10px] text-[#ff453a] font-bold ml-1">(Bugün)</span>' : (isPast ? '<span class="text-[10px] text-muted-foreground/75 font-normal ml-1">(Geçmiş)</span>' : '')}</span>
             <button type="button" onclick="hideCalendarDayPopover()" class="size-4 flex items-center justify-center text-muted-foreground hover:text-foreground">
               <i data-lucide="x" class="size-3"></i>
             </button>
           </div>
           <div class="space-y-1">
             ${events.map(ev => {
-              const solid = getCourseSolidColor(ev.courseCode);
+              const solid = isPast ? { bg: '#71717a' } : getCourseSolidColor(ev.courseCode);
               return `
                 <div class="flex items-center justify-between gap-2 py-0.5">
                   <span class="font-medium text-foreground truncate flex items-center gap-1.5">
@@ -2545,6 +2610,28 @@
         }
       }
     });
+
+    // Automatic live date & time reading and auto-refresh across midnight / tab focus
+    let calendarLastKnownDateStr = getTodayDateStr();
+
+    function checkCalendarDateAutoRefresh() {
+      const currentDateStr = getTodayDateStr();
+      if (currentDateStr !== calendarLastKnownDateStr) {
+        calendarLastKnownDateStr = currentDateStr;
+        refreshCalendarWidget();
+      }
+    }
+
+    // Check every 30 seconds for date roll-over (midnight)
+    setInterval(checkCalendarDateAutoRefresh, 30000);
+
+    // Also check immediately when tab gains focus or visibility changes
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        checkCalendarDateAutoRefresh();
+      }
+    });
+    window.addEventListener('focus', checkCalendarDateAutoRefresh);
 
     // ================= RENDER HOME VIEW =================
     function renderWelcomeHub() {
