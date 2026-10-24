@@ -2665,36 +2665,42 @@
 
       container.innerHTML = `
         <!-- 2. CTA ABOVE THE FOLD -->
-        <div class="portal-hero p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div class="flex items-center gap-4 sm:gap-5 min-w-0">
-            <a
-              href="https://www.ankara.edu.tr"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Ankara Üniversitesi"
-              class="portal-hero-logo"
-            >
-              <img
-                src="assets/ankara-uni-logo.png"
-                alt="Ankara Üniversitesi Logosu"
-                width="88"
-                height="88"
-                class="size-full object-contain rounded-full"
-                onerror="this.parentElement.style.display='none';"
-              />
-            </a>
-            <div class="space-y-2 min-w-0">
-              <span class="portal-hero-badge">ANKARA ÜNİVERSİTESİ • EEE</span>
-              <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
-                Ders Materyalleri Portalı
-              </h1>
-              <p class="portal-hero-sub text-sm sm:text-base">
-                Elektrik-Elektronik Mühendisliği ders notları, slaytlar ve kaynaklar tek yerde.
-              </p>
+        <div class="portal-hero p-5 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
+          <div class="flex flex-col gap-3 min-w-0">
+            <!-- Row: Logo + University Badge & Portal Title -->
+            <div class="flex items-center gap-3.5 sm:gap-5 min-w-0">
+              <a
+                href="https://www.ankara.edu.tr"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Ankara Üniversitesi"
+                class="portal-hero-logo shrink-0"
+              >
+                <img
+                  src="assets/ankara-uni-logo.png"
+                  alt="Ankara Üniversitesi Logosu"
+                  width="88"
+                  height="88"
+                  class="size-full object-contain rounded-full"
+                  onerror="this.parentElement.style.display='none';"
+                />
+              </a>
+              <div class="space-y-1.5 sm:space-y-2 min-w-0">
+                <span class="portal-hero-badge">ANKARA ÜNİVERSİTESİ • EEE</span>
+                <h1 class="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
+                  Ders Materyalleri Portalı
+                </h1>
+              </div>
             </div>
+
+            <!-- Description: Starts under the logo from the far left on mobile -->
+            <p class="portal-hero-sub text-xs sm:text-base leading-relaxed">
+              Elektrik-Elektronik Mühendisliği ders notları, slaytlar ve kaynaklar tek yerde.
+            </p>
           </div>
 
-          <div class="flex flex-wrap items-center justify-center lg:justify-end gap-2 shrink-0 w-full lg:w-auto">
+          <!-- Action Button: Starts on the far left on mobile, right-aligned on desktop -->
+          <div class="flex flex-wrap items-center justify-start lg:justify-end gap-2 shrink-0">
             <button
               type="button"
               onclick="document.getElementById('allMaterialsSection')?.scrollIntoView({ behavior: 'smooth' }); setTimeout(() => document.getElementById('datatableSearchInput')?.focus(), 250);"
