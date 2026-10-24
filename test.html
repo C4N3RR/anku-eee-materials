@@ -2666,35 +2666,33 @@
       container.innerHTML = `
         <!-- 2. CTA ABOVE THE FOLD -->
         <div class="portal-hero p-5 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
-          <div class="flex flex-col gap-3 min-w-0">
-            <!-- Row: Logo + University Badge & Portal Title -->
-            <div class="flex items-center gap-3.5 sm:gap-5 min-w-0">
-              <a
-                href="https://www.ankara.edu.tr"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="Ankara Üniversitesi"
-                class="portal-hero-logo shrink-0"
-              >
-                <img
-                  src="assets/ankara-uni-logo.png"
-                  alt="Ankara Üniversitesi Logosu"
-                  width="88"
-                  height="88"
-                  class="size-full object-contain rounded-full"
-                  onerror="this.parentElement.style.display='none';"
-                />
-              </a>
-              <div class="space-y-1.5 sm:space-y-2 min-w-0">
-                <span class="portal-hero-badge">ANKARA ÜNİVERSİTESİ • EEE</span>
-                <h1 class="text-xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
-                  Ders Materyalleri Portalı
-                </h1>
-              </div>
+          <div class="grid grid-cols-[auto_1fr] items-center gap-x-4 sm:gap-x-5 gap-y-2.5 sm:gap-y-3 min-w-0">
+            <!-- Row 1 Col 1 on mobile, spans 2 rows on desktop alongside badge/title and description -->
+            <a
+              href="https://www.ankara.edu.tr"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Ankara Üniversitesi"
+              class="portal-hero-logo shrink-0 row-start-1 col-start-1 self-center lg:row-span-2"
+            >
+              <img
+                src="assets/ankara-uni-logo.png"
+                alt="Ankara Üniversitesi Logosu"
+                width="88"
+                height="88"
+                class="size-full object-contain rounded-full"
+                onerror="this.parentElement.style.display='none';"
+              />
+            </a>
+            <!-- University Badge & Portal Title: Row 1, Col 2 -->
+            <div class="row-start-1 col-start-2 space-y-1.5 sm:space-y-2 min-w-0">
+              <span class="portal-hero-badge">ANKARA ÜNİVERSİTESİ • EEE</span>
+              <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
+                Ders Materyalleri Portalı
+              </h1>
             </div>
-
-            <!-- Description: Starts under the logo from the far left on mobile -->
-            <p class="portal-hero-sub text-xs sm:text-base leading-relaxed">
+            <!-- Description: Under the logo from far left on mobile (col-span-2), beside the logo on desktop (lg:col-start-2) -->
+            <p class="portal-hero-sub row-start-2 col-span-2 lg:col-span-1 lg:col-start-2 text-sm sm:text-base leading-relaxed">
               Elektrik-Elektronik Mühendisliği ders notları, slaytlar ve kaynaklar tek yerde.
             </p>
           </div>
