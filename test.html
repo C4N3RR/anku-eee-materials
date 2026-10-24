@@ -773,6 +773,14 @@
     }
     .event-agenda-item {
       transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    .event-agenda-item:focus,
+    .event-agenda-item:focus-visible,
+    .event-agenda-item:active {
+      outline: none !important;
+      box-shadow: none !important;
     }
     .event-agenda-item:hover {
       transform: translateY(-1px);
@@ -2469,7 +2477,7 @@
       }
 
       return `
-        <div class="space-y-1 flex flex-col justify-start">
+        <div class="space-y-1.5 flex flex-col justify-start">
           ${visibleEvents.map(ev => {
             const solid = getCourseSolidColor(ev.courseCode);
             const [y, m, d] = ev.date.split('-').map(Number);
@@ -2480,24 +2488,24 @@
                 id="agenda-item-${esc(ev.id)}"
                 data-date="${esc(ev.date)}"
                 onclick="handleAgendaItemClick('${esc(ev.date)}')"
-                class="event-agenda-item flex items-center gap-2 py-1 px-1.5 rounded-md hover:bg-muted/50 transition cursor-pointer text-xs ${isHighlighted ? 'bg-muted/70 ring-1 ring-primary/40' : ''}"
+                class="event-agenda-item flex items-center gap-2.5 py-1.5 px-2.5 rounded-md hover:bg-muted/50 transition cursor-pointer outline-none select-none ${isHighlighted ? 'bg-muted/80 dark:bg-white/10' : ''}"
               >
                 <!-- Date solid badge matching calendar circle -->
                 <span
-                  class="inline-flex items-center justify-center px-1.5 py-0.5 rounded font-bold text-[10px] sm:text-[11px] leading-none shrink-0"
+                  class="inline-flex items-center justify-center px-2 py-0.5 sm:py-1 rounded-md font-bold text-[11px] shrink-0 leading-snug"
                   style="background-color: ${solid.bg}; color: ${solid.text};"
                 >
                   ${d} ${MONTH_NAMES_TR_SHORT[m - 1]}
                 </span>
 
                 <!-- Event Title -->
-                <span class="font-medium text-foreground truncate flex-1 leading-tight">
+                <span class="font-medium text-foreground truncate flex-1 text-xs sm:text-[13px] leading-snug">
                   ${esc(ev.title)}
                 </span>
 
                 <!-- Time (if present) -->
                 ${ev.time ? `
-                  <span class="text-[11px] text-muted-foreground font-mono shrink-0 leading-none">
+                  <span class="text-xs text-muted-foreground font-mono shrink-0">
                     ${esc(ev.time)}
                   </span>
                 ` : ''}
