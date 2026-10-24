@@ -899,10 +899,11 @@
                 href="https://obs.ankara.edu.tr"
                 target="_blank"
                 rel="noopener noreferrer"
+                title="Öğrenci Bilgi Sistemi (OBS)"
                 class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
               >
                 <i data-lucide="graduation-cap" class="size-4 shrink-0 text-muted-foreground"></i>
-                <span class="sidebar-hide-collapsed flex-1 truncate">OBS</span>
+                <span class="sidebar-hide-collapsed flex-1 truncate">Öğrenci Bilgi Sistemi</span>
                 <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
               </a>
             </li>
@@ -911,10 +912,11 @@
                 href="https://eee.ankara.edu.tr"
                 target="_blank"
                 rel="noopener noreferrer"
+                title="Bölüm Web Sitesi"
                 class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
               >
                 <i data-lucide="globe" class="size-4 shrink-0 text-muted-foreground"></i>
-                <span class="sidebar-hide-collapsed flex-1 truncate">Bölüm Sayfası</span>
+                <span class="sidebar-hide-collapsed flex-1 truncate">Bölüm Web Sitesi</span>
                 <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
               </a>
             </li>
@@ -923,11 +925,25 @@
                 href="https://ekampus.ankara.edu.tr"
                 target="_blank"
                 rel="noopener noreferrer"
-                title="Ankara Üniversitesi e-KAMPÜS Giriş"
+                title="Ankara Üniversitesi e-Kampüs Giriş"
                 class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
               >
                 <i data-lucide="laptop" class="size-4 shrink-0 text-muted-foreground"></i>
-                <span class="sidebar-hide-collapsed flex-1 truncate">e-KAMPÜS</span>
+                <span class="sidebar-hide-collapsed flex-1 truncate">e-Kampüs</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+            <li>
+              <a
+                id="sidebarDriveLink"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Dosyalar (Google Drive)"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="folder-symlink" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">Dosyalar</span>
                 <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
               </a>
             </li>
@@ -977,27 +993,6 @@
           </div>
 
           <div class="flex items-center gap-1.5 shrink-0">
-            <a
-              href="https://obs.ankara.edu.tr"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-background px-2.5 text-xs font-medium text-foreground hover:bg-muted transition"
-            >
-              <i data-lucide="graduation-cap" class="size-3.5 text-primary"></i>
-              <span>OBS</span>
-            </a>
-
-            <a
-              id="headerDriveBtn"
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="hidden sm:inline-flex h-8 items-center gap-1.5 rounded-md bg-secondary px-2.5 text-xs font-medium text-secondary-foreground hover:opacity-90 transition"
-            >
-              <i data-lucide="folder-symlink" class="size-3.5"></i>
-              <span>Drive</span>
-            </a>
-
             <button
               id="refreshBtn"
               type="button"
@@ -1810,7 +1805,8 @@
     async function loadDriveData() {
       const folderId = parseFolderId(settings.folder);
       const driveUrl = folderId ? `https://drive.google.com/drive/folders/${folderId}` : 'https://drive.google.com';
-      $('headerDriveBtn').href = driveUrl;
+      const hDrive = $('headerDriveBtn');
+      if (hDrive) hDrive.href = driveUrl;
       const sDrive = $('sidebarDriveLink');
       if (sDrive) sDrive.href = driveUrl;
 
