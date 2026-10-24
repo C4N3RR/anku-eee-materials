@@ -696,6 +696,9 @@
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
     .portal-hero-btn-secondary:hover { background: rgba(255, 255, 255, 0.26); transform: translateY(-1px); }
+    @media (min-width: 1024px) {
+      .portal-hero-drive-btn { display: none !important; }
+    }
 
     /* ================= THEME "RIPPLE" VIEW TRANSITION ================= */
     /* Seamless circular reveal: as the circle boundary expands, the site content
@@ -2665,15 +2668,14 @@
 
       container.innerHTML = `
         <!-- 2. CTA ABOVE THE FOLD -->
-        <div class="portal-hero p-5 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
-          <div class="grid grid-cols-[auto_1fr] items-center gap-x-4 sm:gap-x-5 gap-y-2.5 sm:gap-y-3 min-w-0">
-            <!-- Row 1 Col 1 on mobile, spans 2 rows on desktop alongside badge/title and description -->
+        <div class="portal-hero p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="flex items-center gap-4 sm:gap-5 min-w-0">
             <a
               href="https://www.ankara.edu.tr"
               target="_blank"
               rel="noopener noreferrer"
               title="Ankara Üniversitesi"
-              class="portal-hero-logo shrink-0 row-start-1 col-start-1 self-center lg:row-span-2"
+              class="portal-hero-logo"
             >
               <img
                 src="assets/ankara-uni-logo.png"
@@ -2684,21 +2686,18 @@
                 onerror="this.parentElement.style.display='none';"
               />
             </a>
-            <!-- University Badge & Portal Title: Row 1, Col 2 -->
-            <div class="row-start-1 col-start-2 space-y-1.5 sm:space-y-2 min-w-0">
+            <div class="space-y-2 min-w-0">
               <span class="portal-hero-badge">ANKARA ÜNİVERSİTESİ • EEE</span>
               <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-tight">
                 Ders Materyalleri Portalı
               </h1>
+              <p class="portal-hero-sub text-sm sm:text-base">
+                Elektrik-Elektronik Mühendisliği ders notları, slaytlar ve kaynaklar tek yerde.
+              </p>
             </div>
-            <!-- Description: Under the logo from far left on mobile (col-span-2), beside the logo on desktop (lg:col-start-2) -->
-            <p class="portal-hero-sub row-start-2 col-span-2 lg:col-span-1 lg:col-start-2 text-sm sm:text-base leading-relaxed">
-              Elektrik-Elektronik Mühendisliği ders notları, slaytlar ve kaynaklar tek yerde.
-            </p>
           </div>
 
-          <!-- Action Button: Starts on the far left on mobile, right-aligned on desktop -->
-          <div class="flex flex-wrap items-center justify-start lg:justify-end gap-2 shrink-0">
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
             <button
               type="button"
               onclick="document.getElementById('allMaterialsSection')?.scrollIntoView({ behavior: 'smooth' }); setTimeout(() => document.getElementById('datatableSearchInput')?.focus(), 250);"
@@ -2707,6 +2706,15 @@
               <i data-lucide="search" class="size-4"></i>
               <span>Materyal Ara</span>
             </button>
+            <a
+              href="${driveUrl}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="portal-hero-btn-secondary portal-hero-drive-btn lg:!hidden"
+            >
+              <i data-lucide="folder-symlink" class="size-4"></i>
+              <span>Drive Arşivi</span>
+            </a>
           </div>
         </div>
 
