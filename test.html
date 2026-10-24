@@ -3114,8 +3114,6 @@
           const hasActiveInSem = semCourses.some(c => c.code === activeCode);
 
           const coursesListHtml = semCourses.map(c => {
-            const node = getCourseNodeByCode(c.code);
-            const count = node ? countFilesInFolder(node.children) : 0;
             const isSelected = (activeView === 'course' && activeCode === c.code);
             const meta = courseMetadata[c.code] || { name: c.name, icon: c.icon || 'book-open' };
             const iconName = meta.icon || 'book-open';
@@ -3125,21 +3123,14 @@
                 <button
                   onclick="selectCourseByCode('${esc(c.code)}')"
                   title="${esc(c.code)} — ${esc(meta.name)}"
-                  class="flex h-7 w-full items-center justify-between gap-2 rounded-md pl-2 pr-1.5 text-xs transition ${
+                  class="flex h-7 w-full items-center gap-2 rounded-md px-2 text-xs transition ${
                     isSelected
                       ? 'bg-primary-soft text-foreground font-semibold'
                       : 'text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
                   }"
                 >
-                  <div class="flex items-center gap-2 min-w-0 flex-1">
-                    <i data-lucide="${iconName}" class="size-3.5 shrink-0 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}"></i>
-                    <span class="font-mono text-xs font-medium truncate">${esc(c.code)}</span>
-                  </div>
-                  ${count > 0 ? `
-                    <span class="rounded-full bg-primary-soft px-1.5 text-[10px] font-normal tabular-nums text-foreground shrink-0">
-                      ${count}
-                    </span>
-                  ` : ''}
+                  <i data-lucide="${iconName}" class="size-3.5 shrink-0 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}"></i>
+                  <span class="font-mono text-xs font-medium truncate">${esc(c.code)}</span>
                 </button>
               </li>
             `;
