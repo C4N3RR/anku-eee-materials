@@ -3053,7 +3053,6 @@
       const container = $('courseListNav');
       if (!dashContainer || !container) return;
 
-      const isHomeActive = (activeView === 'home' && !activeCourseId);
       const isStaffActive = (activeView === 'staff');
 
       dashContainer.innerHTML = `
@@ -3074,22 +3073,6 @@
             <span class="sidebar-hide-collapsed rounded-full bg-primary-soft px-1.5 text-[10px] font-medium tabular-nums text-muted-foreground shrink-0">
               ${STAFF_DATA.length}
             </span>
-          </button>
-        </li>
-        <li>
-          <button
-            onclick="goHome()"
-            title="Tüm Dersler"
-            class="sidebar-nav-btn flex h-8 w-full items-center justify-between gap-2 rounded-md px-2 text-sm transition ${
-              isHomeActive
-                ? 'bg-primary-soft text-foreground font-medium'
-                : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
-            }"
-          >
-            <div class="flex items-center gap-2 min-w-0">
-              <i data-lucide="layout-grid" class="size-4 shrink-0 ${isHomeActive ? 'text-foreground' : 'text-muted-foreground'}"></i>
-              <span class="sidebar-hide-collapsed truncate">Tüm Dersler</span>
-            </div>
           </button>
         </li>
       `;
