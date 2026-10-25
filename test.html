@@ -671,6 +671,16 @@
     .dark .sidebar-tree-line {
       border-left: 2.5px solid rgba(113, 113, 122, 0.45);
     }
+    .sidebar-course-label {
+      color: var(--sidebar-foreground);
+      opacity: 0.36;
+      transition: opacity 0.15s ease, color 0.15s ease;
+    }
+    .sidebar-course-btn:hover .sidebar-course-label,
+    .sidebar-course-btn.is-active .sidebar-course-label {
+      color: var(--foreground);
+      opacity: 1;
+    }
 
     /* ================= STAFF CARD HIGHLIGHT ANIMATION ================= */
     @keyframes staffCardPulse {
@@ -3048,6 +3058,58 @@
       renderSidebarCourses();
     };
 
+    const SHORT_SIDEBAR_COURSE_LABELS = {
+      // 1. Sınıf Güz
+      'EEE1001': "EEM'e Giriş",
+      'CHM109': 'Genel Kimya',
+      'MTH0101': 'Matematik I',
+      'MTH103': 'Lineer Cebir',
+      'PHY0107': 'Fizik I',
+      'TUR171': 'Türk Dili I',
+      'OUL101': 'Üniv. Giriş',
+      // 1. Sınıf Bahar
+      'EEE1002': 'Programlama',
+      'EEE1004': 'Sayısal Mantık',
+      'EEE1006': 'Sayısal Lab.',
+      'MTH0102': 'Matematik II',
+      'PHY0108': 'Fizik II',
+      'TUR174': 'Türk Dili II',
+      'OUL102': 'Kariyer Plan.',
+      // 2. Sınıf Güz
+      'EEE2001': 'Devre Teorisi I',
+      'EEE2003': 'Yarıiletkenler',
+      'EEE2005': 'Devre Lab. I',
+      'EEE2007': 'Olasılık',
+      'MTH201': 'Dif. Denklemler',
+      'HIS103': 'İnkılap I',
+      // 2. Sınıf Bahar
+      'EEE2002': 'Devre Teorisi II',
+      'EEE2004': 'Devre Lab. II',
+      'EEE2006': 'Elektromanyetik',
+      'EEE2008': 'Sinyaller',
+      'HIS104': 'İnkılap II',
+      // 3. Sınıf Güz
+      'EEE3001': 'Elektronik I',
+      'EEE3003': 'Elektronik Lab. I',
+      'EEE3005': 'Dalga Teorisi',
+      'EEE3007': 'Enerji Dönüşümü',
+      'EEE3009': 'Sayısal Sinyal',
+      'SCS301': 'Bilimsel Etik',
+      // 3. Sınıf Bahar
+      'EEE3002': 'Elektronik II',
+      'EEE3004': 'Elektronik Lab. II',
+      'EEE3342': 'Haberleşme',
+      'EEE3344': 'Kontrol Sis.',
+      'PPL302': 'Mesleki Etik',
+      // 4. Sınıf Güz
+      'EEE4001': 'Bitirme Proj. I',
+      'EEE4091': 'İSG I',
+      'EEE4099': 'Yaz Stajı',
+      // 4. Sınıf Bahar
+      'EEE4002': 'Bitirme Proj. II',
+      'EEE4092': 'İSG II'
+    };
+
     function renderSidebarCourses() {
       const dashContainer = $('sidebarDashboardNav');
       const container = $('courseListNav');
@@ -3100,20 +3162,22 @@
             const isSelected = (activeView === 'course' && activeCode === c.code);
             const meta = courseMetadata[c.code] || { name: c.name, icon: c.icon || 'book-open' };
             const iconName = meta.icon || 'book-open';
+            const shortLabel = SHORT_SIDEBAR_COURSE_LABELS[c.code] || c.code;
 
             return `
               <li>
                 <button
                   onclick="selectCourseByCode('${esc(c.code)}')"
                   title="${esc(c.code)} — ${esc(meta.name)}"
-                  class="flex h-7 w-full items-center gap-2 rounded-md px-2 text-xs transition ${
+                  class="sidebar-course-btn ${isSelected ? 'is-active' : ''} flex h-7 w-full items-center gap-1.5 rounded-md px-1.5 text-xs transition ${
                     isSelected
                       ? 'bg-primary-soft text-foreground font-semibold'
-                      : 'text-sidebar-foreground/85 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+                      : 'text-sidebar-foreground/90 hover:bg-sidebar-accent hover:text-foreground'
                   }"
                 >
                   <i data-lucide="${iconName}" class="size-3.5 shrink-0 ${isSelected ? 'text-foreground' : 'text-muted-foreground'}"></i>
-                  <span class="font-mono text-xs font-medium truncate">${esc(c.code)}</span>
+                  <span class="font-mono text-xs font-medium shrink-0">${esc(c.code)}</span>
+                  <span class="sidebar-course-label text-[11px] font-normal whitespace-nowrap">${esc(shortLabel)}</span>
                 </button>
               </li>
             `;
@@ -3124,7 +3188,7 @@
               <button
                 type="button"
                 onclick="toggleSidebarSemester(${yr}, '${sem.key}')"
-                class="flex h-7 w-full items-center justify-between gap-2 rounded-md px-2 text-xs font-medium transition ${
+                class="flex h-7 w-full items-center justify-between gap-2 rounded-md px-1.5 text-xs font-medium transition ${
                   hasActiveInSem
                     ? 'text-foreground bg-sidebar-accent/60'
                     : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
@@ -3137,7 +3201,7 @@
                 <span class="text-[10px] text-muted-foreground font-mono shrink-0">${semCourses.length} ders</span>
               </button>
               ${isSemExpanded ? `
-                <ul class="ml-3 pl-2.5 sidebar-tree-line space-y-0.5 py-0.5">
+                <ul class="ml-2 pl-2 sidebar-tree-line space-y-0.5 py-0.5">
                   ${coursesListHtml}
                 </ul>
               ` : ''}
@@ -3157,14 +3221,11 @@
                   : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
               }"
             >
-              <div class="flex items-center gap-2 min-w-0">
-                <span class="size-5 rounded bg-primary-soft text-foreground font-mono text-xs font-bold inline-flex items-center justify-center shrink-0">${yr}</span>
-                <span class="sidebar-hide-collapsed truncate">${yr}. Sınıf</span>
-              </div>
+              <span class="truncate font-semibold">${yr}.<span class="sidebar-hide-collapsed"> Sınıf</span></span>
               <i data-lucide="chevron-down" class="sidebar-hide-collapsed size-3.5 shrink-0 text-muted-foreground transition-transform duration-150 ${isYearExpanded ? 'rotate-180 text-foreground' : ''}"></i>
             </button>
             ${isYearExpanded ? `
-              <ul class="sidebar-hide-collapsed ml-2.5 pl-2.5 sidebar-tree-line space-y-1 py-0.5">
+              <ul class="sidebar-hide-collapsed ml-2 pl-2 sidebar-tree-line space-y-1 py-0.5">
                 ${semestersHtml}
               </ul>
             ` : ''}
