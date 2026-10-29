@@ -45,6 +45,8 @@ const clickTab=name=>w.document.querySelector(`[data-tab="${name}"]`).click();
  for(const expected of [4,1,2,3]){
    el('calendarClassButton').click();
    assert.equal(w.localStorage.getItem('anku_calendar_class_v1'),String(expected));
+   assert.deepEqual(Array.from(vm.runInContext('expandedSidebarYears',ctx)),[expected]);
+   assert.deepEqual(Array.from(vm.runInContext('expandedSidebarSemesters',ctx)),[expected+'-'+vm.runInContext('getCurrentAcademicSemester()',ctx)]);
    assert.equal(w.document.activeElement.id,'calendarClassButton');
    const ids=Array.from(vm.runInContext('getCalendarEvents().map(e=>e.id)',ctx));
    assert.deepEqual(ids,[`class-${expected}`,'shared',...(expected===2?['class-general']:[])]);

@@ -2039,6 +2039,27 @@ const CONFIG = {
       if ([1, 2, 3, 4].includes(savedYear)) calendarClassYear = savedYear;
     } catch (_) { /* The calendar still works when storage is unavailable. */ }
 
+    function getCurrentAcademicSemester(now = new Date()) {
+      // Spring teaching starts in mid-February; keep spring through summer exams.
+      const month = now.getMonth();
+      return (month === 1 && now.getDate() >= 15) || (month >= 2 && month <= 7) ? 'bahar' : 'guz';
+    }
+
+    function syncSidebarToCalendarClass(animate = false) {
+      expandedSidebarYears = new Set([calendarClassYear]);
+      expandedSidebarSemesters = new Set([`${calendarClassYear}-${getCurrentAcademicSemester()}`]);
+      if (!animate) return;
+      renderSidebarCourses();
+      if (window.innerWidth >= 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.getElementById('courseListNav')?.animate?.([
+          { opacity: .5, transform: 'translateY(5px)' },
+          { opacity: 1, transform: 'translateY(0)' }
+        ], { duration: 220, easing: 'ease-out' });
+      }
+    }
+
+    syncSidebarToCalendarClass();
+
     function cycleCalendarClass() {
       calendarClassYear = calendarClassYear % 4 + 1;
       try { localStorage.setItem(CALENDAR_CLASS_STORAGE_KEY, String(calendarClassYear)); } catch (_) {}
@@ -2046,6 +2067,7 @@ const CONFIG = {
       clearTimeout(calendarPopoverHideTimer);
       hideCalendarDayPopover();
       refreshCalendarWidget();
+      syncSidebarToCalendarClass(true);
       const button = document.getElementById('calendarClassButton');
       button?.classList.add('is-bouncing');
       button?.focus({ preventScroll: true });
