@@ -20,6 +20,7 @@ w.fetch=async(url,opt={})=>{let data={},code=200;const body=opt.body?JSON.parse(
  return {ok:code<400,status:code,json:async()=>data,text:async()=>JSON.stringify(data)};
 };
 w.localStorage.setItem('anku_tree_cache_v3',JSON.stringify({folderId:'1n9cyf8eSj3OremDKF5BdQIBayaryPofN',tree:[{id:'drive-course',name:'CHM109',mimeType:'application/vnd.google-apps.folder',children:[{id:'legacy-info-file',name:'info.txt',mimeType:'text/plain'}]}],time:Date.now()}));
+w.localStorage.setItem('anku_calendar_class_v1','3');
 for(const file of ['portal-security.js','theme-init.js','portal-config.js','analytics-init.js','app.js','portal-admin.js'])vm.runInContext(fs.readFileSync(root+'/'+file,'utf8'),ctx);
 const tick=()=>new Promise(r=>setTimeout(r,30));const el=id=>w.document.getElementById(id);const submit=form=>(assert(form.checkValidity(),'Form validity: '+form.id),form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true})));
 const set=(form,name,value)=>form.elements.namedItem(name).value=value;
@@ -30,6 +31,34 @@ const clickTab=name=>w.document.querySelector(`[data-tab="${name}"]`).click();
  assert.equal(await vm.runInContext("validPdfBlob(new Blob(['%PDF-1.7'],{type:'application/pdf'}))",ctx),true);
  assert.equal(infoReads,0,'Cached tree must not start legacy info.txt reads before shared content loads');
  await tick();assert.equal(infoReads,0);assert.equal(vm.runInContext('getAcademicEvents().length',ctx),0);assert.equal(w.portalCanEdit(),false);
+ // Restore the saved class, cycle through all classes, and keep dates isolated.
+ assert.equal(vm.runInContext('calendarClassYear',ctx),3);
+ const originalEvents=w.portalEvents;
+ const date=vm.runInContext('getTodayDateStr()',ctx);
+ const courses=vm.runInContext('[1,2,3,4].map(year=>CURRICULUM_COURSES.find(c=>c.year===year).code)',ctx);
+ w.portalEvents=()=>[
+   ...courses.map((courseCode,i)=>({id:`class-${i+1}`,title:`Class ${i+1} exam`,courseCode,date})),
+   {id:'shared',title:'Shared date',courseCode:'GENEL',date},
+   {id:'class-general',title:'Second year meeting',courseCode:'GENEL',year:2,date}
+ ];
+ vm.runInContext('refreshCalendarWidget()',ctx);
+ for(const expected of [4,1,2,3]){
+   el('calendarClassButton').click();
+   assert.equal(w.localStorage.getItem('anku_calendar_class_v1'),String(expected));
+   assert.equal(w.document.activeElement.id,'calendarClassButton');
+   const ids=Array.from(vm.runInContext('getCalendarEvents().map(e=>e.id)',ctx));
+   assert.deepEqual(ids,[`class-${expected}`,'shared',...(expected===2?['class-general']:[])]);
+   assert.match(el('academicCalendarContainer').textContent,new RegExp(`Class ${expected} exam`));
+   assert.doesNotMatch(el('academicCalendarContainer').textContent,new RegExp(`Class ${expected%4+1} exam`));
+   vm.runInContext('calendarActiveDateStr = getTodayDateStr()',ctx);
+   vm.runInContext(`showCalendarDayPopover(document.querySelector('[data-date="${date}"]'), '${date}', true)`,ctx);
+   assert.match(el('calendarDayPopover').textContent,new RegExp(`Class ${expected} exam`));
+ }
+ el('calendarClassButton').click();
+ assert.equal(el('calendarDayPopover').classList.contains('is-open'),false);
+ assert.equal(vm.runInContext('calendarActiveDateStr',ctx),null);
+ w.portalEvents=originalEvents;
+ vm.runInContext('refreshCalendarWidget()',ctx);
  const originalViewer=w.openViewerModal;let captured=null;w.openViewerModal=(...args)=>{captured=args;};
  const attack="'); window.__xss=true; //";
  const markup=vm.runInContext('renderFileItem('+JSON.stringify({id:'safe-file-id',name:'<img src=x onerror=alert(1)>',mimeType:'application/pdf',webViewLink:'javascript:alert(1)'})+','+JSON.stringify(attack)+')',ctx);

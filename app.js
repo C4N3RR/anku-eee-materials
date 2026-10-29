@@ -2032,6 +2032,32 @@ const CONFIG = {
     let calendarActiveDateStr = null;
     let calendarPopoverHideTimer = null;
 
+    const CALENDAR_CLASS_STORAGE_KEY = 'anku_calendar_class_v1';
+    let calendarClassYear = 1;
+    try {
+      const savedYear = Number(localStorage.getItem(CALENDAR_CLASS_STORAGE_KEY));
+      if ([1, 2, 3, 4].includes(savedYear)) calendarClassYear = savedYear;
+    } catch (_) { /* The calendar still works when storage is unavailable. */ }
+
+    function cycleCalendarClass() {
+      calendarClassYear = calendarClassYear % 4 + 1;
+      try { localStorage.setItem(CALENDAR_CLASS_STORAGE_KEY, String(calendarClassYear)); } catch (_) {}
+      calendarActiveDateStr = null;
+      clearTimeout(calendarPopoverHideTimer);
+      hideCalendarDayPopover();
+      refreshCalendarWidget();
+      document.getElementById('calendarClassButton')?.focus({ preventScroll: true });
+    }
+
+    function getCalendarEvents() {
+      return getAcademicEvents().filter(event => {
+        if (event.courseCode === 'GENEL') {
+          return !event.year || Number(event.year) === calendarClassYear;
+        }
+        return Number(CURRICULUM_COURSES.find(course => course.code === event.courseCode)?.year) === calendarClassYear;
+      });
+    }
+
     function getAcademicEvents() {
       if (window.portalEvents) return window.portalEvents();
       const raw = localStorage.getItem('anku_academic_events_v4');
@@ -2074,7 +2100,7 @@ const CONFIG = {
     }
 
     function renderCalendarAndAgendaWidget() {
-      const allEvents = getAcademicEvents();
+      const allEvents = getCalendarEvents();
 
       const m1Date = new Date(calendarViewDate);
       const m1Year = m1Date.getFullYear();
@@ -2097,7 +2123,12 @@ const CONFIG = {
 
       return `
         <div id="academicCalendarContainer" class="admincn-card p-4 sm:p-5 select-none overflow-hidden">
-          ${window.portalCanEdit?.() ? '<div class="flex justify-end mb-3"><button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn"><i data-lucide="calendar-plus" class="size-3.5"></i> Tarih ekle</button></div>' : ''}
+          <div class="flex items-center justify-between mb-3 gap-3">
+            <button id="calendarClassButton" type="button" data-portal-click="cycleCalendarClass" data-portal-click-args="[]" class="portal-btn" title="Sonraki sınıfa geç" aria-label="${calendarClassYear}. sınıf takvimi. ${calendarClassYear % 4 + 1}. sınıfa geç">
+              <i data-lucide="repeat" class="size-3.5"></i><span aria-live="polite">${calendarClassYear}. Sınıf</span>
+            </button>
+            ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn"><i data-lucide="calendar-plus" class="size-3.5"></i> Tarih ekle</button>' : ''}
+          </div>
           <div class="flex flex-col lg:flex-row items-stretch gap-5 lg:gap-7">
             
             <!-- LEFT: 2 MONTHS (or 1 on mobile) - No top border line -->
@@ -2431,7 +2462,7 @@ const CONFIG = {
       const popover = document.getElementById('calendarDayPopover');
       if (!popover || !targetEl) return;
 
-      const events = getAcademicEvents().filter(e => e.date === dateStr);
+      const events = getCalendarEvents().filter(e => e.date === dateStr);
       if (events.length === 0) return;
 
       const todayDateStr = getTodayDateStr();
@@ -4443,7 +4474,7 @@ const CONFIG = {
 
       // 3. Search Important Dates & Exams (getAcademicEvents)
       const curYear = new Date().getFullYear();
-      const allEvents = getAcademicEvents().filter(e => e.date && e.date.startsWith(String(curYear)));
+      const allEvents = getCalendarEvents().filter(e => e.date && e.date.startsWith(String(curYear)));
       const matchedEvents = allEvents.filter(ev => {
         const [, m, d] = ev.date.split('-').map(Number);
         const monthName = MONTH_NAMES_TR[m - 1] || '';
@@ -4711,6 +4742,7 @@ const CONFIG = {
       handleTableCourseFilter: (...args) => { if (typeof handleTableCourseFilter === 'function') return handleTableCourseFilter(...args); },
       handleTableSearch: (...args) => { if (typeof handleTableSearch === 'function') return handleTableSearch(...args); },
       hideCalendarDayPopover: (...args) => { if (typeof hideCalendarDayPopover === 'function') return hideCalendarDayPopover(...args); },
+      cycleCalendarClass: () => cycleCalendarClass(),
       navigateCalendarMonth: (...args) => { if (typeof navigateCalendarMonth === 'function') return navigateCalendarMonth(...args); },
       navigateToEventFromSearch: (...args) => { if (typeof navigateToEventFromSearch === 'function') return navigateToEventFromSearch(...args); },
       openCourseNavigation: (...args) => { if (typeof openCourseNavigation === 'function') return openCourseNavigation(...args); },
