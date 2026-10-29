@@ -994,10 +994,11 @@
                 type="text"
                 autocomplete="off"
                 spellcheck="false"
-                placeholder="Ders, öğretim görevlisi, önemli tarih veya dosya ara..."
+                placeholder="Ara..."
+                aria-label="Portalda ara"
                 oninput="handleGlobalSearchInput(this.value)"
                 onfocus="handleGlobalSearchFocus()"
-                class="h-9 w-full rounded-lg bg-background border border-input pl-9 pr-14 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40 focus:border-foreground/30 transition"
+                class="h-9 w-full rounded-lg bg-background border border-input pl-9 pr-9 sm:pr-14 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40 focus:border-foreground/30 transition"
               >
               <button
                 id="globalSearchClearBtn"
@@ -3949,6 +3950,19 @@
           </div>
         </div>
 
+        <nav aria-label="Hızlı erişim" class="grid grid-cols-2 gap-3 md:hidden">
+          <button type="button" onclick="openCourseNavigation()" aria-controls="sidebar"
+            class="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-xs font-semibold text-foreground shadow-sm hover:bg-muted active:bg-muted transition">
+            <i data-lucide="book-open" class="size-4 shrink-0 text-muted-foreground"></i>
+            <span class="min-w-0 leading-tight">Dersler</span>
+          </button>
+          <button type="button" onclick="goToStaffPage()"
+            class="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-xs font-semibold text-foreground shadow-sm hover:bg-muted active:bg-muted transition">
+            <i data-lucide="users" class="size-4 shrink-0 text-muted-foreground"></i>
+            <span class="min-w-0 leading-tight">Öğretim Görevlileri</span>
+          </button>
+        </nav>
+
         <!-- ACADEMIC CALENDAR & AGENDA WIDGET -->
         ${renderCalendarAndAgendaWidget()}
 
@@ -6018,6 +6032,15 @@
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 768) document.documentElement.classList.remove('mobile-sidebar-open');
     });
+
+    function openCourseNavigation() {
+      if (window.innerWidth < 768) {
+        toggleMobileSidebar(true);
+      } else {
+        $('sidebarWrapper').setAttribute('data-state', 'expanded');
+      }
+      $('courseListNav').querySelector('button')?.focus({ preventScroll: true });
+    }
 
     function toggleSidebarAction() {
       if (window.innerWidth < 768) {
