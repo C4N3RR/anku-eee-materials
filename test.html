@@ -3434,42 +3434,22 @@
 
     function getAcademicEvents() {
       const raw = localStorage.getItem('anku_academic_events_v4');
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        } catch (e) {}
+      if (!raw) return [];
+
+      try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+
+        // Remove the old seeded demo dates while preserving other saved events.
+        const demoEventId = /^(?:eee-\d{4}-(?:10-15|11-30|12-25)|phy-\d{4}-(?:10-23|11-22|12-05)|mth1-\d{4}-(?:10-28|11-15)|chm-\d{4}-(?:11-16|12-11)|mth2-\d{4}-(?:11-26|12-16)|tur-\d{4}-11-29)$/;
+        const events = parsed.filter(event => !demoEventId.test(event.id));
+        if (events.length !== parsed.length) {
+          localStorage.setItem('anku_academic_events_v4', JSON.stringify(events));
+        }
+        return events;
+      } catch (e) {
+        return [];
       }
-
-      const curYear = new Date().getFullYear();
-      const years = Array.from(new Set([2024, 2025, 2026, curYear]));
-      const defaultEvents = [];
-
-      years.forEach(yr => {
-        defaultEvents.push(
-          // Ekim / October
-          { id: `eee-${yr}-10-15`, date: `${yr}-10-15`, time: '14:00', courseCode: 'EEE1001', title: 'Bölüm Tanışma' },
-          { id: `phy-${yr}-10-23`, date: `${yr}-10-23`, time: '13:30', courseCode: 'PHY0107', title: 'Fizik Lab Sınavı' },
-          { id: `mth1-${yr}-10-28`, date: `${yr}-10-28`, time: '10:30', courseCode: 'MTH0101', title: 'Calculus Quiz 1' },
-
-          // Kasım / November (As requested: 15 Kasım Calculus Vize, 16 Kasım Kimya Vizesi!)
-          { id: `mth1-${yr}-11-15`, date: `${yr}-11-15`, time: '10:30', courseCode: 'MTH0101', title: 'Calculus Vize' },
-          { id: `chm-${yr}-11-16`, date: `${yr}-11-16`, time: '09:00', courseCode: 'CHM109', title: 'Kimya Vizesi' },
-          { id: `phy-${yr}-11-22`, date: `${yr}-11-22`, time: '13:30', courseCode: 'PHY0107', title: 'Fizik Vize' },
-          { id: `mth2-${yr}-11-26`, date: `${yr}-11-26`, time: '11:00', courseCode: 'MTH103', title: 'Lineer Cebir Vizesi' },
-          { id: `tur-${yr}-11-29`, date: `${yr}-11-29`, time: '15:30', courseCode: 'TUR171', title: 'Türk Dili Vizesi' },
-          { id: `eee-${yr}-11-30`, date: `${yr}-11-30`, time: '23:59', courseCode: 'EEE1001', title: 'Giriş Proje Teslimi' },
-
-          // Aralık / December
-          { id: `phy-${yr}-12-05`, date: `${yr}-12-05`, time: '14:30', courseCode: 'PHY0107', title: 'Fizik Lab Sınavı' },
-          { id: `chm-${yr}-12-11`, date: `${yr}-12-11`, time: '11:00', courseCode: 'CHM109', title: 'Kimya Kısa Sınav' },
-          { id: `mth2-${yr}-12-16`, date: `${yr}-12-16`, time: '10:00', courseCode: 'MTH103', title: 'Lineer Cebir Quiz 2' },
-          { id: `eee-${yr}-12-25`, date: `${yr}-12-25`, time: '13:00', courseCode: 'EEE1001', title: 'Proje Sunumu' }
-        );
-      });
-
-      localStorage.setItem('anku_academic_events_v4', JSON.stringify(defaultEvents));
-      return defaultEvents;
     }
 
     function navigateCalendarMonth(delta) {
