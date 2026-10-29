@@ -1,0 +1,5 @@
+project_id = "heuxjlefnwxdqfskriso"
+
+[functions.drive-proxy]
+# Public material access is intentional; the handler restricts every operation to the portal tree.
+verify_jwt = false

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="portal-admin.css">
+  <script src="portal-config.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <script>
@@ -1344,8 +1345,7 @@
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
   <script>
     const CONFIG = {
-      FOLDER: 'https://drive.google.com/drive/folders/1n9cyf8eSj3OremDKF5BdQIBayaryPofN?usp=sharing',
-      API_KEY: atob('QUl6YVN5QmpXcGkzZnc0YUFINUFienpmTFg0SllqOWlOYVpQU0JF')
+      FOLDER: 'https://drive.google.com/drive/folders/1n9cyf8eSj3OremDKF5BdQIBayaryPofN?usp=sharing'
     };
 
     const COURSE_THEMES = {
@@ -2605,14 +2605,14 @@
     });
 
     const $ = (id) => document.getElementById(id);
-    const API = 'https://www.googleapis.com/drive/v3/files';
+    const DRIVE_PROXY = window.PORTAL_BACKEND.url + '/functions/v1/drive-proxy';
+    const DRIVE_HEADERS = { apikey: window.PORTAL_BACKEND.key };
     const FOLDER_MIME = 'application/vnd.google-apps.folder';
     const SHORTCUT_MIME = 'application/vnd.google-apps.shortcut';
     const YT_REGEX = /(?:youtube\.com\/(?:watch\?(?:[^\s]*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/;
 
     let settings = {
-      folder: CONFIG.FOLDER,
-      key: CONFIG.API_KEY
+      folder: CONFIG.FOLDER
     };
 
     let courseMetadata = JSON.parse(localStorage.getItem('anku_course_meta_v12') || 'null') || {};
@@ -2765,46 +2765,19 @@
     }
 
     // ================= DRIVE API CALLS =================
-    async function fetchDriveFolder(folderId) {
-      const files = [];
-      let pageToken = '';
-      do {
-        const params = new URLSearchParams({
-          q: `'${folderId}' in parents and trashed = false`,
-          fields: 'nextPageToken, files(id, name, mimeType, size, description, webViewLink, shortcutDetails)',
-          orderBy: 'folder, name',
-          pageSize: '1000',
-          supportsAllDrives: 'true',
-          includeItemsFromAllDrives: 'true',
-          key: settings.key
-        });
-        if (pageToken) params.set('pageToken', pageToken);
-        const res = await fetch(`${API}?${params}`);
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.error?.message || res.statusText);
-        }
-        const data = await res.json();
-        files.push(...data.files);
-        pageToken = data.nextPageToken;
-      } while (pageToken);
-      return files;
-    }
-
-    async function buildDriveTree(folderId, depth = 0) {
-      const items = await fetchDriveFolder(folderId);
-      return Promise.all(items.map(async (item) => {
-        if (realMime(item) === FOLDER_MIME && depth < 4) {
-          item.children = await buildDriveTree(realId(item), depth + 1);
-        }
-        return item;
-      }));
+    async function buildDriveTree() {
+      const response = await fetch(DRIVE_PROXY + '?mode=tree', { headers: DRIVE_HEADERS });
+      const data = await response.json();
+      if (!response.ok || !Array.isArray(data.tree)) {
+        throw new Error(data.error || 'Drive materyalleri yüklenemedi.');
+      }
+      return data.tree;
     }
 
     async function parseInfoTxt(fileNode, courseCode) {
       try {
         const id = realId(fileNode);
-        const res = await fetch(`${API}/${id}?alt=media&key=${settings.key}`);
+        const res = await fetch(DRIVE_PROXY + '?mode=media&file=' + encodeURIComponent(id), { headers: DRIVE_HEADERS });
         if (!res.ok) return;
         const text = await res.text();
         if (window.portalSharedContentReady) return;
@@ -2900,7 +2873,7 @@
       const sDrive = $('sidebarDriveLink');
       if (sDrive) sDrive.href = driveUrl;
 
-      if (!folderId || !settings.key) {
+      if (!folderId) {
         $('statusText').textContent = 'Hata';
         $('statusDot').className = 'size-2 shrink-0 rounded-full bg-rose-500';
         return;
@@ -5148,8 +5121,9 @@
       }, 25000);
 
       try {
-        const streamUrl = `https://www.googleapis.com/drive/v3/files/${id}?alt=media&key=${settings.key}`;
+        const streamUrl = DRIVE_PROXY + '?mode=media&file=' + encodeURIComponent(id);
         const response = await fetch(streamUrl, {
+          headers: DRIVE_HEADERS,
           signal: controller.signal
         });
 
@@ -6098,7 +6072,6 @@
       });
     }
   </script>
-  <script src="portal-config.js"></script>
   <script src="portal-admin.js"></script>
 </body>
 </html>
