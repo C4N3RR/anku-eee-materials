@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anku-eee-shell-v15';
+const CACHE_NAME = 'anku-eee-shell-v16';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -69,7 +69,7 @@ self.addEventListener('fetch', (event) => {
   // Network-first for HTML navigation so git pushes show up immediately when online
   if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
-      fetch(request)
+      fetch(request, { cache: 'no-cache' })
         .then((response) => {
           if (response && response.ok) {
             const copy = response.clone();
