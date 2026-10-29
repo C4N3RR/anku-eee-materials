@@ -134,6 +134,32 @@
     let dialog=byId('academicTimetableDialog');
     if(!dialog){
       dialog=makeDialog('academicTimetableDialog','2026–2027 Akademik Takvim','Elektrik-Elektronik Mühendisliği · Lisans',true);
+      let scrollState=null;
+      const stopBackgroundScroll=event=>{
+        if(dialog.open && !(event.touches?.length>1))event.preventDefault();
+      };
+      dialog.lockBackground=()=>{
+        if(scrollState)return;
+        const root=document.documentElement,body=document.body;
+        scrollState={x:window.scrollX,y:window.scrollY,body:body.style.cssText,root:root.style.cssText};
+        const scrollbar=window.innerWidth-root.clientWidth;
+        const padding=parseFloat(getComputedStyle(body).paddingRight)||0;
+        root.style.overflow='hidden';
+        root.style.overscrollBehavior='none';
+        Object.assign(body.style,{position:'fixed',top:`-${scrollState.y}px`,left:`-${scrollState.x}px`,width:'100%',overflow:'hidden',paddingRight:`${padding+scrollbar}px`});
+        document.addEventListener('wheel',stopBackgroundScroll,{passive:false});
+        document.addEventListener('touchmove',stopBackgroundScroll,{passive:false});
+      };
+      dialog.addEventListener('close',()=>{
+        if(!scrollState)return;
+        document.removeEventListener('wheel',stopBackgroundScroll);
+        document.removeEventListener('touchmove',stopBackgroundScroll);
+        const saved=scrollState;scrollState=null;
+        document.body.style.cssText=saved.body;
+        document.documentElement.style.cssText=saved.root;
+        window.scrollTo({left:saved.x,top:saved.y,behavior:'instant'});
+      });
+
       const dates=[{"date": "01 Eylül 2026", "title": "OBS’de derslerin bölümler tarafından açılması ve ders programlarının ilanı", "sort": "2026-09-01", "term": "Güz"}, {"date": "14-20 Eylül 2026", "title": "Öğrenciler İçin Kayıt Yenileme Başlama ve Bitiş Tarihleri", "sort": "2026-09-14", "term": "Güz"}, {"date": "14-20 Eylül 2026", "title": "Katkı Payı/ Materyal/ Öğrenim Ücreti Yatırma Tarihleri", "sort": "2026-09-14", "term": "Güz"}, {"date": "14-21 Eylül 2026", "title": "Danışman Onayı", "sort": "2026-09-14", "term": "Güz"}, {"date": "16-18 Eylül 2026", "title": "Üniversite Yaşamına Uyum Haftası", "sort": "2026-09-16", "term": "Güz"}, {"date": "21 Eylül-31 Aralık 2026", "title": "Derslerin Başlama ve Bitiş Tarihleri", "sort": "2026-09-21", "term": "Güz"}, {"date": "22 Eylül 2026", "title": "BİLİM ATEŞİ YAKMA TÖRENİ", "sort": "2026-09-22", "term": "Güz"}, {"date": "22 Eylül 2026", "title": "Birim Başkanı Onayı", "sort": "2026-09-22", "term": "Güz"}, {"date": "23-24 Eylül 2026", "title": "Bölümlerde Öğrencilerle Danışmaların Yüz Yüze Görüşme Tarihleri", "sort": "2026-09-23", "term": "Güz"}, {"date": "23-27 Eylül 2026", "title": "Öğrenciler İçin Ders Ekleme Bırakma ve Mazeret Başlama Bitiş Tarihleri", "sort": "2026-09-23", "term": "Güz"}, {"date": "23-28 Eylül 2026", "title": "Danışman Onayı", "sort": "2026-09-23", "term": "Güz"}, {"date": "29 Eylül 2026", "title": "Birim Başkanı Onayı", "sort": "2026-09-29", "term": "Güz"}, {"date": "16 Kasım 2026", "title": "UÖ Yöntemi ile Okutulan 5(ı) Derslerinin Ara Sınav Tarihi", "sort": "2026-11-16", "term": "Güz"}, {"date": "16-22 Kasım 2026", "title": "UÖ Yöntemi ile Okutulan GSS, Üni. Alan Dışı Derslerin Ara Sınav Tarihleri", "sort": "2026-11-16", "term": "Güz"}, {"date": "02-17 Ocak 2027", "title": "Final Sınavı Tarihleri", "sort": "2027-01-02", "term": "Güz"}, {"date": "02-21 Ocak 2027", "title": "Final Sınavı Not Giriş Başlama ve Bitiş Tarihleri", "sort": "2027-01-02", "term": "Güz"}, {"date": "04 Ocak 2027", "title": "UÖ Yöntemi ile Okutulan 5(ı) Derslerinin Final Sınav Tarihi", "sort": "2027-01-04", "term": "Güz"}, {"date": "04-10 Ocak 2027", "title": "UÖ Yöntemi ile Okutulan GSS, Üni. Alan Dışı Derslerin Final Sınav Tarihleri", "sort": "2027-01-04", "term": "Güz"}, {"date": "25 Ocak-02 Şubat 2027", "title": "Bütünleme Sınav Tarihleri", "sort": "2027-01-25", "term": "Güz"}, {"date": "25 Ocak-03 Şubat 2027", "title": "Bütünleme Not Giriş Başlama ve Bitiş Tarihleri", "sort": "2027-01-25", "term": "Güz"}, {"date": "25 Ocak 2027", "title": "UÖ Yöntemi ile Okutulan 5(ı) Derslerinin Bütünleme Sınav Tarihi", "sort": "2027-01-25", "term": "Güz"}, {"date": "25-31 Ocak 2027", "title": "UÖ Yöntemi ile Okutulan GSS, Üni. Alan Dışı Derslerin Bütünleme Sınav Tarihleri", "sort": "2027-01-25", "term": "Güz"}, {"date": "01 Şubat 2027", "title": "OBS’de derslerin bölümler tarafından açılması ve ders programlarının ilanı", "sort": "2027-02-01", "term": "Bahar"}, {"date": "04 Şubat 2027", "title": "Üç Ders Sınav Başvuru Tarihleri", "sort": "2027-02-04", "term": "Güz"}, {"date": "06-12 Şubat 2027", "title": "Üç Ders Sınav Tarihleri", "sort": "2027-02-06", "term": "Güz"}, {"date": "06-14 Şubat 2027", "title": "Üç Ders Sınav Not Giriş Başlama ve Bitiş Tarihleri", "sort": "2027-02-06", "term": "Güz"}, {"date": "08-14 Şubat 2027", "title": "Öğrenciler İçin Kayıt Yenileme Başlama ve Bitiş Tarihleri", "sort": "2027-02-08", "term": "Bahar"}, {"date": "08-14 Şubat 2027", "title": "Katkı Payı/ Materyal/ Öğrenim Ücreti Yatırma Tarihleri", "sort": "2027-02-08", "term": "Bahar"}, {"date": "08-15 Şubat 2027", "title": "Danışman Onayı", "sort": "2027-02-08", "term": "Bahar"}, {"date": "15 Şubat-04 Haziran 2027", "title": "Derslerin Başlama ve Bitiş Tarihleri", "sort": "2027-02-15", "term": "Bahar"}, {"date": "16 Şubat 2027", "title": "Birim Başkanı Onayı", "sort": "2027-02-16", "term": "Bahar"}, {"date": "17-18 Şubat 2027", "title": "Bölümlerde Öğrencilerle Danışmaların Yüz Yüze Görüşme Tarihleri", "sort": "2027-02-17", "term": "Bahar"}, {"date": "17-21 Şubat 2027", "title": "Öğrenciler İçin Ders Ekleme Bırakma ve Mazeret Başlama Bitiş Tarihleri", "sort": "2027-02-17", "term": "Bahar"}, {"date": "17-22 Şubat 2027", "title": "Danışman Onayı", "sort": "2027-02-17", "term": "Bahar"}, {"date": "23 Şubat 2027", "title": "Birim Başkanı Onayı", "sort": "2027-02-23", "term": "Bahar"}, {"date": "12 Nisan 2027", "title": "UÖ Yöntemi ile Okutulan 5(ı) Derslerinin Ara Sınav Tarihi", "sort": "2027-04-12", "term": "Bahar"}, {"date": "12-18 Nisan 2027", "title": "UÖ Yöntemi ile Okutulan GSS, Üni. Alan Dışı Derslerin Ara Sınav Tarihleri", "sort": "2027-04-12", "term": "Bahar"}, {"date": "05-27 Haziran 2027", "title": "Final Sınavı Tarihleri", "sort": "2027-06-05", "term": "Bahar"}, {"date": "05-30 Haziran 2027", "title": "Final Sınavı Not Giriş Başlama ve Bitiş Tarihleri", "sort": "2027-06-05", "term": "Bahar"}, {"date": "12-20 Haziran 2027", "title": "UÖ Yöntemi ile Okutulan GSS, Üni. Alan Dışı Derslerin Final Sınav Tarihleri", "sort": "2027-06-12", "term": "Bahar"}, {"date": "14 Haziran 2027", "title": "UÖ Yöntemi ile Okutulan 5(ı) Derslerinin Final Sınav Tarihi", "sort": "2027-06-14", "term": "Bahar"}, {"date": "03-13 Temmuz 2027", "title": "Bütünleme Sınav Tarihleri", "sort": "2027-07-03", "term": "Bahar"}, {"date": "03-14 Temmuz 2027", "title": "Bütünleme Not Giriş Başlama ve Bitiş Tarihleri", "sort": "2027-07-03", "term": "Bahar"}, {"date": "08-13 Temmuz 2027", "title": "UÖ Yöntemi ile Okutulan GSS, Üni. Alan Dışı Derslerin Bütünleme Sınav Tarihleri", "sort": "2027-07-08", "term": "Bahar"}, {"date": "12 Temmuz 2027", "title": "UÖ Yöntemi ile Okutulan 5(ı) Derslerinin Bütünleme Sınav Tarihi", "sort": "2027-07-12", "term": "Bahar"}, {"date": "16 Temmuz 2027", "title": "Üç Ders Sınav Başvuru Tarihleri", "sort": "2027-07-16", "term": "Bahar"}, {"date": "20-23 Temmuz 2027", "title": "Üç Ders Sınav Tarihleri", "sort": "2027-07-20", "term": "Bahar"}, {"date": "20-25 Temmuz 2027", "title": "Üç Ders Sınav Not Giriş Başlama ve Bitiş Tarihleri", "sort": "2027-07-20", "term": "Bahar"}];
       const counts={};
       const rows=new Map();
@@ -165,6 +191,7 @@
 
     }
     show(dialog);
+    dialog.lockBackground();
     dialog.fitTimetable();
   };
 

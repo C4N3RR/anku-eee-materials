@@ -1,15 +1,15 @@
-const CACHE_NAME = 'anku-eee-shell-v24';
+const CACHE_NAME = 'anku-eee-shell-v25';
 const PRECACHE_URLS = [
   './',
   './index.html',
   './404.html',
   './privacy.html',
   './site.webmanifest',
-  './portal-admin.css?v=20261030-timetable7',
-  './portal-admin.js?v=20261030-timetable7',
+  './portal-admin.css?v=20261030-timetable8',
+  './portal-admin.js?v=20261030-timetable8',
   './portal-config.js',
-  './portal-security.js?v=20261030-timetable7',
-  './app.js?v=20261030-timetable7',
+  './portal-security.js?v=20261030-timetable8',
+  './app.js?v=20261030-timetable8',
   './theme-init.js',
   './analytics-init.js',
   './privacy-controls.js',
