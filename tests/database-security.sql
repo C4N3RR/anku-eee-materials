@@ -11,6 +11,22 @@ begin
  assert has_function_privilege('service_role','public.submit_portal_feedback_secure(jsonb,text)','EXECUTE'),'Gateway RPC permission missing';
  select user_id,email into uid,owner_email from public.portal_admins limit 1;
  assert uid is not null,'No administrator bound';
+ assert public.valid_portal_content('{"staff":[{"id":"staff-1","photo":"assets/staff/photo.jpg","avesisUrl":"https://example.com/profile","personalUrl":""}],"hiddenDrive":["file-1"],"driveEdits":{"file-1":{"name":"Note"}}}'),'Valid asset fields rejected';
+ assert not public.valid_portal_content('{"staff":[{"id":"staff-1","avesisUrl":"javascript:alert(1)"}]}'),'Unsafe staff link accepted';
+ assert not public.valid_portal_content('{"staff":[{"id":"staff-1","photo":{"url":"https://example.com/"}}]}'),'Non-string photo accepted';
+ assert not public.valid_portal_content('{"courses":[{"code":"TST101","year":1,"semester":"guz","banner":"data:text/html,bad"}]}'),'Unsafe banner accepted';
+ assert not public.valid_portal_content('{"hiddenDrive":"file-1"}'),'Non-array hiddenDrive accepted';
+ assert not public.valid_portal_content('{"hiddenDrive":["__proto__"]}'),'Invalid hidden ID accepted';
+ assert not public.valid_portal_content('{"driveEdits":[]}'),'Non-object driveEdits accepted';
+ assert not public.valid_portal_content('{"driveEdits":{"file-1":{"name":17}}}'),'Invalid Drive edit name accepted';
+ assert not public.valid_portal_link('"https://user:secret@example.com/file"',false),'Embedded URL credentials accepted';
+ assert not public.valid_portal_link('"assets/../../other-repo/photo.jpg"',true),'Local asset traversal accepted';
+ -- These counter writes are isolated to this transaction and rolled back below.
+ delete from public.portal_request_limits where bucket='drive-global-minute' or bucket in('drive-minute:'||repeat('b',64),'drive-minute:'||repeat('c',64));
+ for n in 1..40 loop assert public.consume_drive_quota(repeat('b',64)),'Drive allowance too small';end loop;
+ for n in 1..10 loop assert not public.consume_drive_quota(repeat('b',64)),'Drive per-connection limit bypass';end loop;
+ assert (select hits from public.portal_request_limits where bucket='drive-global-minute')=40,'Denied connection consumed global quota';
+ assert public.consume_drive_quota(repeat('c',64)),'One connection exhausted allowance for everyone';
  perform set_config('request.jwt.claims',jsonb_build_object('sub',uid,'email','unrelated@example.test','role','authenticated')::text,true);
  assert public.is_portal_admin(),'Administrator UID binding failed';
  select revision into rev from public.portal_content where id=1;

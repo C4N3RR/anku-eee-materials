@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anku-eee-shell-v13';
+const CACHE_NAME = 'anku-eee-shell-v14';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -6,10 +6,10 @@ const PRECACHE_URLS = [
   './privacy.html',
   './site.webmanifest',
   './portal-admin.css',
-  './portal-admin.js?v=20261029-security2',
+  './portal-admin.js?v=20261029-followup1',
   './portal-config.js',
-  './portal-security.js',
-  './app.js?v=20261029-security2',
+  './portal-security.js?v=20261029-followup1',
+  './app.js?v=20261029-followup1',
   './theme-init.js',
   './analytics-init.js',
   './privacy-controls.js',
@@ -45,7 +45,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+        keys.filter((key) => key.startsWith('anku-eee-shell-') && key !== CACHE_NAME).map((key) => caches.delete(key))
       )
     ).then(() => self.clients.claim())
   );
@@ -71,8 +71,10 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
+          }
           return response;
         })
         .catch(() => caches.match(request).then((cached) => cached || caches.match('./index.html')))

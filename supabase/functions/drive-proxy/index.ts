@@ -1,4 +1,4 @@
-// Public, read-only access to the portal's materials. The Google key never leaves this function.
+// Public portal materials and validated feedback. The Google key never leaves this function.
 const ROOT = '1n9cyf8eSj3OremDKF5BdQIBayaryPofN';
 const FOLDER = 'application/vnd.google-apps.folder';
 const ORIGIN = 'https://c4n3rr.github.io';
@@ -54,9 +54,9 @@ async function buildSnapshot(): Promise<Snapshot> {
   }
   return {tree:await scan(ROOT,0),files,expires:Date.now()+CACHE_MS};
 }
-async function getSnapshot() {
+async function getSnapshot(request: Request) {
   if (snapshot && snapshot.expires > Date.now()) return snapshot;
-  if (!loading) loading=buildSnapshot().then(value => {snapshot=value;return value;}).finally(()=>{loading=undefined;});
+  if (!loading) loading=(async()=>{await checkDriveQuota(request);return await buildSnapshot();})().then(value => {snapshot=value;return value;}).finally(()=>{loading=undefined;});
   return await loading;
 }
 function callerAddress(request: Request) {
@@ -80,6 +80,16 @@ async function rateIdentity(request: Request,key: string,purpose: string) {
 }
 async function serviceRpc(name: string,body: unknown,credentials=serviceCredentials()) {
   return await fetch(credentials.url+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:credentials.key,'Content-Type':'application/json',...(credentials.key.startsWith('ey')?{Authorization:'Bearer '+credentials.key}:{})},body:JSON.stringify(body),signal:AbortSignal.timeout(15000)});
+}
+class DriveQuotaError extends Error {
+  constructor(readonly status: number) {super('Drive request limit');}
+}
+async function checkDriveQuota(request: Request) {
+  const credentials=serviceCredentials();
+  const rateKey=await rateIdentity(request,credentials.key,'anku-drive-v1');
+  const quota=await serviceRpc('consume_drive_quota',{rate_key:rateKey},credentials);
+  if(!quota.ok){await quota.body?.cancel();throw new DriveQuotaError(503);}
+  if(await quota.json()!==true)throw new DriveQuotaError(429);
 }
 async function submitFeedback(request: Request): Promise<Response> {
   if (request.headers.get('origin') !== ORIGIN) return json({error:'Origin not allowed'},403);
@@ -130,25 +140,22 @@ export async function handler(request: Request): Promise<Response> {
   const id=url.searchParams.get('file')||'';
   if(mode==='media'&&!/^[A-Za-z0-9_-]{10,200}$/.test(id))return json({error:'Invalid file'},400);
   if(mode==='tree'&&id)return json({error:'Invalid parameters'},400);
+  const range=request.headers.get('range');
+  if(mode==='media'&&range&&!/^bytes=\d+-\d*$/.test(range))return json({error:'Invalid range'},400);
   try {
-    if(mode==='media'||!snapshot||snapshot.expires<=Date.now()){
-      const credentials=serviceCredentials();
-      const rateKey=await rateIdentity(request,credentials.key,'anku-drive-v1');
-      const quota=await serviceRpc('consume_drive_quota',{rate_key:rateKey},credentials);
-      if(!quota.ok)return json({error:'Dosya bağlantısı şu anda kullanılamıyor.'},503);
-      if(await quota.json()!==true)return json({error:'Çok sık dosya isteği gönderildi. Lütfen biraz bekleyin.'},429);
-    }
-    const current=await getSnapshot();
+    const current=await getSnapshot(request);
     if(mode==='tree')return json({tree:current.tree},200,true);
     if(!current.files.has(id))return json({error:'File is not part of this portal'},404);
-    const range=request.headers.get('range');
-    if(range&&!/^bytes=\d+-\d*$/.test(range))return json({error:'Invalid range'},400);
+    // Invalid IDs/ranges do not consume the shared media allowance. A cold tree rebuild
+    // is charged once through getSnapshot, even when several callers arrive together.
+    await checkDriveQuota(request);
     const upstream=await google('/'+encodeURIComponent(id),{alt:'media',supportsAllDrives:'true'},range?{Range:range}:{});
     const headers: Record<string,string>={...cors,'Cache-Control':'private, max-age=300','X-Content-Type-Options':'nosniff','Content-Security-Policy':"sandbox; default-src 'none'"};
     for(const name of ['content-type','content-length','content-range','accept-ranges']){const value=upstream.headers.get(name);if(value)headers[name]=value;}
     if(!['application/pdf','text/plain'].includes((headers['content-type']||'').split(';')[0]))headers['Content-Disposition']='attachment';
     return new Response(upstream.body,{status:upstream.status,headers});
   } catch(error) {
+    if(error instanceof DriveQuotaError)return json({error:error.status===429?'Çok sık dosya isteği gönderildi. Lütfen biraz bekleyin.':'Dosya bağlantısı şu anda kullanılamıyor.'},error.status);
     // Do not return or log upstream URLs, headers, or credentials.
     return json({error:error instanceof Error&&error.message==='not-configured'?'Drive bağlantısı henüz yapılandırılmadı.':'Drive materyalleri şu anda alınamıyor. Lütfen tekrar deneyin.'},502);
   }

@@ -9,3 +9,5 @@ The final migration revokes the legacy public feedback RPC. The current frontend
 Run `tests/database-security.sql` in the SQL editor to verify policies and functional behavior. It rolls back its test changes. Run `npm ci`, `npm run build:assets`, `npm run test:security`, and `deno test --allow-env supabase/functions/drive-proxy/index_test.ts` for local validation.
 
 The public browser configuration contains only a publishable Supabase key. Google API and service-role credentials belong only in server-side secrets. New JavaScript/CSS dependencies must be pinned and bundled locally; the script CSP intentionally forbids inline handlers and arbitrary CDN scripts.
+
+Drive upstream limits are 40 reads per connection per minute and 600 portal-wide. Rejected connections stop before incrementing the shared counter; cached tree responses do not consume this allowance. The latest migration also validates staff/course links and Drive metadata collection types on the server.

@@ -7,9 +7,9 @@ Deno.test('Drive proxy hides credentials and confines reads to the portal tree',
   Deno.env.set('SUPABASE_SERVICE_ROLE_KEY','ey.test-service-key');Deno.env.set('SUPABASE_URL','https://project.example');
   Deno.env.set('GOOGLE_DRIVE_API_KEY','test-secret-do-not-publish');
   const requests: string[]=[];
-  let failMedia=false;
+  let failMedia=false,quotaDenied=false,quotaCalls=0;
   globalThis.fetch = ((input: string | URL | Request, init?: RequestInit) => {
-    const url=new URL(String(input));if(url.hostname==='project.example')return Promise.resolve(Response.json(true));requests.push(url.href);
+    const url=new URL(String(input));if(url.hostname==='project.example'){quotaCalls++;return Promise.resolve(Response.json(!quotaDenied));}requests.push(url.href);
     assert(!url.searchParams.has('key'),'Google credentials must not appear in URLs');
     assert(new Headers(init?.headers).get('x-goog-api-key')==='test-secret-do-not-publish','Server credential header missing');
     if(url.searchParams.get('alt')==='media') {
@@ -28,14 +28,21 @@ Deno.test('Drive proxy hides credentials and confines reads to the portal tree',
     assert((await handler(new Request(base,{method:'OPTIONS',headers:{Origin:'https://c4n3rr.github.io'}}))).status===204,'Public site preflight failed');
     const trees=await Promise.all([handler(new Request(base)),handler(new Request(base))]);
     assert(requests.length===2,'Concurrent tree calls should share one snapshot build');
+    assert(quotaCalls===1,'Concurrent cold tree calls must consume only one quota slot');
     const data=await trees[0].text();await trees[1].body?.cancel();
     assert(data.includes('Not.pdf')&&!data.includes('test-secret'),'Tree response leaked credential or omitted materials');
-    const before=requests.length;
+    const before=requests.length,quotaBefore=quotaCalls;
     assert((await handler(new Request(base+'?mode=media&file=outside-file-123'))).status===404,'Arbitrary Drive file allowed');
     assert(requests.length===before,'Outside file was fetched upstream');
+    assert(quotaCalls===quotaBefore,'Outside file consumed shared media quota');
     const pdf=await handler(new Request(base+'?mode=media&file=portal-file-123'));
     assert(pdf.status===200&&(await pdf.text()).startsWith('%PDF'),'Portal file stream failed');
+    const rangeQuotaBefore=quotaCalls;
     assert((await handler(new Request(base+'?mode=media&file=portal-file-123',{headers:{Range:'bytes=1-5,10-20'}}))).status===400,'Invalid range accepted');
+    assert(quotaCalls===rangeQuotaBefore,'Malformed range consumed shared quota');
+    const readsBeforeDenial=requests.length;quotaDenied=true;
+    assert((await handler(new Request(base+'?mode=media&file=portal-file-123'))).status===429,'Quota denial ignored');
+    assert(requests.length===readsBeforeDenial,'Denied request reached Google');quotaDenied=false;
     failMedia=true;
     const failed=await handler(new Request(base+'?mode=media&file=portal-file-123'));
     assert(failed.status===502&&!(await failed.text()).includes('test-secret'),'Upstream error leaked credential');

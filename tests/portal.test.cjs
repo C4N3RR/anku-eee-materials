@@ -4,9 +4,10 @@ const dom=new JSDOM(html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,''),{url:
 const w=dom.window,ctx=dom.getInternalVMContext();
 w.Blob=Blob;w.tailwind={};w.matchMedia=()=>({matches:false,addEventListener(){}});w.scrollTo=()=>{};w.lucide={createIcons(){}};w.AbortSignal=AbortSignal;w.structuredClone=structuredClone;
 w.HTMLDialogElement.prototype.showModal=function(){this.open=true};w.HTMLDialogElement.prototype.close=function(){this.open=false};
-let content={},revision=0,feedback=[],failPublish=false,pendingFeedback=null,delayFeedback=false;const writes=[],passwordWrites=[];
+let content={},revision=0,feedback=[],failPublish=false,pendingFeedback=null,delayFeedback=false;const writes=[],passwordWrites=[];let infoReads=0;
 w.fetch=async(url,opt={})=>{let data={},code=200;const body=opt.body?JSON.parse(opt.body):{};const auth=opt.headers?.Authorization;
- if(url.includes('mode=feedback')){feedback.push({...body,id:'fb-1',created_at:new Date().toISOString(),status:'yeni'});data={ok:true};}
+ if(url.includes('mode=media')){infoReads++;data={};}
+ else if(url.includes('mode=feedback')){feedback.push({...body,id:'fb-1',created_at:new Date().toISOString(),status:'yeni'});data={ok:true};}
  else if(url.includes('/functions/v1/drive-proxy'))data={tree:[{id:'drive-course',name:'CHM109',mimeType:'application/vnd.google-apps.folder',children:[{id:'note-1',name:'Orijinal not.pdf',mimeType:'application/pdf',size:'123'}]}]};
  else if(url.includes('googleapis.com'))data={files:new URL(url).searchParams.get('q').includes("'drive-course'")?[{id:'note-1',name:'Orijinal not.pdf',mimeType:'application/pdf',size:'123'}]:[{id:'drive-course',name:'CHM109',mimeType:'application/vnd.google-apps.folder'}]};
  else if(url.includes('/portal_content?'))data=[{content,revision}];
@@ -18,6 +19,7 @@ w.fetch=async(url,opt={})=>{let data={},code=200;const body=opt.body?JSON.parse(
  else if(url.includes('/auth/v1/user')){passwordWrites.push(body);data={email:'admin@example.test'};}
  return {ok:code<400,status:code,json:async()=>data,text:async()=>JSON.stringify(data)};
 };
+w.localStorage.setItem('anku_tree_cache_v3',JSON.stringify({folderId:'1n9cyf8eSj3OremDKF5BdQIBayaryPofN',tree:[{id:'drive-course',name:'CHM109',mimeType:'application/vnd.google-apps.folder',children:[{id:'legacy-info-file',name:'info.txt',mimeType:'text/plain'}]}],time:Date.now()}));
 for(const file of ['portal-security.js','theme-init.js','portal-config.js','analytics-init.js','app.js','portal-admin.js'])vm.runInContext(fs.readFileSync(root+'/'+file,'utf8'),ctx);
 const tick=()=>new Promise(r=>setTimeout(r,30));const el=id=>w.document.getElementById(id);const submit=form=>(assert(form.checkValidity(),'Form validity: '+form.id),form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true})));
 const set=(form,name,value)=>form.elements.namedItem(name).value=value;
@@ -26,7 +28,8 @@ const clickTab=name=>w.document.querySelector(`[data-tab="${name}"]`).click();
  assert.equal(await vm.runInContext("validPdfBlob(new Blob(['<html>'],{type:'text/html'}))",ctx),false);
  assert.equal(await vm.runInContext("validPdfBlob(new Blob(['<html>'],{type:'application/pdf'}))",ctx),false);
  assert.equal(await vm.runInContext("validPdfBlob(new Blob(['%PDF-1.7'],{type:'application/pdf'}))",ctx),true);
- await tick();assert.equal(vm.runInContext('getAcademicEvents().length',ctx),0);assert.equal(w.portalCanEdit(),false);
+ assert.equal(infoReads,0,'Cached tree must not start legacy info.txt reads before shared content loads');
+ await tick();assert.equal(infoReads,0);assert.equal(vm.runInContext('getAcademicEvents().length',ctx),0);assert.equal(w.portalCanEdit(),false);
  const originalViewer=w.openViewerModal;let captured=null;w.openViewerModal=(...args)=>{captured=args;};
  const attack="'); window.__xss=true; //";
  const markup=vm.runInContext('renderFileItem('+JSON.stringify({id:'safe-file-id',name:'<img src=x onerror=alert(1)>',mimeType:'application/pdf',webViewLink:'javascript:alert(1)'})+','+JSON.stringify(attack)+')',ctx);
@@ -40,7 +43,7 @@ const clickTab=name=>w.document.querySelector(`[data-tab="${name}"]`).click();
  clickTab('resources');el('portalAdminDialog').querySelector('[data-add]').click();form=el('portalRecordForm');set(form,'title','Test kaynak');set(form,'courseCode','TST101');set(form,'url','https://example.com/notes.pdf');set(form,'kind','not');submit(form);el('portalPublish').click();await tick();assert.equal(vm.runInContext("courseMetadata.TST101.links[0].title",ctx),'Test kaynak');
  clickTab('general');form=el('portalGeneralForm');set(form,'name','Test portal adı');submit(form);failPublish=true;el('portalPublish').click();await tick();assert.match(el('portalPublishStatus').textContent,/Çakışma/);assert.notEqual(content.general.name,'Test portal adı');failPublish=false;el('portalDiscard').click();await tick();assert.equal(el('portalPublish').disabled,true);
  clickTab('events');el('portalAdminDialog').querySelector('[data-remove]').click();el('portalPublish').click();await tick();assert.equal(w.portalEvents().length,0);
- clickTab('staff');el('portalAdminDialog').querySelector('[data-add]').click();form=el('portalRecordForm');set(form,'name','Eklenen görevli');set(form,'email','staff@example.test');submit(form);el('portalPublish').click();await tick();assert(vm.runInContext("STAFF_DATA.some(s=>s.name==='Eklenen görevli')",ctx));
+ clickTab('staff');el('portalAdminDialog').querySelector('[data-add]').click();form=el('portalRecordForm');set(form,'name','Eklenen görevli');set(form,'email','staff@example.test');set(form,'photo','assets/../../other/photo.jpg');submit(form);assert(el('portalRecordDialog').open);assert.match(el('portalRecordStatus').textContent,/Görsel/);set(form,'photo','./assets/staff/test.jpg');submit(form);el('portalPublish').click();await tick();assert(vm.runInContext("STAFF_DATA.some(s=>s.name==='Eklenen görevli')",ctx));
  clickTab('drive');let driveRow=el('portalAdminDialog').querySelector('[data-drive="note-1"]');assert(driveRow,'Drive test file loaded');driveRow.querySelector('[data-rename]').click();form=el('portalRenameForm');set(form,'name','Düzenlenen not.pdf');submit(form);el('portalPublish').click();await tick();assert.equal(vm.runInContext("getCourseNodeByCode('CHM109').children[0].name",ctx),'Düzenlenen not.pdf');
  driveRow=el('portalAdminDialog').querySelector('[data-drive="note-1"]');driveRow.querySelector('[data-toggle]').click();el('portalPublish').click();await tick();assert.equal(vm.runInContext("getCourseNodeByCode('CHM109').children.length",ctx),0);
  driveRow=el('portalAdminDialog').querySelector('[data-drive="note-1"]');driveRow.querySelector('[data-toggle]').click();el('portalPublish').click();await tick();assert.equal(vm.runInContext("getCourseNodeByCode('CHM109').children.length",ctx),1);

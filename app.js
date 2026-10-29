@@ -1431,40 +1431,6 @@ const CONFIG = {
       return PortalSecurity.tree(data.tree);
     }
 
-    async function parseInfoTxt(fileNode, courseCode) {
-      try {
-        const id = realId(fileNode);
-        const res = await fetch(DRIVE_PROXY + '?mode=media&file=' + encodeURIComponent(id), { headers: DRIVE_HEADERS });
-        if (!res.ok) return;
-        const text = await res.text();
-        if (window.portalSharedContentReady) return;
-
-        const lines = text.split('\n');
-        const meta = courseMetadata[courseCode] || { links: [] };
-
-        lines.forEach(line => {
-          const l = line.trim();
-          if (!l || l.startsWith('#')) return;
-
-          if (/^(hoca|instructor):/i.test(l)) {
-            meta.instructor = l.replace(/^(hoca|instructor):/i, '').trim();
-          } else if (/^(email|mail):/i.test(l)) {
-            meta.email = l.replace(/^(email|mail):/i, '').trim();
-          } else if (/^(kredi|akts|credits):/i.test(l)) {
-            meta.credits = l.replace(/^(kredi|akts|credits):/i, '').trim();
-          } else if (/^(link|buton):\s*(.*?)\s*\|\s*(http.*)/i.test(l)) {
-            const m = l.match(/^(link|buton):\s*(.*?)\s*\|\s*(http.*)/i);
-            if (m && !meta.links.some(x => x.url === m[3])) {
-              meta.links.push({ title: m[2].trim(), url: m[3].trim(), icon: 'external-link' });
-            }
-          }
-        });
-
-        courseMetadata[courseCode] = meta;
-        localStorage.setItem('anku_course_meta_v11', JSON.stringify(courseMetadata));
-      } catch (e) {}
-    }
-
     // ================= LOADING STATE & DYNAMIC META =================
     function renderLoadingSkeleton() {
       const container = $('courseHubView');
@@ -1623,15 +1589,6 @@ const CONFIG = {
       $('mainContainer')?.setAttribute('aria-busy', 'false');
       syncCourseFromHash();
       renderSidebarCourses();
-
-      (driveTree || []).forEach(node => {
-        if (realMime(node) === FOLDER_MIME && node.children) {
-          const infoNode = node.children.find(f => /^(info|bilgi)\.(txt|json)$/i.test(f.name));
-          if (infoNode && !window.portalSharedContentReady) {
-            parseInfoTxt(infoNode, node.name.toUpperCase().trim());
-          }
-        }
-      });
 
       const totalFiles = countFilesInFolder(driveTree);
       $('totalFilesBadge').textContent = `${totalFiles} dosya`;

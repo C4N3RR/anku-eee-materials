@@ -16,9 +16,17 @@ test('Unsafe links and frame destinations are rejected',()=>{
  assert.equal(s.frameUrl('https://attacker.example/'),'about:blank');assert.equal(s.frameUrl('https://drive.google.com/file/d/test/preview'),'https://drive.google.com/file/d/test/preview');
  dom.window.close();
 });
+test('Images accept local asset paths and reject traversal outside the portal',()=>{
+ const dom=setup(),s=dom.window.PortalSecurity;
+ for(const value of ['assets/staff/test.jpg','./assets/staff/test.jpg','/anku-eee-materials/assets/staff/test.jpg'])assert.equal(s.image(value),'https://c4n3rr.github.io/anku-eee-materials/assets/staff/test.jpg');
+ for(const value of ['assets/../../other-repo/test.jpg','assets/%2e%2e/%2e%2e/other/test.jpg','assets/%2e%2e%2f%2e%2e%2fother/test.jpg','/other-repo/test.jpg','https://c4n3rr.github.io/other-repo/test.jpg','javascript:alert(1)'])assert.equal(s.image(value),'',value);
+ assert.equal(s.image('https://example.com/photo.jpg'),'https://example.com/photo.jpg');
+ dom.window.close();
+});
 test('Published content rejects malformed collections, dangerous schemes, IDs and prototype keys',()=>{
  const dom=setup(),s=dom.window.PortalSecurity,defaults={courses:[],staff:[],resources:[],sidebar:[],events:[],hiddenDrive:[],driveEdits:{},general:{name:'Portal',description:'',footer:''}};
  const source=JSON.parse('{"__proto__":{"polluted":true},"courses":[{"code":"bad code","year":1}],"staff":[{"id":"constructor","name":"Bad"}],"resources":[{"id":"link-1","courseCode":"CHM109","url":"javascript:alert(1)"}],"sidebar":[],"events":[{"id":"event-1","date":"injected","courseCode":"GENEL"}],"driveEdits":{"__proto__":{"name":"Injected"}}}');
+ const resource=s.content({resources:[{id:'resource-1',courseCode:'CHM109',url:'https://example.com/',icon:'./assets/link-icons/ptable.png'}]},defaults);assert.equal(s.content(resource,defaults).resources[0].icon,resource.resources[0].icon,'Image normalization must be stable across publication and reload');
  const clean=s.content(source,defaults);assert.equal(clean.courses.length,0);assert.equal(clean.staff.length,0);assert.equal(clean.resources.length,0);assert.equal(clean.events.length,0);assert.equal(Object.keys(clean.driveEdits).length,0);assert.equal({}.polluted,undefined);
  dom.window.close();
 });

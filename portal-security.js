@@ -24,7 +24,21 @@
   const id = v => typeof v==='string' && /^[a-zA-Z0-9_-]{1,100}$/.test(v) && !['__proto__','constructor','prototype'].includes(v);
   const code = v => typeof v==='string' && /^[A-Z0-9_-]{2,30}$/.test(v);
   const icon = v => typeof v==='string' && /^[a-z0-9-]{1,50}$/.test(v) ? v : 'book-open';
-  const image = v => url(v,'');
+  const assetRoot = new URL('.', document.querySelector('script[src*="portal-security.js"]')?.src || location.href).pathname;
+  function image(value) {
+    const resolved=url(value,'');if(!resolved)return '';
+    try {
+      const decoded=decodeURIComponent(value);
+      if(decoded.split(/[\\/]/).includes('..') || decoded.includes('\\'))return '';
+      const parsed=new URL(resolved);
+      if(parsed.origin===location.origin){
+        const path=decodeURIComponent(parsed.pathname);
+        if(!path.startsWith(assetRoot+'assets/')&&!path.startsWith(assetRoot+'bannerlar/'))return '';
+        if(path.split('/').includes('..'))return '';
+      }
+      return resolved;
+    } catch {return '';}
+  }
   const email = v => typeof v==='string' && /^[^\s<>"'@]+@[^\s<>"'@]+\.[^\s<>"'@]+$/.test(v) ? v.slice(0,254) : '';
   function stored(key,fallback=null) { try { const raw=localStorage.getItem(key);return raw?JSON.parse(raw):fallback; } catch {return fallback;} }
   function content(input, defaults) {
@@ -38,7 +52,7 @@
       ...(code(c.sourceCode)?{sourceCode:c.sourceCode}:{})
     }));
     result.staff=list('staff',500).filter(s=>id(s.id)).map(s=>({id:s.id,name:text(s.name),title:text(s.title,100),category:['faculty','assistant','parttime','service'].includes(s.category)?s.category:'faculty',email:email(s.email),phone:text(s.phone,100),room:text(s.room,100),role:text(s.role,150),photo:image(s.photo),avesisUrl:url(s.avesisUrl,''),personalUrl:url(s.personalUrl,''),courses:Array.isArray(s.courses)?s.courses.filter(code):[]}));
-    result.resources=list('resources',3000).filter(r=>id(r.id)&&code(r.courseCode)&&url(r.url,'')).map(r=>({id:r.id,courseCode:r.courseCode,title:text(r.title),kind:['kitap','not','site'].includes(r.kind)?r.kind:'site',url:url(r.url),icon:typeof r.icon==='string'&&r.icon.startsWith('assets/')?image(r.icon):icon(r.icon)}));
+    result.resources=list('resources',3000).filter(r=>id(r.id)&&code(r.courseCode)&&url(r.url,'')).map(r=>({id:r.id,courseCode:r.courseCode,title:text(r.title),kind:['kitap','not','site'].includes(r.kind)?r.kind:'site',url:url(r.url),icon:image(r.icon)||icon(r.icon)}));
     result.sidebar=list('sidebar',100).filter(l=>id(l.id)&&url(l.url,'')).map(l=>({id:l.id,title:text(l.title),url:url(l.url)}));
     result.events=list('events',3000).filter(e=>id(e.id)&&/^\d{4}-\d{2}-\d{2}$/.test(e.date)&&!Number.isNaN(Date.parse(e.date))&&(e.courseCode==='GENEL'||code(e.courseCode))).map(e=>({id:e.id,title:text(e.title),courseCode:e.courseCode,date:e.date,time:typeof e.time==='string'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(e.time)?e.time:'',location:text(e.location)}));
     result.hiddenDrive=Array.isArray(source.hiddenDrive)?source.hiddenDrive.filter(id).slice(0,5000):defaults.hiddenDrive;

@@ -223,7 +223,7 @@
       try{
         const record={...item,...data};
         ['url','avesisUrl','personalUrl'].forEach(k=>{if(k in record)record[k]=safeUrl(record[k]);});
-        ['photo','banner'].forEach(k=>{if(record[k]&&!record[k].startsWith('assets/')&&!record[k].startsWith('bannerlar/'))record[k]=safeUrl(record[k],false);});
+        ['photo','banner'].forEach(k=>{if(k in record){const normalized=PortalSecurity.image(record[k]);if(record[k]&&!normalized)throw new Error('Görsel için geçerli bir bağlantı veya bu sitenin assets/ ya da bannerlar/ yolunu kullan.');record[k]=normalized;}});
         if(type==='courses'){
           record.code=record.code.toUpperCase().trim();if(!/^[A-Z0-9_-]{2,30}$/.test(record.code))throw new Error('Ders kodu 2–30 harf, rakam, tire veya alt çizgi içermeli.');
           if(draft.courses.some(c=>c.code===record.code&&c.code!==id))throw new Error('Bu ders kodu zaten var.');
