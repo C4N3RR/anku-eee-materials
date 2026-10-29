@@ -74,7 +74,7 @@ select[multiple].portal-input { min-height:110px; }
 #academicTimetableDialog .portal-modal-head h2 { font-size:13px; }
 #academicTimetableDialog .portal-modal-head p { display:none; }
 #academicTimetableDialog .portal-modal-body { position:relative; flex:1; min-height:0; padding:0; margin:0 12px 12px; overflow:hidden; }
-.academic-sheet { width:1200px; position:absolute; top:0; left:50%; margin-left:-600px; transform-origin:top center; color:var(--foreground); }
+.academic-sheet { width:1080px; position:absolute; top:0; left:50%; margin-left:-540px; transform-origin:top center; color:var(--foreground); }
 .academic-table { width:100%; table-layout:fixed; border-collapse:collapse; font-size:13px; line-height:1.25; }
 .academic-table caption { border:1px solid var(--border); border-bottom:0; background:var(--muted); color:var(--foreground); padding:9px; font-size:16px; font-weight:700; line-height:1.35; letter-spacing:.4px; }
 .academic-table th,.academic-table td { border:1px solid var(--border); padding:4px 8px; }

@@ -146,16 +146,16 @@
         if(e.title==='Danışman Onayı'||e.title==='Birim Başkanı Onayı')row.title=e.title+(occurrence===1?' (Kayıt yenileme)':' (Ders ekleme / bırakma)');
       });
       const body=dialog.querySelector('.portal-modal-body');
-      body.innerHTML=`<div class="academic-sheet"><table class="academic-table"><caption>ANKARA ÜNİVERSİTESİ<br>ELEKTRİK-ELEKTRONİK MÜHENDİSLİĞİ<br>2026–2027 EĞİTİM-ÖĞRETİM YILI AKADEMİK TAKVİMİ</caption><colgroup><col style="width:50%"><col style="width:25%"><col style="width:25%"></colgroup><thead><tr><th scope="col">OLAY / İŞLEM</th><th scope="col">GÜZ YARIYILI</th><th scope="col">BAHAR YARIYILI</th></tr></thead><tbody>${[...rows.values()].map(e=>`<tr class="${['Derslerin Başlama ve Bitiş Tarihleri','BİLİM ATEŞİ YAKMA TÖRENİ','Final Sınavı Tarihleri','Bütünleme Sınav Tarihleri'].includes(e.title)?'academic-highlight':''}"><th scope="row">${escape(e.title)}</th><td>${escape(e.Güz||'—')}</td><td>${escape(e.Bahar||'—')}</td></tr>`).join('')}</tbody></table><div class="academic-footnotes"><p>• Uyum haftası: yeni başlayan 1. sınıf öğrencileri için zorunludur.</p><p>• UÖ sınav tarihleri yalnızca ilgili uzaktan öğretim derslerini alan öğrenciler içindir.</p><p>—: Bu yarıyıl için tarih belirtilmemiştir. Bölüm ara sınavları ayrıca ilan edilir.</p><p>Kaynak: Ankara Üniversitesi 2026–2027 genel lisans akademik takvimi, s. 1–2.</p></div></div>`;
+      body.innerHTML=`<div class="academic-sheet"><table class="academic-table"><caption>ANKARA ÜNİVERSİTESİ<br>ELEKTRİK-ELEKTRONİK MÜHENDİSLİĞİ<br>2026–2027 EĞİTİM-ÖĞRETİM YILI AKADEMİK TAKVİMİ</caption><colgroup><col><col style="width:264px"><col style="width:264px"></colgroup><thead><tr><th scope="col">OLAY / İŞLEM</th><th scope="col">GÜZ YARIYILI</th><th scope="col">BAHAR YARIYILI</th></tr></thead><tbody>${[...rows.values()].map(e=>`<tr class="${['Derslerin Başlama ve Bitiş Tarihleri','BİLİM ATEŞİ YAKMA TÖRENİ','Final Sınavı Tarihleri','Bütünleme Sınav Tarihleri'].includes(e.title)?'academic-highlight':''}"><th scope="row">${escape(e.title)}</th><td>${escape(e.Güz||'—')}</td><td>${escape(e.Bahar||'—')}</td></tr>`).join('')}</tbody></table><div class="academic-footnotes"><p>• Uyum haftası: yeni başlayan 1. sınıf öğrencileri için zorunludur.</p><p>• UÖ sınav tarihleri yalnızca ilgili uzaktan öğretim derslerini alan öğrenciler içindir.</p><p>—: Bu yarıyıl için tarih belirtilmemiştir. Bölüm ara sınavları ayrıca ilan edilir.</p><p>Kaynak: Ankara Üniversitesi 2026–2027 genel lisans akademik takvimi, s. 1–2.</p></div></div>`;
       const sheet=body.querySelector('.academic-sheet');
       const fit=()=>{
         if(!dialog.open)return;
         const viewportHeight=window.visualViewport?.height||window.innerHeight;
         const headerHeight=dialog.querySelector('.portal-modal-head').getBoundingClientRect().height;
         const availableHeight=Math.max(1,viewportHeight*.96-headerHeight-14);
-        const scale=Math.min((document.documentElement.clientWidth*.98-26)/1200,availableHeight/sheet.offsetHeight,1);
+        const scale=Math.min((document.documentElement.clientWidth*.98-26)/sheet.offsetWidth,availableHeight/sheet.offsetHeight,1);
         sheet.style.transform=`scale(${scale})`;
-        dialog.style.width=`${Math.ceil(1200*scale)+26}px`;
+        dialog.style.width=`${Math.ceil(sheet.offsetWidth*scale)+26}px`;
         dialog.style.height=`${Math.ceil(sheet.offsetHeight*scale)+headerHeight+14}px`;
       };
       dialog.fitTimetable=fit;
