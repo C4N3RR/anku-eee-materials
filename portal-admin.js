@@ -150,13 +150,18 @@
       const sheet=body.querySelector('.academic-sheet');
       const fit=()=>{
         if(!dialog.open)return;
-        const scale=Math.min((document.documentElement.clientWidth*.98-26)/1200,body.clientHeight/sheet.offsetHeight,1);
+        const viewportHeight=window.visualViewport?.height||window.innerHeight;
+        const headerHeight=dialog.querySelector('.portal-modal-head').getBoundingClientRect().height;
+        const availableHeight=Math.max(1,viewportHeight*.96-headerHeight-14);
+        const scale=Math.min((document.documentElement.clientWidth*.98-26)/1200,availableHeight/sheet.offsetHeight,1);
         sheet.style.transform=`scale(${scale})`;
         dialog.style.width=`${Math.ceil(1200*scale)+26}px`;
+        dialog.style.height=`${Math.ceil(sheet.offsetHeight*scale)+headerHeight+14}px`;
       };
       dialog.fitTimetable=fit;
       new ResizeObserver(fit).observe(body);
       window.addEventListener('resize',fit);
+      window.visualViewport?.addEventListener('resize',fit);
 
     }
     show(dialog);
