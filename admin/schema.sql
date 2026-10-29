@@ -1,3 +1,6 @@
+-- Historical baseline. For a fresh installation, apply this file, then ALL files in
+-- supabase/migrations/ in filename order before exposing the project to the public.
+-- Never reapply this baseline to an existing hardened project. See admin/README.md.
 -- ANKU EEE Portal: public content, private feedback, server-enforced administration.
 create table if not exists public.portal_admins (
   email text primary key check (email = lower(email))

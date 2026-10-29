@@ -1,6 +1,7 @@
 (() => {
   'use strict';
   const backend = window.PORTAL_BACKEND;
+  localStorage.removeItem('anku_feedback_client');
   const copy = value => JSON.parse(JSON.stringify(value));
   const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const byId = id => document.getElementById(id);
@@ -10,7 +11,7 @@
   const safeUrl = (value, optional = true) => {
     if (!value && optional) return '';
     const url = new URL(value);
-    if (!['https:', 'http:'].includes(url.protocol)) throw new Error('Bağlantılar https:// veya http:// ile başlamalı.');
+    if (!['https:', 'http:'].includes(url.protocol) || url.username || url.password) throw new Error('Bağlantılar https:// veya http:// ile başlamalı.');
     return url.href;
   };
   const defaults = {
@@ -25,6 +26,15 @@
   let session = null;
   try { session = JSON.parse(sessionStorage.getItem('anku_admin_session') || 'null'); } catch {}
   let refreshPromise = null;
+  let sessionEpoch = 0;
+  let lastAdminActivity = Date.now();
+  function endAdminSession() {
+    sessionEpoch++;storeSession(null);admin=false;draft=null;
+    for(const name of ['portalAdminDialog','portalRecordDialog']) { const dialog=byId(name);if(dialog?.open)dialog.close();const body=dialog?.querySelector('.portal-modal-body');if(body)body.replaceChildren(); }
+    byId('portalLoginForm')?.reset();byId('portalPasswordForm')?.reset();
+  }
+  for(const type of ['pointerdown','keydown'])document.addEventListener(type,()=>{if(admin)lastAdminActivity=Date.now();},{passive:true});
+  setInterval(()=>{if(admin && Date.now()-lastAdminActivity>30*60*1000){endAdminSession();renderPublic();}},30000);
   function storeSession(data) {
     session = data ? {...data, expires_at:data.expires_at || (Date.now()/1000 + (data.expires_in||3600))} : null;
     if (session) sessionStorage.setItem('anku_admin_session', JSON.stringify(session));
@@ -35,17 +45,21 @@
     el.textContent = message; el.dataset.error = String(error);
   }
   async function request(path, {method='GET', body, auth=false, headers={}} = {}) {
+    const requestEpoch=sessionEpoch;
     if (!backend?.url || !backend?.key) throw new Error('Bağlantı henüz hazır değil. Lütfen daha sonra tekrar deneyin.');
     if (auth && session && session.expires_at < Date.now()/1000 + 60) {
       if (!refreshPromise) refreshPromise = request('/auth/v1/token?grant_type=refresh_token', {method:'POST',body:{refresh_token:session.refresh_token}})
-        .then(storeSession).catch(error => {storeSession(null);admin=false;throw error;}).finally(()=>{refreshPromise=null;});
+        .then(data=>{if(requestEpoch!==sessionEpoch)throw new Error('Oturum kapatıldı.');storeSession(data);}).catch(error => {endAdminSession();throw error;}).finally(()=>{refreshPromise=null;});
       await refreshPromise;
     }
     if (auth && !session?.access_token) throw new Error('Yönetici oturumunuz sona erdi. Yeniden giriş yapın.');
     const response = await fetch(backend.url + path, {method, headers:{apikey:backend.key,'Content-Type':'application/json',...(auth?{Authorization:`Bearer ${session.access_token}`} : {}),...headers},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(18000)});
-    const text = await response.text(); let result;
+    const text = await response.text();
+    if(auth&&requestEpoch!==sessionEpoch)throw new Error('Oturum kapatıldı.');
+    let result;
     try {result=text?JSON.parse(text):null;} catch {result=null;}
     if (!response.ok) {
+      if(auth && response.status===401)endAdminSession();
       const message = result?.msg || result?.message || result?.error_description || result?.error;
       throw new Error(message || 'İşlem tamamlanamadı. Lütfen bağlantınızı kontrol edip tekrar deneyin.');
     }
@@ -127,7 +141,7 @@
       const data=Object.fromEntries(new FormData(form));delete data.website;
       if(data.message.trim().length<10)return status('portalFeedbackStatus','Lütfen en az 10 karakter yaz.',true);
       const button=form.querySelector('[type=submit]');button.disabled=true;status('portalFeedbackStatus','Gönderiliyor…');
-      try{data.url=safeUrl(data.url);let token=localStorage.getItem('anku_feedback_client');if(!token){token=uid();localStorage.setItem('anku_feedback_client',token);}await request('/rest/v1/rpc/submit_portal_feedback',{method:'POST',body:{...data,client_token:token}});form.reset();status('portalFeedbackStatus','Mesajın yöneticiye ulaştı. Teşekkürler!');}
+      try{data.url=safeUrl(data.url);await request('/functions/v1/drive-proxy?mode=feedback',{method:'POST',body:data});form.reset();status('portalFeedbackStatus','Mesajın yöneticiye ulaştı. Teşekkürler!');}
       catch(error){status('portalFeedbackStatus',error.message,true);}finally{button.disabled=false;}
     };
     show(feedbackDialog);toggleMobileSidebar(false);
@@ -138,7 +152,7 @@
     settingsDialog.querySelector('.portal-modal-body').innerHTML=`<div class="portal-form"><div class="portal-admin-row"><div><h3>Görünüm</h3><p>Açık ve koyu tema arasında geçiş yap.</p></div><button type="button" class="portal-btn" id="portalTheme">Temayı değiştir</button></div><div class="portal-admin-row"><div><h3>${admin?'Yönetici hesabı':'Admin girişi'}</h3><p>${admin?escape(session?.user?.email||'Yönetici oturumu açık'):'İçerikleri, önerileri ve takvimi yönet.'}</p></div><button type="button" class="portal-btn portal-btn-primary" id="portalOpenAdmin">${admin?'Paneli aç':'Giriş yap'}</button></div>${admin?`<button type="button" class="portal-btn" id="portalLogout">Çıkış yap</button>`:''}<div id="portalSettingsStatus" role="status" class="portal-status"></div></div>`;
     byId('portalTheme').onclick=()=>byId('themeToggleBtn').click();
     byId('portalOpenAdmin').onclick=()=>{settingsDialog.close();admin?openAdmin():openLogin();};
-    if(admin)byId('portalLogout').onclick=async()=>{try{await request('/auth/v1/logout',{method:'POST',auth:true});}catch{}storeSession(null);admin=false;renderPublic();openSettings();};
+    if(admin)byId('portalLogout').onclick=async()=>{try{await request('/auth/v1/logout',{method:'POST',auth:true});}catch{}endAdminSession();renderPublic();openSettings();};
     show(settingsDialog);
   }
   byId('portalSettingsButton').onclick=openSettings;
@@ -147,8 +161,8 @@
     loginDialog.querySelector('.portal-modal-body').innerHTML=`<form id="portalLoginForm" class="portal-form">${field('email','E-posta','email','',null,true)}${field('password','Şifre','password')}<div class="portal-actions"><button type="submit" class="portal-btn portal-btn-primary">Giriş yap</button></div><p class="portal-help">Yönetici hesabının e-posta adresi ve şifresiyle giriş yap. Öğrencilerin hesap açması gerekmez.</p><p id="portalLoginStatus" class="portal-status" role="status" aria-live="polite"></p></form>`;
     byId('portalLoginForm').onsubmit=async e=>{
       e.preventDefault();const form=e.currentTarget,button=form.querySelector('[type=submit]');button.disabled=true;
-      try{if(!form.elements.password.value)throw new Error('Lütfen yönetici şifreni yaz.');status('portalLoginStatus','Giriş yapılıyor…');storeSession(await request('/auth/v1/token?grant_type=password',{method:'POST',body:{email:form.elements.email.value.trim(),password:form.elements.password.value}}));await checkAdmin();if(!admin){storeSession(null);throw new Error('Bu hesabın yönetici yetkisi bulunmuyor.');}loginDialog.close();renderPublic();openAdmin();}
-      catch(error){status('portalLoginStatus',error.message,true);}finally{button.disabled=false;}
+      try{if(!form.elements.password.value)throw new Error('Lütfen yönetici şifreni yaz.');status('portalLoginStatus','Giriş yapılıyor…');storeSession(await request('/auth/v1/token?grant_type=password',{method:'POST',body:{email:form.elements.email.value.trim(),password:form.elements.password.value}}));await checkAdmin();if(!admin){storeSession(null);throw new Error('Bu hesabın yönetici yetkisi bulunmuyor.');}form.reset();lastAdminActivity=Date.now();loginDialog.close();renderPublic();openAdmin();}
+      catch(error){status('portalLoginStatus',error.message,true);}finally{form.elements.password.value='';button.disabled=false;}
     };
     show(loginDialog);
   }
@@ -165,7 +179,7 @@
   byId('portalDiscard').onclick=async()=>{try{await loadPublished();draft=copy(published);renderAdmin();}catch(error){status('portalPublishStatus',error.message,true);}};
   byId('portalPublish').onclick=async()=>{
     if(!admin||busy||!dirty())return;busy=true;updateDirty();status('portalPublishStatus','Yayımlanıyor…');
-    try{revision=await request('/rest/v1/rpc/save_portal_content',{method:'POST',auth:true,body:{new_content:draft,expected_revision:revision}});published=copy(draft);applyContent();status('portalPublishStatus','Yayımlandı. Değişiklikler tüm ziyaretçilere açık.');}
+    try{revision=await request('/rest/v1/rpc/save_portal_content',{method:'POST',auth:true,body:{new_content:PortalSecurity.content(draft,copy(defaults)),expected_revision:revision}});published=PortalSecurity.content(draft,copy(defaults));draft=copy(published);applyContent();status('portalPublishStatus','Yayımlandı. Değişiklikler tüm ziyaretçilere açık.');}
     catch(error){status('portalPublishStatus',error.message,true);}finally{busy=false;byId('portalPublish').disabled=!dirty();byId('portalDiscard').disabled=!dirty();}
   };
   function renderAdmin(){
@@ -240,20 +254,20 @@
     body.innerHTML='<p class="portal-help">Öneriler yükleniyor…</p>';
     try{
       const rows=await request(`/rest/v1/portal_feedback?select=id,course_code,kind,message,url,name,email,status,created_at&order=created_at.desc&limit=30&offset=${feedbackPage*30}`,{auth:true});
-      if(tab!=='feedback')return;
+      if(tab!=='feedback'||!admin||!session)return;
       body.innerHTML=`<div class="portal-admin-toolbar"><p class="portal-help">Öğrencilerin gönderdiği istek ve görüşler · Sayfa ${feedbackPage+1}</p><button class="portal-btn" data-refresh>Yenile</button></div><div class="portal-admin-list">${rows.length?rows.map(r=>`<article class="portal-feedback-card"><div class="portal-actions" style="justify-content:space-between"><strong style="font-size:12px">${escape(r.course_code)} · ${escape(({kitap:'Kitap',not:'Not',site:'Site',gorus:'Görüş'})[r.kind])}</strong><span class="portal-help">${escape(new Date(r.created_at).toLocaleString('tr-TR'))}</span></div><p class="portal-feedback-message">${escape(r.message)}</p>${r.url?`<a class="portal-help" href="${escape(safeUrl(r.url,false))}" target="_blank" rel="noopener noreferrer">Kaynak bağlantısını aç ↗</a>`:''}<p class="portal-help">${escape(r.name||'İsimsiz')} ${escape(r.email||'')}</p><label class="portal-field" style="margin-top:10px">Durum<select class="portal-input" data-feedback-id="${escape(r.id)}">${[['yeni','Yeni'],['inceleniyor','İnceleniyor'],['tamamlandi','Tamamlandı'],['arsiv','Arşiv']].map(([v,l])=>`<option value="${v}" ${v===r.status?'selected':''}>${l}</option>`).join('')}</select></label></article>`).join(''):'<p class="portal-help">Bu sayfada henüz istek veya görüş bulunmuyor.</p>'}</div><div class="portal-actions" style="margin-top:12px"><button class="portal-btn" data-prev ${feedbackPage===0?'disabled':''}>Önceki</button><button class="portal-btn" data-next ${rows.length<30?'disabled':''}>Sonraki</button></div><p id="portalFeedbackAdminStatus" role="status" class="portal-status"></p>`;
       body.querySelector('[data-refresh]').onclick=()=>renderFeedback(body);body.querySelector('[data-prev]').onclick=()=>{feedbackPage--;renderFeedback(body);};body.querySelector('[data-next]').onclick=()=>{feedbackPage++;renderFeedback(body);};
       body.querySelectorAll('[data-feedback-id]').forEach(select=>select.onchange=async()=>{select.disabled=true;try{await request('/rest/v1/portal_feedback?id=eq.'+encodeURIComponent(select.dataset.feedbackId),{method:'PATCH',auth:true,body:{status:select.value}});status('portalFeedbackAdminStatus','Öneri durumu kaydedildi.');}catch(error){status('portalFeedbackAdminStatus',error.message,true);}finally{select.disabled=false;}});
-    }catch(error){body.innerHTML=`<p class="portal-status" data-error="true">${escape(error.message)}</p>`;}
+    }catch(error){if(admin&&session)body.innerHTML=`<p class="portal-status" data-error="true">${escape(error.message)}</p>`;}
   }
   function renderAccount(body){
-    body.innerHTML=`<p class="portal-help" style="margin-bottom:16px">${escape(session?.user?.email||'Yönetici hesabı')}</p><form id="portalPasswordForm" class="portal-form">${field('password','Yeni şifre','password','',null,true)}${field('confirmation','Yeni şifre (tekrar)','password','',null,true)}<p class="portal-help">En az 12 karakter kullan. Yeni şifren bir sonraki girişte geçerli olur.</p><button class="portal-btn">Şifreyi kaydet</button><p id="portalPasswordStatus" class="portal-status" role="status"></p></form>`;
-    byId('portalPasswordForm').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,b=f.querySelector('button');b.disabled=true;try{if(f.elements.password.value.length<12)throw new Error('En az 12 karakter kullan.');if(f.elements.password.value!==f.elements.confirmation.value)throw new Error('Şifreler eşleşmiyor.');await request('/auth/v1/user',{method:'PUT',auth:true,body:{password:f.elements.password.value}});f.reset();status('portalPasswordStatus','Şifren kaydedildi.');}catch(error){status('portalPasswordStatus',error.message,true);}finally{b.disabled=false;}};
+    body.innerHTML=`<p class="portal-help" style="margin-bottom:16px">${escape(session?.user?.email||'Yönetici hesabı')}</p><form id="portalPasswordForm" class="portal-form">${field('current_password','Mevcut şifre','password','',null,true)}${field('password','Yeni şifre','password','',null,true)}${field('confirmation','Yeni şifre (tekrar)','password','',null,true)}<p class="portal-help">En az 12 karakter kullan. Yeni şifren bir sonraki girişte geçerli olur.</p><button class="portal-btn">Şifreyi kaydet</button><p id="portalPasswordStatus" class="portal-status" role="status"></p></form>`;
+    byId('portalPasswordForm').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget,b=f.querySelector('button');b.disabled=true;try{if(f.elements.password.value.length<12)throw new Error('En az 12 karakter kullan.');if(f.elements.password.value!==f.elements.confirmation.value)throw new Error('Şifreler eşleşmiyor.');await request('/auth/v1/user',{method:'PUT',auth:true,body:{password:f.elements.password.value,current_password:f.elements.current_password.value}});f.reset();status('portalPasswordStatus','Şifren kaydedildi.');}catch(error){status('portalPasswordStatus',error.message,true);}finally{f.reset();b.disabled=false;}};
   }
   async function loadPublished(){
     const rows=await request('/rest/v1/portal_content?id=eq.1&select=content,revision');
     if(!rows?.length)throw new Error('Portal içerik kaydı bulunamadı.');
-    published={...copy(defaults),...rows[0].content};revision=rows[0].revision;ready=true;window.portalSharedContentReady=true;applyContent();
+    published=PortalSecurity.content(rows[0].content,copy(defaults));revision=rows[0].revision;ready=true;window.portalSharedContentReady=true;applyContent();
   }
   async function initialize(){
     try{await loadPublished();}catch(error){console.warn('Portal content unavailable:',error.message);ready=false;}
