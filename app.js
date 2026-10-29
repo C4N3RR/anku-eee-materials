@@ -2046,7 +2046,9 @@ const CONFIG = {
       clearTimeout(calendarPopoverHideTimer);
       hideCalendarDayPopover();
       refreshCalendarWidget();
-      document.getElementById('calendarClassButton')?.focus({ preventScroll: true });
+      const button = document.getElementById('calendarClassButton');
+      button?.classList.add('is-bouncing');
+      button?.focus({ preventScroll: true });
     }
 
     function getCalendarEvents() {
@@ -2124,7 +2126,7 @@ const CONFIG = {
       return `
         <div id="academicCalendarContainer" class="admincn-card p-4 sm:p-5 select-none overflow-hidden">
           <div class="flex items-center justify-between mb-3 gap-3">
-            <button id="calendarClassButton" type="button" data-portal-click="cycleCalendarClass" data-portal-click-args="[]" class="portal-btn" title="Sonraki sınıfa geç" aria-label="${calendarClassYear}. sınıf takvimi. ${calendarClassYear % 4 + 1}. sınıfa geç">
+            <button id="calendarClassButton" type="button" data-portal-click="cycleCalendarClass" data-portal-click-args="[]" class="portal-btn calendar-class-button" title="Sonraki sınıfa geç" aria-label="${calendarClassYear}. sınıf takvimi. ${calendarClassYear % 4 + 1}. sınıfa geç">
               <i data-lucide="repeat" class="size-3.5"></i><span aria-live="polite">${calendarClassYear}. Sınıf</span>
             </button>
             ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn"><i data-lucide="calendar-plus" class="size-3.5"></i> Tarih ekle</button>' : ''}

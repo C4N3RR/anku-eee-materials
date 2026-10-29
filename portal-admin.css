@@ -39,3 +39,32 @@ select[multiple].portal-input { min-height:110px; }
 @media(max-width:600px) { .portal-grid { grid-template-columns:1fr; } .portal-modal-head,.portal-modal-body { padding:16px; } .portal-admin-row { align-items:flex-start; } .portal-admin-publish { padding:12px 16px; flex-wrap:wrap; } .portal-admin-tabs { padding:10px; } }
 
 .portal-admin-row[hidden] { display:none; }
+
+/* Fixed footprint: only the visual transform moves during class changes. */
+.portal-btn.calendar-class-button {
+  width:96px;
+  min-width:96px;
+  height:36px;
+  flex:0 0 96px;
+  padding:0 12px;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+  border-radius:10px;
+  transform-origin:center;
+  touch-action:manipulation;
+  transition:background-color 150ms ease, transform 100ms ease;
+}
+.calendar-class-button svg { flex-shrink:0; }
+.calendar-class-button:active { transform:scale(.93); }
+.calendar-class-button.is-bouncing { animation:calendar-class-bounce 420ms both; }
+@keyframes calendar-class-bounce {
+  0% { transform:translateY(0) scale(.93); animation-timing-function:cubic-bezier(.16,1,.3,1); }
+  42% { transform:translateY(-3px) scale(1.045); animation-timing-function:cubic-bezier(.4,0,.6,1); }
+  70% { transform:translateY(1px) scale(.985); animation-timing-function:ease-out; }
+  100% { transform:translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .portal-btn.calendar-class-button { transition:none; }
+  .calendar-class-button:active { transform:none; }
+  .calendar-class-button.is-bouncing { animation:none; }
+}
