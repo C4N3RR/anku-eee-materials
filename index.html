@@ -4568,7 +4568,7 @@
         </nav>
       ` : '';
 
-      const bannerUrl = meta.banner || DEFAULT_COURSE_METADATA[code]?.banner || '';
+      const bannerUrl = Number(curr?.year || meta.year) === 1 ? '' : (meta.banner || DEFAULT_COURSE_METADATA[code]?.banner || '');
       const bannerPos = meta.bannerPos || DEFAULT_COURSE_METADATA[code]?.bannerPos || 'center center';
       const bannerRatioRaw = Number(meta.bannerRatio || DEFAULT_COURSE_METADATA[code]?.bannerRatio) || (16 / 9);
       const bannerRatio = Math.max(bannerRatioRaw, 0.8);
