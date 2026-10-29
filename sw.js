@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anku-eee-shell-v10';
+const CACHE_NAME = 'anku-eee-shell-v11';
 const PRECACHE_URLS = [
   './',
   './index.html',

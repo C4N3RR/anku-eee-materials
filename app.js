@@ -3994,16 +3994,13 @@ const CONFIG = {
       }
     };
 
-    // Navigate the preview iframe without adding entries to the browser history,
-    // so the back button closes the preview instead of stepping through the iframe.
+    // A fresh frame avoids cross-origin navigation restrictions and stale viewer history.
     function setViewerFrameSrc(url) {
-      url = PortalSecurity.frameUrl(url);
-      const frame = $('viewerFrame');
-      try {
-        frame.contentWindow.location.replace(url);
-      } catch (e) {
-        frame.src = url;
-      }
+      const previous = $('viewerFrame');
+      const frame = previous.cloneNode(false);
+      frame.onload = () => $('viewerLoader').classList.add('hidden');
+      frame.src = PortalSecurity.frameUrl(url);
+      previous.replaceWith(frame);
     }
 
     let skipNextViewerPop = false;
