@@ -197,14 +197,14 @@
       <section class="space-y-2 text-sm">
         <h2 class="font-semibold text-foreground">1. Veri Toplama</h2>
         <p class="text-muted-foreground leading-relaxed text-xs sm:text-sm">
-          ANKU EEE Ders Portalı herhangi bir üyelik, giriş veya kişisel kimlik bilgisi talep etmez. Sunucu tarafında kişisel veri saklanmaz.
+          Ders materyallerine erişmek için üyelik gerekmez. İstek ve Görüşler formunu gönderirsen mesajın, seçtiğin ders ve kaynak bağlantısı Supabase üzerinde saklanır ve yalnızca site yöneticisi tarafından okunabilir. Ad ve e-posta alanları isteğe bağlıdır. Yönetici hesabı Supabase Auth ile doğrulanır.
         </p>
       </section>
 
       <section class="space-y-2 text-sm">
         <h2 class="font-semibold text-foreground">2. Yerel Depolama (LocalStorage)</h2>
         <p class="text-muted-foreground leading-relaxed text-xs sm:text-sm">
-          Tema tercihi (`color-scheme`), ders klasör ağacı önbelleği ve kullanıcı tarafından düzenlenen ders bilgileri yalnızca kendi tarayıcınızın yerel belleğinde (`localStorage`) tutulur.
+          Tema tercihi ve Drive klasör önbelleği tarayıcının yerel belleğinde tutulur. Öneri gönderim sıklığını sınırlamak için rastgele bir tarayıcı kimliği kullanılır. Yönetici oturumu sekme açık olduğu sürece `sessionStorage` içinde saklanır. Yayımlanan ders, kaynak ve takvim bilgileri Supabase üzerinde ortak olarak saklanır.
         </p>
       </section>
 

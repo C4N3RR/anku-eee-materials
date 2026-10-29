@@ -2,6 +2,7 @@
 <html lang="tr" class="flex min-h-full w-full" data-scroll-behavior="smooth">
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="portal-admin.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <script>
@@ -873,11 +874,18 @@
           <ul id="courseListNav" class="flex flex-col gap-0.5"></ul>
         </div>
 
+        <div data-slot="sidebar-group" class="flex flex-col mt-2 border-t border-sidebar-border pt-2">
+          <button id="portalFeedbackButton" type="button" title="İstek ve Görüşler" class="sidebar-nav-btn flex h-9 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition">
+            <i data-lucide="message-square-plus" class="size-4 shrink-0 text-muted-foreground"></i>
+            <span class="sidebar-hide-collapsed truncate">İstek ve Görüşler</span>
+          </button>
+        </div>
+
         <div data-slot="sidebar-group" class="flex flex-col mt-2">
           <div class="sidebar-hide-collapsed flex h-7 shrink-0 items-center px-2 text-[11px] font-medium text-sidebar-foreground/50 tracking-wider uppercase">
             Bağlantılar
           </div>
-          <ul class="flex flex-col gap-0.5">
+          <ul class="flex flex-col gap-0.5" data-portal-links>
             <li>
               <a
                 href="https://obs.ankara.edu.tr"
@@ -1029,6 +1037,9 @@
             >
               <i data-lucide="moon-star" class="size-4 block dark:hidden"></i>
               <i data-lucide="sun" class="size-4 hidden dark:block"></i>
+            </button>
+            <button id="portalSettingsButton" type="button" title="Ayarlar" aria-label="Ayarlar" class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition">
+              <i data-lucide="settings-2" class="size-4"></i>
             </button>
 
           </div>
@@ -2796,6 +2807,7 @@
         const res = await fetch(`${API}/${id}?alt=media&key=${settings.key}`);
         if (!res.ok) return;
         const text = await res.text();
+        if (window.portalSharedContentReady) return;
 
         const lines = text.split('\n');
         const meta = courseMetadata[courseCode] || { links: [] };
@@ -2976,6 +2988,7 @@
     }
 
     function onTreeReady() {
+      window.portalApplyDrive?.();
       $('mainLoader')?.classList.add('hidden');
       $('mainContainer')?.setAttribute('aria-busy', 'false');
       syncCourseFromHash();
@@ -2984,7 +2997,7 @@
       (driveTree || []).forEach(node => {
         if (realMime(node) === FOLDER_MIME && node.children) {
           const infoNode = node.children.find(f => /^(info|bilgi)\.(txt|json)$/i.test(f.name));
-          if (infoNode) {
+          if (infoNode && !window.portalSharedContentReady) {
             parseInfoTxt(infoNode, node.name.toUpperCase().trim());
           }
         }
@@ -3162,7 +3175,7 @@
             const isSelected = (activeView === 'course' && activeCode === c.code);
             const meta = courseMetadata[c.code] || { name: c.name, icon: c.icon || 'book-open' };
             const iconName = meta.icon || 'book-open';
-            const shortLabel = SHORT_SIDEBAR_COURSE_LABELS[c.code] || c.code;
+            const shortLabel = meta.shortName || SHORT_SIDEBAR_COURSE_LABELS[c.code] || c.code;
 
             return `
               <li>
@@ -3433,6 +3446,7 @@
     let calendarPopoverHideTimer = null;
 
     function getAcademicEvents() {
+      if (window.portalEvents) return window.portalEvents();
       const raw = localStorage.getItem('anku_academic_events_v4');
       if (!raw) return [];
 
@@ -3496,6 +3510,7 @@
 
       return `
         <div id="academicCalendarContainer" class="admincn-card p-4 sm:p-5 select-none overflow-hidden">
+          ${window.portalCanEdit?.() ? '<div class="flex justify-end mb-3"><button type="button" onclick="portalOpenCalendar()" class="portal-btn"><i data-lucide="calendar-plus" class="size-3.5"></i> Tarih ekle</button></div>' : ''}
           <div class="flex flex-col lg:flex-row items-stretch gap-5 lg:gap-7">
             
             <!-- LEFT: 2 MONTHS (or 1 on mobile) - No top border line -->
@@ -3751,6 +3766,7 @@
               <div
                 id="agenda-item-${esc(ev.id)}"
                 data-date="${esc(ev.date)}"
+                title="${esc(ev.location || ev.title)}"
                 onclick="handleAgendaItemClick('${esc(ev.date)}')"
                 class="event-agenda-item flex items-center gap-2.5 py-1.5 px-2.5 rounded-md hover:bg-muted/50 transition cursor-pointer outline-none select-none ${isHighlighted ? 'bg-muted/80 dark:bg-white/10' : ''}"
               >
@@ -3860,6 +3876,7 @@
                   </span>
                   ${ev.time ? `<span class="text-[11px] text-muted-foreground font-mono shrink-0">${esc(ev.time)}</span>` : ''}
                 </div>
+                ${ev.location ? `<p class="text-[11px] text-muted-foreground pl-3.5 pb-1">${esc(ev.location)}</p>` : ''}
               `;
             }).join('')}
           </div>
@@ -4712,7 +4729,7 @@
                   <button
                     onclick="openEditCourseModal('${esc(code)}')"
                     title="Düzenle"
-                    class="inline-flex size-8 items-center justify-center rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
+                    class="${window.portalCanEdit?.() ? '' : 'hidden'} inline-flex size-8 items-center justify-center rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
                   >
                     <i data-lucide="edit-3" class="size-3.5"></i>
                   </button>
@@ -5508,6 +5525,8 @@
 
     // ================= EDIT COURSE METADATA =================
     window.openEditCourseModal = function(courseCode) {
+      if (window.portalEditCourse) return window.portalEditCourse(courseCode);
+      return;
       currentEditingCourseCode = courseCode;
       const meta = courseMetadata[courseCode] || { name: courseCode, instructor: '', email: '', credits: '', links: [] };
 
@@ -6079,5 +6098,7 @@
       });
     }
   </script>
+  <script src="portal-config.js"></script>
+  <script src="portal-admin.js"></script>
 </body>
 </html>

@@ -1,10 +1,13 @@
-const CACHE_NAME = 'anku-eee-shell-v7';
+const CACHE_NAME = 'anku-eee-shell-v8';
 const PRECACHE_URLS = [
   './',
   './index.html',
   './404.html',
   './privacy.html',
   './site.webmanifest',
+  './portal-admin.css',
+  './portal-admin.js',
+  './portal-config.js',
   './favicon.svg',
   './assets/ankara-uni-logo.png',
   './assets/android-chrome-192x192.png',
