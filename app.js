@@ -2125,10 +2125,11 @@ const CONFIG = {
 
       return `
         <div id="academicCalendarContainer" class="admincn-card p-4 sm:p-5 select-none overflow-hidden">
-          <div class="flex items-center justify-between mb-3 gap-3">
+          <div class="flex items-center flex-wrap mb-3 gap-3">
             <button id="calendarClassButton" type="button" data-portal-click="cycleCalendarClass" data-portal-click-args="[]" class="portal-btn calendar-class-button" title="Sonraki sınıfa geç" aria-label="${calendarClassYear}. sınıf takvimi. ${calendarClassYear % 4 + 1}. sınıfa geç">
               <i data-lucide="repeat" class="size-3.5"></i><span aria-live="polite">${calendarClassYear}. Sınıf</span>
             </button>
+            <button type="button" class="portal-btn" data-portal-click="openAcademicTimetable" data-portal-click-args="[]"><i data-lucide="calendar-days" class="size-3.5"></i> Akademik Takvim</button>
             ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn"><i data-lucide="calendar-plus" class="size-3.5"></i> Tarih ekle</button>' : ''}
           </div>
           <div class="flex flex-col lg:flex-row items-stretch gap-5 lg:gap-7">
@@ -4744,6 +4745,7 @@ const CONFIG = {
       handleTableCourseFilter: (...args) => { if (typeof handleTableCourseFilter === 'function') return handleTableCourseFilter(...args); },
       handleTableSearch: (...args) => { if (typeof handleTableSearch === 'function') return handleTableSearch(...args); },
       hideCalendarDayPopover: (...args) => { if (typeof hideCalendarDayPopover === 'function') return hideCalendarDayPopover(...args); },
+      openAcademicTimetable: () => window.openAcademicTimetable?.(),
       cycleCalendarClass: () => cycleCalendarClass(),
       navigateCalendarMonth: (...args) => { if (typeof navigateCalendarMonth === 'function') return navigateCalendarMonth(...args); },
       navigateToEventFromSearch: (...args) => { if (typeof navigateToEventFromSearch === 'function') return navigateToEventFromSearch(...args); },

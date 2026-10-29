@@ -68,3 +68,11 @@ select[multiple].portal-input { min-height:110px; }
   .calendar-class-button:active { transform:none; }
   .calendar-class-button.is-bouncing { animation:none; }
 }
+
+#academicTimetableDialog { width:min(94vw,820px); }
+.academic-timeline { list-style:none; padding:0; margin:24px 0; }
+.academic-timeline li { display:grid; grid-template-columns:210px 1fr; gap:20px; padding:18px 0; border-bottom:1px solid var(--border); }
+.academic-timeline time { display:block; font-size:13px; font-weight:600; font-variant-numeric:tabular-nums; }
+.academic-term { display:block; color:var(--primary); font-size:11px; margin-bottom:6px; }
+.academic-timeline p { font-size:14px; line-height:1.6; margin:0; }
+@media(max-width:600px) { .academic-timeline li { grid-template-columns:1fr; gap:8px; } }
