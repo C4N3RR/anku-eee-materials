@@ -91,5 +91,19 @@ test('Calculus study mode interacts cleanly with DOM and local storage', () => {
   vm.runInContext('navigateStudyTopic(1)', ctx);
   assert.equal(vm.runInContext('activeStudyTopicId', ctx), 'the-limit');
 
+  // Toggle curriculum sidebar rail (collapsible)
+  assert.equal(vm.runInContext('isStudyNavCollapsed', ctx), false);
+  vm.runInContext('toggleStudyNav()', ctx);
+  assert.equal(vm.runInContext('isStudyNavCollapsed', ctx), true);
+  vm.runInContext('toggleStudyNav()', ctx);
+  assert.equal(vm.runInContext('isStudyNavCollapsed', ctx), false);
+
+  // Switch between 3 topic section tabs (theory, examples, quiz)
+  assert.equal(vm.runInContext('activeStudySectionTab', ctx), 'theory');
+  vm.runInContext('setStudySectionTab("examples")', ctx);
+  assert.equal(vm.runInContext('activeStudySectionTab', ctx), 'examples');
+  vm.runInContext('setStudySectionTab("quiz")', ctx);
+  assert.equal(vm.runInContext('activeStudySectionTab', ctx), 'quiz');
+
   dom.window.close();
 });

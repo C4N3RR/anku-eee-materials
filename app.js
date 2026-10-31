@@ -1328,6 +1328,12 @@ const CONFIG = {
     // Calculus I (MTH0101) Interactive Study Mode State
     let activeCourseTab = 'materials'; // 'materials' | 'study'
     let activeStudyTopicId = 'tangents-rates';
+    let activeStudySectionTab = 'theory'; // 'theory' | 'examples' | 'quiz'
+    let isStudyNavCollapsed = false;
+    try {
+      const savedCollapsed = localStorage.getItem('anku_study_nav_collapsed_v1');
+      if (savedCollapsed !== null) isStudyNavCollapsed = (savedCollapsed === 'true');
+    } catch {}
     let openStudyExamples = new Set();
     let openStudyHints = new Set();
     let studyQuizAnswers = {};
@@ -3524,17 +3530,17 @@ const CONFIG = {
       const hasAnsweredQuiz = (typeof userQuizChoice === 'number');
       const isQuizCorrect = hasAnsweredQuiz && userQuizChoice === currentTopic.quiz.correctIndex;
 
-      // Weeks & Topics Navigator List
+      // Weeks & Topics Navigator List (Expanded View)
       const weeksNavHtml = data.weeks.map(week => {
         const weekCompletedCount = week.topics.filter(t => completedStudyTopics.has(t.id)).length;
         const weekTotal = week.topics.length;
         return `
-          <div class="space-y-1.5 pt-3 first:pt-1">
-            <div class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground px-2 flex items-center justify-between">
+          <div class="space-y-1 pt-2 first:pt-0">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-2 flex items-center justify-between">
               <span class="truncate">${esc(week.title.split(':')[0])}</span>
-              <span class="text-[10px] font-mono shrink-0 font-semibold">${weekCompletedCount}/${weekTotal}</span>
+              <span class="font-mono text-[9px] shrink-0 font-semibold">${weekCompletedCount}/${weekTotal}</span>
             </div>
-            <div class="space-y-1">
+            <div class="space-y-0.5">
               ${week.topics.map(topic => {
                 const isSelected = topic.id === currentTopic.id;
                 const isDone = completedStudyTopics.has(topic.id);
@@ -3542,7 +3548,7 @@ const CONFIG = {
                   <button
                     type="button"
                     data-portal-click="selectStudyTopic" data-portal-click-args="[${jsArg(topic.id)}]"
-                    class="w-full text-left flex items-start gap-2.5 p-2 rounded-lg text-xs transition group cursor-pointer ${
+                    class="w-full text-left flex items-start gap-2 p-1.5 rounded-lg text-xs transition group cursor-pointer ${
                       isSelected
                         ? 'bg-blue-500/15 dark:bg-blue-500/25 text-blue-600 dark:text-blue-400 font-semibold border border-blue-500/30 shadow-2xs'
                         : 'hover:bg-muted text-foreground/80 hover:text-foreground border border-transparent'
@@ -3556,15 +3562,13 @@ const CONFIG = {
                             ? 'border-2 border-blue-500 text-blue-500'
                             : 'border border-muted-foreground/40 text-muted-foreground'
                       }">
-                        ${isDone ? '<i data-lucide="check" class="size-3 stroke-[3]"></i>' : ''}
+                        ${isDone ? '<i data-lucide="check" class="size-3 stroke-[3]"></i>' : esc(topic.topicNum || '')}
                       </div>
                     </div>
                     <div class="min-w-0 flex-1">
                       <div class="truncate font-medium leading-tight">${esc(topic.title)}</div>
-                      <div class="text-[10px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                      <div class="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
                         <span>${esc(topic.readTime)}</span>
-                        <span>•</span>
-                        <span class="truncate opacity-80">${esc(topic.subTitle)}</span>
                       </div>
                     </div>
                   </button>
@@ -3575,37 +3579,180 @@ const CONFIG = {
         `;
       }).join('');
 
-      // Key Formulas
+      // Sidebar HTML (Collapsible)
+      const sidebarHtml = isStudyNavCollapsed ? `
+        <!-- Collapsed Slim Rail Sidebar -->
+        <aside class="w-12 sm:w-14 shrink-0 rounded-2xl border border-border bg-card p-1.5 flex flex-col items-center gap-2 shadow-2xs sticky top-3 z-10">
+          <button
+            type="button"
+            data-portal-click="toggleStudyNav" data-portal-click-args="[]"
+            title="Müfredatı Genişlet"
+            class="size-8 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition cursor-pointer"
+          >
+            <i data-lucide="chevrons-right" class="size-4"></i>
+          </button>
+
+          <div
+            class="size-8 rounded-full border-2 border-blue-500 flex items-center justify-center text-[9px] font-mono font-bold text-blue-500"
+            title="Toplam İlerleme: %${progressPercent}"
+          >
+            %${progressPercent}
+          </div>
+
+          <div class="w-6 h-px bg-border my-0.5"></div>
+
+          <div class="flex flex-col items-center gap-1 w-full">
+            ${allTopics.map(t => {
+              const isSelected = t.id === currentTopic.id;
+              const isDone = completedStudyTopics.has(t.id);
+              return `
+                <button
+                  type="button"
+                  data-portal-click="selectStudyTopic" data-portal-click-args="[${jsArg(t.id)}]"
+                  title="${esc(t.topicNum || '')}: ${esc(t.title)}"
+                  class="size-8 rounded-xl flex items-center justify-center text-[10px] font-mono font-bold transition cursor-pointer ${
+                    isSelected
+                      ? 'bg-blue-500 text-white shadow-xs'
+                      : isDone
+                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25'
+                        : 'hover:bg-muted text-muted-foreground hover:text-foreground border border-transparent'
+                  }"
+                >
+                  ${isDone && !isSelected ? '<i data-lucide="check" class="size-3.5 stroke-[3]"></i>' : esc(t.topicNum || '')}
+                </button>
+              `;
+            }).join('')}
+          </div>
+        </aside>
+      ` : `
+        <!-- Expanded Sidebar -->
+        <aside class="w-full lg:w-72 xl:w-80 shrink-0 rounded-2xl border border-border bg-card p-3 space-y-3 shadow-2xs">
+          <!-- Top Header Banner embedded inside sidebar -->
+          <div class="rounded-xl bg-blue-500/10 border border-blue-500/20 p-3 space-y-2">
+            <div class="flex items-center justify-between gap-1.5">
+              <div class="flex items-center gap-1.5 min-w-0">
+                <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500 text-white font-mono tracking-wide">BETA</span>
+                <span class="text-xs font-bold text-foreground truncate">Calculus I: Adım Adım</span>
+              </div>
+              <button
+                type="button"
+                data-portal-click="toggleStudyNav" data-portal-click-args="[]"
+                title="Müfredatı Daralt"
+                class="size-7 rounded-lg hover:bg-blue-500/20 text-muted-foreground hover:text-foreground flex items-center justify-center transition cursor-pointer shrink-0"
+              >
+                <i data-lucide="chevrons-left" class="size-4"></i>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-medium text-muted-foreground pt-0.5">
+              <span>İlerleme</span>
+              <span class="font-mono font-bold text-foreground">${completedCount}/${totalTopics} (%${progressPercent})</span>
+            </div>
+            <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+              <div class="bg-blue-500 h-1.5 rounded-full transition-all duration-300" style="width: ${progressPercent}%;"></div>
+            </div>
+          </div>
+
+          <!-- Weeks & Topics list -->
+          <div class="space-y-2">
+            ${weeksNavHtml}
+          </div>
+
+          <!-- Footer Attribution -->
+          <div class="pt-2 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
+            <a href="${esc(safeLink(currentTopic.sourceUrl))}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-500 flex items-center gap-1">
+              <span>Paul's Notes ↗</span>
+            </a>
+            ${completedCount > 0 ? `
+              <button type="button" data-portal-click="resetStudyProgress" data-portal-click-args="[]" class="hover:text-rose-500 transition cursor-pointer">
+                Sıfırla
+              </button>
+            ` : ''}
+          </div>
+        </aside>
+      `;
+
+      // 1. SECTION: Konu Anlatımı (Theory & Formulas)
       const formulasHtml = (currentTopic.keyFormulas || []).map(f => `
-        <div class="p-3.5 sm:p-4 rounded-xl border border-border bg-card/70 space-y-2">
-          <div class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide flex items-center gap-1.5">
+        <div class="p-3 rounded-xl border border-border bg-card/70 space-y-1.5">
+          <div class="text-[11px] font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide flex items-center gap-1.5">
             <i data-lucide="sigma" class="size-3.5"></i>
             <span>${esc(f.label)}</span>
           </div>
-          <div class="math-content overflow-x-auto py-1 text-center font-mono text-sm sm:text-base text-foreground">
+          <div class="math-content overflow-x-auto py-0.5 text-center font-mono text-sm sm:text-base text-foreground">
             $$${f.latex}$$
           </div>
-          ${f.desc ? `<p class="text-xs text-muted-foreground leading-relaxed">${esc(f.desc)}</p>` : ''}
+          ${f.desc ? `<p class="text-xs text-muted-foreground leading-snug">${esc(f.desc)}</p>` : ''}
         </div>
       `).join('');
 
-      // Critical Notes / Pitfalls
       const notesHtml = (currentTopic.notes || []).map(note => `
-        <div class="flex items-start gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-foreground/90">
+        <div class="flex items-start gap-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-foreground/90">
           <i data-lucide="alert-circle" class="size-4 text-amber-500 shrink-0 mt-0.5"></i>
           <span class="leading-relaxed math-content">${esc(note)}</span>
         </div>
       `).join('');
 
-      // Worked Examples (Paul Dawkins' Style: click to expand step-by-step solution)
+      const theorySectionHtml = `
+        <div class="space-y-4">
+          <!-- Overview / Intuition -->
+          <div class="p-3.5 sm:p-4 rounded-xl bg-muted/40 border border-border/80 text-xs sm:text-sm leading-relaxed text-foreground/90 space-y-2">
+            <div class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <i data-lucide="compass" class="size-3.5 text-blue-500"></i>
+              <span>Kavramsal Yaklaşım & Sezgisel Giriş</span>
+            </div>
+            <p class="math-content leading-relaxed">${esc(currentTopic.overview)}</p>
+          </div>
+
+          <!-- Key Formulas & Theorems -->
+          ${formulasHtml ? `
+            <div class="space-y-2.5">
+              <div class="flex items-center gap-2 px-1">
+                <i data-lucide="sigma" class="size-4 text-blue-500"></i>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Temel Formüller ve Tanımlar</h3>
+              </div>
+              <div class="grid grid-cols-1 gap-2.5">
+                ${formulasHtml}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Critical Notes / Pitfalls -->
+          ${notesHtml ? `
+            <div class="space-y-2">
+              <div class="flex items-center gap-2 px-1">
+                <i data-lucide="alert-triangle" class="size-4 text-amber-500"></i>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Dikkat Edilmesi Gereken Noktalar</h3>
+              </div>
+              <div class="space-y-2">
+                ${notesHtml}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- CTA to Examples -->
+          <div class="pt-2 flex justify-end">
+            <button
+              type="button"
+              data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;examples&quot;]"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs"
+            >
+              <span>Çözümlü Örneklere Geç (${currentTopic.examples.length} Soru)</span>
+              <i data-lucide="arrow-right" class="size-3.5"></i>
+            </button>
+          </div>
+        </div>
+      `;
+
+      // 2. SECTION: Çözümlü Örnekler (Worked Examples)
       const examplesHtml = (currentTopic.examples || []).map(ex => {
         const isSolOpen = openStudyExamples.has(ex.id);
         const isHintOpen = openStudyHints.has(ex.id);
         return `
           <div class="border border-border rounded-xl bg-card overflow-hidden shadow-2xs transition">
-            <div class="p-4 sm:p-5 space-y-3">
+            <div class="p-3.5 sm:p-4 space-y-2.5">
               <div class="flex items-center justify-between gap-2 flex-wrap">
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono">
+                <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono">
                   ${esc(ex.title)}
                 </span>
                 ${ex.hint ? `
@@ -3620,34 +3767,34 @@ const CONFIG = {
                 ` : ''}
               </div>
 
-              <!-- Question statement (LaTeX) -->
-              <div class="text-sm sm:text-base font-medium text-foreground leading-relaxed math-content pt-1">
+              <!-- Question statement in clean single sentence -->
+              <div class="text-xs sm:text-sm font-medium text-foreground leading-relaxed math-content">
                 ${esc(ex.question)}
               </div>
 
               <!-- Hint box -->
               ${isHintOpen ? `
-                <div class="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2.5 math-content">
-                  <i data-lucide="lightbulb" class="size-4 text-amber-500 shrink-0 mt-0.5"></i>
-                  <div class="space-y-1">
+                <div class="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2 math-content">
+                  <i data-lucide="lightbulb" class="size-3.5 text-amber-500 shrink-0 mt-0.5"></i>
+                  <div class="space-y-0.5">
                     <span class="font-semibold">İpucu / Strateji:</span>
                     <div class="leading-relaxed">${esc(ex.hint)}</div>
                   </div>
                 </div>
               ` : ''}
 
-              <!-- Expand/Collapse Button (Paul's style) -->
-              <div class="pt-2">
+              <!-- Show/Hide Button (Paul's style) -->
+              <div class="pt-1">
                 <button
                   type="button"
                   data-portal-click="toggleStudyExample" data-portal-click-args="[${jsArg(ex.id)}]"
-                  class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                     isSolOpen
                       ? 'bg-muted text-foreground hover:bg-muted/80'
                       : 'bg-primary text-primary-foreground hover:opacity-90 shadow-2xs'
                   }"
                 >
-                  <i data-lucide="${isSolOpen ? 'chevron-up' : 'chevron-down'}" class="size-4"></i>
+                  <i data-lucide="${isSolOpen ? 'chevron-up' : 'chevron-down'}" class="size-3.5"></i>
                   <span>${isSolOpen ? 'Çözümü Gizle' : 'Çözümü Göster (Adım Adım)'}</span>
                 </button>
               </div>
@@ -3655,21 +3802,21 @@ const CONFIG = {
 
             <!-- Solution Steps (Expanded) -->
             ${isSolOpen ? `
-              <div class="border-t border-border bg-muted/20 p-4 sm:p-5 space-y-4">
-                <div class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <div class="border-t border-border bg-muted/20 p-3.5 sm:p-4 space-y-3">
+                <div class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                   <i data-lucide="check-circle-2" class="size-3.5 text-emerald-500"></i>
                   <span>Adım Adım Çözüm</span>
                 </div>
 
-                <div class="space-y-4 pl-1 sm:pl-2">
+                <div class="space-y-3 pl-1 sm:pl-2">
                   ${ex.steps.map((step, sIdx) => `
-                    <div class="relative pl-6 pb-2 border-l-2 border-blue-500/40 last:border-transparent last:pb-0">
-                      <div class="absolute -left-[9px] top-0 size-4 rounded-full bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center">
+                    <div class="relative pl-5 pb-1 border-l-2 border-blue-500/40 last:border-transparent last:pb-0">
+                      <div class="absolute -left-[8px] top-0 size-3.5 rounded-full bg-blue-500 text-white text-[9px] font-bold flex items-center justify-center">
                         ${sIdx + 1}
                       </div>
-                      <div class="space-y-1">
-                        <h4 class="text-xs sm:text-sm font-semibold text-foreground">${esc(step.title)}</h4>
-                        <div class="text-xs sm:text-sm text-foreground/90 whitespace-pre-line leading-relaxed math-content">
+                      <div class="space-y-0.5">
+                        <h4 class="text-xs font-semibold text-foreground">${esc(step.title)}</h4>
+                        <div class="text-xs text-foreground/90 leading-relaxed math-content">
                           ${esc(step.content)}
                         </div>
                       </div>
@@ -3678,11 +3825,11 @@ const CONFIG = {
                 </div>
 
                 <!-- Final Answer Callout -->
-                <div class="mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between gap-3 flex-wrap">
+                <div class="mt-3 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between gap-3 flex-wrap">
                   <div class="text-xs font-bold text-emerald-700 dark:text-emerald-300">
                     Nihai Sonuç:
                   </div>
-                  <div class="text-sm font-bold font-mono text-emerald-700 dark:text-emerald-300 math-content">
+                  <div class="text-xs sm:text-sm font-bold font-mono text-emerald-700 dark:text-emerald-300 math-content">
                     ${esc(ex.answer)}
                   </div>
                 </div>
@@ -3692,27 +3839,46 @@ const CONFIG = {
         `;
       }).join('');
 
-      // Quiz Checkpoint
+      const examplesSectionHtml = `
+        <div class="space-y-4">
+          <div class="space-y-3">
+            ${examplesHtml}
+          </div>
+
+          <div class="pt-2 flex justify-end">
+            <button
+              type="button"
+              data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;quiz&quot;]"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs"
+            >
+              <span>Pratik ve Sınav Sorularına Geç</span>
+              <i data-lucide="arrow-right" class="size-3.5"></i>
+            </button>
+          </div>
+        </div>
+      `;
+
+      // 3. SECTION: Pratik & Sınav (Quiz & Checkpoint)
       const quiz = currentTopic.quiz;
       const quizHtml = quiz ? `
-        <div class="border border-border rounded-xl bg-card p-4 sm:p-5 space-y-4 shadow-2xs">
+        <div class="border border-border rounded-xl bg-card p-3.5 sm:p-4 space-y-3 shadow-2xs">
           <div class="flex items-center justify-between gap-2 flex-wrap">
-            <div class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <i data-lucide="help-circle" class="size-4 text-primary"></i>
+            <div class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <i data-lucide="help-circle" class="size-3.5 text-primary"></i>
               <span>Kendini Sına (Kavrama Sorusu)</span>
             </div>
             ${hasAnsweredQuiz ? `
-              <span class="text-xs font-semibold px-2 py-0.5 rounded ${isQuizCorrect ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/15 text-rose-600 dark:text-rose-400'}">
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded ${isQuizCorrect ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/15 text-rose-600 dark:text-rose-400'}">
                 ${isQuizCorrect ? 'Tebrikler! Doğru Cevap' : 'Tekrar İnceleyin'}
               </span>
             ` : ''}
           </div>
 
-          <div class="text-sm sm:text-base font-medium text-foreground math-content">
+          <div class="text-xs sm:text-sm font-medium text-foreground math-content">
             ${esc(quiz.question)}
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             ${quiz.options.map((opt, oIdx) => {
               const isSelected = hasAnsweredQuiz && userQuizChoice === oIdx;
               const isCorrectOpt = oIdx === quiz.correctIndex;
@@ -3731,9 +3897,9 @@ const CONFIG = {
                 <button
                   type="button"
                   data-portal-click="selectStudyQuizOption" data-portal-click-args="[${jsArg(currentTopic.id)}, ${oIdx}]"
-                  class="p-3 text-left rounded-lg border text-xs sm:text-sm font-medium transition cursor-pointer flex items-center gap-2.5 ${btnClass}"
+                  class="p-2.5 text-left rounded-lg border text-xs font-medium transition cursor-pointer flex items-center gap-2 ${btnClass}"
                 >
-                  <span class="size-5 rounded-full border border-current flex items-center justify-center shrink-0 text-[10px] font-bold">
+                  <span class="size-4 rounded-full border border-current flex items-center justify-center shrink-0 text-[9px] font-bold">
                     ${['A', 'B', 'C', 'D'][oIdx] || oIdx + 1}
                   </span>
                   <span class="math-content flex-1">${esc(opt)}</span>
@@ -3743,240 +3909,168 @@ const CONFIG = {
           </div>
 
           ${hasAnsweredQuiz ? `
-            <div class="p-3 rounded-lg ${isQuizCorrect ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-200' : 'bg-muted border border-border text-foreground/90'} text-xs leading-relaxed math-content">
+            <div class="p-2.5 rounded-lg ${isQuizCorrect ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-200' : 'bg-muted border border-border text-foreground/90'} text-xs leading-relaxed math-content">
               <strong>Açıklama:</strong> ${esc(quiz.explanation)}
             </div>
           ` : ''}
         </div>
       ` : '';
 
-      return `
-        <div class="calculus-study-view space-y-6">
-          <!-- Overview Card -->
-          <div class="rounded-2xl border border-blue-500/25 bg-blue-500/5 dark:bg-blue-500/10 p-4 sm:p-6 space-y-3">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div class="space-y-1">
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500 text-white font-mono tracking-wide">BETA MODU</span>
-                  <h2 class="text-base sm:text-lg font-bold text-foreground">Calculus I: Adım Adım Öğrenme</h2>
-                </div>
-                <p class="text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
-                  Lamar University <strong>Prof. Paul Dawkins</strong>'in açık ders notları temelinde hazırlanmıştır. Konuları sırayla inceleyin, çözümlü örnekleri adım adım açarak mantığını kavrayın.
-                </p>
-              </div>
+      const quizSectionHtml = `
+        <div class="space-y-4">
+          ${quizHtml}
 
-              <div class="flex items-center gap-3 shrink-0 bg-background/90 dark:bg-zinc-900/90 px-3.5 py-2 rounded-xl border border-border shadow-xs">
-                <div class="text-right">
-                  <div class="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">İlerleme</div>
-                  <div class="text-xs font-bold text-foreground font-mono">${completedCount} / ${totalTopics} Konu</div>
-                </div>
-                <div class="size-9 rounded-full border-2 border-blue-500 flex items-center justify-center font-bold text-xs text-blue-500 font-mono">
-                  %${progressPercent}
-                </div>
-              </div>
+          <!-- Footer Navigation (Prev / Next Topic) -->
+          <div class="pt-3 border-t border-border flex items-center justify-between gap-2.5 flex-wrap">
+            <div>
+              ${prevTopic ? `
+                <button
+                  type="button"
+                  data-portal-click="navigateStudyTopic" data-portal-click-args="[-1]"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
+                >
+                  <i data-lucide="arrow-left" class="size-3.5"></i>
+                  <span>Önceki: ${esc(prevTopic.title.split('(')[0].trim())}</span>
+                </button>
+              ` : '<div></div>'}
             </div>
 
-            <!-- Progress Bar -->
-            <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-              <div class="bg-blue-500 h-1.5 rounded-full transition-all duration-300" style="width: ${progressPercent}%;"></div>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                data-portal-click="toggleStudyTopicDone" data-portal-click-args="[${jsArg(currentTopic.id)}]"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                  isTopicDone
+                    ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-2xs'
+                    : 'bg-primary text-primary-foreground hover:opacity-90 shadow-2xs'
+                }"
+              >
+                <i data-lucide="${isTopicDone ? 'check' : 'circle-check'}" class="size-3.5"></i>
+                <span>${isTopicDone ? 'Konu Tamamlandı ✓' : 'Konuyu Tamamla'}</span>
+              </button>
+
+              ${nextTopic ? `
+                <button
+                  type="button"
+                  data-portal-click="navigateStudyTopic" data-portal-click-args="[1]"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition cursor-pointer shadow-2xs"
+                >
+                  <span>Sonraki Konu</span>
+                  <i data-lucide="arrow-right" class="size-3.5"></i>
+                </button>
+              ` : ''}
             </div>
           </div>
+        </div>
+      `;
 
-          <!-- Main Layout Grid -->
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <!-- Left Navigation (4 cols on lg) -->
-            <div class="lg:col-span-4 space-y-4">
-              <div class="rounded-2xl border border-border bg-card p-3.5 shadow-2xs space-y-2">
-                <div class="flex items-center justify-between px-2 pb-1 border-b border-border/60">
-                  <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <i data-lucide="layers" class="size-3.5"></i>
-                    <span>Ders Müfredatı</span>
-                  </span>
-                  <span class="text-[11px] font-mono text-muted-foreground font-medium">${completedCount}/${totalTopics} Tamamlandı</span>
-                </div>
+      return `
+        <div id="studyTopicContentTop" class="calculus-study-view flex flex-col lg:flex-row items-start gap-4">
+          <!-- Left Collapsible Sidebar -->
+          ${sidebarHtml}
 
-                ${weeksNavHtml}
-
-                ${completedCount > 0 ? `
-                  <div class="pt-2 px-1 border-t border-border/60">
-                    <button
-                      type="button"
-                      data-portal-click="resetStudyProgress" data-portal-click-args="[]"
-                      class="text-[11px] text-muted-foreground hover:text-rose-500 transition cursor-pointer flex items-center gap-1"
-                    >
-                      <i data-lucide="rotate-ccw" class="size-3"></i>
-                      <span>İlerlemeyi Sıfırla</span>
-                    </button>
-                  </div>
-                ` : ''}
-              </div>
-
-              <!-- Paul's Math Notes Source Attribution Card -->
-              <div class="rounded-2xl border border-border bg-muted/30 p-3.5 text-xs text-muted-foreground space-y-2">
-                <div class="flex items-center gap-1.5 font-semibold text-foreground">
-                  <i data-lucide="book-open" class="size-3.5 text-blue-500"></i>
-                  <span>Paul's Math Notes Referansı</span>
-                </div>
-                <p class="text-[11px] leading-relaxed">
-                  Bu modüldeki konu anlatımları ve çözümlü adımlar Lamar University Matematik Bölümü'nden <strong>Prof. Paul Dawkins</strong>'in Paul's Online Math Notes ders kaynağına dayanmaktadır.
-                </p>
-                <a
-                  href="${esc(safeLink(currentTopic.sourceUrl))}"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 text-xs text-blue-500 hover:underline font-medium"
-                >
-                  <span>Bu Konunun Orijinal Sayfası</span>
-                  <i data-lucide="arrow-up-right" class="size-3"></i>
-                </a>
-              </div>
-            </div>
-
-            <!-- Right Main Topic Content (8 cols on lg) -->
-            <div class="lg:col-span-8 space-y-6">
-              <!-- Topic Header Card -->
-              <div class="rounded-2xl border border-border bg-card p-5 sm:p-6 space-y-4 shadow-2xs">
-                <div class="flex items-center justify-between gap-3 flex-wrap">
-                  <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400">
-                    Calculus I • Hafta ${data.weeks.find(w => w.id === currentTopic.weekId)?.number || 1}
-                  </span>
-                  <div class="flex items-center gap-2">
-                    <span class="text-xs text-muted-foreground flex items-center gap-1">
-                      <i data-lucide="clock" class="size-3"></i>
-                      <span>${esc(currentTopic.readTime)}</span>
-                    </span>
-                    <button
-                      type="button"
-                      data-portal-click="toggleStudyTopicDone" data-portal-click-args="[${jsArg(currentTopic.id)}]"
-                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
-                        isTopicDone
-                          ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-2xs'
-                          : 'bg-muted hover:bg-muted/80 text-foreground border border-border'
-                      }"
-                    >
-                      <i data-lucide="${isTopicDone ? 'check-circle' : 'circle'}" class="size-3.5"></i>
-                      <span>${isTopicDone ? 'Tamamlandı' : 'Tamamlandı Olarak İşaretle'}</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div class="space-y-1">
-                  <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                    ${esc(currentTopic.title)}
-                  </h1>
-                  <p class="text-xs sm:text-sm font-medium text-muted-foreground">
-                    ${esc(currentTopic.subTitle)}
-                  </p>
-                </div>
-
-                <!-- Topic Overview / Intuition -->
-                <div class="p-4 rounded-xl bg-muted/40 border border-border/80 text-xs sm:text-sm leading-relaxed text-foreground/90 space-y-2">
-                  <div class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                    <i data-lucide="compass" class="size-3.5 text-blue-500"></i>
-                    <span>Kavramsal Yaklaşım & Sezgisel Giriş</span>
-                  </div>
-                  <p class="math-content leading-relaxed">${esc(currentTopic.overview)}</p>
-                </div>
-              </div>
-
-              <!-- Key Formulas & Theorems -->
-              ${formulasHtml ? `
-                <div class="space-y-3">
-                  <div class="flex items-center gap-2 px-1">
-                    <i data-lucide="sigma" class="size-4 text-blue-500"></i>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted-foreground">Temel Formüller ve Tanımlar</h3>
-                  </div>
-                  <div class="grid grid-cols-1 gap-3">
-                    ${formulasHtml}
-                  </div>
-                </div>
-              ` : ''}
-
-              <!-- Critical Notes / Pitfalls -->
-              ${notesHtml ? `
-                <div class="space-y-2.5">
-                  <div class="flex items-center gap-2 px-1">
-                    <i data-lucide="alert-triangle" class="size-4 text-amber-500"></i>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted-foreground">Dikkat Edilmesi Gereken Noktalar</h3>
-                  </div>
-                  <div class="space-y-2">
-                    ${notesHtml}
-                  </div>
-                </div>
-              ` : ''}
-
-              <!-- Worked Examples Section (Paul's Style) -->
-              <div class="space-y-3 pt-2">
-                <div class="flex items-center justify-between gap-2 px-1 flex-wrap">
-                  <div class="flex items-center gap-2">
-                    <i data-lucide="check-square" class="size-4 text-blue-500"></i>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted-foreground">Paul's Notes Çözümlü Örnekleri</h3>
-                  </div>
-                  <span class="text-xs text-muted-foreground">Çözümleri adım adım açarak inceleyin</span>
-                </div>
-
-                <div class="space-y-4">
-                  ${examplesHtml}
-                </div>
-              </div>
-
-              <!-- Checkpoint Quiz -->
-              ${quizHtml ? `
-                <div class="space-y-3 pt-2">
-                  <div class="flex items-center gap-2 px-1">
-                    <i data-lucide="sparkles" class="size-4 text-purple-500"></i>
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted-foreground">Kavrama Testi</h3>
-                  </div>
-                  ${quizHtml}
-                </div>
-              ` : ''}
-
-              <!-- Navigation Footer (Previous / Next Topic) -->
-              <div class="pt-4 border-t border-border flex items-center justify-between gap-3 flex-wrap">
-                <div>
-                  ${prevTopic ? `
-                    <button
-                      type="button"
-                      data-portal-click="navigateStudyTopic" data-portal-click-args="[-1]"
-                      class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
-                    >
-                      <i data-lucide="arrow-left" class="size-3.5"></i>
-                      <span>Önceki: ${esc(prevTopic.title.split('(')[0].trim())}</span>
-                    </button>
-                  ` : '<div></div>'}
-                </div>
+          <!-- Right Topic Main Content Area -->
+          <div class="flex-1 min-w-0 space-y-4 w-full">
+            <!-- Header Card for Topic -->
+            <div class="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-3 shadow-2xs">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono">
+                  Calculus I • Hafta ${data.weeks.find(w => w.id === currentTopic.weekId)?.number || 1} • Konu ${esc(currentTopic.topicNum || '')}
+                </span>
 
                 <div class="flex items-center gap-2">
+                  <a
+                    href="${esc(safeLink(currentTopic.sourceUrl))}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Paul's Online Math Notes Orijinal Bölümünü Yeni Sekmede Aç"
+                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-muted hover:bg-muted/80 text-foreground border border-border transition"
+                  >
+                    <span>Paul's Notes</span>
+                    <i data-lucide="arrow-up-right" class="size-3"></i>
+                  </a>
+
                   <button
                     type="button"
                     data-portal-click="toggleStudyTopicDone" data-portal-click-args="[${jsArg(currentTopic.id)}]"
-                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition cursor-pointer ${
                       isTopicDone
                         ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-2xs'
-                        : 'bg-primary text-primary-foreground hover:opacity-90 shadow-2xs'
+                        : 'bg-muted hover:bg-muted/80 text-foreground border border-border'
                     }"
                   >
-                    <i data-lucide="${isTopicDone ? 'check' : 'circle-check'}" class="size-3.5"></i>
-                    <span>${isTopicDone ? 'Konu Tamamlandı ✓' : 'Konuyu Tamamla'}</span>
+                    <i data-lucide="${isTopicDone ? 'check-circle' : 'circle'}" class="size-3.5"></i>
+                    <span>${isTopicDone ? 'Tamamlandı' : 'Tamamla'}</span>
                   </button>
-
-                  ${nextTopic ? `
-                    <button
-                      type="button"
-                      data-portal-click="navigateStudyTopic" data-portal-click-args="[1]"
-                      class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition cursor-pointer shadow-2xs"
-                    >
-                      <span>Sonraki Konu</span>
-                      <i data-lucide="arrow-right" class="size-3.5"></i>
-                    </button>
-                  ` : ''}
                 </div>
               </div>
+
+              <div class="space-y-0.5">
+                <h1 class="text-lg sm:text-xl font-bold tracking-tight text-foreground">
+                  ${esc(currentTopic.title)}
+                </h1>
+                <p class="text-xs text-muted-foreground font-medium">
+                  ${esc(currentTopic.subTitle)} • ${esc(currentTopic.readTime)}
+                </p>
+              </div>
+
+              <!-- 3-Section Nav Bar at top! -->
+              <div id="studySectionContainer" class="pt-2 border-t border-border flex items-center gap-1.5 flex-wrap">
+                <div class="inline-flex p-1 rounded-xl bg-muted/60 border border-border text-xs font-medium">
+                  <button
+                    type="button"
+                    data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;theory&quot;]"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeStudySectionTab === 'theory' ? 'bg-background text-foreground shadow-xs font-bold' : 'text-muted-foreground hover:text-foreground'}"
+                  >
+                    <i data-lucide="book-open" class="size-3.5"></i>
+                    <span>Konu Anlatımı</span>
+                  </button>
+                  <button
+                    type="button"
+                    data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;examples&quot;]"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeStudySectionTab === 'examples' ? 'bg-background text-foreground shadow-xs font-bold' : 'text-muted-foreground hover:text-foreground'}"
+                  >
+                    <i data-lucide="check-square" class="size-3.5 text-blue-500"></i>
+                    <span>Çözümlü Örnekler (${currentTopic.examples.length})</span>
+                  </button>
+                  <button
+                    type="button"
+                    data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;quiz&quot;]"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeStudySectionTab === 'quiz' ? 'bg-background text-foreground shadow-xs font-bold' : 'text-muted-foreground hover:text-foreground'}"
+                  >
+                    <i data-lucide="help-circle" class="size-3.5 text-purple-500"></i>
+                    <span>Pratik & Sınav</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Active Section Tab Content -->
+            <div class="space-y-4">
+              ${activeStudySectionTab === 'examples'
+                ? examplesSectionHtml
+                : activeStudySectionTab === 'quiz'
+                  ? quizSectionHtml
+                  : theorySectionHtml}
             </div>
           </div>
         </div>
       `;
     }
+
+    window.toggleStudyNav = function() {
+      isStudyNavCollapsed = !isStudyNavCollapsed;
+      try {
+        localStorage.setItem('anku_study_nav_collapsed_v1', String(isStudyNavCollapsed));
+      } catch {}
+      if (activeCourseId) renderCourseHub(activeCourseId);
+    };
+
+    window.setStudySectionTab = function(tabName) {
+      activeStudySectionTab = tabName;
+      if (activeCourseId) renderCourseHub(activeCourseId);
+      $('studySectionContainer')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
 
     window.setCourseActiveTab = function(tabName) {
       activeCourseTab = tabName;
@@ -3985,8 +4079,9 @@ const CONFIG = {
 
     window.selectStudyTopic = function(topicId) {
       activeStudyTopicId = topicId;
+      activeStudySectionTab = 'theory';
       if (activeCourseId) renderCourseHub(activeCourseId);
-      $('courseMaterialsContainer')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      $('studyTopicContentTop')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
     window.toggleStudyExample = function(exampleId) {
@@ -4030,8 +4125,9 @@ const CONFIG = {
       const nextIdx = idx + direction;
       if (nextIdx >= 0 && nextIdx < allTopics.length) {
         activeStudyTopicId = allTopics[nextIdx].id;
+        activeStudySectionTab = 'theory';
         if (activeCourseId) renderCourseHub(activeCourseId);
-        $('courseMaterialsContainer')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        $('studyTopicContentTop')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     };
 
@@ -5420,6 +5516,8 @@ const CONFIG = {
       selectGlobalSearchStaff: (...args) => { if (typeof selectGlobalSearchStaff === 'function') return selectGlobalSearchStaff(...args); },
       setStaffCategoryFilter: (...args) => { if (typeof setStaffCategoryFilter === 'function') return setStaffCategoryFilter(...args); },
       setCourseActiveTab: (...args) => { if (typeof setCourseActiveTab === 'function') return setCourseActiveTab(...args); },
+      toggleStudyNav: (...args) => { if (typeof toggleStudyNav === 'function') return toggleStudyNav(...args); },
+      setStudySectionTab: (...args) => { if (typeof setStudySectionTab === 'function') return setStudySectionTab(...args); },
       selectStudyTopic: (...args) => { if (typeof selectStudyTopic === 'function') return selectStudyTopic(...args); },
       toggleStudyExample: (...args) => { if (typeof toggleStudyExample === 'function') return toggleStudyExample(...args); },
       toggleStudyHint: (...args) => { if (typeof toggleStudyHint === 'function') return toggleStudyHint(...args); },
