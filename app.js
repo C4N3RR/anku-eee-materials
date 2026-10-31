@@ -1326,9 +1326,64 @@ const CONFIG = {
     let courseLocalSearch = '';
 
     // Calculus I (MTH0101) Interactive Study Mode State
+    function isValidStudyTopic(topicId) {
+      if (!topicId) return false;
+      const data = typeof window !== 'undefined' ? window.CALCULUS_STUDY_DATA : null;
+      if (!data || !Array.isArray(data.weeks)) return true;
+      const allTopics = data.weeks.flatMap(w => w.topics || []);
+      return allTopics.some(t => t.id === topicId);
+    }
+
     let activeCourseTab = 'materials'; // 'materials' | 'study'
+    try {
+      const savedCourseTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
+      if (savedCourseTab === 'study' || savedCourseTab === 'materials') {
+        activeCourseTab = savedCourseTab;
+      } else if (typeof location !== 'undefined' && location.pathname.includes('test')) {
+        activeCourseTab = 'study';
+      }
+    } catch {}
+
     let activeStudyTopicId = 'tangents-rates';
+    try {
+      const savedTopic = localStorage.getItem('anku_study_active_topic_id_v1');
+      if (savedTopic && isValidStudyTopic(savedTopic)) {
+        activeStudyTopicId = savedTopic;
+      }
+    } catch {}
+
     let activeStudySectionTab = 'theory'; // 'theory' | 'examples' | 'quiz'
+    try {
+      const savedSec = localStorage.getItem('anku_study_active_section_tab_v1');
+      if (savedSec === 'theory' || savedSec === 'examples' || savedSec === 'quiz') {
+        activeStudySectionTab = savedSec;
+      }
+    } catch {}
+
+    function updateStudyLocationHash() {
+      if (typeof history === 'undefined' || typeof location === 'undefined') return;
+      if (activeView !== 'course') return;
+      const node = getCourseNodeById(activeCourseId);
+      const code = node ? node.name.toUpperCase().trim() : '';
+      if (code !== 'MTH0101') return;
+
+      if (activeCourseTab === 'study') {
+        const sectionPart = (activeStudySectionTab && activeStudySectionTab !== 'theory') ? `:${activeStudySectionTab}` : '';
+        const targetHash = `#MTH0101:study:${activeStudyTopicId}${sectionPart}`;
+        if (location.hash !== targetHash) {
+          try {
+            history.replaceState(null, '', targetHash);
+          } catch {}
+        }
+      } else {
+        if (location.hash.startsWith('#MTH0101:study') || location.hash.startsWith('#MTH0101:')) {
+          try {
+            history.replaceState(null, '', '#MTH0101');
+          } catch {}
+        }
+      }
+    }
+
     let isStudyNavCollapsed = false;
     try {
       const savedCollapsed = localStorage.getItem('anku_study_nav_collapsed_v1');
@@ -2043,7 +2098,8 @@ const CONFIG = {
         return;
       }
 
-      const code = rawHash.toUpperCase();
+      const hashParts = rawHash.split(':');
+      const code = hashParts[0].toUpperCase().trim();
       const node = getCourseNodeByCode(code);
       if (!node) {
         history.replaceState(null, '', location.pathname + location.search);
@@ -2054,10 +2110,69 @@ const CONFIG = {
       activeView = 'course';
       activeCourseId = node.id;
       courseLocalSearch = '';
+
       if (code !== 'MTH0101') {
         activeCourseTab = 'materials';
-      } else if (location.pathname.includes('test')) {
-        activeCourseTab = 'study';
+      } else {
+        // MTH0101 Calculus I: Check hash parameters first, then localStorage
+        let requestedTab = hashParts[1] ? hashParts[1].toLowerCase().trim() : null;
+        let requestedTopic = hashParts[2] ? hashParts[2].trim() : null;
+        let requestedSection = hashParts[3] ? hashParts[3].toLowerCase().trim() : null;
+
+        // Support direct shorthand like #MTH0101:<topicId>
+        if (requestedTab && requestedTab !== 'study' && requestedTab !== 'materials') {
+          if (isValidStudyTopic(requestedTab)) {
+            requestedTopic = requestedTab;
+            requestedTab = 'study';
+          }
+        }
+
+        if (requestedTab === 'study' || requestedTab === 'materials') {
+          activeCourseTab = requestedTab;
+        } else {
+          try {
+            const savedTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
+            if (savedTab === 'study' || savedTab === 'materials') {
+              activeCourseTab = savedTab;
+            } else if (location.pathname.includes('test')) {
+              activeCourseTab = 'study';
+            } else {
+              activeCourseTab = 'materials';
+            }
+          } catch {
+            activeCourseTab = 'materials';
+          }
+        }
+
+        if (requestedTopic && isValidStudyTopic(requestedTopic)) {
+          activeStudyTopicId = requestedTopic;
+        } else {
+          try {
+            const savedTopic = localStorage.getItem('anku_study_active_topic_id_v1');
+            if (savedTopic && isValidStudyTopic(savedTopic)) {
+              activeStudyTopicId = savedTopic;
+            }
+          } catch {}
+        }
+
+        if (requestedSection && ['theory', 'examples', 'quiz'].includes(requestedSection)) {
+          activeStudySectionTab = requestedSection;
+        } else {
+          try {
+            const savedSec = localStorage.getItem('anku_study_active_section_tab_v1');
+            if (savedSec && ['theory', 'examples', 'quiz'].includes(savedSec)) {
+              activeStudySectionTab = savedSec;
+            }
+          } catch {}
+        }
+
+        try {
+          localStorage.setItem('anku_course_tab_MTH0101_v1', activeCourseTab);
+          localStorage.setItem('anku_study_active_topic_id_v1', activeStudyTopicId);
+          localStorage.setItem('anku_study_active_section_tab_v1', activeStudySectionTab);
+        } catch {}
+
+        updateStudyLocationHash();
       }
       expandSidebarForCourse(code);
       const meta = courseMetadata[code] || { name: code };
@@ -2146,8 +2261,21 @@ const CONFIG = {
       const courseNode = getCourseNodeById(courseId);
       const code = courseNode ? courseNode.name.toUpperCase().trim() : null;
       if (!opts.fromHistory && code) {
-        if (location.hash !== '#' + encodeURIComponent(code)) {
-          history.pushState(null, '', '#' + encodeURIComponent(code));
+        let targetHash = '#' + encodeURIComponent(code);
+        if (code === 'MTH0101') {
+          try {
+            const savedTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
+            if (savedTab === 'study') {
+              const savedTopic = localStorage.getItem('anku_study_active_topic_id_v1');
+              const topicPart = (savedTopic && isValidStudyTopic(savedTopic)) ? savedTopic : activeStudyTopicId;
+              const savedSec = localStorage.getItem('anku_study_active_section_tab_v1');
+              const secPart = (savedSec && savedSec !== 'theory' && ['examples', 'quiz'].includes(savedSec)) ? `:${savedSec}` : '';
+              targetHash = `#MTH0101:study:${topicPart}${secPart}`;
+            }
+          } catch {}
+        }
+        if (location.hash !== targetHash) {
+          history.pushState(null, '', targetHash);
         }
       }
       activeView = 'course';
@@ -2156,8 +2284,25 @@ const CONFIG = {
       courseLocalSearch = '';
       if (code !== 'MTH0101') {
         activeCourseTab = 'materials';
-      } else if (location.pathname.includes('test')) {
-        activeCourseTab = 'study';
+      } else {
+        try {
+          const savedTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
+          if (savedTab === 'study' || savedTab === 'materials') {
+            activeCourseTab = savedTab;
+          } else if (location.pathname.includes('test')) {
+            activeCourseTab = 'study';
+          } else {
+            activeCourseTab = 'materials';
+          }
+          const savedTopic = localStorage.getItem('anku_study_active_topic_id_v1');
+          if (savedTopic && isValidStudyTopic(savedTopic)) {
+            activeStudyTopicId = savedTopic;
+          }
+          const savedSec = localStorage.getItem('anku_study_active_section_tab_v1');
+          if (savedSec && ['theory', 'examples', 'quiz'].includes(savedSec)) {
+            activeStudySectionTab = savedSec;
+          }
+        } catch {}
       }
       if (code) {
         expandSidebarForCourse(code);
@@ -4227,6 +4372,9 @@ const CONFIG = {
 
     window.setStudySectionTab = function(tabName) {
       activeStudySectionTab = tabName;
+      try {
+        localStorage.setItem('anku_study_active_section_tab_v1', tabName);
+      } catch {}
       if (tabName === 'examples' || tabName === 'quiz') {
         if (activeStudyTopicId) {
           const minScroll = tabName === 'quiz' ? 1.0 : 0.85;
@@ -4234,18 +4382,41 @@ const CONFIG = {
           saveStudyActivityState();
         }
       }
+      updateStudyLocationHash();
       if (activeCourseId) renderCourseHub(activeCourseId);
       scrollToStudyTopicHeader();
     };
 
     window.setCourseActiveTab = function(tabName) {
       activeCourseTab = tabName;
+      try {
+        localStorage.setItem('anku_course_tab_MTH0101_v1', tabName);
+      } catch {}
+      if (tabName === 'study') {
+        // Restore last viewed topic and section instead of restarting from 1.1
+        try {
+          const savedTopic = localStorage.getItem('anku_study_active_topic_id_v1');
+          if (savedTopic && isValidStudyTopic(savedTopic)) {
+            activeStudyTopicId = savedTopic;
+          }
+          const savedSec = localStorage.getItem('anku_study_active_section_tab_v1');
+          if (savedSec && ['theory', 'examples', 'quiz'].includes(savedSec)) {
+            activeStudySectionTab = savedSec;
+          }
+        } catch {}
+      }
+      updateStudyLocationHash();
       if (activeCourseId) renderCourseHub(activeCourseId);
     };
 
     window.selectStudyTopic = function(topicId) {
       activeStudyTopicId = topicId;
       activeStudySectionTab = 'theory';
+      try {
+        localStorage.setItem('anku_study_active_topic_id_v1', topicId);
+        localStorage.setItem('anku_study_active_section_tab_v1', 'theory');
+      } catch {}
+      updateStudyLocationHash();
       if (activeCourseId) renderCourseHub(activeCourseId);
       scrollToStudyTopicHeader();
     };
@@ -4298,6 +4469,11 @@ const CONFIG = {
       if (nextIdx >= 0 && nextIdx < allTopics.length) {
         activeStudyTopicId = allTopics[nextIdx].id;
         activeStudySectionTab = 'theory';
+        try {
+          localStorage.setItem('anku_study_active_topic_id_v1', activeStudyTopicId);
+          localStorage.setItem('anku_study_active_section_tab_v1', 'theory');
+        } catch {}
+        updateStudyLocationHash();
         if (activeCourseId) renderCourseHub(activeCourseId);
         scrollToStudyTopicHeader();
       }

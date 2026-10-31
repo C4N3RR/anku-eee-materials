@@ -120,3 +120,73 @@ test('Calculus study mode interacts cleanly with DOM and local storage', () => {
 
   dom.window.close();
 });
+
+test('Calculus study mode preserves active course tab, topic and section across page reload and tab toggle', () => {
+  const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const dom = new JSDOM(html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ''), {
+    url: 'https://c4n3rr.github.io/anku-eee-materials/',
+    runScripts: 'outside-only',
+    pretendToBeVisual: true
+  });
+  const w = dom.window;
+  const ctx = dom.getInternalVMContext();
+  const vm = require('vm');
+
+  w.tailwind = {};
+  w.matchMedia = () => ({ matches: false, addEventListener() {} });
+  w.scrollTo = () => {};
+  w.lucide = { createIcons() {} };
+  w.renderMathInElement = () => {};
+
+  for (const file of [
+    'portal-security.js',
+    'theme-init.js',
+    'portal-config.js',
+    'analytics-init.js',
+    'calculus-study-data.js',
+    'app.js'
+  ]) {
+    vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), ctx);
+  }
+
+  // 1. Select MTH0101 and switch to study tab
+  vm.runInContext('selectCourseByCode("MTH0101")', ctx);
+  vm.runInContext('setCourseActiveTab("study")', ctx);
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'study');
+
+  // 2. Select topic 2.1 (limit-properties) and section "examples"
+  vm.runInContext('selectStudyTopic("limit-properties")', ctx);
+  vm.runInContext('setStudySectionTab("examples")', ctx);
+  assert.equal(vm.runInContext('activeStudyTopicId', ctx), 'limit-properties');
+  assert.equal(vm.runInContext('activeStudySectionTab', ctx), 'examples');
+  assert.equal(w.localStorage.getItem('anku_study_active_topic_id_v1'), 'limit-properties');
+  assert.equal(w.localStorage.getItem('anku_study_active_section_tab_v1'), 'examples');
+  assert.equal(w.localStorage.getItem('anku_course_tab_MTH0101_v1'), 'study');
+  assert(w.location.hash.includes('limit-properties'));
+
+  // 3. Switch to materials tab
+  vm.runInContext('setCourseActiveTab("materials")', ctx);
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'materials');
+
+  // 4. Click back to "Adım Adım Öğren" - must NOT restart from 1.1, must stay on limit-properties & examples
+  vm.runInContext('setCourseActiveTab("study")', ctx);
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'study');
+  assert.equal(vm.runInContext('activeStudyTopicId', ctx), 'limit-properties');
+  assert.equal(vm.runInContext('activeStudySectionTab', ctx), 'examples');
+
+  // 5. Simulate page reload (syncCourseFromHash with #MTH0101)
+  w.location.hash = '#MTH0101';
+  vm.runInContext('syncCourseFromHash()', ctx);
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'study', 'Reload should stay in study mode');
+  assert.equal(vm.runInContext('activeStudyTopicId', ctx), 'limit-properties', 'Reload should stay on topic 2.1');
+  assert.equal(vm.runInContext('activeStudySectionTab', ctx), 'examples', 'Reload should stay on examples section');
+
+  // 6. Test direct deep link hash #MTH0101:study:infinite-limits:quiz
+  w.location.hash = '#MTH0101:study:infinite-limits:quiz';
+  vm.runInContext('syncCourseFromHash()', ctx);
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'study');
+  assert.equal(vm.runInContext('activeStudyTopicId', ctx), 'infinite-limits');
+  assert.equal(vm.runInContext('activeStudySectionTab', ctx), 'quiz');
+
+  dom.window.close();
+});
