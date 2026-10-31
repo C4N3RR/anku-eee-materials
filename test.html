@@ -10,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <script src="theme-init.js"></script>
-  <script src="portal-language.js?v=20261031-i18n3"></script>
+  <script src="portal-language.js?v=20261101-language-toggle"></script>
 
   <!-- 3 & 4. Meta Title & Meta Description -->
   <title>ANKU EEE — [TEST SÜRÜMÜ] Calculus Adım Adım Öğrenme</title>
@@ -1105,31 +1105,13 @@
           </div>
 
           <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
-            <div
-              id="langSwitcher"
-              role="group"
-              aria-label="Dil Seçimi / Language"
-              class="inline-flex h-8 items-center rounded-md border border-border bg-muted/50 p-0.5 text-[11px] font-bold tracking-wide select-none mr-0.5"
-            >
-              <button
-                type="button"
-                id="langBtnTr"
-                data-portal-click="setPortalLanguage"
-                data-portal-click-args="[&quot;tr&quot;]"
-                aria-pressed="true"
-                title="Türkçe"
-                class="h-7 px-2 rounded-[5px] transition bg-background text-foreground shadow-2xs"
-              >TR</button>
-              <button
-                type="button"
-                id="langBtnEn"
-                data-portal-click="setPortalLanguage"
-                data-portal-click-args="[&quot;en&quot;]"
-                aria-pressed="false"
-                title="English"
-                class="h-7 px-2 rounded-[5px] transition text-muted-foreground hover:text-foreground"
-              >EN</button>
-            </div>
+            <button
+              id="langToggleBtn"
+              type="button" data-portal-click="togglePortalLanguage"
+              title="İngilizceye geç"
+              aria-label="Dil: Türkçe. İngilizceye geç"
+              class="inline-flex h-8 items-center justify-center rounded-md border border-border bg-muted/50 px-2 text-[11px] font-bold tracking-wide text-foreground hover:bg-muted transition select-none"
+            >TR</button>
 
             <button
               id="refreshBtn"
@@ -1453,7 +1435,7 @@
 
 
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
-  <script src="app.js?v=20261101-materials-default"></script>
+  <script src="app.js?v=20261101-language-toggle"></script>
   <script src="portal-admin.js?v=20261031-i18n3"></script>
 </body>
 </html>

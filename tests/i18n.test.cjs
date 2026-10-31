@@ -13,19 +13,23 @@ test('TR/EN language switcher localizes the whole interface and defaults to Turk
   await new Promise(r=>setTimeout(r,30));
   const $=id=>w.document.getElementById(id);
 
+  assert.equal(w.document.querySelectorAll('#langToggleBtn').length,1);
+  assert.equal(w.document.querySelectorAll('#langBtnTr, #langBtnEn').length,0);
+
   // Default is Turkish
   assert.equal(w.getPortalLang(),'tr');
   assert.equal(w.document.documentElement.lang,'tr');
-  assert.equal($('langBtnTr').getAttribute('aria-pressed'),'true');
+  assert.equal($('langToggleBtn').textContent,'TR');
   vm.runInContext('renderWelcomeHub()',ctx);
   assert.match($('courseHubView').textContent,/Tüm Materyaller/);
 
   // Switch to English
-  $('langBtnEn').click();
+  $('langToggleBtn').click();
   assert.equal(w.getPortalLang(),'en');
+  assert.equal($('langToggleBtn').getAttribute('aria-label'),'Language: English. Switch to Turkish');
   assert.equal(w.document.documentElement.lang,'en');
   assert.equal(w.localStorage.getItem('anku_portal_lang_v1'),'en');
-  assert.equal($('langBtnEn').getAttribute('aria-pressed'),'true');
+  assert.equal($('langToggleBtn').textContent,'EN');
   assert.match($('courseHubView').textContent,/All Materials/);
   assert.doesNotMatch($('courseHubView').textContent,/Tüm Materyaller/);
   assert.match($('sidebarDashboardNav').textContent,/Academic Staff/);
@@ -91,7 +95,7 @@ test('TR/EN language switcher localizes the whole interface and defaults to Turk
   assert.equal($('totalFilesBadge').textContent,'0 files');
 
   // Switch back to Turkish
-  $('langBtnTr').click();
+  $('langToggleBtn').click();
   assert.equal(w.getPortalLang(),'tr');
   assert.match($('courseHubView').textContent,/Matematik I/);
   assert.match($('courseHubView').textContent,/Adım Adım Öğren/);
@@ -118,10 +122,13 @@ test('Privacy and 404 pages support TR/EN toggle and follow default language',as
   vm.runInContext(fs.readFileSync(root+'/privacy-controls.js','utf8'),pctx);
   assert.equal(pw.document.documentElement.lang,'tr');
   assert.match(pw.document.getElementById('privacyTitle').textContent,/Gizlilik Politikası/);
-  pw.document.getElementById('langBtnEn').click();
+  pw.document.getElementById('langToggleBtn').click();
   assert.equal(pw.document.documentElement.lang,'en');
   assert.match(pw.document.getElementById('privacyTitle').textContent,/Privacy Policy/);
   assert.match(pw.document.getElementById('footerBuiltBy').textContent,/Built by Caner Davarcı/);
+  pw.document.getElementById('langToggleBtn').click();
+  assert.equal(pw.document.documentElement.lang,'tr');
+  assert.equal(pw.document.getElementById('langToggleBtn').textContent,'TR');
   privDom.window.close();
 
   // 404 page
@@ -133,10 +140,13 @@ test('Privacy and 404 pages support TR/EN toggle and follow default language',as
   vm.runInContext(fs.readFileSync(root+'/not-found-controls.js','utf8'),nctx);
   assert.equal(nw.document.documentElement.lang,'tr');
   assert.match(nw.document.getElementById('notFoundHeading').textContent,/Sayfa Bulunamadı/);
-  nw.document.getElementById('langBtnEn').click();
+  nw.document.getElementById('langToggleBtn').click();
   assert.equal(nw.document.documentElement.lang,'en');
   assert.match(nw.document.getElementById('notFoundHeading').textContent,/Page Not Found/);
   assert.match(nw.document.getElementById('footerBuiltBy').textContent,/Built by Caner Davarcı/);
+  nw.document.getElementById('langToggleBtn').click();
+  assert.equal(nw.document.documentElement.lang,'tr');
+  assert.equal(nw.document.getElementById('langToggleBtn').textContent,'TR');
   nfDom.window.close();
 });
 

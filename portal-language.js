@@ -15,6 +15,13 @@
     url.searchParams.set('lang', lang);
     try { history.replaceState(history.state, '', url); } catch {}
     document.documentElement.lang = lang;
+    const button = document.getElementById('langToggleBtn');
+    if (button) {
+      const english = lang === 'en';
+      button.textContent = english ? 'EN' : 'TR';
+      button.setAttribute('title', english ? 'Switch to Turkish' : 'İngilizceye geç');
+      button.setAttribute('aria-label', english ? 'Language: English. Switch to Turkish' : 'Dil: Türkçe. İngilizceye geç');
+    }
     document.querySelectorAll('a[href]').forEach(link => {
       const target = new URL(link.getAttribute('href'), location.href);
       if (target.origin !== location.origin || !/\/(?:index\.html|test\.html|privacy\.html)?$/.test(target.pathname)) return;

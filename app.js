@@ -6220,7 +6220,6 @@ const CONFIG = {
       ['#globalSearchInput', 'placeholder', 'Ara...', 'Search...'],
       ['#globalSearchInput', 'aria-label', 'Portalda ara', 'Search the portal'],
       ['#globalSearchClearBtn', 'title', 'Temizle', 'Clear'],
-      ['#langSwitcher', 'aria-label', 'Dil Seçimi', 'Language'],
       ['#refreshBtn', 'title', 'Yenile', 'Refresh'],
       ['#themeToggleBtn', 'title', 'Tema', 'Theme'],
       ['#portalSettingsButton', 'title', 'Ayarlar', 'Settings'],
@@ -6279,15 +6278,6 @@ const CONFIG = {
         const el = $(id);
         const state = previewStates.find(pair => pair.includes(el?.textContent.trim()));
         if (el && state) el.textContent = trEn(...state);
-      });
-      const activeCls = ['bg-background', 'text-foreground', 'shadow-2xs'];
-      const idleCls = ['text-muted-foreground', 'hover:text-foreground'];
-      [['langBtnTr', !en], ['langBtnEn', en]].forEach(([id, on]) => {
-        const b = $(id);
-        if (!b) return;
-        b.setAttribute('aria-pressed', String(on));
-        activeCls.forEach(c => b.classList.toggle(c, on));
-        idleCls.forEach(c => b.classList.toggle(c, !on));
       });
       const totalBadge = $('totalFilesBadge');
       if (totalBadge) totalBadge.textContent = `${driveTree ? countFilesInFolder(driveTree) : 0} ${trEn('dosya', 'files')}`;
@@ -6382,6 +6372,7 @@ const CONFIG = {
       toggleSidebarSemester: (...args) => { if (typeof toggleSidebarSemester === 'function') return toggleSidebarSemester(...args); },
       toggleSidebarYear: (...args) => { if (typeof toggleSidebarYear === 'function') return toggleSidebarYear(...args); },
       setPortalLanguage: (lang) => window.setPortalLanguage(lang),
+      togglePortalLanguage: () => window.setPortalLanguage(isEn() ? 'tr' : 'en'),
 
       closeEventDialog: () => $('addAcademicEventModal').close(),
       removeParent: element => element.parentElement.remove(),

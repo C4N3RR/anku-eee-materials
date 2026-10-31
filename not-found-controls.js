@@ -39,7 +39,6 @@
     document.title = t.docTitle;
     document.getElementById('themeToggleBtn')?.setAttribute('aria-label', l === 'en' ? 'Toggle theme' : 'Tema Değiştir');
     document.querySelector('header img')?.setAttribute('alt', l === 'en' ? 'Ankara University Logo' : 'Ankara Üniversitesi Logosu');
-    document.querySelector('#langSwitcher, [role="group"]')?.setAttribute('aria-label', l === 'en' ? 'Language' : 'Dil Seçimi');
     document.getElementById('themeToggleBtn')?.setAttribute('title', l === 'en' ? 'Theme' : 'Tema');
     document.querySelector('meta[property="og:title"]')?.setAttribute('content', t.docTitle);
     const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
@@ -49,21 +48,9 @@
     setText('footerPrivacyLink', t.privacy);
     setText('footerBuiltBy', t.builtBy);
 
-    const bTr = document.getElementById('langBtnTr');
-    const bEn = document.getElementById('langBtnEn');
-    const isE = (l === 'en');
-    if (bTr) {
-      bTr.setAttribute('aria-pressed', String(!isE));
-      bTr.className = 'h-7 px-2 rounded-[5px] transition ' + (!isE ? 'bg-background text-foreground shadow-2xs' : 'text-muted-foreground hover:text-foreground');
-    }
-    if (bEn) {
-      bEn.setAttribute('aria-pressed', String(isE));
-      bEn.className = 'h-7 px-2 rounded-[5px] transition ' + (isE ? 'bg-background text-foreground shadow-2xs' : 'text-muted-foreground hover:text-foreground');
-    }
   }
 
-  document.getElementById('langBtnTr')?.addEventListener('click', () => applyLanguage('tr'));
-  document.getElementById('langBtnEn')?.addEventListener('click', () => applyLanguage('en'));
+  document.getElementById('langToggleBtn')?.addEventListener('click', () => applyLanguage(lang === 'en' ? 'tr' : 'en'));
 
   document.getElementById('themeToggleBtn').onclick = () => {
     const currentlyDark = document.documentElement.classList.contains('dark');
