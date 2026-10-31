@@ -10,6 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <script src="theme-init.js"></script>
+  <script src="portal-language.js?v=20261031-i18n3"></script>
 
   <!-- 3 & 4. Meta Title & Meta Description -->
   <title>ANKU EEE — [TEST SÜRÜMÜ] Calculus Adım Adım Öğrenme</title>
@@ -67,7 +68,7 @@
   <link rel="stylesheet" href="assets/vendor/katex/katex.min.css">
   <script src="assets/vendor/katex/katex.min.js"></script>
   <script src="assets/vendor/katex/auto-render.min.js"></script>
-  <script src="calculus-study-data.js"></script>
+  <script src="calculus-study-data.js?v=20261031-i18n3"></script>
 
   <style>
     :root {
@@ -952,7 +953,7 @@
 
         <div data-slot="sidebar-group" class="flex flex-col mt-2">
           <div class="sidebar-hide-collapsed flex h-7 shrink-0 items-center justify-between px-2 text-[11px] font-medium text-sidebar-foreground/50 tracking-wider uppercase">
-            <span>Dersler</span>
+            <span id="sidebarCoursesHeading">Dersler</span>
           </div>
           <ul id="courseListNav" class="flex flex-col gap-0.5"></ul>
         </div>
@@ -966,7 +967,7 @@
 
         <div data-slot="sidebar-group" class="flex flex-col mt-2">
           <div class="sidebar-hide-collapsed flex h-7 shrink-0 items-center px-2 text-[11px] font-medium text-sidebar-foreground/50 tracking-wider uppercase">
-            Bağlantılar
+            <span id="sidebarLinksHeading">Bağlantılar</span>
           </div>
           <ul class="flex flex-col gap-0.5" data-portal-links>
             <li>
@@ -1104,6 +1105,32 @@
           </div>
 
           <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+            <div
+              id="langSwitcher"
+              role="group"
+              aria-label="Dil Seçimi / Language"
+              class="inline-flex h-8 items-center rounded-md border border-border bg-muted/50 p-0.5 text-[11px] font-bold tracking-wide select-none mr-0.5"
+            >
+              <button
+                type="button"
+                id="langBtnTr"
+                data-portal-click="setPortalLanguage"
+                data-portal-click-args="[&quot;tr&quot;]"
+                aria-pressed="true"
+                title="Türkçe"
+                class="h-7 px-2 rounded-[5px] transition bg-background text-foreground shadow-2xs"
+              >TR</button>
+              <button
+                type="button"
+                id="langBtnEn"
+                data-portal-click="setPortalLanguage"
+                data-portal-click-args="[&quot;en&quot;]"
+                aria-pressed="false"
+                title="English"
+                class="h-7 px-2 rounded-[5px] transition text-muted-foreground hover:text-foreground"
+              >EN</button>
+            </div>
+
             <button
               id="refreshBtn"
               type="button"
@@ -1144,9 +1171,9 @@
           <div class="flex items-center gap-3">
             <span>© 2026 ANKU EEE</span>
             <span>•</span>
-            <a href="privacy.html" class="hover:text-foreground transition">Gizlilik Politikası</a>
+            <a id="footerPrivacyLink" href="privacy.html" class="hover:text-foreground transition">Gizlilik Politikası</a>
           </div>
-          <span class="font-medium text-foreground">Built by Caner Davarcı</span>
+          <span class="font-medium text-foreground">Caner Davarcı tarafından geliştirildi</span>
         </div>
       </footer>
 
@@ -1219,9 +1246,9 @@
         aria-live="polite"
         class="absolute top-16 left-1/2 z-40 inline-flex items-center gap-2 rounded-full bg-neutral-950/85 text-zinc-100 border border-white/15 px-3.5 py-1.5 text-xs font-medium shadow-xl backdrop-blur-md select-none"
       >
-        <span>Tam ekrandan çıkmak için</span>
+        <span id="viewerToastPre">Tam ekrandan çıkmak için</span>
         <kbd class="rounded bg-white/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-white border border-white/20">ESC</kbd>
-        <span>tuşuna basın</span>
+        <span id="viewerToastPost">tuşuna basın</span>
       </div>
 
       <div id="viewerLoader" class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-background/90">
@@ -1248,7 +1275,7 @@
             <span>Drive Önizleme</span>
           </button>
         </div>
-        <p class="text-[11px] text-muted-foreground/80 mt-3 max-w-xs">
+        <p id="viewerStreamNote" class="text-[11px] text-muted-foreground/80 mt-3 max-w-xs">
           Kitap doğrudan tarayıcınıza aktarılıp önbelleğe alınıyor. İptal edip standart Drive önizlemesine de geçebilirsiniz.
         </p>
       </div>
@@ -1275,23 +1302,23 @@
 
     <form id="editCourseForm" class="p-5 space-y-3.5 text-xs">
       <div>
-        <label class="block font-medium mb-1 text-foreground">Ders Adı</label>
+        <label for="editCourseName" class="block font-medium mb-1 text-foreground">Ders Adı</label>
         <input id="editCourseName" type="text" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label class="block font-medium mb-1 text-foreground">Öğretim Üyesi</label>
+          <label for="editCourseInstructor" class="block font-medium mb-1 text-foreground">Öğretim Üyesi</label>
           <input id="editCourseInstructor" type="text" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
         </div>
         <div>
-          <label class="block font-medium mb-1 text-foreground">E-Posta</label>
+          <label for="editCourseEmail" class="block font-medium mb-1 text-foreground">E-Posta</label>
           <input id="editCourseEmail" type="email" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
         </div>
       </div>
 
       <div>
-        <label class="block font-medium mb-1 text-foreground">Kredi & AKTS</label>
+        <label for="editCourseCredits" class="block font-medium mb-1 text-foreground">Kredi & AKTS</label>
         <input id="editCourseCredits" type="text" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
       </div>
 
@@ -1299,7 +1326,7 @@
         <div class="flex items-center justify-between mb-2">
           <label class="font-medium text-foreground">Kısayol Linkleri</label>
           <button type="button" id="addNewLinkRowBtn" class="text-xs text-primary hover:underline flex items-center gap-1 font-medium">
-            <i data-lucide="plus" class="size-3.5"></i> Ekle
+            <i data-lucide="plus" class="size-3.5"></i> <span>Ekle</span>
           </button>
         </div>
         <div id="editLinksContainer" class="space-y-2 max-h-44 overflow-y-auto pr-1"></div>
@@ -1307,7 +1334,7 @@
 
       <div class="flex items-center justify-between pt-3 border-t border-border">
         <button type="button" id="copyInfoTxtBtn" class="h-8 px-2.5 rounded-md bg-secondary text-secondary-foreground hover:opacity-85 font-mono text-[11px] inline-flex items-center gap-1.5">
-          <i data-lucide="copy" class="size-3"></i> info.txt Kopyala
+          <i data-lucide="copy" class="size-3"></i> <span>info.txt Kopyala</span>
         </button>
         <div class="flex items-center gap-2">
           <button type="button" id="cancelEditCourseBtn" class="h-8 px-3 rounded-md border border-border bg-background hover:bg-muted text-foreground font-medium transition">İptal</button>
@@ -1426,7 +1453,7 @@
 
 
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
-  <script src="app.js?v=20261031-beta-badge-fix"></script>
-  <script src="portal-admin.js?v=20261030-class-sidebar1"></script>
+  <script src="app.js?v=20261031-i18n3"></script>
+  <script src="portal-admin.js?v=20261031-i18n3"></script>
 </body>
 </html>

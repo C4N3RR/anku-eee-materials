@@ -2,6 +2,395 @@ const CONFIG = {
       FOLDER: 'https://drive.google.com/drive/folders/1n9cyf8eSj3OremDKF5BdQIBayaryPofN?usp=sharing'
     };
 
+    // ================= BILINGUAL (TR / EN) LANGUAGE SYSTEM =================
+    const PORTAL_LANG_STORAGE_KEY = 'anku_portal_lang_v1';
+    let currentLang = window.PortalLanguage?.read() || 'tr';
+
+    window.getPortalLang = () => currentLang;
+    const isEn = () => currentLang === 'en';
+    const trEn = (trStr, enStr) => (currentLang === 'en' ? enStr : trStr);
+    window.trEn = trEn;
+
+    const COURSE_BILINGUAL_MAP = {
+      'EEE1001': {
+        nameTr: 'Elektrik-Elektronik Mühendisliğine Giriş',
+        nameEn: 'Introduction to Electrical & Electronics Engineering',
+        shortTr: "EEM'e Giriş",
+        shortEn: 'Intro to EEE'
+      },
+      'CHM109': {
+        nameTr: 'Genel Kimya',
+        nameEn: 'General Chemistry',
+        shortTr: 'Genel Kimya',
+        shortEn: 'General Chemistry'
+      },
+      'MTH0101': {
+        nameTr: 'Matematik I',
+        nameEn: 'Calculus I',
+        shortTr: 'Matematik I',
+        shortEn: 'Calculus I'
+      },
+      'MTH103': {
+        nameTr: 'Lineer Cebir',
+        nameEn: 'Linear Algebra',
+        shortTr: 'Lineer Cebir',
+        shortEn: 'Linear Algebra'
+      },
+      'PHY0107': {
+        nameTr: 'Genel Fizik I',
+        nameEn: 'Physics I',
+        shortTr: 'Fizik I',
+        shortEn: 'Physics I'
+      },
+      'TUR171': {
+        nameTr: 'Türk Dili I',
+        nameEn: 'Turkish Language I',
+        shortTr: 'Türk Dili I',
+        shortEn: 'Turkish I'
+      },
+      'OUL101': {
+        nameTr: 'Üniversite Hayatına Giriş',
+        nameEn: 'Introduction to University Life',
+        shortTr: 'Üniv. Giriş',
+        shortEn: 'Univ. Life'
+      },
+      'EEE1002': {
+        nameTr: 'Algoritmalar ve Programlama',
+        nameEn: 'Algorithms & Programming for Engineers',
+        shortTr: 'Programlama',
+        shortEn: 'Programming'
+      },
+      'EEE1004': {
+        nameTr: 'Sayısal Mantık Tasarımı',
+        nameEn: 'Digital Logic Design',
+        shortTr: 'Sayısal Mantık',
+        shortEn: 'Digital Logic'
+      },
+      'EEE1006': {
+        nameTr: 'Sayısal Mantık Tasarımı Lab.',
+        nameEn: 'Digital Logic Design Lab.',
+        shortTr: 'Sayısal Lab.',
+        shortEn: 'Logic Lab.'
+      },
+      'MTH0102': {
+        nameTr: 'Matematik II',
+        nameEn: 'Calculus II',
+        shortTr: 'Matematik II',
+        shortEn: 'Calculus II'
+      },
+      'PHY0108': {
+        nameTr: 'Genel Fizik II',
+        nameEn: 'Physics II',
+        shortTr: 'Fizik II',
+        shortEn: 'Physics II'
+      },
+      'TUR174': {
+        nameTr: 'Türk Dili II',
+        nameEn: 'Turkish Language II',
+        shortTr: 'Türk Dili II',
+        shortEn: 'Turkish II'
+      },
+      'OUL102': {
+        nameTr: 'Mühendisler İçin Kariyer Planlama',
+        nameEn: 'Career Planning for Engineers',
+        shortTr: 'Kariyer Plan.',
+        shortEn: 'Career Plan.'
+      },
+      'EEE2001': {
+        nameTr: 'Devre Teorisi I',
+        nameEn: 'Circuit Theory I',
+        shortTr: 'Devre Teorisi I',
+        shortEn: 'Circuits I'
+      },
+      'EEE2003': {
+        nameTr: 'Yarıiletken Aygıtlara Giriş',
+        nameEn: 'Introduction to Semiconductor Devices',
+        shortTr: 'Yarıiletkenler',
+        shortEn: 'Semiconductors'
+      },
+      'EEE2005': {
+        nameTr: 'Elektrik Devreleri ve Yarıiletken Aygıtlar Lab.',
+        nameEn: 'Electrical Circuits & Semiconductor Devices Lab.',
+        shortTr: 'Devre Lab. I',
+        shortEn: 'Circuits Lab. I'
+      },
+      'EEE2007': {
+        nameTr: 'Olasılık Teorisi ve Rastgele Süreçler',
+        nameEn: 'Probability Theory & Random Processes',
+        shortTr: 'Olasılık',
+        shortEn: 'Probability'
+      },
+      'MTH201': {
+        nameTr: 'Diferansiyel Denklemler',
+        nameEn: 'Differential Equations',
+        shortTr: 'Dif. Denklemler',
+        shortEn: 'Diff. Equations'
+      },
+      'HIS103': {
+        nameTr: 'Atatürk İlkeleri ve İnkılap Tarihi I',
+        nameEn: "Atatürk's Principles & History of Turkish Revolution I",
+        shortTr: 'İnkılap I',
+        shortEn: 'History I'
+      },
+      'EEE2002': {
+        nameTr: 'Devre Teorisi II',
+        nameEn: 'Circuit Theory II',
+        shortTr: 'Devre Teorisi II',
+        shortEn: 'Circuits II'
+      },
+      'EEE2004': {
+        nameTr: 'Elektrik Devreleri Lab.',
+        nameEn: 'Electrical Circuits Lab.',
+        shortTr: 'Devre Lab. II',
+        shortEn: 'Circuits Lab. II'
+      },
+      'EEE2006': {
+        nameTr: 'Elektromanyetik Alanlar ve Dalgalar',
+        nameEn: 'Electromagnetic Fields & Waves',
+        shortTr: 'Elektromanyetik',
+        shortEn: 'Electromagnetics'
+      },
+      'EEE2008': {
+        nameTr: 'Sinyaller ve Sistemler',
+        nameEn: 'Signals & Systems',
+        shortTr: 'Sinyaller',
+        shortEn: 'Signals & Sys.'
+      },
+      'HIS104': {
+        nameTr: 'Atatürk İlkeleri ve İnkılap Tarihi II',
+        nameEn: "Atatürk's Principles & History of Turkish Revolution II",
+        shortTr: 'İnkılap II',
+        shortEn: 'History II'
+      },
+      'EEE3001': {
+        nameTr: 'Elektronik Devreler I',
+        nameEn: 'Electronic Circuits I',
+        shortTr: 'Elektronik I',
+        shortEn: 'Electronics I'
+      },
+      'EEE3003': {
+        nameTr: 'Elektronik Devreler I Lab.',
+        nameEn: 'Electronic Circuits I Lab.',
+        shortTr: 'Elektronik Lab. I',
+        shortEn: 'Electronics Lab I'
+      },
+      'EEE3005': {
+        nameTr: 'Elektromanyetik Dalga Teorisi',
+        nameEn: 'Electromagnetic Wave Theory',
+        shortTr: 'Dalga Teorisi',
+        shortEn: 'EM Wave Theory'
+      },
+      'EEE3007': {
+        nameTr: 'Elektromekanik Enerji Dönüşümü',
+        nameEn: 'Electromechanical Energy Conversion',
+        shortTr: 'Enerji Dönüşümü',
+        shortEn: 'Energy Conv.'
+      },
+      'EEE3009': {
+        nameTr: 'Sayısal Sinyal İşleme',
+        nameEn: 'Digital Signal Processing',
+        shortTr: 'Sayısal Sinyal',
+        shortEn: 'DSP'
+      },
+      'SCS301': {
+        nameTr: 'Bilimsel Dürüstlük ve Etik',
+        nameEn: 'Scientific Integrity & Ethics',
+        shortTr: 'Bilimsel Etik',
+        shortEn: 'Sci. Ethics'
+      },
+      'EEE3002': {
+        nameTr: 'Elektronik Devreler II',
+        nameEn: 'Electronic Circuits II',
+        shortTr: 'Elektronik II',
+        shortEn: 'Electronics II'
+      },
+      'EEE3004': {
+        nameTr: 'Elektronik Devreler II Lab.',
+        nameEn: 'Electronic Circuits II Lab.',
+        shortTr: 'Elektronik Lab. II',
+        shortEn: 'Electronics Lab II'
+      },
+      'EEE3342': {
+        nameTr: 'Haberleşme Sistemleri',
+        nameEn: 'Communication Systems',
+        shortTr: 'Haberleşme',
+        shortEn: 'Comm. Systems'
+      },
+      'EEE3344': {
+        nameTr: 'Lineer Kontrol Sistemleri',
+        nameEn: 'Linear Control Systems',
+        shortTr: 'Kontrol Sis.',
+        shortEn: 'Control Systems'
+      },
+      'PPL302': {
+        nameTr: 'Mesleki Sorumluluk ve Etik',
+        nameEn: 'Professional Responsibility & Ethics',
+        shortTr: 'Mesleki Etik',
+        shortEn: 'Prof. Ethics'
+      },
+      'EEE4001': {
+        nameTr: 'Bitirme Tasarım Projesi I',
+        nameEn: 'Capstone Design I',
+        shortTr: 'Bitirme Proj. I',
+        shortEn: 'Capstone I'
+      },
+      'EEE4091': {
+        nameTr: 'İş Sağlığı ve Güvenliği I',
+        nameEn: 'Occupational Health & Safety I',
+        shortTr: 'İSG I',
+        shortEn: 'OHS I'
+      },
+      'EEE4099': {
+        nameTr: 'Yaz Stajı',
+        nameEn: 'Summer Practice',
+        shortTr: 'Yaz Stajı',
+        shortEn: 'Summer Practice'
+      },
+      'EEE4002': {
+        nameTr: 'Bitirme Tasarım Projesi II',
+        nameEn: 'Capstone Design II',
+        shortTr: 'Bitirme Proj. II',
+        shortEn: 'Capstone II'
+      },
+      'EEE4092': {
+        nameTr: 'İş Sağlığı ve Güvenliği II',
+        nameEn: 'Occupational Health & Safety II',
+        shortTr: 'İSG II',
+        shortEn: 'OHS II'
+      }
+    };
+
+    function formatCourseDisplayName(code, rawName) {
+      const entry = COURSE_BILINGUAL_MAP[code];
+      const str = String(rawName || '').trim();
+      const match = str.match(/^(.+?)\s*\((.+)\)$/);
+      // If user/admin customized the name to something not matching the default pattern, keep custom name
+      if (entry) {
+        const isDefaultCombo = !str || str.includes(entry.nameTr) || str.includes(entry.nameEn);
+        if (isDefaultCombo) {
+          return isEn() ? entry.nameEn : entry.nameTr;
+        }
+      }
+      if (match) {
+        return isEn() ? match[1].trim() : match[2].trim();
+      }
+      return str || code;
+    }
+
+    function formatCourseShortLabel(code, customShort) {
+      const entry = COURSE_BILINGUAL_MAP[code];
+      if (entry) {
+        if (!customShort || customShort === entry.shortTr || customShort === entry.shortEn || customShort.includes('(')) {
+          return isEn() ? entry.shortEn : entry.shortTr;
+        }
+      }
+      return customShort || (entry ? (isEn() ? entry.shortEn : entry.shortTr) : code);
+    }
+
+    function formatCreditsText(creditsStr) {
+      if (!creditsStr) return '';
+      if (!isEn()) {
+        return String(creditsStr)
+          .replace(/\bCredits?\b/gi, 'Kredi')
+          .replace(/\bECTS\b/gi, 'AKTS');
+      }
+      return String(creditsStr)
+        .replace(/\bKredi\b/gi, 'Credits')
+        .replace(/\bAKTS\b/gi, 'ECTS');
+    }
+
+    const STAFF_TITLE_EN_MAP = {
+      'Prof. Dr.': 'Prof. Dr.',
+      'Doç. Dr.': 'Assoc. Prof. Dr.',
+      'Dr. Öğr. Üyesi': 'Asst. Prof. Dr.',
+      'Öğr. Gör. Dr.': 'Lect. Dr.',
+      'Arş. Gör.': 'Res. Asst.',
+      'Öğr. Gör.': 'Lecturer',
+      'Dr.': 'Dr.',
+      'Y.L.': 'M.Sc.'
+    };
+
+    const STAFF_ROLE_EN_MAP = {
+      'Bölüm Başkanı': 'Department Chair',
+      'Bölüm Başkan Yardımcısı': 'Vice Chair of Department',
+      'Araştırma Görevlisi': 'Research Assistant',
+      'Yarı Zamanlı Öğretim Üyesi': 'Part-Time Faculty Member',
+      'Yarı Zamanlı Öğretim Elemanı': 'Part-Time Instructor',
+      'Servis Dersi Öğretim Üyesi (Kimya)': 'Service Course Faculty (Chemistry)',
+      'Servis Dersi Öğretim Üyesi (Matematik)': 'Service Course Faculty (Mathematics)',
+      'Servis Dersi Öğretim Üyesi (Fizik Müh.)': 'Service Course Faculty (Physics Eng.)',
+      'Servis Dersi Öğretim Elemanı (Türk Dili)': 'Service Course Instructor (Turkish Language)',
+      'Servis Dersi Öğretim Üyesi (İş Sağlığı ve Güvenliği)': 'Service Course Faculty (Occupational Health & Safety)',
+      'Servis Dersi Öğretim Elemanı (İSG)': 'Service Course Instructor (OHS)'
+    };
+
+    function formatStaffTitle(title) {
+      if (!title) return '';
+      if (!isEn()) return title;
+      return STAFF_TITLE_EN_MAP[title] || title;
+    }
+
+    function formatStaffRole(role) {
+      if (!role) return '';
+      if (!isEn()) return role;
+      return STAFF_ROLE_EN_MAP[role] || role;
+    }
+
+    function formatStaffFullName(staff) {
+      if (!staff) return '';
+      return `${formatStaffTitle(staff.title)} ${staff.name}`.trim();
+    }
+
+    const LINK_TITLE_TRANSLATIONS = {
+      'Bölüm Sayfası': { tr: 'Bölüm Sayfası', en: 'Department Website' },
+      'Department Website': { tr: 'Bölüm Sayfası', en: 'Department Website' },
+      'Periodic Table': { tr: 'Periyodik Tablo', en: 'Periodic Table' },
+      'Periyodik Tablo': { tr: 'Periyodik Tablo', en: 'Periodic Table' },
+      "Paul's Math Notes": { tr: "Paul's Matematik Notları", en: "Paul's Math Notes" },
+      "Paul's Matematik Notları": { tr: "Paul's Matematik Notları", en: "Paul's Math Notes" },
+      '3Blue1Brown Calculus': { tr: '3Blue1Brown Kalkülüs', en: '3Blue1Brown Calculus' },
+      '3Blue1Brown Kalkülüs': { tr: '3Blue1Brown Kalkülüs', en: '3Blue1Brown Calculus' },
+      '3Blue1Brown Linear Algebra': { tr: '3Blue1Brown Lineer Cebir', en: '3Blue1Brown Linear Algebra' },
+      '3Blue1Brown Lineer Cebir': { tr: '3Blue1Brown Lineer Cebir', en: '3Blue1Brown Linear Algebra' },
+      'Phet Simülasyonları': { tr: 'PhET Simülasyonları', en: 'PhET Simulations' },
+      'PhET Simülasyonları': { tr: 'PhET Simülasyonları', en: 'PhET Simulations' },
+      'PhET Simulations': { tr: 'PhET Simülasyonları', en: 'PhET Simulations' },
+      'TDK Sözlük': { tr: 'TDK Sözlük', en: 'TDK Turkish Dictionary' },
+      'TÜBA Terim': { tr: 'TÜBA Terim Sözlüğü', en: 'TÜBA Terminology Dictionary' },
+      'Dil Derneği': { tr: 'Dil Derneği', en: 'Language Association' },
+      'Milli Kütüphane': { tr: 'Milli Kütüphane', en: 'National Library' },
+      'ÇÜ Türkoloji': { tr: 'ÇÜ Türkoloji', en: 'Çukurova Turcology Archive' },
+      'Öğrenci Bilgi Sistemi': { tr: 'Öğrenci Bilgi Sistemi', en: 'Student Information System (OBS)' },
+      'Student Information System (OBS)': { tr: 'Öğrenci Bilgi Sistemi', en: 'Student Information System (OBS)' },
+      'Bölüm Web Sitesi': { tr: 'Bölüm Web Sitesi', en: 'Department Website' },
+      'e-Kampüs': { tr: 'e-Kampüs', en: 'e-Campus (Moodle)' },
+      'e-Campus (Moodle)': { tr: 'e-Kampüs', en: 'e-Campus (Moodle)' },
+      'Dosyalar': { tr: 'Dosyalar', en: 'Files (Google Drive)' },
+      'Files (Google Drive)': { tr: 'Dosyalar', en: 'Files (Google Drive)' }
+    };
+
+    function formatLinkTitle(title) {
+      if (!title) return '';
+      const entry = LINK_TITLE_TRANSLATIONS[title.trim()];
+      if (entry) return isEn() ? entry.en : entry.tr;
+      return title;
+    }
+
+    function formatClassOrdinal(year) {
+      const y = Number(year) || 1;
+      if (!isEn()) return `${y}. Sınıf`;
+      const suffixes = { 1: '1st', 2: '2nd', 3: '3rd', 4: '4th' };
+      return `${suffixes[y] || y + 'th'} Year`;
+    }
+
+    function formatSemesterLabel(sem, withPeriod = false) {
+      const isGuz = sem === 'guz';
+      if (!isEn()) {
+        return withPeriod ? (isGuz ? 'Güz Dönemi' : 'Bahar Dönemi') : (isGuz ? 'Güz' : 'Bahar');
+      }
+      return withPeriod ? (isGuz ? 'Fall Semester' : 'Spring Semester') : (isGuz ? 'Fall' : 'Spring');
+    }
+
     const COURSE_THEMES = {
       'PHY0107': { // Koyu Mor
         accent: '#c084fc',
@@ -1328,7 +1717,7 @@ const CONFIG = {
     // Calculus I (MTH0101) Interactive Study Mode State
     function isValidStudyTopic(topicId) {
       if (!topicId) return false;
-      const data = typeof window !== 'undefined' ? window.CALCULUS_STUDY_DATA : null;
+      const data = typeof window !== 'undefined' ? (window.getCalculusStudyData ? window.getCalculusStudyData(currentLang) : window.CALCULUS_STUDY_DATA) : null;
       if (!data || !Array.isArray(data.weeks)) return true;
       const allTopics = data.weeks.flatMap(w => w.topics || []);
       return allTopics.some(t => t.id === topicId);
@@ -1479,7 +1868,7 @@ const CONFIG = {
     }
 
     function refreshStudyProgressUI() {
-      const data = typeof window !== 'undefined' ? window.CALCULUS_STUDY_DATA : null;
+      const data = typeof window !== 'undefined' ? (window.getCalculusStudyData ? window.getCalculusStudyData(currentLang) : window.CALCULUS_STUDY_DATA) : null;
       if (!data) return;
       const progressPercent = calculateCourseProgress(data);
       const allTopics = data.weeks.flatMap(w => w.topics || []);
@@ -1585,14 +1974,14 @@ const CONFIG = {
 
     const KIND_CONFIG = {
       pdf: { icon: 'file-text', badge: 'PDF' },
-      slide: { icon: 'presentation', badge: 'Slayt' },
+      slide: { icon: 'presentation', get badge() { return trEn('Slayt', 'Slide'); } },
       word: { icon: 'file-type', badge: 'Word' },
-      sheet: { icon: 'table', badge: 'Tablo' },
+      sheet: { icon: 'table', get badge() { return trEn('Tablo', 'Sheet'); } },
       youtube: { icon: 'youtube', badge: 'YouTube' },
       video: { icon: 'film', badge: 'Video' },
-      image: { icon: 'image', badge: 'Görsel' },
+      image: { icon: 'image', get badge() { return trEn('Görsel', 'Image'); } },
       link: { icon: 'link', badge: 'Link' },
-      file: { icon: 'file', badge: 'Dosya' }
+      file: { icon: 'file', get badge() { return trEn('Dosya', 'File'); } }
     };
 
     function formatFileSize(bytes) {
@@ -1682,14 +2071,14 @@ const CONFIG = {
     }
 
     function updatePageMeta(courseCode = null, meta = null) {
-      const defaultTitle = 'ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı';
-      const defaultDesc = 'Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.';
+      const defaultTitle = trEn('ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı', 'ANKU EEE — Electrical & Electronics Engineering Course Portal');
+      const defaultDesc = trEn('Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.', 'Ankara University Electrical & Electronics Engineering (ANKU EEE) course materials, lecture notes, slides and resource archive.');
 
       const title = courseCode && meta
-        ? `${courseCode} • ${meta.name} — ANKU EEE Ders Portalı`
+        ? `${courseCode} • ${formatCourseDisplayName(courseCode, meta.name)} — ANKU EEE ${trEn('Ders Portalı', 'Course Portal')}`
         : defaultTitle;
       const desc = courseCode && meta
-        ? `${courseCode} ${meta.name}${meta.instructor ? ' (' + meta.instructor + ')' : ''} ders materyalleri ve kaynak arşivi.`
+        ? `${courseCode} ${formatCourseDisplayName(courseCode, meta.name)}${meta.instructor ? ' (' + meta.instructor + ')' : ''} ${trEn('ders materyalleri ve kaynak arşivi.', 'course materials and resource archive.')}`
         : defaultDesc;
 
       document.title = title;
@@ -1717,7 +2106,7 @@ const CONFIG = {
       if (sDrive) sDrive.href = driveUrl;
 
       if (!folderId) {
-        $('statusText').textContent = 'Hata';
+        $('statusText').textContent = trEn('Hata', 'Error');
         $('statusDot').className = 'size-2 shrink-0 rounded-full bg-rose-500';
         return;
       }
@@ -1730,7 +2119,7 @@ const CONFIG = {
         renderLoadingSkeleton();
       }
 
-      $('statusText').textContent = 'Yükleniyor';
+      $('statusText').textContent = trEn('Yükleniyor', 'Loading');
       $('statusDot').className = 'size-2 shrink-0 rounded-full bg-amber-500 animate-pulse';
       $('refreshBtn').querySelector('svg')?.classList.add('animate-spin');
 
@@ -1742,9 +2131,9 @@ const CONFIG = {
         const totalFiles = countFilesInFolder(driveTree);
         $('statusText').textContent = 'Drive';
         $('statusDot').className = 'size-2 shrink-0 rounded-full bg-emerald-500';
-        $('totalFilesBadge').textContent = `${totalFiles} dosya`;
+        $('totalFilesBadge').textContent = `${totalFiles} ${trEn('dosya', 'files')}`;
       } catch (err) {
-        $('statusText').textContent = 'Hata';
+        $('statusText').textContent = trEn('Hata', 'Error');
         $('statusDot').className = 'size-2 shrink-0 rounded-full bg-rose-500';
         $('mainLoader')?.classList.add('hidden');
         $('mainContainer')?.setAttribute('aria-busy', 'false');
@@ -1811,7 +2200,7 @@ const CONFIG = {
       renderSidebarCourses();
 
       const totalFiles = countFilesInFolder(driveTree);
-      $('totalFilesBadge').textContent = `${totalFiles} dosya`;
+      $('totalFilesBadge').textContent = `${totalFiles} ${trEn('dosya', 'files')}`;
 
       if (activeView === 'staff') {
         renderStaffHub(highlightedStaffId);
@@ -1829,26 +2218,26 @@ const CONFIG = {
       if (activeView === 'staff') {
         bc.innerHTML = `
           <li class="inline-flex items-center gap-1.5">
-            <button data-portal-click="goHome" data-portal-click-args="[]" class="hover:text-foreground transition">Ana Sayfa</button>
+            <button data-portal-click="goHome" data-portal-click-args="[]" class="hover:text-foreground transition">${trEn('Ana Sayfa', 'Home')}</button>
           </li>
           <li><i data-lucide="chevron-right" class="size-3.5"></i></li>
-          <li class="text-foreground font-medium truncate">Öğretim Görevlileri</li>
+          <li class="text-foreground font-medium truncate">${trEn('Öğretim Görevlileri', 'Academic Staff')}</li>
         `;
       } else if (!courseCode) {
-        bc.innerHTML = `<li class="text-foreground font-medium truncate">Tüm Dersler</li>`;
+        bc.innerHTML = `<li class="text-foreground font-medium truncate">${trEn('Tüm Dersler', 'All Courses')}</li>`;
       } else {
         const curr = CURRICULUM_MAP.get(courseCode);
-        const yearSemBadge = curr ? `${curr.year}. Sınıf ${curr.semester === 'guz' ? 'Güz' : 'Bahar'}` : '';
+        const yearSemBadge = curr ? `${formatClassOrdinal(curr.year)} ${formatSemesterLabel(curr.semester)}` : '';
         bc.innerHTML = `
           <li class="inline-flex items-center gap-1.5">
-            <button data-portal-click="goHome" data-portal-click-args="[]" class="hover:text-foreground transition">Dersler</button>
+            <button data-portal-click="goHome" data-portal-click-args="[]" class="hover:text-foreground transition">${trEn('Dersler', 'Courses')}</button>
           </li>
           ${yearSemBadge ? `
             <li><i data-lucide="chevron-right" class="size-3.5"></i></li>
             <li class="text-muted-foreground hidden xl:inline">${esc(yearSemBadge)}</li>
           ` : ''}
           <li><i data-lucide="chevron-right" class="size-3.5"></i></li>
-          <li class="text-foreground font-medium truncate">${esc(courseCode)}${courseTitle ? ' • ' + esc(courseTitle.split('(')[0].trim()) : ''}</li>
+          <li class="text-foreground font-medium truncate">${esc(courseCode)}${courseTitle ? ' • ' + esc(formatCourseDisplayName(courseCode, courseTitle)) : ''}</li>
         `;
       }
       lucide.createIcons();
@@ -1941,7 +2330,7 @@ const CONFIG = {
         <li>
           <button
             data-portal-click="goToStaffPage" data-portal-click-args="[]"
-            title="Öğretim Görevlileri"
+            title="${trEn('Öğretim Görevlileri', 'Academic Staff')}"
             class="sidebar-nav-btn flex h-8 w-full items-center justify-between gap-2 rounded-md px-2 text-sm transition ${
               isStaffActive
                 ? 'bg-primary-soft text-foreground font-medium'
@@ -1950,7 +2339,7 @@ const CONFIG = {
           >
             <div class="flex items-center gap-2 min-w-0">
               <i data-lucide="users" class="size-4 shrink-0 ${isStaffActive ? 'text-foreground' : 'text-muted-foreground'}"></i>
-              <span class="sidebar-hide-collapsed truncate">Öğretim Görevlileri</span>
+              <span class="sidebar-hide-collapsed truncate">${trEn('Öğretim Görevlileri', 'Academic Staff')}</span>
             </div>
             <span class="sidebar-hide-collapsed rounded-full bg-primary-soft px-1.5 text-[10px] font-medium tabular-nums text-muted-foreground shrink-0">
               ${STAFF_DATA.length}
@@ -1968,8 +2357,8 @@ const CONFIG = {
         const hasActiveInYear = yearCourses.some(c => c.code === activeCode);
 
         const semesters = [
-          { key: 'guz', label: 'Güz Dönemi', semNum: (yr - 1) * 2 + 1, icon: 'leaf' },
-          { key: 'bahar', label: 'Bahar Dönemi', semNum: (yr - 1) * 2 + 2, icon: 'sun' }
+          { key: 'guz', label: formatSemesterLabel('guz', true), semNum: (yr - 1) * 2 + 1, icon: 'leaf' },
+          { key: 'bahar', label: formatSemesterLabel('bahar', true), semNum: (yr - 1) * 2 + 2, icon: 'sun' }
         ];
 
         const semestersHtml = semesters.map(sem => {
@@ -1982,13 +2371,13 @@ const CONFIG = {
             const isSelected = (activeView === 'course' && activeCode === c.code);
             const meta = courseMetadata[c.code] || { name: c.name, icon: c.icon || 'book-open' };
             const iconName = meta.icon || 'book-open';
-            const shortLabel = meta.shortName || SHORT_SIDEBAR_COURSE_LABELS[c.code] || c.code;
+            const shortLabel = formatCourseShortLabel(c.code, meta.shortName || SHORT_SIDEBAR_COURSE_LABELS[c.code]);
 
             return `
               <li>
                 <button
                   data-portal-click="selectCourseByCode" data-portal-click-args="[${jsArg(c.code)}]"
-                  title="${esc(c.code)} — ${esc(meta.name)}"
+                  title="${esc(c.code)} — ${esc(formatCourseDisplayName(c.code, meta.name))}"
                   class="sidebar-course-btn ${isSelected ? 'is-active' : ''} flex h-7 w-full items-center gap-1.5 rounded-md px-1.5 text-xs transition ${
                     isSelected
                       ? 'bg-primary-soft text-foreground font-semibold'
@@ -2018,7 +2407,7 @@ const CONFIG = {
                   <i data-lucide="chevron-right" class="size-3.5 shrink-0 text-muted-foreground transition-transform duration-150 ${isSemExpanded ? 'rotate-90 text-foreground' : ''}"></i>
                   <span class="truncate">${sem.label}</span>
                 </div>
-                <span class="text-[10px] text-muted-foreground font-mono shrink-0">${semCourses.length} ders</span>
+                <span class="text-[10px] text-muted-foreground font-mono shrink-0">${semCourses.length} ${trEn('ders', 'courses')}</span>
               </button>
               ${isSemExpanded ? `
                 <ul class="ml-2 pl-2 sidebar-tree-line space-y-0.5 py-0.5">
@@ -2034,14 +2423,14 @@ const CONFIG = {
             <button
               type="button"
               data-portal-click="toggleSidebarYear" data-portal-click-args="[${yr}]"
-              title="${yr}. Sınıf Dersleri"
+              title="${trEn(yr + '. Sınıf Dersleri', formatClassOrdinal(yr) + ' Courses')}"
               class="sidebar-nav-btn flex h-8 w-full items-center justify-between gap-2 rounded-md px-2 text-sm font-medium transition ${
                 hasActiveInYear && !isYearExpanded
                   ? 'bg-primary-soft text-foreground'
                   : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
               }"
             >
-              <span class="truncate font-semibold">${yr}.<span class="sidebar-hide-collapsed"> Sınıf</span></span>
+              <span class="truncate font-semibold">${isEn() ? `${yr}<span class="sidebar-hide-collapsed">${formatClassOrdinal(yr).slice(String(yr).length)}</span>` : `${yr}.<span class="sidebar-hide-collapsed"> Sınıf</span>`}</span>
               <i data-lucide="chevron-down" class="sidebar-hide-collapsed size-3.5 shrink-0 text-muted-foreground transition-transform duration-150 ${isYearExpanded ? 'rotate-180 text-foreground' : ''}"></i>
             </button>
             ${isYearExpanded ? `
@@ -2087,7 +2476,7 @@ const CONFIG = {
         const parts = rawHash.split(':');
         highlightedStaffId = parts[1] ? parts[1].trim() : null;
         updateHeaderBreadcrumb(null, null);
-        document.title = 'Öğretim Görevlileri — ANKU EEE Portal';
+        document.title = trEn('Öğretim Görevlileri', 'Academic Staff') + ' — ANKU EEE Portal';
         return;
       }
 
@@ -2231,7 +2620,7 @@ const CONFIG = {
         staffSearchQuery = '';
       }
       updateHeaderBreadcrumb(null, null);
-      document.title = 'Öğretim Görevlileri — ANKU EEE Portal';
+      document.title = trEn('Öğretim Görevlileri', 'Academic Staff') + ' — ANKU EEE Portal';
       renderSidebarCourses();
       renderStaffHub(highlightedStaffId);
       if (window.innerWidth < 768) {
@@ -2323,6 +2712,12 @@ const CONFIG = {
       'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'
     ];
     const DAY_NAMES_TR = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+    const MONTH_NAMES_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const MONTH_NAMES_EN_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const DAY_NAMES_EN = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const getMonthName = (m) => (isEn() ? MONTH_NAMES_EN : MONTH_NAMES_TR)[m];
+    const getMonthShort = (m) => (isEn() ? MONTH_NAMES_EN_SHORT : MONTH_NAMES_TR_SHORT)[m];
+    const getDayName = (d) => (isEn() ? DAY_NAMES_EN : DAY_NAMES_TR)[d];
 
     const COURSE_SOLID_COLORS = {
       'PHY0107': { bg: '#a855f7', text: '#ffffff' }, // Mor
@@ -2467,11 +2862,11 @@ const CONFIG = {
       return `
         <div id="academicCalendarContainer" class="admincn-card p-4 sm:p-5 select-none overflow-hidden">
           <div class="flex items-center flex-wrap mb-3 gap-3">
-            <button id="calendarClassButton" type="button" data-portal-click="cycleCalendarClass" data-portal-click-args="[]" class="portal-btn calendar-class-button" title="Sonraki sınıfa geç" aria-label="${calendarClassYear}. sınıf takvimi. ${calendarClassYear % 4 + 1}. sınıfa geç">
-              <i data-lucide="repeat" class="size-3.5"></i><span aria-live="polite">${calendarClassYear}. Sınıf</span>
+            <button id="calendarClassButton" type="button" data-portal-click="cycleCalendarClass" data-portal-click-args="[]" class="portal-btn calendar-class-button" title="${trEn('Sonraki sınıfa geç', 'Switch to next year')}" aria-label="${trEn(`${calendarClassYear}. sınıf takvimi. ${calendarClassYear % 4 + 1}. sınıfa geç`, `${formatClassOrdinal(calendarClassYear)} calendar. Switch to ${formatClassOrdinal(calendarClassYear % 4 + 1)}`)}">
+              <i data-lucide="repeat" class="size-3.5"></i><span aria-live="polite">${formatClassOrdinal(calendarClassYear)}</span>
             </button>
-            <button type="button" class="portal-btn" data-portal-click="openAcademicTimetable" data-portal-click-args="[]"><i data-lucide="calendar-days" class="size-3.5"></i> Akademik Takvim</button>
-            ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn"><i data-lucide="calendar-plus" class="size-3.5"></i> Tarih ekle</button>' : ''}
+            <button type="button" class="portal-btn" data-portal-click="openAcademicTimetable" data-portal-click-args="[]"><i data-lucide="calendar-days" class="size-3.5"></i> ${trEn('Akademik Takvim', 'Academic Calendar')}</button>
+            ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn"><i data-lucide="calendar-plus" class="size-3.5"></i> ' + trEn('Tarih ekle', 'Add date') + '</button>' : ''}
           </div>
           <div class="flex flex-col lg:flex-row items-stretch gap-5 lg:gap-7">
             
@@ -2523,7 +2918,7 @@ const CONFIG = {
           <div class="flex items-center justify-between mb-2.5 calendar-month-header select-none">
             <div class="flex items-baseline gap-2">
               <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-[#ff453a] dark:text-[#ff453a]">
-                ${MONTH_NAMES_TR[month]}
+                ${getMonthName(month)}
               </h3>
               <span class="text-xs font-semibold text-muted-foreground/60 font-mono">
                 ${year}
@@ -2534,7 +2929,7 @@ const CONFIG = {
               <button
                 type="button"
                 data-portal-click="navigateCalendarMonth" data-portal-click-args="[-1]"
-                title="Önceki Ay"
+                title="${trEn('Önceki Ay', 'Previous Month')}"
                 class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
               >
                 <i data-lucide="chevron-left" class="size-4"></i>
@@ -2542,7 +2937,7 @@ const CONFIG = {
               <button
                 type="button"
                 data-portal-click="navigateCalendarMonth" data-portal-click-args="[1]"
-                title="Sonraki Ay"
+                title="${trEn('Sonraki Ay', 'Next Month')}"
                 class="lg:hidden size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
               >
                 <i data-lucide="chevron-right" class="size-4"></i>
@@ -2550,10 +2945,10 @@ const CONFIG = {
               <button
                 type="button"
                 data-portal-click="resetCalendarToToday" data-portal-click-args="[]"
-                title="Bugüne Dön"
+                title="${trEn('Bugüne Dön', 'Back to Today')}"
                 class="text-[11px] font-medium px-2 py-0.5 rounded bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground transition ml-0.5"
               >
-                Bugün
+                ${trEn('Bugün', 'Today')}
               </button>
             </div>
           </div>
@@ -2563,7 +2958,7 @@ const CONFIG = {
           <div class="flex items-center justify-between mb-2.5 calendar-month-header select-none">
             <div class="flex items-baseline gap-2">
               <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-[#ff453a] dark:text-[#ff453a]">
-                ${MONTH_NAMES_TR[month]}
+                ${getMonthName(month)}
               </h3>
               <span class="text-xs font-semibold text-muted-foreground/60 font-mono">
                 ${year}
@@ -2574,7 +2969,7 @@ const CONFIG = {
               <button
                 type="button"
                 data-portal-click="navigateCalendarMonth" data-portal-click-args="[1]"
-                title="Sonraki Ay"
+                title="${trEn('Sonraki Ay', 'Next Month')}"
                 class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
               >
                 <i data-lucide="chevron-right" class="size-4"></i>
@@ -2585,7 +2980,7 @@ const CONFIG = {
       }
 
       // Weekdays: M T W T F S S in photo -> P S Ç P C C P (aligned with calendar-month-header)
-      const weekdayLetters = ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'];
+      const weekdayLetters = isEn() ? ['M', 'T', 'W', 'T', 'F', 'S', 'S'] : ['P', 'S', 'Ç', 'P', 'C', 'C', 'P'];
       const weekdaysHtml = `
         <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-muted-foreground/60 mb-2 select-none">
           ${weekdayLetters.map((l, idx) => {
@@ -2625,8 +3020,8 @@ const CONFIG = {
                   data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
                   data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
                   data-portal-click="handleCalendarDayClick" data-portal-click-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
-                  aria-label="${d} ${MONTH_NAMES_TR[month]} (Bugün), ${dayEvs.map(e => e.title).join(', ')}"
-                  title="Bugün: ${dayEvs.map(e => e.title).join(', ')}"
+                  aria-label="${d} ${getMonthName(month)} (${trEn('Bugün', 'Today')}), ${dayEvs.map(e => e.title).join(', ')}"
+                  title="${trEn('Bugün', 'Today')}: ${dayEvs.map(e => e.title).join(', ')}"
                 >
                   ${d}
                 </button>
@@ -2638,7 +3033,7 @@ const CONFIG = {
                 <span
                   class="size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm select-none"
                   style="background-color: #ff453a; color: #ffffff;"
-                  title="Bugün (${d} ${MONTH_NAMES_TR[month]})"
+                  title="${trEn('Bugün', 'Today')} (${d} ${getMonthName(month)})"
                 >
                   ${d}
                 </span>
@@ -2665,8 +3060,8 @@ const CONFIG = {
                 data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
                 data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
                 data-portal-click="handleCalendarDayClick" data-portal-click-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
-                aria-label="${d} ${MONTH_NAMES_TR[month]}${isPast ? ' (Geçmiş)' : ''}, ${dayEvs.map(e => e.title).join(', ')}"
-                title="${d} ${MONTH_NAMES_TR[month]}${isPast ? ' (Geçmiş)' : ''}: ${dayEvs.map(e => e.title).join(', ')}"
+                aria-label="${d} ${getMonthName(month)}${isPast ? ' (' + trEn('Geçmiş', 'Past') + ')' : ''}, ${dayEvs.map(e => e.title).join(', ')}"
+                title="${d} ${getMonthName(month)}${isPast ? ' (' + trEn('Geçmiş', 'Past') + ')' : ''}: ${dayEvs.map(e => e.title).join(', ')}"
               >
                 ${d}
               </button>
@@ -2712,7 +3107,7 @@ const CONFIG = {
       if (visibleEvents.length === 0) {
         return `
           <div class="py-8 text-center text-xs text-muted-foreground flex-1 flex items-center justify-center">
-            Planlanmış sınav veya etkinlik bulunmuyor.
+            ${trEn('Planlanmış sınav veya etkinlik bulunmuyor.', 'No scheduled exams or events.')}
           </div>
         `;
       }
@@ -2737,7 +3132,7 @@ const CONFIG = {
                   class="inline-flex items-center justify-center px-2 py-0.5 sm:py-1 rounded-md font-bold text-[11px] shrink-0 leading-snug"
                   style="background-color: ${solid.bg}; color: ${solid.text};"
                 >
-                  ${d} ${MONTH_NAMES_TR_SHORT[m - 1]}
+                  ${d} ${getMonthShort(m - 1)}
                 </span>
 
                 <!-- Event Title -->
@@ -2816,13 +3211,13 @@ const CONFIG = {
       const [y, m, d] = dateStr.split('-').map(Number);
       const dateObj = new Date(y, m - 1, d);
       const dayOfWeekIndex = (dateObj.getDay() + 6) % 7;
-      const dayOfWeek = DAY_NAMES_TR[dayOfWeekIndex];
-      const monthName = MONTH_NAMES_TR[m - 1];
+      const dayOfWeek = getDayName(dayOfWeekIndex);
+      const monthName = getMonthName(m - 1);
 
       popover.innerHTML = `
         <div class="p-2.5 space-y-1.5 text-xs">
           <div class="flex items-center justify-between border-b border-border/60 pb-1.5 text-[11px] font-semibold text-muted-foreground">
-            <span>${d} ${monthName}, ${dayOfWeek} ${isToday ? '<span class="text-[10px] text-[#ff453a] font-bold ml-1">(Bugün)</span>' : (isPast ? '<span class="text-[10px] text-muted-foreground/75 font-normal ml-1">(Geçmiş)</span>' : '')}</span>
+            <span>${d} ${monthName}, ${dayOfWeek} ${isToday ? '<span class="text-[10px] text-[#ff453a] font-bold ml-1">(' + trEn('Bugün', 'Today') + ')</span>' : (isPast ? '<span class="text-[10px] text-muted-foreground/75 font-normal ml-1">(' + trEn('Geçmiş', 'Past') + ')</span>' : '')}</span>
             <button type="button" data-portal-click="hideCalendarDayPopover" data-portal-click-args="[]" class="size-4 flex items-center justify-center text-muted-foreground hover:text-foreground">
               <i data-lucide="x" class="size-3"></i>
             </button>
@@ -2915,12 +3310,12 @@ const CONFIG = {
             href="https://www.ankara.edu.tr"
             target="_blank"
             rel="noopener noreferrer"
-            title="Ankara Üniversitesi"
+            title="${trEn('Ankara Üniversitesi', 'Ankara University')}"
             class="portal-hero-logo"
           >
             <img
               src="assets/ankara-uni-logo.png"
-              alt="Ankara Üniversitesi Logosu"
+              alt="${trEn('Ankara Üniversitesi Logosu', 'Ankara University Logo')}"
               width="44"
               height="44"
               class="size-full object-contain rounded-full"
@@ -2932,21 +3327,21 @@ const CONFIG = {
               ANKU EEE Portal
             </h1>
             <p class="portal-hero-sub text-xs sm:text-sm mt-0.5 leading-snug">
-              Ders materyalleri, sınav tarihleri ve bölüm bilgileri tek yerde.
+              ${trEn('Ders materyalleri, sınav tarihleri ve bölüm bilgileri tek yerde.', 'Course materials, exam dates and department info in one place.')}
             </p>
           </div>
         </div>
 
-        <nav aria-label="Hızlı erişim" class="grid grid-cols-2 gap-3 md:hidden">
+        <nav aria-label="${trEn('Hızlı erişim', 'Quick access')}" class="grid grid-cols-2 gap-3 md:hidden">
           <button type="button" data-portal-click="openCourseNavigation" data-portal-click-args="[]" aria-controls="sidebar"
             class="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-xs font-semibold text-foreground shadow-sm hover:bg-muted active:bg-muted transition">
             <i data-lucide="book-open" class="size-4 shrink-0 text-muted-foreground"></i>
-            <span class="min-w-0 leading-tight">Dersler</span>
+            <span class="min-w-0 leading-tight">${trEn('Dersler', 'Courses')}</span>
           </button>
           <button type="button" data-portal-click="goToStaffPage" data-portal-click-args="[]"
             class="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-xs font-semibold text-foreground shadow-sm hover:bg-muted active:bg-muted transition">
             <i data-lucide="users" class="size-4 shrink-0 text-muted-foreground"></i>
-            <span class="min-w-0 leading-tight">Öğretim Görevlileri</span>
+            <span class="min-w-0 leading-tight">${trEn('Öğretim Görevlileri', 'Academic Staff')}</span>
           </button>
         </nav>
 
@@ -2956,7 +3351,7 @@ const CONFIG = {
         <!-- ALL MATERIALS TABLE -->
         <div id="allMaterialsSection" class="admincn-card overflow-hidden">
           <div class="px-5 py-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <h2 class="text-sm font-semibold">Tüm Materyaller</h2>
+            <h2 class="text-sm font-semibold">${trEn('Tüm Materyaller', 'All Materials')}</h2>
             <div class="flex flex-wrap items-center gap-2">
               <div class="relative">
                 <i data-lucide="search" class="size-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 z-10 pointer-events-none"></i>
@@ -2965,7 +3360,7 @@ const CONFIG = {
                   type="text"
                   value="${esc(tableSearchQuery)}"
                   data-portal-input="handleTableSearch" data-portal-input-args="[{&quot;$context&quot;:&quot;value&quot;}]"
-                  placeholder="Dosya ara..."
+                  placeholder="${trEn('Dosya ara...', 'Search files...')}"
                   class="h-8 w-44 sm:w-56 rounded-md bg-background border border-input pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
                 >
               </div>
@@ -2974,7 +3369,7 @@ const CONFIG = {
                 data-portal-change="handleTableCourseFilter" data-portal-change-args="[{&quot;$context&quot;:&quot;value&quot;}]"
                 class="h-8 rounded-md bg-background border border-input px-2.5 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40"
               >
-                <option value="ALL" ${tableCourseFilter === 'ALL' ? 'selected' : ''}>Tüm Dersler</option>
+                <option value="ALL" ${tableCourseFilter === 'ALL' ? 'selected' : ''}>${trEn('Tüm Dersler', 'All Courses')}</option>
                 ${courses.map(c => {
                   const code = c.name.toUpperCase().trim();
                   return `<option value="${esc(code)}" ${tableCourseFilter === code ? 'selected' : ''}>${esc(code)}</option>`;
@@ -3004,7 +3399,7 @@ const CONFIG = {
     }
 
     function renderStaffCard(staff, isHighlighted = false) {
-      const fullNameWithTitle = `${staff.title} ${staff.name}`.trim();
+      const fullNameWithTitle = formatStaffFullName(staff);
       const initials = getStaffInitials(staff.name);
       const roleBadge = staff.role ? `
         <span class="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium ${
@@ -3016,7 +3411,7 @@ const CONFIG = {
                 ? 'bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30'
                 : 'bg-muted text-muted-foreground border border-border'
         }">
-          ${esc(staff.role)}
+          ${esc(formatStaffRole(staff.role))}
         </span>
       ` : '';
 
@@ -3028,7 +3423,7 @@ const CONFIG = {
               <button
                 type="button"
                 data-portal-click="selectCourseByCode" data-portal-click-args="[${jsArg(code)}]"
-                title="${esc(code)} — ${esc(cMeta.name)} ders sayfasına git"
+                title="${esc(code)} — ${esc(formatCourseDisplayName(code, cMeta.name))} ${trEn('ders sayfasına git', 'go to course page')}"
                 class="inline-flex items-center gap-1 rounded-md border border-border bg-secondary/70 hover:bg-primary hover:text-primary-foreground hover:border-primary px-2 py-1 font-mono text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
               >
                 <i data-lucide="book-open" class="size-3 shrink-0 opacity-75"></i>
@@ -3036,7 +3431,7 @@ const CONFIG = {
               </button>
             `;
           }).join('')
-        : `<span class="text-[11px] text-muted-foreground italic">Teknik Seçmeli / Lisansüstü Dersler</span>`;
+        : `<span class="text-[11px] text-muted-foreground italic">${trEn('Teknik Seçmeli / Lisansüstü Dersler', 'Technical Electives / Graduate Courses')}</span>`;
 
       return `
         <div
@@ -3063,7 +3458,7 @@ const CONFIG = {
 
               <div class="min-w-0 flex-1 space-y-1">
                 <div class="flex flex-wrap items-center gap-1.5">
-                  <span class="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">${esc(staff.title)}</span>
+                  <span class="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">${esc(formatStaffTitle(staff.title))}</span>
                   ${roleBadge}
                 </div>
                 <h3 class="text-sm sm:text-base font-bold text-foreground leading-snug break-words">
@@ -3092,7 +3487,7 @@ const CONFIG = {
                       class="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground transition"
                     >
                       <i data-lucide="globe" class="size-3"></i>
-                      <span>Bölüm Profili</span>
+                      <span>${trEn('Bölüm Profili', 'Department Profile')}</span>
                       <i data-lucide="external-link" class="size-2.5"></i>
                     </a>
                   ` : ''}
@@ -3107,7 +3502,7 @@ const CONFIG = {
                   <button
                     type="button"
                     data-portal-click="copyInstructorEmail" data-portal-click-args="[${jsArg(staff.email)}, {&quot;$context&quot;:&quot;element&quot;}]"
-                    title="E-posta adresini kopyala"
+                    title="${trEn('E-posta adresini kopyala', 'Copy email address')}"
                     class="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground font-mono text-xs truncate transition group/mail"
                   >
                     <i data-lucide="mail" class="size-3.5 shrink-0 text-muted-foreground group-hover/mail:text-foreground"></i>
@@ -3116,7 +3511,7 @@ const CONFIG = {
                   </button>
                   <a
                     href="mailto:${esc(staff.email)}"
-                    title="E-posta Gönder"
+                    title="${trEn('E-posta Gönder', 'Send Email')}"
                     class="size-6 inline-flex items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition shrink-0"
                   >
                     <i data-lucide="send" class="size-3"></i>
@@ -3125,7 +3520,7 @@ const CONFIG = {
               ` : `
                 <div class="flex items-center gap-1.5 text-muted-foreground/60 text-xs">
                   <i data-lucide="mail" class="size-3.5 shrink-0"></i>
-                  <span>E-posta belirtilmemiş</span>
+                  <span>${trEn('E-posta belirtilmemiş', 'No email provided')}</span>
                 </div>
               `}
 
@@ -3141,8 +3536,8 @@ const CONFIG = {
           <!-- Courses Taught / Assisted (Clickable Course Code Badges -> Course Page) -->
           <div class="pt-2.5 border-t border-border space-y-1.5">
             <div class="text-[11px] font-medium text-muted-foreground flex items-center justify-between">
-              <span>${staff.category === 'assistant' ? 'Desteklediği Lab / Dersler' : 'Verdiği Dersler'}</span>
-              ${staff.courses && staff.courses.length > 0 ? `<span class="font-mono text-[10px]">${staff.courses.length} ders</span>` : ''}
+              <span>${staff.category === 'assistant' ? trEn('Desteklediği Lab / Dersler', 'Assisted Labs / Courses') : trEn('Verdiği Dersler', 'Courses Taught')}</span>
+              ${staff.courses && staff.courses.length > 0 ? `<span class="font-mono text-[10px]">${staff.courses.length} ${trEn('ders', 'courses')}</span>` : ''}
             </div>
             <div class="flex flex-wrap items-center gap-1.5">
               ${coursesHtml}
@@ -3175,14 +3570,14 @@ const CONFIG = {
         if (staffCategoryFilter === 'parttime' && s.category !== 'parttime' && s.category !== 'service') return false;
 
         if (!q) return true;
-        const full = `${s.title} ${s.name} ${s.role} ${s.email} ${(s.courses || []).join(' ')}`.toLowerCase();
+        const full = `${s.title} ${formatStaffTitle(s.title)} ${s.name} ${s.role} ${formatStaffRole(s.role)} ${s.email} ${(s.courses || []).join(' ')}`.toLowerCase();
         return full.includes(q);
       });
 
       if (filteredStaff.length === 0) {
         return `
           <div class="admincn-card p-10 text-center text-xs text-muted-foreground">
-            Arama kriterlerine uygun öğretim görevlisi bulunamadı.
+            ${trEn('Arama kriterlerine uygun öğretim görevlisi bulunamadı.', 'No staff members match your search.')}
           </div>
         `;
       }
@@ -3190,22 +3585,22 @@ const CONFIG = {
       const groups = [
         {
           key: 'faculty',
-          title: 'Bölüm Öğretim Üyeleri',
-          subtitle: 'Bölüm Başkanı, Bölüm Başkan Yardımcıları ve Kadrolu Öğretim Üyeleri',
+          title: trEn('Bölüm Öğretim Üyeleri', 'Department Faculty'),
+          subtitle: trEn('Bölüm Başkanı, Bölüm Başkan Yardımcıları ve Kadrolu Öğretim Üyeleri', 'Department Chair, Vice Chairs and Tenured Faculty'),
           icon: 'award',
           items: filteredStaff.filter(s => s.category === 'faculty')
         },
         {
           key: 'assistant',
-          title: 'Araştırma Görevlileri',
-          subtitle: 'Laboratuvar, uygulama ve araştırma görevlileri',
+          title: trEn('Araştırma Görevlileri', 'Research Assistants'),
+          subtitle: trEn('Laboratuvar, uygulama ve araştırma görevlileri', 'Laboratory, tutorial and research assistants'),
           icon: 'microscope',
           items: filteredStaff.filter(s => s.category === 'assistant')
         },
         {
           key: 'parttime',
-          title: 'Yarı Zamanlı & Servis Dersleri Öğretim Elemanları',
-          subtitle: 'Görevli öğretim üyeleri, yarı zamanlı akademisyenler ve fakülte servis dersi hocaları',
+          title: trEn('Yarı Zamanlı & Servis Dersleri Öğretim Elemanları', 'Part-Time & Service Course Instructors'),
+          subtitle: trEn('Görevli öğretim üyeleri, yarı zamanlı akademisyenler ve fakülte servis dersi hocaları', 'Visiting faculty, part-time academics and faculty service course instructors'),
           icon: 'briefcase',
           items: filteredStaff.filter(s => s.category === 'parttime' || s.category === 'service')
         }
@@ -3242,17 +3637,17 @@ const CONFIG = {
       };
 
       const filterTabs = [
-        { id: 'ALL', label: 'Tümü', count: counts.ALL },
-        { id: 'faculty', label: 'Öğretim Üyeleri', count: counts.faculty },
-        { id: 'assistant', label: 'Araştırma Görevlileri', count: counts.assistant },
-        { id: 'parttime', label: 'Yarı Zamanlı & Servis', count: counts.parttime }
+        { id: 'ALL', label: trEn('Tümü', 'All'), count: counts.ALL },
+        { id: 'faculty', label: trEn('Öğretim Üyeleri', 'Faculty'), count: counts.faculty },
+        { id: 'assistant', label: trEn('Araştırma Görevlileri', 'Research Assistants'), count: counts.assistant },
+        { id: 'parttime', label: trEn('Yarı Zamanlı & Servis', 'Part-Time & Service'), count: counts.parttime }
       ];
 
       container.innerHTML = `
         <div class="admincn-card p-3.5 sm:p-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <h1 class="text-base sm:text-lg font-bold tracking-tight text-foreground truncate">
-              Öğretim Görevlileri ve Akademik Kadro
+              ${trEn('Öğretim Görevlileri ve Akademik Kadro', 'Academic Staff & Faculty')}
             </h1>
 
             <div class="flex items-center gap-2 shrink-0">
@@ -3263,7 +3658,7 @@ const CONFIG = {
                   type="text"
                   value="${esc(staffSearchQuery)}"
                   data-portal-input="handleStaffSearch" data-portal-input-args="[{&quot;$context&quot;:&quot;value&quot;}]"
-                  placeholder="İsim, ünvan, ders kodu ara..."
+                  placeholder="${trEn('İsim, ünvan, ders kodu ara...', 'Search name, title, course code...')}"
                   class="h-8 w-full sm:w-56 rounded-md bg-background border border-input pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
                 />
               </div>
@@ -3274,7 +3669,7 @@ const CONFIG = {
                 class="inline-flex h-8 items-center justify-center gap-1.5 px-3 rounded-md border border-border bg-secondary/60 hover:bg-muted text-xs font-medium text-foreground transition shrink-0"
               >
                 <i data-lucide="external-link" class="size-3.5"></i>
-                <span>Resmi Sayfa</span>
+                <span>${trEn('Resmi Sayfa', 'Official Page')}</span>
               </a>
             </div>
           </div>
@@ -3341,11 +3736,11 @@ const CONFIG = {
           <table class="w-full text-left text-sm">
             <thead>
               <tr class="border-b border-border text-muted-foreground text-xs">
-                <th class="h-10 px-4 font-medium">Dosya</th>
-                <th class="h-10 px-4 font-medium">Ders</th>
-                <th class="h-10 px-4 font-medium hidden md:table-cell">Klasör</th>
-                <th class="h-10 px-4 font-medium">Tür</th>
-                <th class="h-10 px-4 font-medium hidden sm:table-cell">Boyut</th>
+                <th class="h-10 px-4 font-medium">${trEn('Dosya', 'File')}</th>
+                <th class="h-10 px-4 font-medium">${trEn('Ders', 'Course')}</th>
+                <th class="h-10 px-4 font-medium hidden md:table-cell">${trEn('Klasör', 'Folder')}</th>
+                <th class="h-10 px-4 font-medium">${trEn('Tür', 'Type')}</th>
+                <th class="h-10 px-4 font-medium hidden sm:table-cell">${trEn('Boyut', 'Size')}</th>
                 <th class="h-10 px-4 font-medium text-right"></th>
               </tr>
             </thead>
@@ -3381,14 +3776,14 @@ const CONFIG = {
                           data-portal-click="openViewerModal" data-portal-click-args="[${jsArg(node.id)}, ${jsArg(courseCode)}]"
                           class="h-7 px-2.5 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition"
                         >
-                          Aç
+                          ${trEn('Aç', 'Open')}
                         </button>
                         ${kind !== 'youtube' ? `
                           <a
                             href="https://drive.google.com/uc?export=download&id=${realId(node)}"
                             target="_blank"
                             rel="noopener noreferrer"
-                            title="İndir"
+                            title="${trEn('İndir', 'Download')}"
                             class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
                           >
                             <i data-lucide="download" class="size-3.5"></i>
@@ -3410,7 +3805,7 @@ const CONFIG = {
               }).join('') : `
                 <tr>
                   <td colspan="6" class="h-20 text-center text-muted-foreground text-xs">
-                    Sonuç bulunamadı.
+                    ${trEn('Sonuç bulunamadı.', 'No results found.')}
                   </td>
                 </tr>
               `}
@@ -3430,7 +3825,7 @@ const CONFIG = {
               class="inline-flex h-7 items-center gap-1 rounded-md px-2 text-xs font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40 transition"
             >
               <i data-lucide="chevron-left" class="size-3.5"></i>
-              <span>Önceki</span>
+              <span>${trEn('Önceki', 'Previous')}</span>
             </button>
             <span class="px-2 text-xs font-mono text-muted-foreground">
               ${tablePageIndex + 1} / ${totalPages}
@@ -3441,7 +3836,7 @@ const CONFIG = {
               ${tablePageIndex >= totalPages - 1 ? 'disabled' : ''}
               class="inline-flex h-7 items-center gap-1 rounded-md px-2 text-xs font-medium text-foreground hover:bg-muted disabled:pointer-events-none disabled:opacity-40 transition"
             >
-              <span>Sonraki</span>
+              <span>${trEn('Sonraki', 'Next')}</span>
               <i data-lucide="chevron-right" class="size-3.5"></i>
             </button>
           </div>
@@ -3533,7 +3928,7 @@ const CONFIG = {
             href="${esc(safeLink(link.url))}"
             target="_blank"
             rel="noopener noreferrer"
-            title="${esc(link.title)}"
+            title="${esc(formatLinkTitle(link.title))}"
             class="group flex h-10 min-w-0 items-center gap-2 rounded-lg border border-border bg-card px-2.5 sm:px-3 text-xs font-medium text-foreground shadow-sm hover:bg-muted transition"
           >
             <img
@@ -3546,12 +3941,12 @@ const CONFIG = {
               data-portal-error="imageFallback" data-portal-error-args="[{&quot;$context&quot;:&quot;element&quot;}]"
             />
             <i data-lucide="${esc(PortalSecurity.icon(iconName))}" class="size-4 shrink-0 text-muted-foreground group-hover:text-foreground transition hidden"></i>
-            <span class="flex-1 truncate">${esc(link.title)}</span>
+            <span class="flex-1 truncate">${esc(formatLinkTitle(link.title))}</span>
           </a>
         `;
       }).join('');
       const courseLinksSectionHtml = courseLinkCardsHtml ? `
-        <nav aria-label="Ders bağlantıları" class="!mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
+        <nav aria-label="${trEn('Ders bağlantıları', 'Course links')}" class="!mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
           ${courseLinkCardsHtml}
         </nav>
       ` : '';
@@ -3570,17 +3965,17 @@ const CONFIG = {
         .map(id => STAFF_MAP.get(id))
         .filter(Boolean);
 
-      const yearSemLabel = curr ? `${curr.year}. Sınıf • ${curr.semester === 'guz' ? 'Güz Dönemi' : 'Bahar Dönemi'}` : '';
+      const yearSemLabel = curr ? `${formatClassOrdinal(curr.year)} • ${formatSemesterLabel(curr.semester, true)}` : '';
 
       const renderStaffLinkPill = (staff, isAssistant = false) => {
-        const fullName = `${staff.title} ${staff.name}`.trim();
+        const fullName = formatStaffFullName(staff);
         const initials = getStaffInitials(staff.name);
         return `
           <div class="inline-flex items-center gap-1 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/85 dark:bg-white/10 p-0.5 pr-2 text-xs text-zinc-800 dark:text-zinc-100 shadow-2xs">
             <button
               type="button"
               data-portal-click="goToStaffPage" data-portal-click-args="[${jsArg(staff.id)}]"
-              title="${esc(fullName)} — Öğretim Görevlileri sayfasında kartına git"
+              title="${esc(fullName)} — ${trEn('Öğretim Görevlileri sayfasında kartına git', 'go to their card on the Academic Staff page')}"
               class="inline-flex items-center gap-1.5 rounded px-1.5 py-0.5 font-medium hover:bg-zinc-900/5 dark:hover:bg-white/10 hover:text-orange-600 dark:hover:text-orange-400 transition cursor-pointer"
             >
               <span class="size-5 rounded-full overflow-hidden bg-zinc-200 dark:bg-zinc-700 inline-flex items-center justify-center shrink-0">
@@ -3588,7 +3983,7 @@ const CONFIG = {
                   <img src="${esc(safeImage(staff.photo))}" alt="" class="size-full object-cover object-top" data-portal-error="hideImage" data-portal-error-args="[{&quot;$context&quot;:&quot;element&quot;}]" />
                 ` : `<span class="text-[9px] font-bold">${esc(initials)}</span>`}
               </span>
-              ${isAssistant ? `<span class="text-[10px] font-semibold text-sky-600 dark:text-sky-400">Asistan:</span>` : ''}
+              ${isAssistant ? `<span class="text-[10px] font-semibold text-sky-600 dark:text-sky-400">${trEn('Asistan:', 'Assistant:')}</span>` : ''}
               <span class="underline decoration-zinc-400/60 underline-offset-2">${esc(fullName)}</span>
               <i data-lucide="arrow-up-right" class="size-3 opacity-70"></i>
             </button>
@@ -3596,7 +3991,7 @@ const CONFIG = {
               <button
                 type="button"
                 data-portal-click="copyInstructorEmail" data-portal-click-args="[${jsArg(staff.email)}, {&quot;$context&quot;:&quot;element&quot;}]"
-                title="E-postayı Kopyala: ${esc(staff.email)}"
+                title="${trEn('E-postayı Kopyala', 'Copy Email')}: ${esc(staff.email)}"
                 class="inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] text-zinc-500 dark:text-zinc-300 hover:bg-zinc-900/5 dark:hover:bg-white/10 hover:text-zinc-950 dark:hover:text-white transition border-l border-zinc-900/10 dark:border-white/10"
               >
                 <i data-lucide="mail" class="size-3"></i>
@@ -3627,7 +4022,7 @@ const CONFIG = {
             ${meta.email ? `
               <button
                 data-portal-click="copyInstructorEmail" data-portal-click-args="[${jsArg(meta.email)}, {&quot;$context&quot;:&quot;element&quot;}]"
-                title="Kopyala"
+                title="${trEn('Kopyala', 'Copy')}"
                 class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 px-2.5 py-1 font-mono text-xs text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
               >
                 <i data-lucide="mail" class="size-3.5"></i>
@@ -3647,7 +4042,7 @@ const CONFIG = {
             <div class="course-hero-banner-media" style="--banner-ratio: ${bannerRatio};" aria-hidden="true">
               <img
                 src="${esc(safeImage(bannerUrl))}"
-                alt="${esc(meta.name)} Banner"
+                alt="${esc(formatCourseDisplayName(code, meta.name))} Banner"
                 fetchpriority="high"
                 class="course-hero-banner-img"
                 style="object-position: ${esc(bannerPos)};"
@@ -3673,10 +4068,10 @@ const CONFIG = {
                       style="background-color: ${theme.accent}; color: #09090b;"
                     >${esc(code)}</span>
                     ${yearSemLabel ? `<span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${esc(yearSemLabel)}</span>` : ''}
-                    ${meta.credits ? `<span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${esc(meta.credits)}</span>` : ''}
-                    <span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${totalFiles} dosya</span>
+                    ${meta.credits ? `<span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${esc(formatCreditsText(meta.credits))}</span>` : ''}
+                    <span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${totalFiles} ${trEn('dosya', 'files')}</span>
                   </div>
-                  <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-zinc-950 dark:text-white drop-shadow-sm">${esc(meta.name)}</h1>
+                  <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-zinc-950 dark:text-white drop-shadow-sm">${esc(formatCourseDisplayName(code, meta.name))}</h1>
 
                   ${staffPillsHtml}
                 </div>
@@ -3688,7 +4083,7 @@ const CONFIG = {
                       type="text"
                       value="${esc(courseLocalSearch)}"
                       data-portal-input="filterCourseMaterials" data-portal-input-args="[{&quot;$context&quot;:&quot;value&quot;}]"
-                      placeholder="Ders içinde ara..."
+                      placeholder="${trEn('Ders içinde ara...', 'Search in course...')}"
                       class="h-8 w-full rounded-md bg-white/85 dark:bg-white/10 border border-zinc-900/15 dark:border-white/15 pl-8 pr-3 text-xs text-zinc-950 dark:text-white placeholder:text-zinc-400 outline-none focus:ring-2 transition"
                       style="--tw-ring-color: ${theme.border};"
                     >
@@ -3704,7 +4099,7 @@ const CONFIG = {
                   </a>
                   <button
                     data-portal-click="openEditCourseModal" data-portal-click-args="[${jsArg(code)}]"
-                    title="Düzenle"
+                    title="${trEn('Düzenle', 'Edit')}"
                     class="${window.portalCanEdit?.() ? '' : 'hidden'} inline-flex size-8 items-center justify-center rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
                   >
                     <i data-lucide="edit-3" class="size-3.5"></i>
@@ -3726,7 +4121,7 @@ const CONFIG = {
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeCourseTab === 'materials' ? 'bg-background text-foreground shadow-2xs font-semibold' : 'text-muted-foreground hover:text-foreground'}"
               >
                 <i data-lucide="folder" class="size-3.5"></i>
-                <span>Ders Materyalleri</span>
+                <span>${trEn('Ders Materyalleri', 'Course Materials')}</span>
               </button>
               <button
                 type="button"
@@ -3734,7 +4129,7 @@ const CONFIG = {
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeCourseTab === 'study' ? 'bg-primary text-primary-foreground shadow-2xs font-semibold' : 'text-muted-foreground hover:text-foreground'}"
               >
                 <i data-lucide="graduation-cap" class="size-3.5"></i>
-                <span>Adım Adım Öğren</span>
+                <span>${trEn('Adım Adım Öğren', 'Step-by-Step Study')}</span>
                 <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold ${activeCourseTab === 'study' ? 'bg-blue-600 text-white shadow-2xs' : 'bg-blue-500/15 text-blue-600 dark:text-blue-400'}">Beta</span>
               </button>
             </div>
@@ -3742,7 +4137,7 @@ const CONFIG = {
               <div class="flex items-center gap-2 text-xs text-muted-foreground">
                 <span class="inline-flex items-center gap-1.5 font-medium">
                   <i data-lucide="book-open-check" class="size-3.5 text-blue-500"></i>
-                  <span>Kaynak: Paul's Online Math Notes</span>
+                  <span>${trEn('Kaynak', 'Source')}: Paul's Online Math Notes</span>
                 </span>
               </div>
             ` : ''}
@@ -3764,11 +4159,11 @@ const CONFIG = {
 
     // ================= CALCULUS STUDY HUB (PAUL'S NOTES) =================
     function renderCalculusStudyHub(code) {
-      const data = typeof window !== 'undefined' ? window.CALCULUS_STUDY_DATA : null;
+      const data = typeof window !== 'undefined' ? (window.getCalculusStudyData ? window.getCalculusStudyData(currentLang) : window.CALCULUS_STUDY_DATA) : null;
       if (!data) {
         return `
           <div class="p-8 text-center rounded-xl border border-dashed border-border bg-card">
-            <p class="text-sm text-muted-foreground">Calculus öğrenme verisi yüklenemedi.</p>
+            <p class="text-sm text-muted-foreground">${trEn('Calculus öğrenme verisi yüklenemedi.', 'Calculus study data could not be loaded.')}</p>
           </div>
         `;
       }
@@ -3850,7 +4245,7 @@ const CONFIG = {
             <button
               type="button"
               data-portal-click="toggleStudyNav" data-portal-click-args="[]"
-              title="Müfredatı Genişlet"
+              title="${trEn('Müfredatı Genişlet', 'Expand Curriculum')}"
               class="size-8 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition cursor-pointer shrink-0"
             >
               <i data-lucide="chevrons-right" class="size-4 hidden md:block"></i>
@@ -3860,7 +4255,7 @@ const CONFIG = {
             <div
               id="studyCollapsedProgressBadge"
               class="size-8 rounded-full border-2 border-blue-500 flex items-center justify-center text-[9px] font-mono font-bold text-blue-500 shrink-0"
-              title="Toplam İlerleme: %${progressPercent}"
+              title="${trEn('Toplam İlerleme', 'Total Progress')}: %${progressPercent}"
             >
               %${progressPercent}
             </div>
@@ -3889,7 +4284,7 @@ const CONFIG = {
                 >
                   <span class="leading-none tracking-tight">${esc(t.topicNum || '')}</span>
                   ${isDone ? `
-                    <span class="absolute -top-1 -right-1 size-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center ring-2 ring-card shadow-2xs" title="Tamamlandı">
+                    <span class="absolute -top-1 -right-1 size-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center ring-2 ring-card shadow-2xs" title="${trEn('Tamamlandı', 'Completed')}">
                       <i data-lucide="check" class="size-2 stroke-[3.5]"></i>
                     </span>
                   ` : ''}
@@ -3906,12 +4301,12 @@ const CONFIG = {
             <div class="flex items-center justify-between gap-1.5">
               <div class="flex items-center gap-1.5 min-w-0">
                 <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500 text-white font-mono tracking-wide">BETA</span>
-                <span class="text-xs font-bold text-foreground truncate">Calculus I: Adım Adım</span>
+                <span class="text-xs font-bold text-foreground truncate">Calculus I: ${trEn('Adım Adım', 'Step by Step')}</span>
               </div>
               <button
                 type="button"
                 data-portal-click="toggleStudyNav" data-portal-click-args="[]"
-                title="Müfredatı Daralt"
+                title="${trEn('Müfredatı Daralt', 'Collapse Curriculum')}"
                 class="size-7 rounded-lg hover:bg-blue-500/20 text-muted-foreground hover:text-foreground flex items-center justify-center transition cursor-pointer shrink-0"
               >
                 <i data-lucide="chevrons-left" class="size-4"></i>
@@ -3919,7 +4314,7 @@ const CONFIG = {
             </div>
 
             <div class="flex items-center justify-between text-[11px] font-medium text-muted-foreground pt-0.5">
-              <span>Genel İlerleme</span>
+              <span>${trEn('Genel İlerleme', 'Overall Progress')}</span>
               <span id="studyProgressText" class="font-mono font-bold text-foreground">${completedCount}/${totalTopics} (%${progressPercent})</span>
             </div>
             <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
@@ -3939,7 +4334,7 @@ const CONFIG = {
             </a>
             ${progressPercent > 0 ? `
               <button type="button" data-portal-click="resetStudyProgress" data-portal-click-args="[]" class="hover:text-rose-500 transition cursor-pointer">
-                İlerlemeyi Sıfırla
+                ${trEn('İlerlemeyi Sıfırla', 'Reset Progress')}
               </button>
             ` : ''}
           </div>
@@ -3973,7 +4368,7 @@ const CONFIG = {
           <div class="p-3.5 sm:p-4 rounded-xl bg-muted/40 border border-border/80 text-sm sm:text-base leading-relaxed text-foreground/90 space-y-2">
             <div class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
               <i data-lucide="compass" class="size-4 text-blue-500"></i>
-              <span>Kavramsal Yaklaşım & Sezgisel Giriş</span>
+              <span>${trEn('Kavramsal Yaklaşım & Sezgisel Giriş', 'Conceptual Approach & Intuition')}</span>
             </div>
             <p class="math-content leading-relaxed">${esc(currentTopic.overview)}</p>
           </div>
@@ -3983,7 +4378,7 @@ const CONFIG = {
             <div class="space-y-2.5">
               <div class="flex items-center gap-2 px-1">
                 <i data-lucide="sigma" class="size-4 text-blue-500"></i>
-                <h3 class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Temel Formüller ve Tanımlar</h3>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-muted-foreground">${trEn('Temel Formüller ve Tanımlar', 'Key Formulas & Definitions')}</h3>
               </div>
               <div class="grid grid-cols-1 gap-2.5">
                 ${formulasHtml}
@@ -3996,7 +4391,7 @@ const CONFIG = {
             <div class="space-y-2">
               <div class="flex items-center gap-2 px-1">
                 <i data-lucide="alert-triangle" class="size-4 text-amber-500"></i>
-                <h3 class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Dikkat Edilmesi Gereken Noktalar</h3>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-muted-foreground">${trEn('Dikkat Edilmesi Gereken Noktalar', 'Key Notes & Pitfalls')}</h3>
               </div>
               <div class="space-y-2">
                 ${notesHtml}
@@ -4014,7 +4409,7 @@ const CONFIG = {
                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
                 >
                   <i data-lucide="arrow-left" class="size-3.5"></i>
-                  <span>Önceki: ${esc(prevTopic.title.split('(')[0].trim())}</span>
+                  <span>${trEn('Önceki', 'Previous')}: ${esc(prevTopic.title.split('(')[0].trim())}</span>
                 </button>
               ` : '<div></div>'}
             </div>
@@ -4024,7 +4419,7 @@ const CONFIG = {
                 data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;examples&quot;]"
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs"
               >
-                <span>Çözümlü Örneklere Geç (${currentTopic.examples.length} Soru)</span>
+                <span>${trEn('Çözümlü Örneklere Geç', 'Go to Worked Examples')} (${currentTopic.examples.length} ${trEn('Soru', 'Questions')})</span>
                 <i data-lucide="arrow-right" class="size-3.5"></i>
               </button>
             </div>
@@ -4050,7 +4445,7 @@ const CONFIG = {
                     class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 transition cursor-pointer"
                   >
                     <i data-lucide="lightbulb" class="size-3.5"></i>
-                    <span>${isHintOpen ? 'İpucunu Kapat' : 'İpucu Al'}</span>
+                    <span>${isHintOpen ? trEn('İpucunu Kapat', 'Hide Hint') : trEn('İpucu Al', 'Show Hint')}</span>
                   </button>
                 ` : ''}
               </div>
@@ -4065,7 +4460,7 @@ const CONFIG = {
                 <div class="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-amber-900 dark:text-amber-200 flex items-start gap-2.5 math-content">
                   <i data-lucide="lightbulb" class="size-4 text-amber-500 shrink-0 mt-0.5"></i>
                   <div class="space-y-0.5">
-                    <span class="font-semibold">İpucu / Strateji:</span>
+                    <span class="font-semibold">${trEn('İpucu / Strateji:', 'Hint / Strategy:')}</span>
                     <div class="leading-relaxed">${esc(ex.hint)}</div>
                   </div>
                 </div>
@@ -4083,7 +4478,7 @@ const CONFIG = {
                   }"
                 >
                   <i data-lucide="${isSolOpen ? 'chevron-up' : 'chevron-down'}" class="size-3.5"></i>
-                  <span>${isSolOpen ? 'Çözümü Gizle' : 'Çözümü Göster (Adım Adım)'}</span>
+                  <span>${isSolOpen ? trEn('Çözümü Gizle', 'Hide Solution') : trEn('Çözümü Göster (Adım Adım)', 'Show Solution (Step-by-Step)')}</span>
                 </button>
               </div>
             </div>
@@ -4093,12 +4488,12 @@ const CONFIG = {
               <div class="border-t border-border bg-muted/20 p-3.5 sm:p-5 space-y-4">
                 <div class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
                   <i data-lucide="check-circle-2" class="size-4 text-emerald-500"></i>
-                  <span>Adım Adım Çözüm</span>
+                  <span>${trEn('Adım Adım Çözüm', 'Step-by-Step Solution')}</span>
                 </div>
 
                 <div class="space-y-4 pt-1">
                   ${ex.steps.map((step, sIdx) => {
-                    const cleanTitle = step.title.replace(/^Adım\s*\d+\s*:\s*/i, '').trim() || step.title;
+                    const cleanTitle = step.title.replace(/^(Adım|Step)\s*\d+\s*:\s*/i, '').trim() || step.title;
                     return `
                       <div class="relative pl-8 sm:pl-9 pb-3 border-l-2 border-blue-500/30 dark:border-blue-500/40 last:border-transparent last:pb-0">
                         <div class="absolute -left-[10px] top-0 size-5 rounded-full bg-blue-600 dark:bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center shadow-xs ring-4 ring-card select-none">
@@ -4106,7 +4501,7 @@ const CONFIG = {
                         </div>
                         <div class="space-y-1.5">
                           <h4 class="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-1.5 flex-wrap">
-                            <span class="text-blue-600 dark:text-blue-400 font-bold font-mono">Adım ${sIdx + 1}:</span>
+                            <span class="text-blue-600 dark:text-blue-400 font-bold font-mono">${trEn('Adım', 'Step')} ${sIdx + 1}:</span>
                             <span>${esc(cleanTitle)}</span>
                           </h4>
                           <div class="text-sm sm:text-base text-foreground/90 leading-relaxed math-content pl-0.5">
@@ -4122,7 +4517,7 @@ const CONFIG = {
                 <div class="mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between gap-3 flex-wrap">
                   <div class="text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
                     <i data-lucide="check-check" class="size-4"></i>
-                    <span>Nihai Sonuç:</span>
+                    <span>${trEn('Nihai Sonuç:', 'Final Answer:')}</span>
                   </div>
                   <div class="text-sm sm:text-base font-bold font-mono text-emerald-700 dark:text-emerald-300 math-content">
                     ${esc(ex.answer)}
@@ -4149,7 +4544,7 @@ const CONFIG = {
                 class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
               >
                 <i data-lucide="arrow-left" class="size-3.5"></i>
-                <span>Konu Anlatımına Dön</span>
+                <span>${trEn('Konu Anlatımına Dön', 'Back to Topic Overview')}</span>
               </button>
             </div>
             <div>
@@ -4158,7 +4553,7 @@ const CONFIG = {
                 data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;quiz&quot;]"
                 class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs"
               >
-                <span>Pratik ve Sınav Sorularına Geç</span>
+                <span>${trEn('Pratik ve Sınav Sorularına Geç', 'Go to Practice & Quiz')}</span>
                 <i data-lucide="arrow-right" class="size-3.5"></i>
               </button>
             </div>
@@ -4173,11 +4568,11 @@ const CONFIG = {
           <div class="flex items-center justify-between gap-2 flex-wrap">
             <div class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
               <i data-lucide="help-circle" class="size-3.5 text-primary"></i>
-              <span>Kendini Sına (Kavrama Sorusu)</span>
+              <span>${trEn('Kendini Sına (Kavrama Sorusu)', 'Self-Check (Concept Quiz)')}</span>
             </div>
             ${hasAnsweredQuiz ? `
               <span class="text-[11px] font-semibold px-2 py-0.5 rounded ${isQuizCorrect ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/15 text-rose-600 dark:text-rose-400'}">
-                ${isQuizCorrect ? 'Tebrikler! Doğru Cevap' : 'Tekrar İnceleyin'}
+                ${isQuizCorrect ? trEn('Tebrikler! Doğru Cevap', 'Correct! Well done') : trEn('Tekrar İnceleyin', 'Review Again')}
               </span>
             ` : ''}
           </div>
@@ -4218,7 +4613,7 @@ const CONFIG = {
 
           ${hasAnsweredQuiz ? `
             <div class="p-3 rounded-lg ${isQuizCorrect ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-200' : 'bg-muted border border-border text-foreground/90'} text-xs sm:text-sm leading-relaxed math-content">
-              <strong>Açıklama:</strong> ${esc(quiz.explanation)}
+              <strong>${trEn('Açıklama:', 'Explanation:')}</strong> ${esc(quiz.explanation)}
             </div>
           ` : ''}
         </div>
@@ -4237,7 +4632,7 @@ const CONFIG = {
                 class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
               >
                 <i data-lucide="arrow-left" class="size-3.5"></i>
-                <span>Çözümlü Örneklere Dön</span>
+                <span>${trEn('Çözümlü Örneklere Dön', 'Back to Worked Examples')}</span>
               </button>
             </div>
 
@@ -4248,13 +4643,13 @@ const CONFIG = {
                   data-portal-click="navigateStudyTopic" data-portal-click-args="[1]"
                   class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition cursor-pointer shadow-2xs"
                 >
-                  <span>Sonraki Konu: ${esc(nextTopic.title.split('(')[0].trim())}</span>
+                  <span>${trEn('Sonraki Konu', 'Next Topic')}: ${esc(nextTopic.title.split('(')[0].trim())}</span>
                   <i data-lucide="arrow-right" class="size-3.5"></i>
                 </button>
               ` : `
                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-xs font-semibold border border-emerald-500/30">
                   <i data-lucide="check-check" class="size-3.5"></i>
-                  <span>Tüm Konuları İncelediniz 🎉</span>
+                  <span>${trEn('Tüm Konuları İncelediniz 🎉', 'You have reviewed all topics 🎉')}</span>
                 </span>
               `}
             </div>
@@ -4275,7 +4670,7 @@ const CONFIG = {
             <div id="studyTopicHeaderCard" class="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-3 shadow-2xs scroll-mt-20 sm:scroll-mt-24">
               <div class="flex items-center justify-between gap-2 flex-wrap">
                 <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono">
-                  Calculus I • Hafta ${data.weeks.find(w => w.id === currentTopic.weekId)?.number || 1} • Konu ${esc(currentTopic.topicNum || '')}
+                  Calculus I • ${trEn('Hafta', 'Week')} ${data.weeks.find(w => w.id === currentTopic.weekId)?.number || 1} • ${trEn('Konu', 'Topic')} ${esc(currentTopic.topicNum || '')}
                 </span>
 
                 <div class="flex items-center gap-2">
@@ -4283,7 +4678,7 @@ const CONFIG = {
                     href="${esc(safeLink(currentTopic.sourceUrl))}"
                     target="_blank"
                     rel="noopener noreferrer"
-                    title="Paul's Online Math Notes Orijinal Bölümünü Yeni Sekmede Aç"
+                    title="${trEn('Paul\'s Online Math Notes Orijinal Bölümünü Yeni Sekmede Aç', 'Open the original Paul\'s Online Math Notes section in a new tab')}"
                     class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-muted hover:bg-muted/80 text-foreground border border-border transition"
                   >
                     <span>Paul's Notes</span>
@@ -4293,12 +4688,12 @@ const CONFIG = {
                   ${isTopicDone ? `
                     <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
                       <i data-lucide="check-circle" class="size-3.5"></i>
-                      <span>Tamamlandı (%${currentTopicPercent})</span>
+                      <span>${trEn('Tamamlandı', 'Completed')} (%${currentTopicPercent})</span>
                     </div>
                   ` : `
                     <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
                       <div class="size-2 rounded-full bg-blue-500 animate-pulse"></div>
-                      <span>Konu İlerlemesi: %${currentTopicPercent}</span>
+                      <span>${trEn('Konu İlerlemesi', 'Topic Progress')}: %${currentTopicPercent}</span>
                     </div>
                   `}
                 </div>
@@ -4322,7 +4717,7 @@ const CONFIG = {
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeStudySectionTab === 'theory' ? 'bg-background text-foreground shadow-xs font-bold' : 'text-muted-foreground hover:text-foreground'}"
                   >
                     <i data-lucide="book-open" class="size-3.5"></i>
-                    <span>Konu Anlatımı</span>
+                    <span>${trEn('Konu Anlatımı', 'Topic Overview')}</span>
                   </button>
                   <button
                     type="button"
@@ -4330,7 +4725,7 @@ const CONFIG = {
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeStudySectionTab === 'examples' ? 'bg-background text-foreground shadow-xs font-bold' : 'text-muted-foreground hover:text-foreground'}"
                   >
                     <i data-lucide="check-square" class="size-3.5 text-blue-500"></i>
-                    <span>Çözümlü Örnekler (${currentTopic.examples.length})</span>
+                    <span>${trEn('Çözümlü Örnekler', 'Worked Examples')} (${currentTopic.examples.length})</span>
                   </button>
                   <button
                     type="button"
@@ -4338,7 +4733,7 @@ const CONFIG = {
                     class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeStudySectionTab === 'quiz' ? 'bg-background text-foreground shadow-xs font-bold' : 'text-muted-foreground hover:text-foreground'}"
                   >
                     <i data-lucide="help-circle" class="size-3.5 text-purple-500"></i>
-                    <span>Pratik & Sınav</span>
+                    <span>${trEn('Pratik & Sınav', 'Practice & Quiz')}</span>
                   </button>
                 </div>
               </div>
@@ -4456,7 +4851,7 @@ const CONFIG = {
     };
 
     window.navigateStudyTopic = function(direction) {
-      const data = typeof window !== 'undefined' ? window.CALCULUS_STUDY_DATA : null;
+      const data = typeof window !== 'undefined' ? (window.getCalculusStudyData ? window.getCalculusStudyData(currentLang) : window.CALCULUS_STUDY_DATA) : null;
       if (!data) return;
       const allTopics = data.weeks.flatMap(w => w.topics);
       const idx = allTopics.findIndex(t => t.id === activeStudyTopicId);
@@ -4475,7 +4870,7 @@ const CONFIG = {
     };
 
     window.resetStudyProgress = function() {
-      if (!confirm('Tüm konu tamamlama ilerlemenizi sıfırlamak istediğinize emin misiniz?')) return;
+      if (!confirm(trEn('Tüm konu tamamlama ilerlemenizi sıfırlamak istediğinize emin misiniz?', 'Are you sure you want to reset all your topic progress?'))) return;
       studyScrollProgress = {};
       viewedStudyExamples.clear();
       studyQuizAnswers = {};
@@ -4533,7 +4928,7 @@ const CONFIG = {
         ${filteredRoots.length > 0 ? `
           <div class="admincn-card overflow-hidden">
             <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
-              <h3 class="text-sm font-semibold">Dosyalar (${filteredRoots.length})</h3>
+              <h3 class="text-sm font-semibold">${trEn('Dosyalar', 'Files')} (${filteredRoots.length})</h3>
             </div>
             <div class="divide-y divide-border px-3 py-1.5">
               ${filteredRoots.map(f => renderFileRow(f, code)).join('')}
@@ -4543,7 +4938,7 @@ const CONFIG = {
 
         ${totalFiles === 0 ? `
           <div class="admincn-card text-center py-12 px-4">
-            <p class="text-xs text-muted-foreground mb-3">Bu ders için henüz Google Drive arşivine materyal yüklenmemiş.</p>
+            <p class="text-xs text-muted-foreground mb-3">${trEn('Bu ders için henüz Google Drive arşivine materyal yüklenmemiş.', 'No materials have been uploaded to the Google Drive archive for this course yet.')}</p>
             <a
               href="${driveFolderUrl}"
               target="_blank"
@@ -4551,7 +4946,7 @@ const CONFIG = {
               class="inline-flex h-8 items-center gap-1.5 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:opacity-90 transition"
             >
               <i data-lucide="external-link" class="size-3.5"></i>
-              <span>Drive Arşivini Aç</span>
+              <span>${trEn('Drive Arşivini Aç', 'Open Drive Archive')}</span>
             </a>
           </div>
         ` : ''}
@@ -4599,7 +4994,7 @@ const CONFIG = {
       const headerIcon = isWeekly ? 'calendar' : 'folder';
       const stripped = folder.name.replace(/(hafta|week)\s*0?\d+[:\s-]*/i, '').trim();
       const title = isWeekly
-        ? (stripped ? `${folder.weekNum}. Hafta — ${stripped}` : `${folder.weekNum}. Hafta`)
+        ? (stripped ? `${trEn(folder.weekNum + '. Hafta', 'Week ' + folder.weekNum)} — ${stripped}` : trEn(`${folder.weekNum}. Hafta`, `Week ${folder.weekNum}`))
         : folder.name;
 
       return `
@@ -4619,7 +5014,7 @@ const CONFIG = {
                 href="https://drive.google.com/drive/folders/${realId(folder)}"
                 target="_blank"
                 rel="noopener noreferrer"
-                title="Drive'da Aç"
+                title="${trEn('Drive\'da Aç', 'Open in Drive')}"
                 class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
               >
                 <i data-lucide="external-link" class="size-3.5"></i>
@@ -4629,7 +5024,7 @@ const CONFIG = {
 
           <div class="p-3 space-y-1.5">
             ${items.length > 0 ? items.map(item => renderFileItem(item, courseCode)).join('') : `
-              <div class="text-xs text-muted-foreground py-3 text-center">Boş</div>
+              <div class="text-xs text-muted-foreground py-3 text-center">${trEn('Boş', 'Empty')}</div>
             `}
           </div>
         </div>
@@ -4663,14 +5058,14 @@ const CONFIG = {
               data-portal-click="openViewerModal" data-portal-click-args="[${jsArg(item.id)}, ${jsArg(courseCode)}]"
               class="h-7 px-2.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
             >
-              ${kind === 'youtube' || yt ? 'İzle' : 'Aç'}
+              ${kind === 'youtube' || yt ? trEn('İzle', 'Watch') : trEn('Aç', 'Open')}
             </button>
             ${kind !== 'youtube' ? `
               <a
                 href="https://drive.google.com/uc?export=download&id=${realId(item)}"
                 target="_blank"
                 rel="noopener noreferrer"
-                title="İndir"
+                title="${trEn('İndir', 'Download')}"
                 class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
               >
                 <i data-lucide="download" class="size-3.5"></i>
@@ -4711,14 +5106,14 @@ const CONFIG = {
               data-portal-click="openViewerModal" data-portal-click-args="[${jsArg(item.id)}, ${jsArg(courseCode)}]"
               class="h-7 px-2.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
             >
-              Aç
+              ${trEn('Aç', 'Open')}
             </button>
             ${kind !== 'youtube' ? `
               <a
                 href="https://drive.google.com/uc?export=download&id=${realId(item)}"
                 target="_blank"
                 rel="noopener noreferrer"
-                title="İndir"
+                title="${trEn('İndir', 'Download')}"
                 class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
               >
                 <i data-lucide="download" class="size-3.5"></i>
@@ -4854,7 +5249,7 @@ const CONFIG = {
       if (sessionBlobCache.has(id)) {
         streamBox.classList.add('hidden');
         setViewerFrameSrc(sessionBlobCache.get(id));
-        serverBadge.textContent = 'Önbellek';
+        serverBadge.textContent = trEn('Önbellek', 'Cached');
         return;
       }
 
@@ -4865,20 +5260,20 @@ const CONFIG = {
         sessionBlobCache.set(id, blobUrl);
         streamBox.classList.add('hidden');
         setViewerFrameSrc(blobUrl);
-        serverBadge.textContent = 'Önbellek';
+        serverBadge.textContent = trEn('Önbellek', 'Cached');
         return;
       }
 
       // 3. Initiate active stream
       streamBox.classList.remove('hidden');
       $('viewerStreamTitle').textContent = node.name;
-      if (statusEl) statusEl.textContent = 'Sunucuya bağlanılıyor...';
+      if (statusEl) statusEl.textContent = trEn('Sunucuya bağlanılıyor...', 'Connecting to server...');
       bar.style.width = '3%';
       percentEl.textContent = '0%';
       const totalBytes = (node.size && !isNaN(node.size)) ? Number(node.size) : 0;
       const totalMbStr = totalBytes > 0 ? (totalBytes / (1024 * 1024)).toFixed(1) + ' MB' : '...';
       mbEl.textContent = `0.0 MB / ${totalMbStr}`;
-      serverBadge.textContent = 'Aktarılıyor...';
+      serverBadge.textContent = trEn('Aktarılıyor...', 'Streaming...');
       lucide.createIcons();
 
       const controller = new AbortController();
@@ -4914,7 +5309,7 @@ const CONFIG = {
           ? Number(headerLen)
           : totalBytes;
 
-        if (statusEl) statusEl.textContent = 'Tarayıcıya aktarılıyor...';
+        if (statusEl) statusEl.textContent = trEn('Tarayıcıya aktarılıyor...', 'Streaming to browser...');
 
         const reader = response.body.getReader();
         const chunks = [];
@@ -4946,14 +5341,14 @@ const CONFIG = {
                 : `${loadedMb} / ${tMb} MB`;
             } else {
               bar.style.width = '60%';
-              mbEl.textContent = `${loadedMb} MB aktarıldı`;
+              mbEl.textContent = `${loadedMb} MB ${trEn('aktarıldı', 'transferred')}`;
             }
           }
         }
 
         bar.style.width = '100%';
         percentEl.textContent = '100%';
-        if (statusEl) statusEl.textContent = 'Açılıyor...';
+        if (statusEl) statusEl.textContent = trEn('Açılıyor...', 'Opening...');
 
         const blob = new Blob(chunks, { type: 'application/pdf' });
         if (!await validPdfBlob(blob)) throw new Error('Geçersiz PDF dosyası');
@@ -4965,7 +5360,7 @@ const CONFIG = {
         activeStreamAbort = null;
         streamBox.classList.add('hidden');
         setViewerFrameSrc(blobUrl);
-        serverBadge.textContent = 'Doğrudan';
+        serverBadge.textContent = trEn('Doğrudan', 'Direct');
 
       } catch (err) {
         clearTimeout(timeoutId);
@@ -5254,7 +5649,7 @@ const CONFIG = {
         const textSpan = btnEl.querySelector('.email-text');
         const originalText = textSpan.textContent;
 
-        textSpan.textContent = 'Kopyalandı ✓';
+        textSpan.textContent = trEn('Kopyalandı ✓', 'Copied ✓');
         btnEl.classList.add('text-emerald-600', 'dark:text-emerald-400');
 
         setTimeout(() => {
@@ -5262,7 +5657,7 @@ const CONFIG = {
           btnEl.classList.remove('text-emerald-600', 'dark:text-emerald-400');
         }, 1500);
       }).catch(() => {
-        prompt('E-posta:', email);
+        prompt(trEn('E-posta:', 'Email:'), email);
       });
     };
 
@@ -5273,7 +5668,7 @@ const CONFIG = {
       currentEditingCourseCode = courseCode;
       const meta = courseMetadata[courseCode] || { name: courseCode, instructor: '', email: '', credits: '', links: [] };
 
-      $('editModalCourseCode').textContent = `${courseCode} Düzenle`;
+      $('editModalCourseCode').textContent = `${courseCode} ${trEn('Düzenle', 'Edit')}`;
       $('editCourseName').value = meta.name || '';
       $('editCourseInstructor').value = meta.instructor || '';
       $('editCourseEmail').value = meta.email || '';
@@ -5288,7 +5683,7 @@ const CONFIG = {
       const container = $('editLinksContainer');
       container.innerHTML = links.map((link) => `
         <div class="flex items-center gap-2 link-row">
-          <input type="text" placeholder="Başlık" value="${esc(link.title)}" class="h-8 w-1/3 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
+          <input type="text" placeholder="${trEn('Başlık', 'Title')}" value="${esc(link.title)}" class="h-8 w-1/3 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
           <input type="url" placeholder="https://..." value="${esc(link.url)}" class="h-8 flex-1 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
           <button type="button" data-portal-click="removeParent" data-portal-click-args="[{&quot;$context&quot;:&quot;element&quot;}]" class="size-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive">
             <i data-lucide="trash-2" class="size-4"></i>
@@ -5303,7 +5698,7 @@ const CONFIG = {
       const div = document.createElement('div');
       div.className = 'flex items-center gap-2 link-row';
       div.innerHTML = `
-        <input type="text" placeholder="Başlık" value="" class="h-8 w-1/3 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
+        <input type="text" placeholder="${trEn('Başlık', 'Title')}" value="" class="h-8 w-1/3 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
         <input type="url" placeholder="https://..." value="" class="h-8 flex-1 px-2.5 bg-background border border-input rounded-md text-xs text-foreground">
         <button type="button" data-portal-click="removeParent" data-portal-click-args="[{&quot;$context&quot;:&quot;element&quot;}]" class="size-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-destructive">
           <i data-lucide="trash-2" class="size-4"></i>
@@ -5457,6 +5852,7 @@ const CONFIG = {
     };
 
     window.addEventListener('storage', (e) => {
+      if (e.key === PORTAL_LANG_STORAGE_KEY && ['tr', 'en'].includes(e.newValue)) window.setPortalLanguage(e.newValue);
       if (e.key === 'color-scheme') {
         applyResolvedTheme(e.newValue);
       }
@@ -5567,13 +5963,13 @@ const CONFIG = {
       const matchedCourses = CURRICULUM_COURSES.filter(c => {
         const meta = courseMetadata[c.code] || c;
         const semStr = c.semester === 'guz' ? 'güz dönemi' : 'bahar dönemi';
-        const hay = `${c.code} ${meta.name} ${meta.instructor || ''} ${meta.assistantsText || ''} ${c.year}. sınıf ${semStr}`;
+        const hay = `${c.code} ${meta.name} ${formatCourseDisplayName(c.code, meta.name)} ${meta.instructor || ''} ${meta.assistantsText || ''} ${c.year}. sınıf ${semStr} ${formatClassOrdinal(c.year)} ${formatSemesterLabel(c.semester, true)}`;
         return normalizeTr(hay).includes(qNorm) || hay.toLocaleLowerCase('tr-TR').includes(qLower);
       }).slice(0, 6);
 
       // 2. Search Academic Staff (STAFF_DATA)
       const matchedStaff = STAFF_DATA.filter(s => {
-        const hay = `${s.title} ${s.name} ${s.role || ''} ${s.email || ''} ${(s.courses || []).join(' ')}`;
+        const hay = `${s.title} ${formatStaffTitle(s.title)} ${s.name} ${s.role || ''} ${formatStaffRole(s.role)} ${s.email || ''} ${(s.courses || []).join(' ')}`;
         return normalizeTr(hay).includes(qNorm) || hay.toLocaleLowerCase('tr-TR').includes(qLower);
       }).slice(0, 6);
 
@@ -5582,8 +5978,8 @@ const CONFIG = {
       const allEvents = getCalendarEvents().filter(e => e.date && e.date.startsWith(String(curYear)));
       const matchedEvents = allEvents.filter(ev => {
         const [, m, d] = ev.date.split('-').map(Number);
-        const monthName = MONTH_NAMES_TR[m - 1] || '';
-        const hay = `${ev.title} ${ev.courseCode} ${d} ${monthName} ${ev.date} sınav vize quiz proje`;
+        const monthName = `${MONTH_NAMES_TR[m - 1] || ''} ${MONTH_NAMES_EN[m - 1] || ''}`;
+        const hay = `${ev.title} ${ev.courseCode} ${d} ${monthName} ${ev.date} sınav vize quiz proje exam midterm project`;
         return normalizeTr(hay).includes(qNorm) || hay.toLocaleLowerCase('tr-TR').includes(qLower);
       }).slice(0, 5);
 
@@ -5599,7 +5995,7 @@ const CONFIG = {
       if (totalResults === 0) {
         dd.innerHTML = `
           <div class="p-6 text-center text-xs text-muted-foreground">
-            "<span class="font-medium text-foreground">${esc(val)}</span>" için ders, öğretim görevlisi, tarih veya dosya bulunamadı.
+            ${trEn('', 'No courses, staff, dates or files found for ')}"<span class="font-medium text-foreground">${esc(val)}</span>"${trEn(' için ders, öğretim görevlisi, tarih veya dosya bulunamadı.', '.')}
           </div>
         `;
         dd.classList.remove('hidden');
@@ -5613,13 +6009,13 @@ const CONFIG = {
         html += `
           <div>
             <div class="px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-              <span class="inline-flex items-center gap-1.5"><i data-lucide="book-open" class="size-3"></i> Dersler</span>
+              <span class="inline-flex items-center gap-1.5"><i data-lucide="book-open" class="size-3"></i> ${trEn('Dersler', 'Courses')}</span>
               <span class="font-mono text-[10px]">${matchedCourses.length}</span>
             </div>
             <div class="space-y-0.5 mt-0.5">
               ${matchedCourses.map(c => {
                 const meta = courseMetadata[c.code] || c;
-                const semLabel = `${c.year}. Sınıf • ${c.semester === 'guz' ? 'Güz' : 'Bahar'}`;
+                const semLabel = `${formatClassOrdinal(c.year)} • ${formatSemesterLabel(c.semester)}`;
                 return `
                   <button
                     type="button"
@@ -5629,7 +6025,7 @@ const CONFIG = {
                     <div class="flex items-center gap-2.5 min-w-0">
                       <span class="rounded bg-primary-soft px-2 py-0.5 font-mono text-xs font-bold text-foreground shrink-0">${esc(c.code)}</span>
                       <div class="min-w-0">
-                        <div class="text-xs font-semibold text-foreground truncate group-hover:underline">${esc(meta.name)}</div>
+                        <div class="text-xs font-semibold text-foreground truncate group-hover:underline">${esc(formatCourseDisplayName(c.code, meta.name))}</div>
                         <div class="text-[11px] text-muted-foreground truncate">${esc(semLabel)}${meta.instructor ? ' • ' + esc(meta.instructor) : ''}</div>
                       </div>
                     </div>
@@ -5647,12 +6043,12 @@ const CONFIG = {
         html += `
           <div>
             <div class="px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-              <span class="inline-flex items-center gap-1.5"><i data-lucide="users" class="size-3"></i> Öğretim Görevlileri & Asistanlar</span>
+              <span class="inline-flex items-center gap-1.5"><i data-lucide="users" class="size-3"></i> ${trEn('Öğretim Görevlileri & Asistanlar', 'Faculty & Assistants')}</span>
               <span class="font-mono text-[10px]">${matchedStaff.length}</span>
             </div>
             <div class="space-y-0.5 mt-0.5">
               ${matchedStaff.map(s => {
-                const fullName = `${s.title} ${s.name}`.trim();
+                const fullName = formatStaffFullName(s);
                 const initials = getStaffInitials(s.name);
                 return `
                   <button
@@ -5667,7 +6063,7 @@ const CONFIG = {
                       <div class="min-w-0">
                         <div class="text-xs font-semibold text-foreground truncate group-hover:underline">${esc(fullName)}</div>
                         <div class="text-[11px] text-muted-foreground truncate">
-                          ${s.role ? esc(s.role) + (s.email ? ' • ' : '') : ''}${s.email ? esc(s.email) : ''}
+                          ${s.role ? esc(formatStaffRole(s.role)) + (s.email ? ' • ' : '') : ''}${s.email ? esc(s.email) : ''}
                         </div>
                       </div>
                     </div>
@@ -5687,7 +6083,7 @@ const CONFIG = {
         html += `
           <div>
             <div class="px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-              <span class="inline-flex items-center gap-1.5"><i data-lucide="calendar" class="size-3"></i> Önemli Tarihler & Sınavlar</span>
+              <span class="inline-flex items-center gap-1.5"><i data-lucide="calendar" class="size-3"></i> ${trEn('Önemli Tarihler & Sınavlar', 'Important Dates & Exams')}</span>
               <span class="font-mono text-[10px]">${matchedEvents.length}</span>
             </div>
             <div class="space-y-0.5 mt-0.5">
@@ -5705,14 +6101,14 @@ const CONFIG = {
                         class="inline-flex items-center justify-center px-2 py-0.5 rounded font-bold text-[11px] shrink-0"
                         style="background-color: ${solid.bg}; color: ${solid.text};"
                       >
-                        ${d} ${MONTH_NAMES_TR_SHORT[m - 1]}
+                        ${d} ${getMonthShort(m - 1)}
                       </span>
                       <div class="min-w-0">
                         <div class="text-xs font-semibold text-foreground truncate group-hover:underline">${esc(ev.title)}</div>
-                        <div class="text-[11px] text-muted-foreground truncate">${esc(ev.courseCode)}${ev.time ? ' • Saat ' + esc(ev.time) : ''}</div>
+                        <div class="text-[11px] text-muted-foreground truncate">${esc(ev.courseCode)}${ev.time ? ' • ' + trEn('Saat', 'Time') + ' ' + esc(ev.time) : ''}</div>
                       </div>
                     </div>
-                    <span class="text-[11px] text-muted-foreground font-mono shrink-0">Takvimde Gör</span>
+                    <span class="text-[11px] text-muted-foreground font-mono shrink-0">${trEn('Takvimde Gör', 'View in Calendar')}</span>
                   </button>
                 `;
               }).join('')}
@@ -5726,7 +6122,7 @@ const CONFIG = {
         html += `
           <div>
             <div class="px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
-              <span class="inline-flex items-center gap-1.5"><i data-lucide="file-text" class="size-3"></i> Dosyalar & Materyaller</span>
+              <span class="inline-flex items-center gap-1.5"><i data-lucide="file-text" class="size-3"></i> ${trEn('Dosyalar & Materyaller', 'Files & Materials')}</span>
               <span class="font-mono text-[10px]">${matchedFiles.length}</span>
             </div>
             <div class="space-y-0.5 mt-0.5">
@@ -5827,6 +6223,152 @@ const CONFIG = {
     });
 
 
+    // ================= LANGUAGE SWITCHER =================
+    const STATIC_TRANSLATIONS = [
+      // [selector, attr|null, tr, en]
+      ["label[for=\"editCourseName\"]", null, "Ders Adı", "Course Name"],
+      ["label[for=\"editCourseInstructor\"]", null, "Öğretim Üyesi", "Instructor"],
+      ["label[for=\"editCourseEmail\"]", null, "E-Posta", "Email"],
+      ["label[for=\"editCourseCredits\"]", null, "Kredi & AKTS", "Credits & ECTS"],
+      ["#editCourseForm .pt-2 label", null, "Kısayol Linkleri", "Shortcut Links"],
+      ["#addNewLinkRowBtn span", null, "Ekle", "Add"],
+      ["#copyInfoTxtBtn span", null, "info.txt Kopyala", "Copy info.txt"],
+      ["#eventInputTime", "aria-label", "Saat", "Time"],
+      ["[data-portal-click=\"handleResetAcademicEvents\"]", null, "Varsayılana Sıfırla", "Reset to Defaults"],
+      ["[data-portal-click=\"closeEventDialog\"]", null, "İptal", "Cancel"],
+      ["#editCourseForm button[type=\"submit\"]", null, "Kaydet", "Save"],
+      ["#cancelEditCourseBtn", null, "İptal", "Cancel"],
+      ["#editCourseForm button[type=\"submit\"]", null, "Kaydet", "Save"],
+      ["#closeEditCourseBtn", "aria-label", "Kapat", "Close"],
+      [".sidebar-brand-btn img", "alt", "Ankara Üniversitesi Elektrik-Elektronik Mühendisliği Logosu", "Ankara University Electrical & Electronics Engineering Logo"],
+      ['#sidebarTriggerBtn', 'title', 'Menü (Ctrl+B)', 'Menu (Ctrl+B)'],
+      ['#sidebarTriggerBtn', 'aria-label', 'Menü', 'Menu'],
+      ['.sidebar-brand-btn', 'title', 'Ana Sayfa', 'Home'],
+      ['#mobileCloseSidebarBtn', 'aria-label', 'Kapat', 'Close'],
+      ['#sidebarCoursesHeading', null, 'Dersler', 'Courses'],
+      ['#sidebarLinksHeading', null, 'Bağlantılar', 'Links'],
+      ['#portalFeedbackButton', 'title', 'İstek ve Görüşler', 'Feedback & Requests'],
+      ['#portalFeedbackButton span', null, 'İstek ve Görüşler', 'Feedback & Requests'],
+      ['#sidebarDriveLink', 'title', 'Dosyalar (Google Drive)', 'Files (Google Drive)'],
+      ['#sidebarDriveLink span', null, 'Dosyalar', 'Files'],
+      ['#globalSearchInput', 'placeholder', 'Ara...', 'Search...'],
+      ['#globalSearchInput', 'aria-label', 'Portalda ara', 'Search the portal'],
+      ['#globalSearchClearBtn', 'title', 'Temizle', 'Clear'],
+      ['#langSwitcher', 'aria-label', 'Dil Seçimi', 'Language'],
+      ['#refreshBtn', 'title', 'Yenile', 'Refresh'],
+      ['#themeToggleBtn', 'title', 'Tema', 'Theme'],
+      ['#portalSettingsButton', 'title', 'Ayarlar', 'Settings'],
+      ['#portalSettingsButton', 'aria-label', 'Ayarlar', 'Settings'],
+      ['#mainLoader progress', 'aria-label', 'Yükleniyor', 'Loading'],
+      ['#mainLoader span', null, 'Yükleniyor...', 'Loading...'],
+      ['#footerPrivacyLink', null, 'Gizlilik Politikası', 'Privacy Policy'],
+      ['#viewerBackBtn span', null, 'Geri', 'Back'],
+      ['#viewerDownloadBtn', 'title', 'İndir', 'Download'],
+      ['#viewerDownloadBtn span', null, 'İndir', 'Download'],
+      ['#viewerSwitchServerBtn', 'title', 'Önizleme Motorunu Değiştir', 'Switch Preview Engine'],
+      ['#viewerExternalBtn', 'title', "Drive'da Aç", 'Open in Drive'],
+      ['#viewerFullscreenBtn', 'title', 'Tam Ekran', 'Fullscreen'],
+      ['#viewerCloseBtn', 'title', 'Kapat', 'Close'],
+      ['#viewerFullscreenExitBtn', 'title', 'Tam Ekrandan Çık (ESC)', 'Exit Fullscreen (ESC)'],
+      ['#viewerFullscreenExitBtn span', null, 'Tam Ekrandan Çık', 'Exit Fullscreen'],
+      ['#viewerToastPre', null, 'Tam ekrandan çıkmak için', 'Press'],
+      ['#viewerToastPost', null, 'tuşuna basın', 'to exit fullscreen'],
+      ['#viewerLoader progress', 'aria-label', 'Önizleme Yükleniyor', 'Loading Preview'],
+      ['#viewerLoader span', null, 'Yükleniyor...', 'Loading...'],
+      ['#cancelStreamBtn span', null, 'Drive Önizleme', 'Drive Preview'],
+      ['#viewerStreamNote', null, 'Kitap doğrudan tarayıcınıza aktarılıp önbelleğe alınıyor. İptal edip standart Drive önizlemesine de geçebilirsiniz.', 'The book is being streamed directly to your browser and cached. You can cancel and switch to the standard Drive preview.'],
+      ['#addEventModalTitle', null, 'Etkinlik / Sınav Ekle', 'Add Event / Exam'],
+      ['label[for="eventInputCourse"]', null, 'Ders / Kategori', 'Course / Category'],
+      ['label[for="eventInputTitle"]', null, 'Etkinlik Başlığı', 'Event Title'],
+      ['#eventInputTitle', 'placeholder', 'Örn: Kimya Vizesi, Laboratuvar Sınavı...', 'e.g. Chemistry Midterm, Lab Exam...'],
+      ['label[for="eventInputDate"]', null, 'Tarih', 'Date'],
+      ['label[for="eventInputTime"]', null, 'Saat', 'Time'],
+      ['label[for="eventInputLocation"]', null, 'Yer / Sınıf / Not (İsteğe bağlı)', 'Location / Room / Note (optional)'],
+      ['#eventInputLocation', 'placeholder', 'Örn: Amfi 1 (D-101), Online...', 'e.g. Hall 1 (D-101), Online...']
+    ];
+
+    function applyStaticTranslations() {
+      const en = isEn();
+      window.PortalLanguage?.write(currentLang);
+      document.documentElement.lang = en ? 'en' : 'tr';
+      document.querySelector('meta[property="og:locale"]')?.setAttribute('content', en ? 'en_US' : 'tr_TR');
+      document.querySelector('meta[property="og:site_name"]')?.setAttribute('content', trEn('ANKU EEE Ders Portalı', 'ANKU EEE Course Portal'));
+      STATIC_TRANSLATIONS.forEach(([sel, attr, tr, enStr]) => {
+        document.querySelectorAll(sel).forEach(el => {
+          const val = en ? enStr : tr;
+          if (attr) el.setAttribute(attr, val); else el.textContent = val;
+        });
+      });
+      document.querySelectorAll('#eventInputCourse option').forEach(opt => {
+        opt.textContent = opt.value === 'GENEL'
+          ? trEn('GENEL - Akademik Takvim / Tatil', 'GENERAL - Academic Calendar / Holiday')
+          : `${opt.value} - ${formatCourseDisplayName(opt.value, '')}`;
+      });
+      const previewStates = [
+        ['Önbellek', 'Cached'], ['Doğrudan', 'Direct'], ['Aktarılıyor...', 'Streaming...'],
+        ['Sunucuya bağlanıyor...', 'Connecting to server...'], ['Sunucuya bağlanılıyor...', 'Connecting to server...'],
+        ['Tarayıcıya aktarılıyor...', 'Streaming to browser...'], ['Açılıyor...', 'Opening...']
+      ];
+      ['viewerServerBadge', 'viewerStreamStatus'].forEach(id => {
+        const el = $(id);
+        const state = previewStates.find(pair => pair.includes(el?.textContent.trim()));
+        if (el && state) el.textContent = trEn(...state);
+      });
+      const activeCls = ['bg-background', 'text-foreground', 'shadow-2xs'];
+      const idleCls = ['text-muted-foreground', 'hover:text-foreground'];
+      [['langBtnTr', !en], ['langBtnEn', en]].forEach(([id, on]) => {
+        const b = $(id);
+        if (!b) return;
+        b.setAttribute('aria-pressed', String(on));
+        activeCls.forEach(c => b.classList.toggle(c, on));
+        idleCls.forEach(c => b.classList.toggle(c, !on));
+      });
+      const totalBadge = $('totalFilesBadge');
+      if (totalBadge) totalBadge.textContent = `${driveTree ? countFilesInFolder(driveTree) : 0} ${trEn('dosya', 'files')}`;
+      const st = $('statusText');
+      if (st) {
+        const map = { 'Hata': 'Error', 'Yükleniyor': 'Loading' };
+        const rev = { 'Error': 'Hata', 'Loading': 'Yükleniyor' };
+        const cur = st.textContent.trim();
+        if (en && map[cur]) st.textContent = map[cur];
+        if (!en && rev[cur]) st.textContent = rev[cur];
+      }
+    }
+
+    window.setPortalLanguage = function(lang) {
+      if (lang !== 'tr' && lang !== 'en') return;
+      currentLang = lang;
+      window.PortalLanguage?.write(lang);
+      if (window.getCalculusStudyData) window.CALCULUS_STUDY_DATA = window.getCalculusStudyData(lang);
+      applyStaticTranslations();
+      window.portalApplyLanguage?.();
+      renderSidebarCourses();
+      closeGlobalSearchDropdown();
+      hideCalendarDayPopover();
+      if (activeView === 'staff') {
+        updateHeaderBreadcrumb(null, null);
+        document.title = trEn('Öğretim Görevlileri', 'Academic Staff') + ' — ANKU EEE Portal';
+        renderStaffHub(highlightedStaffId);
+      } else if (activeCourseId) {
+        const code = getCourseCodeById(activeCourseId);
+        const meta = courseMetadata[code] || { name: code };
+        updateHeaderBreadcrumb(code, meta.name);
+        updatePageMeta(code, meta);
+        renderCourseHub(activeCourseId);
+      } else {
+        updateHeaderBreadcrumb(null);
+        updatePageMeta(null, null);
+        renderWelcomeHub();
+      }
+      window.portalApplyBrand?.();
+      lucide.createIcons();
+    };
+
+    window.addEventListener('popstate', () => {
+      const lang = window.PortalLanguage?.read();
+      if (lang && lang !== currentLang) window.setPortalLanguage(lang);
+    });
+
     // Data attributes select a fixed handler; no dynamic code evaluation is used.
     const portalEventHandlers = Object.freeze({
       changeTablePage: (...args) => { if (typeof changeTablePage === 'function') return changeTablePage(...args); },
@@ -5873,6 +6415,7 @@ const CONFIG = {
       resetStudyProgress: (...args) => { if (typeof resetStudyProgress === 'function') return resetStudyProgress(...args); },
       toggleSidebarSemester: (...args) => { if (typeof toggleSidebarSemester === 'function') return toggleSidebarSemester(...args); },
       toggleSidebarYear: (...args) => { if (typeof toggleSidebarYear === 'function') return toggleSidebarYear(...args); },
+      setPortalLanguage: (lang) => window.setPortalLanguage(lang),
 
       closeEventDialog: () => $('addAcademicEventModal').close(),
       removeParent: element => element.parentElement.remove(),
@@ -5897,6 +6440,9 @@ const CONFIG = {
       },true);
     }
 
+    if (window.getCalculusStudyData) window.CALCULUS_STUDY_DATA = window.getCalculusStudyData(currentLang);
+    applyStaticTranslations();
+    updatePageMeta(null, null);
     syncCourseFromHash();
     renderSidebarCourses();
     if (activeView === 'staff') {

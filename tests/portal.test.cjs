@@ -21,7 +21,7 @@ w.fetch=async(url,opt={})=>{let data={},code=200;const body=opt.body?JSON.parse(
 };
 w.localStorage.setItem('anku_tree_cache_v3',JSON.stringify({folderId:'1n9cyf8eSj3OremDKF5BdQIBayaryPofN',tree:[{id:'drive-course',name:'CHM109',mimeType:'application/vnd.google-apps.folder',children:[{id:'legacy-info-file',name:'info.txt',mimeType:'text/plain'}]}],time:Date.now()}));
 w.localStorage.setItem('anku_calendar_class_v1','3');
-for(const file of ['portal-security.js','theme-init.js','portal-config.js','analytics-init.js','app.js','portal-admin.js'])vm.runInContext(fs.readFileSync(root+'/'+file,'utf8'),ctx);
+for(const file of ['portal-language.js','portal-security.js','theme-init.js','portal-config.js','analytics-init.js','app.js','portal-admin.js'])vm.runInContext(fs.readFileSync(root+'/'+file,'utf8'),ctx);
 const tick=()=>new Promise(r=>setTimeout(r,30));const el=id=>w.document.getElementById(id);const submit=form=>(assert(form.checkValidity(),'Form validity: '+form.id),form.dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true})));
 const set=(form,name,value)=>form.elements.namedItem(name).value=value;
 const clickTab=name=>w.document.querySelector(`[data-tab="${name}"]`).click();
@@ -79,6 +79,20 @@ const clickTab=name=>w.document.querySelector(`[data-tab="${name}"]`).click();
  driveRow=el('portalAdminDialog').querySelector('[data-drive="note-1"]');driveRow.querySelector('[data-toggle]').click();el('portalPublish').click();await tick();assert.equal(vm.runInContext("getCourseNodeByCode('CHM109').children.length",ctx),0);
  driveRow=el('portalAdminDialog').querySelector('[data-drive="note-1"]');driveRow.querySelector('[data-toggle]').click();el('portalPublish').click();await tick();assert.equal(vm.runInContext("getCourseNodeByCode('CHM109').children.length",ctx),1);
  clickTab('account');form=el('portalPasswordForm');set(form,'current_password','fake-current-password');set(form,'password','fake-new-password');set(form,'confirmation','fake-new-password');submit(form);await tick();assert.equal(passwordWrites[0].current_password,'fake-current-password');assert.equal(form.elements.current_password.value,'');assert.equal(form.elements.password.value,'');
+ w.setPortalLanguage('en');
+ assert.match(el('portalAdminDialog').textContent,/Admin Panel/);
+ assert.equal(el('portalPublish').textContent,'Publish changes');
+ for(const section of ['courses','resources','staff','events','sidebar','general','drive','account']){
+  clickTab(section);
+  assert.doesNotMatch(el('portalAdminDialog').textContent,/\$\{L\(/,'No untranslated template expressions');
+  if(['courses','resources','staff','events','sidebar'].includes(section)){
+   el('portalAdminDialog').querySelector('[data-add]').click();
+   assert.match(el('portalRecordDialog').textContent,/Save to draft/);
+   assert.doesNotMatch(el('portalRecordDialog').textContent,/Taslağa kaydet|Ders kodu|Ders adı|Bağlantı adı/);
+   el('portalRecordDialog').close();
+  }
+ }
+ w.setPortalLanguage('tr');
  delayFeedback=true;clickTab('feedback');await tick();assert(pendingFeedback,'Feedback request pending before logout');
  const ids=[...w.document.querySelectorAll('[id]')].map(x=>x.id);assert.equal(ids.length,new Set(ids).size,'unique DOM IDs');
  el('portalAdminDialog').close();el('portalSettingsButton').click();el('portalLogout').click();await tick();pendingFeedback();await tick();assert.equal(w.portalCanEdit(),false);assert.equal(w.sessionStorage.getItem('anku_admin_session'),null);assert.equal(el('portalAdminDialog').querySelector('.portal-modal-body').textContent,'');

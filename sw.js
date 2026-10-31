@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anku-eee-shell-v29';
+const CACHE_NAME = 'anku-eee-shell-v32';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -7,15 +7,16 @@ const PRECACHE_URLS = [
   './privacy.html',
   './site.webmanifest',
   './portal-admin.css?v=20261030-class-sidebar1',
-  './portal-admin.js?v=20261030-class-sidebar1',
+  './portal-admin.js?v=20261031-i18n3',
   './portal-config.js',
   './portal-security.js?v=20261030-class-sidebar1',
-  './app.js?v=20261031-beta-badge-fix',
+  './app.js?v=20261031-i18n3',
   './theme-init.js',
+  './portal-language.js?v=20261031-i18n3',
   './analytics-init.js',
-  './privacy-controls.js',
-  './not-found-controls.js',
-  './calculus-study-data.js',
+  './privacy-controls.js?v=20261031-i18n3',
+  './not-found-controls.js?v=20261031-i18n3',
+  './calculus-study-data.js?v=20261031-i18n3',
   './assets/vendor/tailwind.css',
   './assets/vendor/lucide.min.js',
   './assets/vendor/katex/katex.min.css',

@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <script src="/anku-eee-materials/theme-init.js"></script>
+  <script src="/anku-eee-materials/portal-language.js?v=20261031-i18n3"></script>
   <meta name="robots" content="noindex, follow">
 
   <!-- 3 & 4. Meta Title & Meta Description -->
@@ -133,16 +134,39 @@
         <span class="text-base font-semibold tracking-tight text-foreground">ANKU EEE</span>
       </a>
 
-      <button
-        id="themeToggleBtn"
-        type="button"
-        title="Tema"
-        aria-label="Tema Değiştir"
-        class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
-      >
-        <i data-lucide="moon-star" class="size-4 block dark:hidden"></i>
-        <i data-lucide="sun" class="size-4 hidden dark:block"></i>
-      </button>
+      <div class="flex items-center gap-2">
+        <div
+          id="langSwitcher"
+          role="group"
+          aria-label="Dil Seçimi / Language"
+          class="inline-flex h-8 items-center rounded-md border border-border bg-muted/50 p-0.5 text-[11px] font-bold tracking-wide select-none"
+        >
+          <button
+            type="button"
+            id="langBtnTr"
+            aria-pressed="true"
+            title="Türkçe"
+            class="h-7 px-2 rounded-[5px] transition bg-background text-foreground shadow-2xs"
+          >TR</button>
+          <button
+            type="button"
+            id="langBtnEn"
+            aria-pressed="false"
+            title="English"
+            class="h-7 px-2 rounded-[5px] transition text-muted-foreground hover:text-foreground"
+          >EN</button>
+        </div>
+        <button
+          id="themeToggleBtn"
+          type="button"
+          title="Tema"
+          aria-label="Tema Değiştir"
+          class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+        >
+          <i data-lucide="moon-star" class="size-4 block dark:hidden"></i>
+          <i data-lucide="sun" class="size-4 hidden dark:block"></i>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -152,8 +176,8 @@
         404
       </div>
       <div class="space-y-1.5">
-        <h1 class="text-xl font-semibold tracking-tight text-foreground">Sayfa Bulunamadı</h1>
-        <p class="text-xs text-muted-foreground">Aradığınız bağlantı mevcut değil veya taşınmış.</p>
+        <h1 id="notFoundHeading" class="text-xl font-semibold tracking-tight text-foreground">Sayfa Bulunamadı</h1>
+        <p id="notFoundSubtitle" class="text-xs text-muted-foreground">Aradığınız bağlantı mevcut değil veya taşınmış.</p>
       </div>
       <div class="flex items-center justify-center gap-2.5 pt-1">
         <a
@@ -162,7 +186,7 @@
           class="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-4 text-xs font-medium text-primary-foreground hover:opacity-90 transition"
         >
           <i data-lucide="arrow-left" class="size-3.5"></i>
-          <span>Ana Sayfa</span>
+          <span id="ctaHomeBtnText">Ana Sayfa</span>
         </a>
         <a
           href="https://drive.google.com/drive/folders/1n9cyf8eSj3OremDKF5BdQIBayaryPofN?usp=sharing"
@@ -184,10 +208,10 @@
         <span>•</span>
         <a id="footerPrivacyLink" href="/anku-eee-materials/privacy.html" class="hover:text-foreground transition">Gizlilik Politikası</a>
       </div>
-      <span class="font-medium text-foreground">Built by Caner Davarcı</span>
+      <span id="footerBuiltBy" class="font-medium text-foreground">Caner Davarcı tarafından geliştirildi</span>
     </div>
   </footer>
 
-  <script src="/anku-eee-materials/not-found-controls.js"></script>
+  <script src="/anku-eee-materials/not-found-controls.js?v=20261031-i18n3"></script>
 </body>
 </html>

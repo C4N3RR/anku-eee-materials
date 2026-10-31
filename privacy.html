@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <script src="theme-init.js"></script>
+  <script src="portal-language.js?v=20261031-i18n3"></script>
 
   <!-- 3 & 4. Meta Title & Meta Description -->
   <title>Gizlilik Politikası — ANKU EEE Ders Portalı</title>
@@ -130,12 +131,34 @@
 
       <div class="flex items-center gap-2">
         <a
+          id="homeLink"
           href="./"
           class="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-background px-3 text-xs font-medium text-foreground hover:bg-muted transition"
         >
           <i data-lucide="arrow-left" class="size-3.5"></i>
-          <span>Ana Sayfa</span>
+          <span id="homeLinkText">Ana Sayfa</span>
         </a>
+        <div
+          id="langSwitcher"
+          role="group"
+          aria-label="Dil Seçimi / Language"
+          class="inline-flex h-8 items-center rounded-md border border-border bg-muted/50 p-0.5 text-[11px] font-bold tracking-wide select-none"
+        >
+          <button
+            type="button"
+            id="langBtnTr"
+            aria-pressed="true"
+            title="Türkçe"
+            class="h-7 px-2 rounded-[5px] transition bg-background text-foreground shadow-2xs"
+          >TR</button>
+          <button
+            type="button"
+            id="langBtnEn"
+            aria-pressed="false"
+            title="English"
+            class="h-7 px-2 rounded-[5px] transition text-muted-foreground hover:text-foreground"
+          >EN</button>
+        </div>
         <button
           id="themeToggleBtn"
           type="button"
@@ -153,27 +176,27 @@
   <main class="mx-auto w-full max-w-3xl flex-1 px-4 py-10 sm:px-6">
     <div class="admincn-card p-6 sm:p-8 space-y-6">
       <div class="border-b border-border pb-4">
-        <h1 class="text-xl font-semibold tracking-tight text-foreground">Gizlilik Politikası</h1>
-        <p class="text-xs text-muted-foreground mt-1">Son güncelleme: 29 Ekim 2026</p>
+        <h1 id="privacyTitle" class="text-xl font-semibold tracking-tight text-foreground">Gizlilik Politikası</h1>
+        <p id="privacyUpdated" class="text-xs text-muted-foreground mt-1">Son güncelleme: 29 Ekim 2026</p>
       </div>
 
       <section class="space-y-2 text-sm">
-        <h2 class="font-semibold text-foreground">1. Paylaştığın bilgiler</h2>
-        <p class="text-muted-foreground leading-relaxed text-xs sm:text-sm">
+        <h2 id="sec1Title" class="font-semibold text-foreground">1. Paylaştığın bilgiler</h2>
+        <p id="sec1Text" class="text-muted-foreground leading-relaxed text-xs sm:text-sm">
           Siteyi kullanmak için hesap açman gerekmez. İstek ve Görüşler bölümünden gönderdiğin mesaj, seçtiğin ders ve varsa paylaştığın bağlantı sunucularımızda saklanır. Bu bilgileri yalnızca site yöneticisi görebilir. Adını ve e-posta adresini yazmak zorunda değilsin. Paylaşırsan bu bilgiler de mesajınla birlikte saklanır.
         </p>
       </section>
 
       <section class="space-y-2 text-sm">
-        <h2 class="font-semibold text-foreground">2. Cihazında saklanan bilgiler</h2>
-        <p class="text-muted-foreground leading-relaxed text-xs sm:text-sm">
+        <h2 id="sec2Title" class="font-semibold text-foreground">2. Cihazında saklanan bilgiler</h2>
+        <p id="sec2Text" class="text-muted-foreground leading-relaxed text-xs sm:text-sm">
           Tema tercihin ve bazı dosyalar, siteyi daha hızlı ve rahat kullanabilmen için cihazında saklanır. Aynı bağlantıdan çok fazla mesaj gönderilmesini önlemek için kısa süreli güvenlik kayıtları tutulur. Yönetici girişi yapıldığında, girişin açık kalması için gerekli bilgiler de tarayıcıda tutulur.
         </p>
       </section>
 
       <section class="space-y-2 text-sm">
-        <h2 class="font-semibold text-foreground">3. Dosyalar ve site kullanımı</h2>
-        <p class="text-muted-foreground leading-relaxed text-xs sm:text-sm">
+        <h2 id="sec3Title" class="font-semibold text-foreground">3. Dosyalar ve site kullanımı</h2>
+        <p id="sec3Text" class="text-muted-foreground leading-relaxed text-xs sm:text-sm">
           Ders dosyalarını görüntülemek ve indirmek için Google Drive kullanılır. Siteyi geliştirmek amacıyla ziyaret sayısı ve görüntülenen sayfalar gibi kullanım istatistikleri Google Analytics ile toplanır.
         </p>
       </section>
@@ -185,12 +208,12 @@
       <div class="flex items-center gap-3">
         <span>© 2026 ANKU EEE</span>
         <span>•</span>
-        <a href="privacy.html" class="text-foreground font-medium">Gizlilik Politikası</a>
+        <a id="footerPrivacyLink" href="privacy.html" class="text-foreground font-medium">Gizlilik Politikası</a>
       </div>
-      <span class="font-medium text-foreground">Built by Caner Davarcı</span>
+      <span id="footerBuiltBy" class="font-medium text-foreground">Caner Davarcı tarafından geliştirildi</span>
     </div>
   </footer>
 
-  <script src="privacy-controls.js"></script>
+  <script src="privacy-controls.js?v=20261031-i18n3"></script>
 </body>
 </html>
