@@ -753,7 +753,7 @@
 
     /* KaTeX & Calculus Study Mode polish */
     .math-content .katex {
-      font-size: 1.18em;
+      font-size: 1.22em;
       margin: 0 0.28em;
     }
     .math-content .katex-display {
@@ -764,13 +764,31 @@
     }
     .math-content .katex-display .katex {
       margin: 0 !important;
-      font-size: 1.25em;
+      font-size: 1.28em;
     }
     .dark .math-content .katex {
       color: #f4f4f5;
     }
     .math-content .katex-html {
       color: inherit;
+    }
+
+    /* Question sentence math expressions: large, clear, display-quality matching solutions */
+    .study-question-stem {
+      font-size: 1.05rem;
+      line-height: 1.85;
+    }
+    @media (min-width: 640px) {
+      .study-question-stem {
+        font-size: 1.15rem;
+      }
+    }
+    .study-question-stem .katex {
+      font-size: 1.35em !important;
+      vertical-align: -0.22em;
+    }
+    .study-question-stem .katex .mfrac {
+      vertical-align: -0.1em;
     }
     .calculus-study-view {
       animation: studyFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);

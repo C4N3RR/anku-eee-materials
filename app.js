@@ -1463,6 +1463,18 @@ const CONFIG = {
       });
     }
 
+    function ensureStudyDisplayStyle(text) {
+      if (!text) return '';
+      return String(text).replace(/\$([^\$]+)\$/g, (match, inner) => {
+        const trimmed = inner.trim();
+        if (trimmed.startsWith('\\displaystyle')) return match;
+        if (trimmed.includes('\\frac') || trimmed.includes('\\lim') || trimmed.includes('\\cases') || trimmed.includes('\\int') || trimmed.includes('\\sum')) {
+          return `$\\displaystyle ${trimmed}$`;
+        }
+        return match;
+      });
+    }
+
     function triggerMathRendering(container) {
       if (typeof window !== 'undefined' && typeof window.renderMathInElement === 'function') {
         const target = container || $('courseMaterialsContainer') || document.body;
@@ -3906,8 +3918,8 @@ const CONFIG = {
               </div>
 
               <!-- Question statement in clean single sentence -->
-              <div class="text-sm sm:text-base font-normal text-foreground leading-relaxed math-content">
-                ${esc(ex.question)}
+              <div class="study-question-stem text-base sm:text-lg font-medium text-foreground leading-relaxed math-content">
+                ${esc(ensureStudyDisplayStyle(ex.question))}
               </div>
 
               <!-- Hint box -->
@@ -4032,8 +4044,8 @@ const CONFIG = {
             ` : ''}
           </div>
 
-          <div class="text-sm sm:text-base font-medium text-foreground math-content leading-relaxed">
-            ${esc(quiz.question)}
+          <div class="study-question-stem text-base sm:text-lg font-medium text-foreground math-content leading-relaxed">
+            ${esc(ensureStudyDisplayStyle(quiz.question))}
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">

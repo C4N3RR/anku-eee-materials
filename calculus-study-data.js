@@ -145,7 +145,7 @@
               {
                 id: 'ex-limit-1',
                 title: 'Örnek 1: Tanımsız Noktada Limit',
-                question: '$\\lim_{x \\to 2} \\frac{x^2 + 4x - 12}{x^2 - 2x}$ limitini hesaplayınız.',
+                question: '$\\displaystyle \\lim_{x \\to 2} \\frac{x^2 + 4x - 12}{x^2 - 2x}$ limitini hesaplayınız.',
                 hint: '$x = 2$ yazıldığında $0/0$ belirsizliği çıkar. Pay ve paydayı çarpanlarına ayırın.',
                 steps: [
                   {
@@ -166,7 +166,7 @@
               {
                 id: 'ex-limit-2',
                 title: 'Örnek 2: Parçalı Fonksiyon Limiti',
-                question: '$f(x) = \\begin{cases} x^2 + 1, & x < 1 \\\\ 3 - x, & x > 1 \\end{cases}$ fonksiyonu için $\\lim_{x \\to 1} f(x)$ değerini inceleyiniz.',
+                question: '$f(x) = \\displaystyle \\begin{cases} x^2 + 1, & x < 1 \\\\ 3 - x, & x > 1 \\end{cases}$ fonksiyonu için $\\displaystyle \\lim_{x \\to 1} f(x)$ değerini inceleyiniz.',
                 hint: '$x = 1$ noktasında kural değiştiğinden sağdan ($x > 1$) ve soldan ($x < 1$) limitleri ayrı ayrı hesaplayın.',
                 steps: [
                   {
@@ -239,7 +239,7 @@
               {
                 id: 'ex-prop-1',
                 title: 'Örnek 1: Polinom Fonksiyonun Limiti',
-                question: '$\\lim_{x \\to -2} (3x^3 - 5x^2 + 2x - 4)$ limitini hesaplayınız.',
+                question: '$\\displaystyle \\lim_{x \\to -2} (3x^3 - 5x^2 + 2x - 4)$ limitini hesaplayınız.',
                 hint: 'İfade bir polinomdur; doğrudan $x = -2$ yazabilirsiniz.',
                 steps: [
                   {
@@ -256,7 +256,7 @@
               {
                 id: 'ex-prop-2',
                 title: 'Örnek 2: Tanımlı Rasyonel Fonksiyon',
-                question: '$\\lim_{x \\to 3} \\frac{2x^2 + 1}{x^2 + 4}$ limitini hesaplayınız.',
+                question: '$\\displaystyle \\lim_{x \\to 3} \\frac{2x^2 + 1}{x^2 + 4}$ limitini hesaplayınız.',
                 hint: 'Paydayı kontrol edin: $3^2 + 4 = 13 \\neq 0$. Doğrudan yerine koyma uygulanabilir.',
                 steps: [
                   {
@@ -272,7 +272,7 @@
               }
             ],
             quiz: {
-              question: '$\\lim_{x \\to 1} \\frac{x^2 - 1}{x + 1}$ limitinin sonucu nedir?',
+              question: '$\\displaystyle \\lim_{x \\to 1} \\frac{x^2 - 1}{x + 1}$ limitinin sonucu nedir?',
               options: ['0', '1', '2', 'Tanımsız'],
               correctIndex: 0,
               explanation: 'Doğrudan yerine koyunca pay $1 - 1 = 0$, payda $1 + 1 = 2$ olur. $0/2 = 0$ bulunur.'
@@ -307,7 +307,7 @@
               {
                 id: 'ex-comp-1',
                 title: 'Örnek 1: İkinci Dereceden Çarpanlara Ayırma',
-                question: '$\\lim_{t \\to -3} \\frac{t^2 - 9}{2t^2 + 7t + 3}$ limitini hesaplayınız.',
+                question: '$\\displaystyle \\lim_{t \\to -3} \\frac{t^2 - 9}{2t^2 + 7t + 3}$ limitini hesaplayınız.',
                 hint: '$t = -3$ koyunca $0/0$ olur. Payı $(t-3)(t+3)$, paydayı $(2t+1)(t+3)$ olarak ayırın.',
                 steps: [
                   {
@@ -328,7 +328,7 @@
               {
                 id: 'ex-comp-2',
                 title: 'Örnek 2: Köklü İfade ve Eşlenik ile Çarpma',
-                question: '$\\lim_{x \\to 7} \\frac{\\sqrt{x + 2} - 3}{x - 7}$ limitini hesaplayınız.',
+                question: '$\\displaystyle \\lim_{x \\to 7} \\frac{\\sqrt{x + 2} - 3}{x - 7}$ limitini hesaplayınız.',
                 hint: 'Payın eşleniği olan $(\\sqrt{x + 2} + 3)$ ile payı ve paydayı çarpın.',
                 steps: [
                   {
@@ -348,7 +348,7 @@
               }
             ],
             quiz: {
-              question: '$\\lim_{x \\to 4} \\frac{x - 4}{\\sqrt{x} - 2}$ limitinin değeri kaçtır?',
+              question: '$\\displaystyle \\lim_{x \\to 4} \\frac{x - 4}{\\sqrt{x} - 2}$ limitinin değeri kaçtır?',
               options: ['4', '2', '0', 'Belirsiz'],
               correctIndex: 0,
               explanation: '$x - 4 = (\\sqrt{x} - 2)(\\sqrt{x} + 2)$ olarak açılır. Sadeleşince geriye $\\sqrt{x} + 2$ kalır. $x = 4$ için $\\sqrt{4} + 2 = 4$ olur.'
@@ -391,7 +391,7 @@
               {
                 id: 'ex-inf-1',
                 title: 'Örnek 1: Dikey Asimptot ve Tek Taraflı Sonsuz Limit',
-                question: '$f(x) = \\frac{2}{x - 3}$ için $\\lim_{x \\to 3^+} f(x)$ ve $\\lim_{x \\to 3^-} f(x)$ limitlerini hesaplayınız.',
+                question: '$f(x) = \\displaystyle \\frac{2}{x - 3}$ için $\\displaystyle \\lim_{x \\to 3^+} f(x)$ ve $\\displaystyle \\lim_{x \\to 3^-} f(x)$ limitlerini hesaplayınız.',
                 hint: '$x \\to 3^+$ için $x > 3$ (payda pozitif), $x \\to 3^-$ için $x < 3$ (payda negatif) olur.',
                 steps: [
                   {
@@ -411,7 +411,7 @@
               }
             ],
             quiz: {
-              question: '$\\lim_{x \\to 5^+} \\frac{x - 7}{x - 5}$ limitinin değeri nedir?',
+              question: '$\\displaystyle \\lim_{x \\to 5^+} \\frac{x - 7}{x - 5}$ limitinin değeri nedir?',
               options: ['$-\\infty$', '$+\\infty$', '0', 'Yoktur (DNE)'],
               correctIndex: 0,
               explanation: 'Pay $5 - 7 = -2$ (negatif), payda ise $x > 5$ olduğundan $0^+$ (pozitif). Negatif / pozitif sıfır $= -\\infty$ olur.'
@@ -447,7 +447,7 @@
               {
                 id: 'ex-cont-1',
                 title: 'Örnek 1: Parçalı Fonksiyonda Süreklilik',
-                question: '$f(x) = \\begin{cases} x^2 - 1, & x < 3 \\\\ 2x + 2, & x \\ge 3 \\end{cases}$ fonksiyonu $x = 3$ noktasında sürekli midir?',
+                question: '$f(x) = \\displaystyle \\begin{cases} x^2 - 1, & x < 3 \\\\ 2x + 2, & x \\ge 3 \\end{cases}$ fonksiyonu $x = 3$ noktasında sürekli midir?',
                 hint: 'Üç şartı test edin: 1) $f(3)$ tanımlı mı? 2) $\\lim_{x \\to 3} f(x)$ var mı? 3) Eşitler mi?',
                 steps: [
                   {
@@ -467,7 +467,7 @@
               }
             ],
             quiz: {
-              question: '$f(x) = \\frac{x^2 - 9}{x - 3}$ fonksiyonunun $x = 3$ noktasındaki süreksizlik türü nedir?',
+              question: '$f(x) = \\displaystyle \\frac{x^2 - 9}{x - 3}$ fonksiyonunun $x = 3$ noktasındaki süreksizlik türü nedir?',
               options: [
                 'Kaldırılabilir (Removable) Süreksizlik',
                 'Sıçrama (Jump) Süreksizliği',
@@ -507,7 +507,7 @@
               {
                 id: 'ex-inf-lim-1',
                 title: 'Örnek 1: Eşit Dereceli Polinomların Oranı',
-                question: '$\\lim_{x \\to \\infty} \\frac{3x^2 - 5x + 4}{2x^2 + 7}$ limitini hesaplayınız.',
+                question: '$\\displaystyle \\lim_{x \\to \\infty} \\frac{3x^2 - 5x + 4}{2x^2 + 7}$ limitini hesaplayınız.',
                 hint: 'Pay ve paydayı en büyük derece olan $x^2$\'ye bölün.',
                 steps: [
                   {
@@ -523,7 +523,7 @@
               }
             ],
             quiz: {
-              question: '$\\lim_{x \\to \\infty} \\frac{5x^3 - 2}{x^4 + 10x}$ limitinin değeri kaçtır?',
+              question: '$\\displaystyle \\lim_{x \\to \\infty} \\frac{5x^3 - 2}{x^4 + 10x}$ limitinin değeri kaçtır?',
               options: ['0', '5', '$\\infty$', 'Tanımsız'],
               correctIndex: 0,
               explanation: 'Paydanın derecesi (4), payın derecesinden (3) büyük olduğu için limit 0\'dır ($y = 0$ yatay asimptottur).'
