@@ -38,7 +38,7 @@ test('Drive tree fields are bounded and cached JSON corruption is tolerated',()=
 });
 
 test('Every page uses strict script CSP without executable inline handlers or CDN application scripts',()=>{
- for(const file of ['index.html','privacy.html','404.html']){
+ for(const file of ['index.html','test.html','privacy.html','404.html','test/index.html']){
   const html=fs.readFileSync(path.resolve(__dirname,'../'+file),'utf8');
   assert(!/\bon\w+=["']/.test(html),file+' has executable inline attributes');
   const dom=new JSDOM(html),doc=dom.window.document;

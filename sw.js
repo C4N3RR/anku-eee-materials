@@ -2,6 +2,7 @@ const CACHE_NAME = 'anku-eee-shell-v27';
 const PRECACHE_URLS = [
   './',
   './index.html',
+  './test.html',
   './404.html',
   './privacy.html',
   './site.webmanifest',

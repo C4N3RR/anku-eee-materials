@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="tr" class="flex min-h-full w-full" data-scroll-behavior="smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self' https://heuxjlefnwxdqfskriso.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://drive.google.com https://docs.google.com https://www.youtube-nocookie.com https://www.youtube.com blob:; media-src 'self' https://drive.google.com blob:; worker-src 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <link rel="stylesheet" href="portal-admin.css?v=20261030-class-sidebar1">
+  <script src="portal-security.js?v=20261030-class-sidebar1"></script>
+  <script src="portal-config.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script src="theme-init.js"></script>
+
+  <!-- 3 & 4. Meta Title & Meta Description -->
+  <title>ANKU EEE — [TEST SÜRÜMÜ] Calculus Adım Adım Öğrenme</title>
+  <meta id="metaDescription" name="description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
+  <link rel="canonical" href="https://c4n3rr.github.io/anku-eee-materials/">
+
+  <!-- 5. Open Graph & Twitter Card -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ANKU EEE Ders Portalı">
+  <meta property="og:locale" content="tr_TR">
+  <meta id="ogTitle" property="og:title" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+  <meta id="ogDescription" property="og:description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
+  <meta property="og:url" content="https://c4n3rr.github.io/anku-eee-materials/">
+  <meta property="og:image" content="https://c4n3rr.github.io/anku-eee-materials/assets/og-portal-v2.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta id="twitterTitle" name="twitter:title" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+  <meta id="twitterDescription" name="twitter:description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
+  <meta name="twitter:image" content="https://c4n3rr.github.io/anku-eee-materials/assets/og-portal-v2.jpg">
+  <meta name="twitter:image:alt" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
+
+  <!-- 6. Favicon Set -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="ANKU EEE">
+
+  <!-- 12. Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-570V5G977T"></script>
+  <script src="analytics-init.js"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <link rel="stylesheet" href="assets/vendor/tailwind.css">
+
+  <!-- Lucide Icons CDN -->
+  <script src="assets/vendor/lucide.min.js"></script>
+
+  <!-- KaTeX for Mathematics (Paul's Math Notes) -->
+  <link rel="stylesheet" href="assets/vendor/katex/katex.min.css">
+  <script src="assets/vendor/katex/katex.min.js"></script>
+  <script src="assets/vendor/katex/auto-render.min.js"></script>
+  <script src="calculus-study-data.js"></script>
+
+  <style>
+    :root {
+      color-scheme: light dark;
+      --background: oklch(1 0 0);
+      --foreground: oklch(0.145 0 0);
+      --card: oklch(1 0 0);
+      --card-foreground: oklch(0.145 0 0);
+      --popover: oklch(1 0 0);
+      --popover-foreground: oklch(0.145 0 0);
+      --primary: oklch(0.205 0 0);
+      --primary-foreground: oklch(0.985 0 0);
+      --secondary: oklch(0.97 0 0);
+      --secondary-foreground: oklch(0.205 0 0);
+      --muted: oklch(0.97 0 0);
+      --muted-foreground: oklch(0.556 0 0);
+      --accent: oklch(0.97 0 0);
+      --accent-foreground: oklch(0.205 0 0);
+      --destructive: oklch(0.577 0.245 27.325);
+      --border: oklch(0.922 0 0);
+      --input: oklch(0.922 0 0);
+      --ring: oklch(0.708 0 0);
+      --radius: 0.625rem;
+      --sidebar: oklch(0.985 0 0);
+      --sidebar-foreground: oklch(0.145 0 0);
+      --sidebar-primary: oklch(0.205 0 0);
+      --sidebar-primary-foreground: oklch(0.985 0 0);
+      --sidebar-accent: oklch(0.97 0 0);
+      --sidebar-accent-foreground: oklch(0.205 0 0);
+      --sidebar-border: oklch(0.922 0 0);
+      --sidebar-ring: oklch(0.708 0 0);
+      --sidebar-width: 15.5rem;
+      --sidebar-width-icon: 3.25rem;
+    }
+
+    :root:has(> head > meta[name="color-scheme"][content="dark"]) {
+      color-scheme: dark;
+    }
+    :root:has(> head > meta[name="color-scheme"][content="light"]) {
+      color-scheme: light;
+    }
+
+    .dark {
+      --background: oklch(0.145 0 0);
+      --foreground: oklch(0.985 0 0);
+      --card: oklch(0.205 0 0);
+      --card-foreground: oklch(0.985 0 0);
+      --popover: oklch(0.205 0 0);
+      --popover-foreground: oklch(0.985 0 0);
+      --primary: oklch(0.922 0 0);
+      --primary-foreground: oklch(0.205 0 0);
+      --secondary: oklch(0.269 0 0);
+      --secondary-foreground: oklch(0.985 0 0);
+      --muted: oklch(0.269 0 0);
+      --muted-foreground: oklch(0.708 0 0);
+      --accent: oklch(0.269 0 0);
+      --accent-foreground: oklch(0.985 0 0);
+      --destructive: oklch(0.704 0.191 22.216);
+      --border: oklch(1 0 0 / 10%);
+      --input: oklch(1 0 0 / 15%);
+      --ring: oklch(0.556 0 0);
+      --sidebar: oklch(0.205 0 0);
+      --sidebar-foreground: oklch(0.985 0 0);
+      --sidebar-primary: oklch(0.488 0.243 264.376);
+      --sidebar-primary-foreground: oklch(0.985 0 0);
+      --sidebar-accent: oklch(0.269 0 0);
+      --sidebar-accent-foreground: oklch(0.985 0 0);
+      --sidebar-border: oklch(1 0 0 / 10%);
+      --sidebar-ring: oklch(0.556 0 0);
+    }
+
+    * {
+      border-color: var(--border);
+    }
+
+    html,
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      text-rendering: optimizeLegibility;
+    }
+
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      html,
+      body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--foreground);
+    }
+
+    code, kbd, samp, pre, .font-mono {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-optical-sizing: auto;
+      font-variant-ligatures: none;
+    }
+
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+      cursor: pointer;
+    }
+
+    .admincn-card {
+      background-color: var(--card);
+      color: var(--card-foreground);
+      border-radius: calc(var(--radius) * 1.4);
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      border: 1px solid var(--border);
+    }
+
+    .bg-primary-soft {
+      background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+    }
+    .border-sidebar-border\/60 {
+      border-color: color-mix(in oklab, var(--sidebar-border) 60%, transparent);
+    }
+    .text-sidebar-foreground\/50 {
+      color: color-mix(in oklab, var(--sidebar-foreground) 50%, transparent);
+    }
+    .bg-sidebar-accent\/70 {
+      background-color: color-mix(in oklab, var(--sidebar-accent) 70%, transparent);
+    }
+    .bg-card\/40 {
+      background-color: color-mix(in oklab, var(--card) 40%, transparent);
+    }
+    .bg-background\/90 {
+      background-color: color-mix(in oklab, var(--background) 90%, transparent);
+    }
+    .bg-background\/95 {
+      background-color: color-mix(in oklab, var(--background) 95%, transparent);
+    }
+    .bg-muted\/60 {
+      background-color: color-mix(in oklab, var(--muted) 60%, transparent);
+    }
+    .bg-muted\/50 {
+      background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+    }
+    .bg-muted\/20 {
+      background-color: color-mix(in oklab, var(--muted) 20%, transparent);
+    }
+    .hover\:bg-muted\/50:hover {
+      background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+    }
+    .hover\:bg-muted\/40:hover {
+      background-color: color-mix(in oklab, var(--muted) 40%, transparent);
+    }
+    .hover\:bg-muted\/30:hover {
+      background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+    }
+    .hover\:bg-destructive\/15:hover {
+      background-color: color-mix(in oklab, var(--destructive) 15%, transparent);
+    }
+    .hover\:border-foreground\/30:hover {
+      border-color: color-mix(in oklab, var(--foreground) 30%, transparent);
+    }
+    .focus\:ring-ring\/40:focus {
+      --tw-ring-color: color-mix(in oklab, var(--ring) 40%, transparent);
+    }
+
+    #sidebarWrapper[data-state="collapsed"] #sidebarDesktopGap,
+    #sidebarWrapper[data-state="collapsed"] #sidebar {
+      width: var(--sidebar-width-icon);
+    }
+    #sidebarWrapper[data-state="collapsed"] .sidebar-hide-collapsed {
+      display: none !important;
+    }
+    #sidebarWrapper[data-state="collapsed"] .sidebar-brand-btn {
+      justify-content: center;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    #sidebarWrapper[data-state="collapsed"] .sidebar-nav-btn {
+      justify-content: center;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--muted-foreground) 35%, transparent); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: color-mix(in oklab, var(--muted-foreground) 60%, transparent); }
+
+    dialog:not([open]) { display: none !important; }
+    dialog[open] { display: flex !important; flex-direction: column; }
+    dialog:modal {
+      overscroll-behavior: contain;
+    }
+    dialog::backdrop {
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(3px);
+      overflow: hidden;
+      overscroll-behavior: contain;
+    }
+
+    /* 10. Semantic Indeterminate <progress> Spinner (modern-web-guidance: spinner) */
+    progress.loading-spinner:indeterminate::-webkit-progress-bar {
+      display: none;
+      background: none;
+    }
+    progress.loading-spinner:indeterminate::-webkit-progress-value {
+      display: none;
+      background: none;
+    }
+    progress.loading-spinner:indeterminate::-moz-progress-bar {
+      display: none;
+      background: none;
+    }
+    progress.loading-spinner:indeterminate::slider-fill {
+      display: none;
+      background: none;
+    }
+
+    @property --arc-start {
+      syntax: "<angle>";
+      inherits: false;
+      initial-value: 0deg;
+    }
+    @property --arc-end {
+      syntax: "<angle>";
+      inherits: false;
+      initial-value: 0deg;
+    }
+    @property --progress-dash-animation {
+      syntax: "*";
+      inherits: false;
+      initial-value: , progress-dash 3s ease-in-out infinite;
+    }
+
+    progress.loading-spinner:indeterminate {
+      --_from: calc(90deg + var(--arc-start, 0deg));
+      --_to: calc(90deg + var(--arc-end, 158deg));
+      --size: 32px;
+      --thickness: 3px;
+      --spinner-color: var(--primary);
+      --track-color: var(--muted);
+      --spinner-duration: 1.5s;
+      --_used-spinner-duration: var(--spinner-duration);
+
+      position: relative;
+      display: inline-block;
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      appearance: none;
+      background: conic-gradient(
+          from var(--_from),
+          var(--spinner-color) calc(var(--_to) - var(--_from)),
+          transparent 0
+        )
+        var(--track-color);
+      animation:
+        progress-spin var(--_used-spinner-duration) linear infinite
+        var(--progress-dash-animation, );
+    }
+
+    @supports (background-clip: border-area) {
+      progress.loading-spinner:indeterminate {
+        background-clip: border-area;
+        border: var(--thickness) solid transparent;
+        background-origin: border-box;
+      }
+    }
+
+    @supports not (background-clip: border-area) {
+      progress.loading-spinner:indeterminate {
+        --clip-boundary: calc(100% - var(--thickness));
+        mask-image: radial-gradient(
+          farthest-side,
+          transparent var(--clip-boundary),
+          black var(--clip-boundary)
+        );
+        border: 0;
+      }
+    }
+
+    @keyframes progress-spin {
+      to {
+        rotate: 1turn;
+      }
+    }
+
+    @keyframes progress-dash {
+      from {
+        --arc-start: 0deg;
+        --arc-end: 3deg;
+      }
+      50% {
+        --arc-start: 100deg;
+        --arc-end: 358deg;
+      }
+      to {
+        --arc-start: 360deg;
+        --arc-end: 363deg;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      progress.loading-spinner:indeterminate {
+        --_used-spinner-duration: 6s;
+      }
+    }
+
+    /* Course Hero Banner with Right Image, Tint & Left Vignette.
+       Background follows the site theme: white in light mode, near-black in dark mode. */
+    .course-hero-banner {
+      --banner-bg-rgb: 255, 255, 255;
+      position: relative;
+      overflow: hidden;
+      background-color: rgb(var(--banner-bg-rgb));
+      color: #09090b;
+      border-radius: calc(var(--radius) * 1.4);
+      border: 1px solid var(--course-border, rgba(9, 9, 11, 0.12));
+      box-shadow: 0 4px 24px -2px var(--course-glow, rgba(0, 0, 0, 0.12)), inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dark .course-hero-banner {
+      --banner-bg-rgb: 9, 9, 11;
+      color: #fafafa;
+    }
+
+    /* Mobile drawer: sidebar height comes from top/bottom insets (follows the dynamic
+       viewport on iOS/Android), and page scroll is locked while it is open. */
+    html.mobile-sidebar-open,
+    html.mobile-sidebar-open body {
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    #sidebar [data-slot="sidebar-content"] {
+      overscroll-behavior: contain;
+    }
+
+    /* Media box sizes itself from the photo's own aspect ratio (--banner-ratio)
+       and the banner's current height, so the full image stays visible at any
+       window size. It only crops (horizontally) when it would exceed max-width. */
+    .course-hero-banner-media {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: auto;
+      aspect-ratio: var(--banner-ratio, 16 / 9);
+      max-width: 58%;
+      pointer-events: none;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    @media (max-width: 639px) {
+      .course-hero-banner-media {
+        max-width: 75%;
+        opacity: 0.4;
+      }
+      .course-hero-banner-vignette {
+        background:
+          linear-gradient(
+            to right,
+            rgb(var(--banner-bg-rgb)) 0%,
+            rgba(var(--banner-bg-rgb), 0.85) 20%,
+            rgba(var(--banner-bg-rgb), 0.45) 55%,
+            rgba(var(--banner-bg-rgb), 0.15) 100%
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(var(--banner-bg-rgb), 0.2) 0%,
+            rgba(var(--banner-bg-rgb), 0) 20%,
+            rgba(var(--banner-bg-rgb), 0.35) 75%,
+            rgb(var(--banner-bg-rgb)) 100%
+          ),
+          radial-gradient(
+            circle at 75% 40%,
+            var(--course-tint, rgba(15, 23, 42, 0.18)) 0%,
+            rgba(var(--banner-bg-rgb), 0.15) 100%
+          ),
+          linear-gradient(rgba(var(--banner-bg-rgb), 0.3), rgba(var(--banner-bg-rgb), 0.3)) !important;
+      }
+    }
+
+    .course-hero-banner-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.88) contrast(1.04) saturate(0.95);
+    }
+
+    /* Tint + Left-edge Vignette where the photo ends on the left */
+    .course-hero-banner-vignette {
+      position: absolute;
+      inset: 0;
+      background:
+        /* Strong vignette fading into the solid banner background on the left edge where the photo ends */
+        linear-gradient(
+          to right,
+          rgb(var(--banner-bg-rgb)) 0%,
+          rgba(var(--banner-bg-rgb), 0.7) 7%,
+          rgba(var(--banner-bg-rgb), 0.3) 18%,
+          rgba(var(--banner-bg-rgb), 0) 32%,
+          rgba(var(--banner-bg-rgb), 0) 100%
+        ),
+        /* Very light vertical vignette on top and bottom edges */
+        linear-gradient(
+          to bottom,
+          rgba(var(--banner-bg-rgb), 0.22) 0%,
+          rgba(var(--banner-bg-rgb), 0) 14%,
+          rgba(var(--banner-bg-rgb), 0) 86%,
+          rgba(var(--banner-bg-rgb), 0.25) 100%
+        ),
+        /* Atmospheric course theme color tint over the photo */
+        radial-gradient(
+          circle at 70% 50%,
+          var(--course-tint, rgba(15, 23, 42, 0.18)) 0%,
+          rgba(var(--banner-bg-rgb), 0.12) 100%
+        ),
+        /* Uniform 30% tint (banner background colour: dark in dark mode, white in light mode) over the whole photo */
+        linear-gradient(rgba(var(--banner-bg-rgb), 0.3), rgba(var(--banner-bg-rgb), 0.3));
+      box-shadow: inset 14px 0 20px -10px rgb(var(--banner-bg-rgb));
+    }
+
+    /* Fullscreen Viewer Top Exit Button & ESC Toast */
+    #viewerStage.is-fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      width: 100vw;
+      height: 100vh;
+    }
+    #viewerFullscreenTopZone {
+      display: none;
+    }
+    #viewerStage:fullscreen #viewerFullscreenTopZone,
+    #viewerStage:-webkit-full-screen #viewerFullscreenTopZone,
+    #viewerStage.is-fullscreen #viewerFullscreenTopZone {
+      display: flex;
+    }
+
+    #viewerFullscreenExitBtn {
+      opacity: 0;
+      transform: translateY(-14px) scale(0.96);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    #viewerFullscreenTopZone:hover #viewerFullscreenExitBtn,
+    #viewerFullscreenTopZone.show-exit-btn #viewerFullscreenExitBtn,
+    #viewerFullscreenExitBtn:focus-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    #viewerFullscreenToast {
+      opacity: 0;
+      transform: translate(-50%, -10px);
+      pointer-events: none;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+    #viewerFullscreenToast.show-toast {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    #viewerModal button,
+    #viewerModal a,
+    #viewerBackBtn {
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #viewerModal button:focus,
+    #viewerModal a:focus,
+    #viewerModal button:focus-visible,
+    #viewerModal a:focus-visible {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+
+    /* ================= HOME HERO (theme-independent orange) ================= */
+    /* Colors are hard-coded on purpose: the hero looks identical in light & dark. */
+    .portal-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 0.875rem;
+      color: #ffffff;
+      color-scheme: dark;
+      background:
+        radial-gradient(120% 140% at 100% 0%, rgba(255, 214, 153, 0.35) 0%, rgba(255, 214, 153, 0) 55%),
+        radial-gradient(90% 120% at 0% 100%, rgba(124, 45, 18, 0.45) 0%, rgba(124, 45, 18, 0) 60%),
+        linear-gradient(135deg, #fb923c 0%, #f97316 45%, #ea580c 100%);
+      box-shadow: 0 12px 28px -14px rgba(234, 88, 12, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+    .portal-hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+      background-size: 16px 16px;
+      mask-image: linear-gradient(to left, #000 0%, transparent 70%);
+    }
+    .portal-hero > * { position: relative; z-index: 1; }
+    .portal-hero-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 2.75rem;
+      height: 2.75rem;
+      padding: 0.2rem;
+      border-radius: 9999px;
+      background: #ffffff;
+      box-shadow: 0 6px 16px -6px rgba(124, 45, 18, 0.55), 0 0 0 3px rgba(255, 255, 255, 0.25);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+      cursor: pointer;
+    }
+    .portal-hero-logo:hover {
+      transform: scale(1.06);
+      box-shadow: 0 10px 22px -6px rgba(124, 45, 18, 0.7), 0 0 0 4px rgba(255, 255, 255, 0.35);
+    }
+    .portal-hero-logo:active {
+      transform: scale(1.01);
+    }
+    @media (min-width: 640px) {
+      .portal-hero-logo { width: 3.25rem; height: 3.25rem; }
+    }
+    .portal-hero-sub { color: rgba(255, 255, 255, 0.9); }
+
+    /* ================= SIDEBAR TREE LINES ================= */
+    .sidebar-tree-line {
+      border-left: 2.5px solid rgba(113, 113, 122, 0.38);
+    }
+    .dark .sidebar-tree-line {
+      border-left: 2.5px solid rgba(113, 113, 122, 0.45);
+    }
+    .sidebar-course-label {
+      color: var(--sidebar-foreground);
+      opacity: 0.36;
+      transition: opacity 0.15s ease, color 0.15s ease;
+    }
+    .sidebar-course-btn:hover .sidebar-course-label,
+    .sidebar-course-btn.is-active .sidebar-course-label {
+      color: var(--foreground);
+      opacity: 1;
+    }
+
+    /* ================= STAFF CARD HIGHLIGHT ANIMATION ================= */
+    @keyframes staffCardPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.85), 0 12px 30px -8px rgba(249, 115, 22, 0.35);
+      }
+      50% {
+        box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.45), 0 16px 36px -6px rgba(249, 115, 22, 0.5);
+      }
+    }
+    .staff-card-highlighted {
+      border-color: #f97316 !important;
+      animation: staffCardPulse 1.3s ease-in-out 3;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.7), 0 10px 25px -5px rgba(249, 115, 22, 0.25);
+    }
+
+    /* ================= THEME "RIPPLE" VIEW TRANSITION ================= */
+    /* Seamless circular reveal: as the circle boundary expands, the site content
+       inside the circle is already rendered in the new theme. */
+    html.theme-transitioning *,
+    html.theme-transitioning *::before,
+    html.theme-transitioning *::after {
+      transition: none !important;
+    }
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+    ::view-transition-old(root) {
+      z-index: 1;
+    }
+    ::view-transition-new(root) {
+      z-index: 9999;
+    }
+
+    /* ================= ACADEMIC CALENDAR & AGENDA WIDGET ================= */
+    .calendar-day-popover {
+      position: fixed;
+      z-index: 9999;
+      width: 240px;
+      max-width: calc(100vw - 24px);
+      background-color: var(--card);
+      color: var(--card-foreground);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) * 1.1);
+      box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.3), 0 4px 10px -2px rgba(0, 0, 0, 0.1);
+      pointer-events: auto;
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      display: none;
+    }
+    .calendar-day-popover.is-open {
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+    }
+    .calendar-day-cell {
+      position: relative;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .calendar-other-month {
+      color: #71717a !important;
+      opacity: 0.28 !important;
+    }
+    .dark .calendar-other-month {
+      color: #a1a1aa !important;
+      opacity: 0.22 !important;
+    }
+    .calendar-weekend-day {
+      color: var(--foreground) !important;
+      opacity: 0.60 !important;
+    }
+    .calendar-month-header {
+      padding-left: max(0px, calc((100% - 220px) / 14));
+      padding-right: max(0px, calc((100% - 220px) / 14));
+    }
+    @media (min-width: 640px) {
+      .calendar-month-header {
+        padding-left: max(0px, calc((100% - 246px) / 14));
+        padding-right: max(0px, calc((100% - 246px) / 14));
+      }
+    }
+    .event-agenda-item {
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+    .event-agenda-item:focus,
+    .event-agenda-item:focus-visible,
+    .event-agenda-item:active {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    .event-agenda-item:hover {
+      transform: translateY(-1px);
+    }
+    .agenda-scroll-container {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(150, 150, 150, 0.4) transparent;
+      -webkit-overflow-scrolling: touch;
+    }
+    .agenda-scroll-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .agenda-scroll-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .agenda-scroll-container::-webkit-scrollbar-thumb {
+      background-color: rgba(150, 150, 150, 0.35);
+      border-radius: 9999px;
+    }
+    .agenda-scroll-container::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(150, 150, 150, 0.65);
+    }
+    .calendar-past-event {
+      background-color: rgba(140, 140, 150, 0.22) !important;
+      color: #71717a !important;
+      opacity: 0.6;
+    }
+    .dark .calendar-past-event {
+      background-color: rgba(255, 255, 255, 0.08) !important;
+      color: #a1a1aa !important;
+      opacity: 0.5;
+    }
+    .calendar-past-event:hover {
+      opacity: 1 !important;
+      background-color: rgba(140, 140, 150, 0.35) !important;
+    }
+    .dark .calendar-past-event:hover {
+      background-color: rgba(255, 255, 255, 0.16) !important;
+    }
+
+    /* KaTeX & Calculus Study Mode polish */
+    .math-content .katex-display {
+      margin: 0.75rem 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0.35rem 0;
+    }
+    .math-content .katex {
+      font-size: 1.06em;
+    }
+    .dark .math-content .katex {
+      color: #f4f4f5;
+    }
+    .math-content .katex-html {
+      color: inherit;
+    }
+    .calculus-study-view {
+      animation: studyFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes studyFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground select-none">
+
+  <!-- Test Mode Top Banner -->
+  <div class="bg-blue-500/15 border-b border-blue-500/25 px-4 py-2 text-xs font-medium text-blue-700 dark:text-blue-300 flex items-center justify-between gap-3 shrink-0">
+    <div class="flex items-center gap-2">
+      <span class="size-2 rounded-full bg-blue-500 animate-pulse shrink-0"></span>
+      <span><strong>Test Sürümü:</strong> Calculus I — Adım Adım Öğrenme Modu (Paul's Notes)</span>
+    </div>
+    <a href="./" class="text-blue-600 dark:text-blue-400 hover:underline font-semibold text-[11px] shrink-0">Ana Siteye Dön →</a>
+  </div>
+
+  <div id="sidebarWrapper" data-state="expanded" class="group/sidebar-wrapper flex min-h-svh w-full">
+
+    <div id="sidebarDesktopGap" class="hidden md:block w-[15.5rem] shrink-0 transition-[width] duration-200 ease-linear"></div>
+
+    <!-- ================= LEFT SIDEBAR ================= -->
+    <aside
+      id="sidebar"
+      class="fixed inset-y-0 left-0 z-40 flex w-[15.5rem] flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border -translate-x-full md:translate-x-0 transition-[transform,width] duration-200 ease-linear"
+    >
+      <div data-slot="sidebar-header" class="flex flex-col gap-1.5 p-2 border-b border-sidebar-border">
+        <div class="flex items-center justify-between gap-1">
+          <button
+            data-portal-click="goHome" data-portal-click-args="[]"
+            title="Ana Sayfa"
+            class="sidebar-brand-btn flex w-full items-center gap-2.5 rounded-md p-2 text-left hover:bg-sidebar-accent transition overflow-hidden"
+          >
+            <div class="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground overflow-hidden p-0.5">
+              <img
+                src="assets/ankara-uni-logo.png"
+                alt="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği Logosu"
+                width="32"
+                height="32"
+                class="size-full object-contain rounded-full"
+                data-portal-error="hideImage" data-portal-error-args="[{&quot;$context&quot;:&quot;element&quot;}]"
+              />
+            </div>
+            <div class="sidebar-hide-collapsed flex items-center min-w-0 flex-1">
+              <span class="text-base font-semibold tracking-tight leading-none text-sidebar-foreground truncate">ANKU EEE Portal</span>
+            </div>
+          </button>
+
+          <button
+            id="mobileCloseSidebarBtn"
+            class="md:hidden size-8 flex items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-foreground"
+            aria-label="Kapat"
+          >
+            <i data-lucide="x" class="size-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <div data-slot="sidebar-content" class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-2">
+        <div data-slot="sidebar-group" class="flex flex-col">
+          <ul class="flex flex-col gap-0.5" id="sidebarDashboardNav"></ul>
+        </div>
+
+        <div data-slot="sidebar-group" class="flex flex-col mt-2">
+          <div class="sidebar-hide-collapsed flex h-7 shrink-0 items-center justify-between px-2 text-[11px] font-medium text-sidebar-foreground/50 tracking-wider uppercase">
+            <span>Dersler</span>
+          </div>
+          <ul id="courseListNav" class="flex flex-col gap-0.5"></ul>
+        </div>
+
+        <div data-slot="sidebar-group" class="flex flex-col mt-2 border-t border-sidebar-border pt-2">
+          <button id="portalFeedbackButton" type="button" title="İstek ve Görüşler" class="sidebar-nav-btn flex h-9 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent transition">
+            <i data-lucide="message-square-plus" class="size-4 shrink-0 text-muted-foreground"></i>
+            <span class="sidebar-hide-collapsed truncate">İstek ve Görüşler</span>
+          </button>
+        </div>
+
+        <div data-slot="sidebar-group" class="flex flex-col mt-2">
+          <div class="sidebar-hide-collapsed flex h-7 shrink-0 items-center px-2 text-[11px] font-medium text-sidebar-foreground/50 tracking-wider uppercase">
+            Bağlantılar
+          </div>
+          <ul class="flex flex-col gap-0.5" data-portal-links>
+            <li>
+              <a
+                href="https://obs.ankara.edu.tr"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Öğrenci Bilgi Sistemi (OBS)"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="graduation-cap" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">Öğrenci Bilgi Sistemi</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://eee.ankara.edu.tr"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Bölüm Web Sitesi"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="globe" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">Bölüm Web Sitesi</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://ekampus.ankara.edu.tr"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Ankara Üniversitesi e-Kampüs Giriş"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="laptop" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">e-Kampüs</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+            <li>
+              <a
+                id="sidebarDriveLink"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Dosyalar (Google Drive)"
+                class="sidebar-nav-btn flex h-8 w-full items-center gap-2 rounded-md px-2 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition"
+              >
+                <i data-lucide="folder-symlink" class="size-4 shrink-0 text-muted-foreground"></i>
+                <span class="sidebar-hide-collapsed flex-1 truncate">Dosyalar</span>
+                <i data-lucide="square-arrow-out-up-right" class="sidebar-hide-collapsed size-3.5 shrink-0 opacity-50"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div data-slot="sidebar-footer" class="border-t border-sidebar-border p-2.5">
+        <div class="flex items-center justify-between gap-2 rounded-lg bg-sidebar-accent/70 px-2.5 py-2">
+          <div class="flex items-center gap-2 min-w-0">
+            <span id="statusDot" class="size-2 shrink-0 rounded-full bg-emerald-500"></span>
+            <span id="statusText" class="sidebar-hide-collapsed truncate text-xs font-medium text-sidebar-foreground">Drive</span>
+          </div>
+          <span id="totalFilesBadge" class="sidebar-hide-collapsed rounded-full bg-primary-soft px-2 py-0.5 font-mono text-[11px] font-medium text-primary shrink-0">
+            0 dosya
+          </span>
+        </div>
+      </div>
+    </aside>
+
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 hidden md:hidden"></div>
+
+    <!-- ================= RIGHT INSET ================= -->
+    <div data-slot="sidebar-inset" class="bg-background relative flex min-w-0 flex-1 flex-col">
+
+      <header class="bg-card sticky top-0 z-30 border-b border-border">
+        <div class="flex w-full items-center justify-between gap-2.5 sm:gap-4 px-3 py-2 sm:px-6 lg:px-8">
+          <div class="flex items-center gap-2.5 min-w-0 shrink-0">
+            <button
+              id="sidebarTriggerBtn"
+              type="button"
+              title="Menü (Ctrl+B)"
+              aria-label="Menü"
+              class="inline-flex h-8 min-w-8 shrink-0 items-center justify-center gap-1.5 rounded-md px-2 sm:w-8 sm:px-0 text-foreground hover:bg-muted transition"
+            >
+              <i data-lucide="panel-left" class="size-4"></i>
+            </button>
+
+            <div class="hidden lg:block h-4 w-px bg-border self-center"></div>
+
+            <nav aria-label="breadcrumb" class="hidden lg:block min-w-0 max-w-[240px] xl:max-w-[300px]">
+              <ol id="headerBreadcrumb" class="flex items-center gap-1.5 text-sm text-muted-foreground truncate">
+                <li class="text-foreground font-medium truncate">Tüm Dersler</li>
+              </ol>
+            </nav>
+          </div>
+
+          <!-- ================= GLOBAL SEARCH BAR (TOP OF PAGE) ================= -->
+          <div id="globalSearchWrapper" class="relative flex-1 max-w-xl mx-auto min-w-0">
+            <div class="relative flex items-center">
+              <i data-lucide="search" class="size-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+              <input
+                id="globalSearchInput"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Ara..."
+                aria-label="Portalda ara"
+                data-portal-input="handleGlobalSearchInput" data-portal-input-args="[{&quot;$context&quot;:&quot;value&quot;}]"
+                data-portal-focus="handleGlobalSearchFocus" data-portal-focus-args="[]"
+                class="h-9 w-full rounded-lg bg-background border border-input pl-9 pr-9 sm:pr-14 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40 focus:border-foreground/30 transition"
+              >
+              <button
+                id="globalSearchClearBtn"
+                type="button"
+                data-portal-click="clearGlobalSearch" data-portal-click-args="[]"
+                title="Temizle"
+                class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+              >
+                <i data-lucide="x" class="size-3.5"></i>
+              </button>
+              <kbd
+                id="globalSearchKbdHint"
+                class="hidden sm:inline-flex items-center justify-center absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none h-5 px-1.5 rounded border border-border bg-muted/60 font-mono text-[10px] font-medium text-muted-foreground"
+              >/</kbd>
+            </div>
+
+            <!-- Global Search Categorized Results Dropdown -->
+            <div
+              id="globalSearchDropdown"
+              class="hidden fixed sm:absolute left-2 right-2 sm:left-0 sm:right-0 top-[52px] sm:top-full sm:mt-1.5 z-50 max-h-[75vh] overflow-y-auto rounded-xl bg-card text-card-foreground border border-border shadow-2xl divide-y divide-border"
+            ></div>
+          </div>
+
+          <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+            <button
+              id="refreshBtn"
+              type="button"
+              title="Yenile"
+              class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+            >
+              <i data-lucide="refresh-cw" class="size-4"></i>
+            </button>
+
+            <button
+              id="themeToggleBtn"
+              type="button"
+              title="Tema"
+              class="relative inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition"
+            >
+              <i data-lucide="moon-star" class="size-4 block dark:hidden"></i>
+              <i data-lucide="sun" class="size-4 hidden dark:block"></i>
+            </button>
+            <button id="portalSettingsButton" type="button" title="Ayarlar" aria-label="Ayarlar" class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition">
+              <i data-lucide="settings-2" class="size-4"></i>
+            </button>
+
+          </div>
+        </div>
+      </header>
+
+      <main id="mainContainer" aria-busy="true" class="w-full flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <div id="mainLoader" class="hidden py-20 flex flex-col items-center justify-center gap-3 text-muted-foreground">
+          <progress aria-label="Yükleniyor" class="loading-spinner"></progress>
+          <span class="text-xs">Yükleniyor...</span>
+        </div>
+
+        <div id="courseHubView" class="space-y-6"></div>
+      </main>
+
+      <footer class="border-t border-border bg-card/40 mt-auto">
+        <div class="text-muted-foreground flex w-full items-center justify-between gap-3 px-4 py-3.5 max-sm:flex-col sm:px-6 lg:px-8 text-xs">
+          <div class="flex items-center gap-3">
+            <span>© 2026 ANKU EEE</span>
+            <span>•</span>
+            <a href="privacy.html" class="hover:text-foreground transition">Gizlilik Politikası</a>
+          </div>
+          <span class="font-medium text-foreground">Built by Caner Davarcı</span>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+
+  <!-- ================= IN-PAGE UNIVERSAL VIEWER MODAL ================= -->
+  <dialog id="viewerModal" closedby="any" aria-labelledby="viewerFileTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[96vw] max-w-6xl 2xl:max-w-7xl h-[92vh] max-h-[940px] overflow-hidden outline-none shadow-2xl">
+    <div class="h-13 bg-card border-b border-border px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 shrink-0">
+      <div class="flex items-center gap-3 overflow-hidden">
+        <button id="viewerBackBtn" class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium text-secondary-foreground bg-secondary hover:opacity-85 transition outline-none focus:outline-none focus-visible:outline-none focus:ring-0">
+          <i data-lucide="arrow-left" class="size-3.5"></i>
+          <span>Geri</span>
+        </button>
+        <div class="truncate border-l border-border pl-3">
+          <h2 id="viewerFileTitle" class="text-xs sm:text-sm font-semibold text-foreground truncate">Dosya</h2>
+          <div id="viewerFileBreadcrumb" class="text-[11px] text-muted-foreground truncate"></div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <a id="viewerDownloadBtn" href="#" target="_blank" rel="noopener noreferrer" title="İndir"
+           class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium bg-primary text-primary-foreground hover:opacity-90 transition">
+          <i data-lucide="download" class="size-3.5"></i>
+          <span class="hidden sm:inline">İndir</span>
+        </a>
+
+        <button id="viewerSwitchServerBtn" title="Önizleme Motorunu Değiştir"
+           class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium border border-border bg-background hover:bg-muted text-foreground transition">
+          <i data-lucide="refresh-cw" class="size-3.5 text-muted-foreground"></i>
+          <span id="viewerServerBadge" class="hidden md:inline">Motor</span>
+        </button>
+
+        <a id="viewerExternalBtn" href="#" target="_blank" rel="noopener noreferrer" title="Drive'da Aç"
+           class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs rounded-md font-medium border border-border bg-background hover:bg-muted text-foreground transition">
+          <i data-lucide="external-link" class="size-3.5"></i>
+          <span class="hidden sm:inline">Drive</span>
+        </a>
+        <button id="viewerFullscreenBtn" title="Tam Ekran" class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground transition">
+          <i data-lucide="maximize-2" class="size-4"></i>
+        </button>
+        <button id="viewerCloseBtn" title="Kapat" class="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/15 hover:text-destructive transition">
+          <i data-lucide="x" class="size-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="viewerStage" class="flex-1 relative bg-background flex items-center justify-center overflow-hidden">
+      <!-- Top hover zone & exit button for Fullscreen mode -->
+      <div
+        id="viewerFullscreenTopZone"
+        class="absolute inset-x-0 top-0 h-3.5 z-40 items-start justify-center pt-2.5 pointer-events-auto"
+      >
+        <button
+          type="button"
+          id="viewerFullscreenExitBtn"
+          title="Tam Ekrandan Çık (ESC)"
+          class="inline-flex items-center gap-2 rounded-full bg-neutral-950/90 hover:bg-neutral-900 text-white border border-white/15 px-4 py-2 text-xs font-medium shadow-2xl backdrop-blur-md transition"
+        >
+          <i data-lucide="minimize-2" class="size-3.5"></i>
+          <span>Tam Ekrandan Çık</span>
+        </button>
+      </div>
+
+      <!-- Small ESC hint toast shown briefly when entering Fullscreen -->
+      <div
+        id="viewerFullscreenToast"
+        role="status"
+        aria-live="polite"
+        class="absolute top-16 left-1/2 z-40 inline-flex items-center gap-2 rounded-full bg-neutral-950/85 text-zinc-100 border border-white/15 px-3.5 py-1.5 text-xs font-medium shadow-xl backdrop-blur-md select-none"
+      >
+        <span>Tam ekrandan çıkmak için</span>
+        <kbd class="rounded bg-white/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-white border border-white/20">ESC</kbd>
+        <span>tuşuna basın</span>
+      </div>
+
+      <div id="viewerLoader" class="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-background/90">
+        <progress aria-label="Önizleme Yükleniyor" class="loading-spinner"></progress>
+        <span class="text-xs text-muted-foreground">Yükleniyor...</span>
+      </div>
+
+      <div id="viewerStreamProgress" class="hidden absolute inset-0 z-20 flex flex-col items-center justify-center bg-background/95 p-6 text-center select-none">
+        <div class="size-11 rounded-xl bg-primary-soft flex items-center justify-center text-primary mb-3">
+          <i data-lucide="zap" class="size-5 animate-pulse"></i>
+        </div>
+        <h4 id="viewerStreamTitle" class="font-semibold text-sm text-foreground max-w-md truncate mb-1">Yükleniyor...</h4>
+        <div id="viewerStreamStatus" class="text-xs text-muted-foreground mb-3 font-medium">Sunucuya bağlanıyor...</div>
+        <div class="w-72 max-w-[85vw] h-2 bg-muted rounded-full overflow-hidden mb-2">
+          <div id="viewerProgressBar" class="h-full bg-primary rounded-full transition-all duration-150" style="width: 0%"></div>
+        </div>
+        <div class="flex items-center justify-between w-72 max-w-[85vw] text-xs font-mono text-muted-foreground">
+          <span id="viewerProgressMb">0.0 MB</span>
+          <span id="viewerProgressPercent" class="text-foreground font-semibold">0%</span>
+        </div>
+        <div class="mt-4 flex items-center justify-center gap-2">
+          <button type="button" id="cancelStreamBtn" class="h-8 px-3 rounded-md border border-border bg-card hover:bg-muted text-foreground text-xs font-medium transition inline-flex items-center gap-1.5">
+            <i data-lucide="eye" class="size-3.5"></i>
+            <span>Drive Önizleme</span>
+          </button>
+        </div>
+        <p class="text-[11px] text-muted-foreground/80 mt-3 max-w-xs">
+          Kitap doğrudan tarayıcınıza aktarılıp önbelleğe alınıyor. İptal edip standart Drive önizlemesine de geçebilirsiniz.
+        </p>
+      </div>
+
+      <iframe
+        id="viewerFrame"
+        class="w-full h-full border-0 bg-neutral-900"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </dialog>
+
+
+  <!-- ================= EDIT COURSE METADATA MODAL ================= -->
+  <dialog id="editCourseModal" closedby="any" aria-labelledby="editModalCourseCode" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[92vw] max-w-lg outline-none shadow-2xl">
+    <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
+      <h3 id="editModalCourseCode" class="font-semibold text-sm">Ders Bilgileri</h3>
+      <button id="closeEditCourseBtn" class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+        <i data-lucide="x" class="size-4"></i>
+      </button>
+    </div>
+
+    <form id="editCourseForm" class="p-5 space-y-3.5 text-xs">
+      <div>
+        <label class="block font-medium mb-1 text-foreground">Ders Adı</label>
+        <input id="editCourseName" type="text" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block font-medium mb-1 text-foreground">Öğretim Üyesi</label>
+          <input id="editCourseInstructor" type="text" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
+        </div>
+        <div>
+          <label class="block font-medium mb-1 text-foreground">E-Posta</label>
+          <input id="editCourseEmail" type="email" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1 text-foreground">Kredi & AKTS</label>
+        <input id="editCourseCredits" type="text" class="h-9 w-full px-3 bg-background border border-input rounded-md outline-none focus:ring-2 focus:ring-ring/40 text-foreground">
+      </div>
+
+      <div class="pt-2 border-t border-border">
+        <div class="flex items-center justify-between mb-2">
+          <label class="font-medium text-foreground">Kısayol Linkleri</label>
+          <button type="button" id="addNewLinkRowBtn" class="text-xs text-primary hover:underline flex items-center gap-1 font-medium">
+            <i data-lucide="plus" class="size-3.5"></i> Ekle
+          </button>
+        </div>
+        <div id="editLinksContainer" class="space-y-2 max-h-44 overflow-y-auto pr-1"></div>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-border">
+        <button type="button" id="copyInfoTxtBtn" class="h-8 px-2.5 rounded-md bg-secondary text-secondary-foreground hover:opacity-85 font-mono text-[11px] inline-flex items-center gap-1.5">
+          <i data-lucide="copy" class="size-3"></i> info.txt Kopyala
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" id="cancelEditCourseBtn" class="h-8 px-3 rounded-md border border-border bg-background hover:bg-muted text-foreground font-medium transition">İptal</button>
+          <button type="submit" class="h-8 px-3.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 font-medium transition">Kaydet</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ================= CALENDAR DAY HOVER/TAP POPOVER ================= -->
+  <div
+    id="calendarDayPopover"
+    class="calendar-day-popover"
+    role="tooltip"
+    data-portal-mouseenter="pauseCalendarPopup" data-portal-mouseenter-args="[]"
+    data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
+  ></div>
+
+  <!-- ================= ADD / EDIT ACADEMIC EVENT MODAL ================= -->
+  <dialog id="addAcademicEventModal" closedby="any" aria-labelledby="addEventModalTitle" class="p-0 rounded-xl bg-card text-card-foreground border border-border w-[92vw] max-w-md outline-none shadow-2xl">
+    <div class="px-5 py-3.5 border-b border-border flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="calendar-plus" class="size-4 text-primary"></i>
+        <h3 id="addEventModalTitle" class="font-semibold text-sm">Etkinlik / Sınav Ekle</h3>
+      </div>
+      <button type="button" data-portal-click="closeEventDialog" data-portal-click-args="[]" class="size-7 inline-flex items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
+        <i data-lucide="x" class="size-4"></i>
+      </button>
+    </div>
+
+    <form data-portal-submit="handleSaveAcademicEvent" data-portal-submit-args="[{&quot;$context&quot;:&quot;event&quot;}]" class="p-5 space-y-4 text-xs">
+      <div class="space-y-1.5">
+        <label for="eventInputCourse" class="font-medium text-foreground">Ders / Kategori</label>
+        <select id="eventInputCourse" class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40">
+          <option value="CHM109">CHM109 - General Chemistry (Kimya)</option>
+          <option value="MTH0101">MTH0101 - Calculus I (Matematik I)</option>
+          <option value="PHY0107">PHY0107 - Physics I (Fizik I)</option>
+          <option value="MTH103">MTH103 - Linear Algebra (Lineer Cebir)</option>
+          <option value="EEE1001">EEE1001 - Giriş ve Tanıtım</option>
+          <option value="TUR171">TUR171 - Türk Dili I</option>
+          <option value="GENEL">GENEL - Akademik Takvim / Tatil</option>
+        </select>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="eventInputTitle" class="font-medium text-foreground">Etkinlik Başlığı</label>
+        <input
+          id="eventInputTitle"
+          type="text"
+          required
+          placeholder="Örn: Kimya Vizesi, Laboratuvar Sınavı..."
+          class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="space-y-1.5">
+          <label for="eventInputDate" class="font-medium text-foreground">Tarih</label>
+          <input
+            id="eventInputDate"
+            type="date"
+            required
+            class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40"
+          />
+        </div>
+        <div class="space-y-1.5">
+          <label for="eventInputTime" class="font-medium text-foreground">Saat</label>
+          <input
+            id="eventInputTime"
+            type="time"
+            value="09:00"
+            required
+            class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring/40"
+          />
+        </div>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="eventInputLocation" class="font-medium text-foreground">Yer / Sınıf / Not (İsteğe bağlı)</label>
+        <input
+          id="eventInputLocation"
+          type="text"
+          placeholder="Örn: Amfi 1 (D-101), Online..."
+          class="h-9 w-full rounded-md bg-background border border-input px-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+        />
+      </div>
+
+      <div class="pt-2 flex items-center justify-between border-t border-border">
+        <button
+          type="button"
+          data-portal-click="handleResetAcademicEvents" data-portal-click-args="[]"
+          class="h-8 px-2.5 text-muted-foreground hover:text-rose-500 font-medium text-[11px] transition"
+        >
+          Varsayılana Sıfırla
+        </button>
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            data-portal-click="closeEventDialog" data-portal-click-args="[]"
+            class="h-8 px-3 rounded-md border border-input hover:bg-muted text-muted-foreground hover:text-foreground font-medium transition"
+          >
+            İptal
+          </button>
+          <button
+            type="submit"
+            class="h-8 px-4 rounded-md bg-primary text-primary-foreground font-medium hover:opacity-90 transition"
+          >
+            Kaydet
+          </button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+
+
+
+  <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
+  <script src="app.js?v=20261030-class-sidebar1"></script>
+  <script src="portal-admin.js?v=20261030-class-sidebar1"></script>
+</body>
+</html>

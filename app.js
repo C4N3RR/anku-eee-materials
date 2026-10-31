@@ -1887,6 +1887,11 @@ const CONFIG = {
 
     function syncCourseFromHash() {
       if (!location.hash) {
+        if (location.pathname.includes('test') && typeof window.CALCULUS_STUDY_DATA !== 'undefined') {
+          activeCourseTab = 'study';
+          location.hash = '#MTH0101';
+          return;
+        }
         activeView = 'home';
         activeCourseId = null;
         return;
@@ -1919,6 +1924,8 @@ const CONFIG = {
       courseLocalSearch = '';
       if (code !== 'MTH0101') {
         activeCourseTab = 'materials';
+      } else if (location.pathname.includes('test')) {
+        activeCourseTab = 'study';
       }
       expandSidebarForCourse(code);
       const meta = courseMetadata[code] || { name: code };
@@ -1961,6 +1968,8 @@ const CONFIG = {
       courseLocalSearch = '';
       if (code !== 'MTH0101') {
         activeCourseTab = 'materials';
+      } else if (location.pathname.includes('test')) {
+        activeCourseTab = 'study';
       }
       updateHeaderBreadcrumb(null);
       updatePageMeta(null, null);
@@ -2017,6 +2026,8 @@ const CONFIG = {
       courseLocalSearch = '';
       if (code !== 'MTH0101') {
         activeCourseTab = 'materials';
+      } else if (location.pathname.includes('test')) {
+        activeCourseTab = 'study';
       }
       if (code) {
         expandSidebarForCourse(code);
