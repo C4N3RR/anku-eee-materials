@@ -1723,13 +1723,7 @@ const CONFIG = {
       return allTopics.some(t => t.id === topicId);
     }
 
-    let activeCourseTab = 'study'; // 'study' (default for Calculus I) | 'materials'
-    try {
-      const savedCourseTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
-      if (savedCourseTab === 'study' || savedCourseTab === 'materials') {
-        activeCourseTab = savedCourseTab;
-      }
-    } catch {}
+    let activeCourseTab = 'materials'; // Courses open on materials; study is selected explicitly.
 
     let activeStudyTopicId = 'tangents-rates';
     try {
@@ -2496,7 +2490,7 @@ const CONFIG = {
       if (code !== 'MTH0101') {
         activeCourseTab = 'materials';
       } else {
-        // MTH0101 Calculus I: Check hash parameters first, then localStorage
+        // Explicit study links open the study view; plain course links open materials.
         let requestedTab = hashParts[1] ? hashParts[1].toLowerCase().trim() : null;
         let requestedTopic = hashParts[2] ? hashParts[2].trim() : null;
         let requestedSection = hashParts[3] ? hashParts[3].toLowerCase().trim() : null;
@@ -2512,16 +2506,7 @@ const CONFIG = {
         if (requestedTab === 'study' || requestedTab === 'materials') {
           activeCourseTab = requestedTab;
         } else {
-          try {
-            const savedTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
-            if (savedTab === 'study' || savedTab === 'materials') {
-              activeCourseTab = savedTab;
-            } else {
-              activeCourseTab = 'study';
-            }
-          } catch {
-            activeCourseTab = 'study';
-          }
+          activeCourseTab = 'materials';
         }
 
         if (requestedTopic && isValidStudyTopic(requestedTopic)) {
@@ -2593,7 +2578,7 @@ const CONFIG = {
       activeCourseId = null;
       highlightedStaffId = null;
       courseLocalSearch = '';
-      activeCourseTab = 'study';
+      activeCourseTab = 'materials';
       updateHeaderBreadcrumb(null);
       updatePageMeta(null, null);
       renderSidebarCourses();
@@ -2642,18 +2627,6 @@ const CONFIG = {
       const code = courseNode ? courseNode.name.toUpperCase().trim() : null;
       if (!opts.fromHistory && code) {
         let targetHash = '#' + encodeURIComponent(code);
-        if (code === 'MTH0101') {
-          try {
-            const savedTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
-            if (savedTab === 'study') {
-              const savedTopic = localStorage.getItem('anku_study_active_topic_id_v1');
-              const topicPart = (savedTopic && isValidStudyTopic(savedTopic)) ? savedTopic : activeStudyTopicId;
-              const savedSec = localStorage.getItem('anku_study_active_section_tab_v1');
-              const secPart = (savedSec && savedSec !== 'theory' && ['examples', 'quiz'].includes(savedSec)) ? `:${savedSec}` : '';
-              targetHash = `#MTH0101:study:${topicPart}${secPart}`;
-            }
-          } catch {}
-        }
         if (location.hash !== targetHash) {
           history.pushState(null, '', targetHash);
         }
@@ -2662,16 +2635,9 @@ const CONFIG = {
       activeCourseId = courseNode ? courseNode.id : courseId;
       highlightedStaffId = null;
       courseLocalSearch = '';
-      if (code !== 'MTH0101') {
-        activeCourseTab = 'materials';
-      } else {
+      activeCourseTab = 'materials';
+      if (code === 'MTH0101') {
         try {
-          const savedTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
-          if (savedTab === 'study' || savedTab === 'materials') {
-            activeCourseTab = savedTab;
-          } else {
-            activeCourseTab = 'study';
-          }
           const savedTopic = localStorage.getItem('anku_study_active_topic_id_v1');
           if (savedTopic && isValidStudyTopic(savedTopic)) {
             activeStudyTopicId = savedTopic;

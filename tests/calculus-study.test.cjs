@@ -121,7 +121,7 @@ test('Calculus study mode interacts cleanly with DOM and local storage', () => {
   dom.window.close();
 });
 
-test('Calculus study mode preserves active course tab, topic and section across page reload and tab toggle', () => {
+test('Courses default to materials while explicit study links and learning progress are preserved', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   const dom = new JSDOM(html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ''), {
     url: 'https://c4n3rr.github.io/anku-eee-materials/',
@@ -150,7 +150,9 @@ test('Calculus study mode preserves active course tab, topic and section across 
   }
 
   // 1. Select MTH0101 and switch to study tab
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'materials');
   vm.runInContext('selectCourseByCode("MTH0101")', ctx);
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'materials');
   vm.runInContext('setCourseActiveTab("study")', ctx);
   assert.equal(vm.runInContext('activeCourseTab', ctx), 'study');
 
@@ -174,12 +176,24 @@ test('Calculus study mode preserves active course tab, topic and section across 
   assert.equal(vm.runInContext('activeStudyTopicId', ctx), 'limit-properties');
   assert.equal(vm.runInContext('activeStudySectionTab', ctx), 'examples');
 
-  // 5. Simulate page reload (syncCourseFromHash with #MTH0101)
+  // 5. A plain course URL ignores the previously saved study tab.
   w.location.hash = '#MTH0101';
   vm.runInContext('syncCourseFromHash()', ctx);
-  assert.equal(vm.runInContext('activeCourseTab', ctx), 'study', 'Reload should stay in study mode');
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'materials', 'A plain course link opens materials even after studying');
   assert.equal(vm.runInContext('activeStudyTopicId', ctx), 'limit-properties', 'Reload should stay on topic 2.1');
   assert.equal(vm.runInContext('activeStudySectionTab', ctx), 'examples', 'Reload should stay on examples section');
+
+  // Normal navigation also ignores a saved study tab without resetting progress.
+  vm.runInContext('setCourseActiveTab("study"); selectCourseByCode("CHM109")', ctx);
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'materials');
+  vm.runInContext('selectCourseByCode("MTH0101")', ctx);
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'materials');
+  assert.equal(w.location.hash, '#MTH0101');
+  vm.runInContext('setCourseActiveTab("study")', ctx);
+  assert.equal(vm.runInContext('activeStudyTopicId', ctx), 'limit-properties');
+  assert.equal(vm.runInContext('activeStudySectionTab', ctx), 'examples');
+  vm.runInContext('goHome(); selectCourseByCode("MTH0101")', ctx);
+  assert.equal(vm.runInContext('activeCourseTab', ctx), 'materials');
 
   // 6. Test direct deep link hash #MTH0101:study:infinite-limits:quiz
   w.location.hash = '#MTH0101:study:infinite-limits:quiz';
