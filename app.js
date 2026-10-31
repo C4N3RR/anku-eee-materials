@@ -1336,12 +1336,111 @@ const CONFIG = {
     } catch {}
     let openStudyExamples = new Set();
     let openStudyHints = new Set();
-    let studyQuizAnswers = {};
-    let completedStudyTopics = new Set();
+    let viewedStudyExamples = new Set();
     try {
-      const savedCompleted = localStorage.getItem('anku_mth0101_completed_topics_v1');
-      if (savedCompleted) completedStudyTopics = new Set(JSON.parse(savedCompleted));
+      const savedViewed = localStorage.getItem('anku_study_viewed_examples_v1');
+      if (savedViewed) viewedStudyExamples = new Set(JSON.parse(savedViewed));
     } catch {}
+    let studyScrollProgress = {};
+    try {
+      const savedScroll = localStorage.getItem('anku_study_scroll_v1');
+      if (savedScroll) studyScrollProgress = JSON.parse(savedScroll);
+    } catch {}
+    let studyQuizAnswers = {};
+    try {
+      const savedAnswers = localStorage.getItem('anku_study_quiz_answers_v1');
+      if (savedAnswers) studyQuizAnswers = JSON.parse(savedAnswers);
+    } catch {}
+
+    function saveStudyActivityState() {
+      try {
+        localStorage.setItem('anku_study_scroll_v1', JSON.stringify(studyScrollProgress));
+        localStorage.setItem('anku_study_viewed_examples_v1', JSON.stringify(Array.from(viewedStudyExamples)));
+        localStorage.setItem('anku_study_quiz_answers_v1', JSON.stringify(studyQuizAnswers));
+      } catch {}
+    }
+
+    function getTopicProgress(topic) {
+      if (!topic) return 0;
+      const scrollRatio = Math.min(1, Math.max(0, studyScrollProgress[topic.id] || 0));
+      const totalEx = (topic.examples || []).length;
+      let viewedCount = 0;
+      if (totalEx > 0) {
+        viewedCount = topic.examples.filter(ex => viewedStudyExamples.has(ex.id)).length;
+      }
+      const examplesRatio = totalEx > 0 ? (viewedCount / totalEx) : 1;
+      const hasQuiz = typeof studyQuizAnswers[topic.id] === 'number';
+      const quizRatio = hasQuiz ? 1 : 0;
+      
+      const score = (scrollRatio * 0.35) + (examplesRatio * 0.40) + (quizRatio * 0.25);
+      return Math.min(1, Math.max(0, score));
+    }
+
+    function isTopicCompleted(topic) {
+      return getTopicProgress(topic) >= 0.8;
+    }
+
+    function calculateCourseProgress(data) {
+      if (!data || !Array.isArray(data.weeks)) return 0;
+      const allTopics = data.weeks.flatMap(w => w.topics || []);
+      if (allTopics.length === 0) return 0;
+      const total = allTopics.reduce((acc, t) => acc + getTopicProgress(t), 0);
+      return Math.min(100, Math.round((total / allTopics.length) * 100));
+    }
+
+    function attachStudyScrollTracker() {
+      if (typeof window === 'undefined') return;
+      if (window._studyScrollAttached) return;
+      window._studyScrollAttached = true;
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (activeCourseTab !== 'study' || !activeStudyTopicId) return;
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updateStudyScroll();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    }
+
+    function updateStudyScroll() {
+      const contentEl = $('studyTopicContentTop');
+      if (!contentEl) return;
+      const rect = contentEl.getBoundingClientRect();
+      const windowH = window.innerHeight || 800;
+      const contentH = contentEl.offsetHeight;
+      if (contentH <= 0) return;
+
+      const scrolledPx = Math.max(0, windowH - rect.top);
+      const ratio = Math.min(1, Math.max(0, scrolledPx / contentH));
+
+      const currentRatio = studyScrollProgress[activeStudyTopicId] || 0;
+      if (ratio > currentRatio + 0.04 || (ratio >= 0.88 && currentRatio < 1)) {
+        studyScrollProgress[activeStudyTopicId] = ratio >= 0.88 ? 1 : Math.round(ratio * 100) / 100;
+        saveStudyActivityState();
+        refreshStudyProgressUI();
+      }
+    }
+
+    function refreshStudyProgressUI() {
+      const data = typeof window !== 'undefined' ? window.CALCULUS_STUDY_DATA : null;
+      if (!data) return;
+      const progressPercent = calculateCourseProgress(data);
+      const allTopics = data.weeks.flatMap(w => w.topics || []);
+      const completedCount = allTopics.filter(t => isTopicCompleted(t)).length;
+
+      const bar = $('studyProgressBar');
+      if (bar) bar.style.width = `${progressPercent}%`;
+
+      const label = $('studyProgressText');
+      if (label) label.textContent = `${completedCount}/${allTopics.length} (%${progressPercent})`;
+
+      const railBadge = $('studyCollapsedProgressBadge');
+      if (railBadge) railBadge.textContent = `%${progressPercent}`;
+    }
 
     function triggerMathRendering(container) {
       if (typeof window !== 'undefined' && typeof window.renderMathInElement === 'function') {
@@ -1358,12 +1457,6 @@ const CONFIG = {
           console.warn('Math rendering error:', e);
         }
       }
-    }
-
-    function saveCompletedStudyTopics() {
-      try {
-        localStorage.setItem('anku_mth0101_completed_topics_v1', JSON.stringify(Array.from(completedStudyTopics)));
-      } catch {}
     }
 
     const jsArg = PortalSecurity.argument;
@@ -3522,9 +3615,11 @@ const CONFIG = {
       const nextTopic = currentTopicIndex < allTopics.length - 1 ? allTopics[currentTopicIndex + 1] : null;
 
       const totalTopics = allTopics.length;
-      const completedCount = allTopics.filter(t => completedStudyTopics.has(t.id)).length;
-      const progressPercent = totalTopics > 0 ? Math.round((completedCount / totalTopics) * 100) : 0;
-      const isTopicDone = completedStudyTopics.has(currentTopic.id);
+      const currentTopicScore = getTopicProgress(currentTopic);
+      const currentTopicPercent = Math.round(currentTopicScore * 100);
+      const isTopicDone = isTopicCompleted(currentTopic);
+      const completedCount = allTopics.filter(t => isTopicCompleted(t)).length;
+      const progressPercent = calculateCourseProgress(data);
 
       const userQuizChoice = studyQuizAnswers[currentTopic.id];
       const hasAnsweredQuiz = (typeof userQuizChoice === 'number');
@@ -3532,7 +3627,7 @@ const CONFIG = {
 
       // Weeks & Topics Navigator List (Expanded View)
       const weeksNavHtml = data.weeks.map(week => {
-        const weekCompletedCount = week.topics.filter(t => completedStudyTopics.has(t.id)).length;
+        const weekCompletedCount = week.topics.filter(t => isTopicCompleted(t)).length;
         const weekTotal = week.topics.length;
         return `
           <div class="space-y-1 pt-2 first:pt-0">
@@ -3543,7 +3638,8 @@ const CONFIG = {
             <div class="space-y-0.5">
               ${week.topics.map(topic => {
                 const isSelected = topic.id === currentTopic.id;
-                const isDone = completedStudyTopics.has(topic.id);
+                const isDone = isTopicCompleted(topic);
+                const tPercent = Math.round(getTopicProgress(topic) * 100);
                 return `
                   <button
                     type="button"
@@ -3567,8 +3663,9 @@ const CONFIG = {
                     </div>
                     <div class="min-w-0 flex-1">
                       <div class="truncate font-medium leading-tight">${esc(topic.title)}</div>
-                      <div class="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                      <div class="text-[10px] text-muted-foreground flex items-center justify-between gap-1 mt-0.5">
                         <span>${esc(topic.readTime)}</span>
+                        <span class="font-mono font-medium ${isDone ? 'text-emerald-600 dark:text-emerald-400 font-bold' : ''}">%${tPercent}</span>
                       </div>
                     </div>
                   </button>
@@ -3595,6 +3692,7 @@ const CONFIG = {
             </button>
 
             <div
+              id="studyCollapsedProgressBadge"
               class="size-8 rounded-full border-2 border-blue-500 flex items-center justify-center text-[9px] font-mono font-bold text-blue-500 shrink-0"
               title="Toplam İlerleme: %${progressPercent}"
             >
@@ -3608,12 +3706,13 @@ const CONFIG = {
           <div class="study-rail-topics no-scrollbar">
             ${allTopics.map(t => {
               const isSelected = t.id === currentTopic.id;
-              const isDone = completedStudyTopics.has(t.id);
+              const isDone = isTopicCompleted(t);
+              const tPercent = Math.round(getTopicProgress(t) * 100);
               return `
                 <button
                   type="button"
                   data-portal-click="selectStudyTopic" data-portal-click-args="[${jsArg(t.id)}]"
-                  title="${esc(t.topicNum || '')}: ${esc(t.title)}"
+                  title="${esc(t.topicNum || '')}: ${esc(t.title)} (%${tPercent})"
                   class="size-8 shrink-0 rounded-xl flex items-center justify-center text-[10px] font-mono font-bold transition cursor-pointer ${
                     isSelected
                       ? 'bg-blue-500 text-white shadow-xs'
@@ -3649,11 +3748,11 @@ const CONFIG = {
             </div>
 
             <div class="flex items-center justify-between text-[11px] font-medium text-muted-foreground pt-0.5">
-              <span>İlerleme</span>
-              <span class="font-mono font-bold text-foreground">${completedCount}/${totalTopics} (%${progressPercent})</span>
+              <span>Genel İlerleme</span>
+              <span id="studyProgressText" class="font-mono font-bold text-foreground">${completedCount}/${totalTopics} (%${progressPercent})</span>
             </div>
             <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-              <div class="bg-blue-500 h-1.5 rounded-full transition-all duration-300" style="width: ${progressPercent}%;"></div>
+              <div id="studyProgressBar" class="bg-blue-500 h-1.5 rounded-full transition-all duration-300" style="width: ${progressPercent}%;"></div>
             </div>
           </div>
 
@@ -3667,9 +3766,9 @@ const CONFIG = {
             <a href="${esc(safeLink(currentTopic.sourceUrl))}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-500 flex items-center gap-1">
               <span>Paul's Notes ↗</span>
             </a>
-            ${completedCount > 0 ? `
+            ${progressPercent > 0 ? `
               <button type="button" data-portal-click="resetStudyProgress" data-portal-click-args="[]" class="hover:text-rose-500 transition cursor-pointer">
-                Sıfırla
+                İlerlemeyi Sıfırla
               </button>
             ` : ''}
           </div>
@@ -3734,16 +3833,30 @@ const CONFIG = {
             </div>
           ` : ''}
 
-          <!-- CTA to Examples -->
-          <div class="pt-2 flex justify-end">
-            <button
-              type="button"
-              data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;examples&quot;]"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs"
-            >
-              <span>Çözümlü Örneklere Geç (${currentTopic.examples.length} Soru)</span>
-              <i data-lucide="arrow-right" class="size-3.5"></i>
-            </button>
+          <!-- Two-way Navigation (Previous Topic <-> Next: Examples) -->
+          <div class="pt-3 border-t border-border flex items-center justify-between gap-2.5 flex-wrap">
+            <div>
+              ${prevTopic ? `
+                <button
+                  type="button"
+                  data-portal-click="navigateStudyTopic" data-portal-click-args="[-1]"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
+                >
+                  <i data-lucide="arrow-left" class="size-3.5"></i>
+                  <span>Önceki: ${esc(prevTopic.title.split('(')[0].trim())}</span>
+                </button>
+              ` : '<div></div>'}
+            </div>
+            <div>
+              <button
+                type="button"
+                data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;examples&quot;]"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs"
+              >
+                <span>Çözümlü Örneklere Geç (${currentTopic.examples.length} Soru)</span>
+                <i data-lucide="arrow-right" class="size-3.5"></i>
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -3856,15 +3969,28 @@ const CONFIG = {
             ${examplesHtml}
           </div>
 
-          <div class="pt-2 flex justify-end">
-            <button
-              type="button"
-              data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;quiz&quot;]"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs"
-            >
-              <span>Pratik ve Sınav Sorularına Geç</span>
-              <i data-lucide="arrow-right" class="size-3.5"></i>
-            </button>
+          <!-- Two-way Navigation (Previous: Theory <-> Next: Quiz) -->
+          <div class="pt-3 border-t border-border flex items-center justify-between gap-2.5 flex-wrap">
+            <div>
+              <button
+                type="button"
+                data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;theory&quot;]"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
+              >
+                <i data-lucide="arrow-left" class="size-3.5"></i>
+                <span>Konu Anlatımına Dön</span>
+              </button>
+            </div>
+            <div>
+              <button
+                type="button"
+                data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;quiz&quot;]"
+                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold transition cursor-pointer shadow-xs"
+              >
+                <span>Pratik ve Sınav Sorularına Geç</span>
+                <i data-lucide="arrow-right" class="size-3.5"></i>
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -3931,49 +4057,41 @@ const CONFIG = {
         <div class="space-y-4">
           ${quizHtml}
 
-          <!-- Footer Navigation (Prev / Next Topic) -->
+          <!-- Two-way Navigation (Previous: Examples <-> Next: Next Topic) -->
           <div class="pt-3 border-t border-border flex items-center justify-between gap-2.5 flex-wrap">
             <div>
-              ${prevTopic ? `
-                <button
-                  type="button"
-                  data-portal-click="navigateStudyTopic" data-portal-click-args="[-1]"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
-                >
-                  <i data-lucide="arrow-left" class="size-3.5"></i>
-                  <span>Önceki: ${esc(prevTopic.title.split('(')[0].trim())}</span>
-                </button>
-              ` : '<div></div>'}
+              <button
+                type="button"
+                data-portal-click="setStudySectionTab" data-portal-click-args="[&quot;examples&quot;]"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
+              >
+                <i data-lucide="arrow-left" class="size-3.5"></i>
+                <span>Çözümlü Örneklere Dön</span>
+              </button>
             </div>
 
             <div class="flex items-center gap-2">
-              <button
-                type="button"
-                data-portal-click="toggleStudyTopicDone" data-portal-click-args="[${jsArg(currentTopic.id)}]"
-                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
-                  isTopicDone
-                    ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-2xs'
-                    : 'bg-primary text-primary-foreground hover:opacity-90 shadow-2xs'
-                }"
-              >
-                <i data-lucide="${isTopicDone ? 'check' : 'circle-check'}" class="size-3.5"></i>
-                <span>${isTopicDone ? 'Konu Tamamlandı ✓' : 'Konuyu Tamamla'}</span>
-              </button>
-
               ${nextTopic ? `
                 <button
                   type="button"
                   data-portal-click="navigateStudyTopic" data-portal-click-args="[1]"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition cursor-pointer shadow-2xs"
+                  class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition cursor-pointer shadow-2xs"
                 >
-                  <span>Sonraki Konu</span>
+                  <span>Sonraki Konu: ${esc(nextTopic.title.split('(')[0].trim())}</span>
                   <i data-lucide="arrow-right" class="size-3.5"></i>
                 </button>
-              ` : ''}
+              ` : `
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-xs font-semibold border border-emerald-500/30">
+                  <i data-lucide="check-check" class="size-3.5"></i>
+                  <span>Tüm Konuları İncelediniz 🎉</span>
+                </span>
+              `}
             </div>
           </div>
         </div>
       `;
+
+      attachStudyScrollTracker();
 
       return `
         <div id="studyTopicContentTop" class="calculus-study-view study-layout">
@@ -4001,18 +4119,17 @@ const CONFIG = {
                     <i data-lucide="arrow-up-right" class="size-3"></i>
                   </a>
 
-                  <button
-                    type="button"
-                    data-portal-click="toggleStudyTopicDone" data-portal-click-args="[${jsArg(currentTopic.id)}]"
-                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition cursor-pointer ${
-                      isTopicDone
-                        ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-2xs'
-                        : 'bg-muted hover:bg-muted/80 text-foreground border border-border'
-                    }"
-                  >
-                    <i data-lucide="${isTopicDone ? 'check-circle' : 'circle'}" class="size-3.5"></i>
-                    <span>${isTopicDone ? 'Tamamlandı' : 'Tamamla'}</span>
-                  </button>
+                  ${isTopicDone ? `
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                      <i data-lucide="check-circle" class="size-3.5"></i>
+                      <span>Tamamlandı (%${currentTopicPercent})</span>
+                    </div>
+                  ` : `
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+                      <div class="size-2 rounded-full bg-blue-500 animate-pulse"></div>
+                      <span>Konu İlerlemesi: %${currentTopicPercent}</span>
+                    </div>
+                  `}
                 </div>
               </div>
 
@@ -4079,6 +4196,13 @@ const CONFIG = {
 
     window.setStudySectionTab = function(tabName) {
       activeStudySectionTab = tabName;
+      if (tabName === 'examples' || tabName === 'quiz') {
+        if (activeStudyTopicId) {
+          const minScroll = tabName === 'quiz' ? 1.0 : 0.85;
+          studyScrollProgress[activeStudyTopicId] = Math.max(studyScrollProgress[activeStudyTopicId] || 0, minScroll);
+          saveStudyActivityState();
+        }
+      }
       if (activeCourseId) renderCourseHub(activeCourseId);
       $('studySectionContainer')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
@@ -4100,6 +4224,8 @@ const CONFIG = {
         openStudyExamples.delete(exampleId);
       } else {
         openStudyExamples.add(exampleId);
+        viewedStudyExamples.add(exampleId);
+        saveStudyActivityState();
       }
       if (activeCourseId) renderCourseHub(activeCourseId);
     };
@@ -4114,17 +4240,21 @@ const CONFIG = {
     };
 
     window.toggleStudyTopicDone = function(topicId) {
-      if (completedStudyTopics.has(topicId)) {
-        completedStudyTopics.delete(topicId);
+      const topicObj = { id: topicId, examples: [] };
+      if (isTopicCompleted(topicObj)) {
+        delete studyScrollProgress[topicId];
+        delete studyQuizAnswers[topicId];
       } else {
-        completedStudyTopics.add(topicId);
+        studyScrollProgress[topicId] = 1;
+        studyQuizAnswers[topicId] = 0;
       }
-      saveCompletedStudyTopics();
+      saveStudyActivityState();
       if (activeCourseId) renderCourseHub(activeCourseId);
     };
 
     window.selectStudyQuizOption = function(topicId, optionIndex) {
       studyQuizAnswers[topicId] = Number(optionIndex);
+      saveStudyActivityState();
       if (activeCourseId) renderCourseHub(activeCourseId);
     };
 
@@ -4144,9 +4274,12 @@ const CONFIG = {
 
     window.resetStudyProgress = function() {
       if (!confirm('Tüm konu tamamlama ilerlemenizi sıfırlamak istediğinize emin misiniz?')) return;
-      completedStudyTopics.clear();
-      saveCompletedStudyTopics();
+      studyScrollProgress = {};
+      viewedStudyExamples.clear();
       studyQuizAnswers = {};
+      openStudyExamples.clear();
+      openStudyHints.clear();
+      saveStudyActivityState();
       if (activeCourseId) renderCourseHub(activeCourseId);
     };
 
