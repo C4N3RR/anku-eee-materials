@@ -3579,29 +3579,33 @@ const CONFIG = {
         `;
       }).join('');
 
-      // Sidebar HTML (Collapsible)
+      // Sidebar HTML (Collapsible Rail on Desktop / Sleek Horizontal Top Bar on Mobile)
       const sidebarHtml = isStudyNavCollapsed ? `
-        <!-- Collapsed Slim Rail Sidebar -->
-        <aside class="w-12 sm:w-14 shrink-0 rounded-2xl border border-border bg-card p-1.5 flex flex-col items-center gap-2 shadow-2xs sticky top-3 z-10">
-          <button
-            type="button"
-            data-portal-click="toggleStudyNav" data-portal-click-args="[]"
-            title="Müfredatı Genişlet"
-            class="size-8 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition cursor-pointer"
-          >
-            <i data-lucide="chevrons-right" class="size-4"></i>
-          </button>
+        <!-- Collapsed Rail: Horizontal Top Bar on Mobile, Slim Vertical Rail on Desktop -->
+        <aside class="w-full lg:w-14 shrink-0 rounded-2xl border border-border bg-card p-1.5 sm:p-2 lg:p-1.5 flex flex-row lg:flex-col items-center justify-between lg:justify-start gap-1.5 sm:gap-2 shadow-2xs sticky top-14 sm:top-16 lg:top-20 z-20">
+          <div class="flex items-center lg:flex-col gap-1.5 shrink-0">
+            <button
+              type="button"
+              data-portal-click="toggleStudyNav" data-portal-click-args="[]"
+              title="Müfredatı Genişlet"
+              class="size-8 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition cursor-pointer shrink-0"
+            >
+              <i data-lucide="chevrons-right" class="size-4 hidden lg:block"></i>
+              <i data-lucide="layout-grid" class="size-4 lg:hidden"></i>
+            </button>
 
-          <div
-            class="size-8 rounded-full border-2 border-blue-500 flex items-center justify-center text-[9px] font-mono font-bold text-blue-500"
-            title="Toplam İlerleme: %${progressPercent}"
-          >
-            %${progressPercent}
+            <div
+              class="size-8 rounded-full border-2 border-blue-500 flex items-center justify-center text-[9px] font-mono font-bold text-blue-500 shrink-0"
+              title="Toplam İlerleme: %${progressPercent}"
+            >
+              %${progressPercent}
+            </div>
           </div>
 
-          <div class="w-6 h-px bg-border my-0.5"></div>
+          <div class="w-px h-6 lg:w-6 lg:h-px bg-border my-0 lg:my-0.5 shrink-0"></div>
 
-          <div class="flex flex-col items-center gap-1 w-full">
+          <!-- Topic Buttons: Horizontal Scroll on Mobile, Vertical Stack on Desktop -->
+          <div class="flex flex-row lg:flex-col items-center gap-1.5 flex-1 min-w-0 lg:w-full overflow-x-auto lg:overflow-x-visible py-0.5 no-scrollbar">
             ${allTopics.map(t => {
               const isSelected = t.id === currentTopic.id;
               const isDone = completedStudyTopics.has(t.id);
@@ -3610,7 +3614,7 @@ const CONFIG = {
                   type="button"
                   data-portal-click="selectStudyTopic" data-portal-click-args="[${jsArg(t.id)}]"
                   title="${esc(t.topicNum || '')}: ${esc(t.title)}"
-                  class="size-8 rounded-xl flex items-center justify-center text-[10px] font-mono font-bold transition cursor-pointer ${
+                  class="size-8 shrink-0 rounded-xl flex items-center justify-center text-[10px] font-mono font-bold transition cursor-pointer ${
                     isSelected
                       ? 'bg-blue-500 text-white shadow-xs'
                       : isDone
@@ -3625,8 +3629,8 @@ const CONFIG = {
           </div>
         </aside>
       ` : `
-        <!-- Expanded Sidebar -->
-        <aside class="w-full lg:w-72 xl:w-80 shrink-0 rounded-2xl border border-border bg-card p-3 space-y-3 shadow-2xs">
+        <!-- Expanded Sidebar: Sticky on Desktop, Collapsible with Left Chevron -->
+        <aside class="w-full lg:w-72 xl:w-80 shrink-0 rounded-2xl border border-border bg-card p-3 space-y-3 shadow-2xs lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
           <!-- Top Header Banner embedded inside sidebar -->
           <div class="rounded-xl bg-blue-500/10 border border-blue-500/20 p-3 space-y-2">
             <div class="flex items-center justify-between gap-1.5">
@@ -3674,20 +3678,20 @@ const CONFIG = {
 
       // 1. SECTION: Konu Anlatımı (Theory & Formulas)
       const formulasHtml = (currentTopic.keyFormulas || []).map(f => `
-        <div class="p-3 rounded-xl border border-border bg-card/70 space-y-1.5">
-          <div class="text-[11px] font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide flex items-center gap-1.5">
-            <i data-lucide="sigma" class="size-3.5"></i>
+        <div class="p-3.5 sm:p-4 rounded-xl border border-border bg-card/70 space-y-2">
+          <div class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide flex items-center gap-1.5">
+            <i data-lucide="sigma" class="size-4"></i>
             <span>${esc(f.label)}</span>
           </div>
-          <div class="math-content overflow-x-auto py-0.5 text-center font-mono text-sm sm:text-base text-foreground">
+          <div class="math-content overflow-x-auto py-1 text-center font-mono text-base sm:text-lg text-foreground">
             $$${f.latex}$$
           </div>
-          ${f.desc ? `<p class="text-xs text-muted-foreground leading-snug">${esc(f.desc)}</p>` : ''}
+          ${f.desc ? `<p class="text-xs sm:text-sm text-muted-foreground leading-snug">${esc(f.desc)}</p>` : ''}
         </div>
       `).join('');
 
       const notesHtml = (currentTopic.notes || []).map(note => `
-        <div class="flex items-start gap-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-foreground/90">
+        <div class="flex items-start gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-foreground/90">
           <i data-lucide="alert-circle" class="size-4 text-amber-500 shrink-0 mt-0.5"></i>
           <span class="leading-relaxed math-content">${esc(note)}</span>
         </div>
@@ -3696,9 +3700,9 @@ const CONFIG = {
       const theorySectionHtml = `
         <div class="space-y-4">
           <!-- Overview / Intuition -->
-          <div class="p-3.5 sm:p-4 rounded-xl bg-muted/40 border border-border/80 text-xs sm:text-sm leading-relaxed text-foreground/90 space-y-2">
+          <div class="p-3.5 sm:p-4 rounded-xl bg-muted/40 border border-border/80 text-sm sm:text-base leading-relaxed text-foreground/90 space-y-2">
             <div class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <i data-lucide="compass" class="size-3.5 text-blue-500"></i>
+              <i data-lucide="compass" class="size-4 text-blue-500"></i>
               <span>Kavramsal Yaklaşım & Sezgisel Giriş</span>
             </div>
             <p class="math-content leading-relaxed">${esc(currentTopic.overview)}</p>
@@ -3768,14 +3772,14 @@ const CONFIG = {
               </div>
 
               <!-- Question statement in clean single sentence -->
-              <div class="text-xs sm:text-sm font-medium text-foreground leading-relaxed math-content">
+              <div class="text-sm sm:text-base font-normal text-foreground leading-relaxed math-content">
                 ${esc(ex.question)}
               </div>
 
               <!-- Hint box -->
               ${isHintOpen ? `
-                <div class="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2 math-content">
-                  <i data-lucide="lightbulb" class="size-3.5 text-amber-500 shrink-0 mt-0.5"></i>
+                <div class="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs sm:text-sm text-amber-900 dark:text-amber-200 flex items-start gap-2.5 math-content">
+                  <i data-lucide="lightbulb" class="size-4 text-amber-500 shrink-0 mt-0.5"></i>
                   <div class="space-y-0.5">
                     <span class="font-semibold">İpucu / Strateji:</span>
                     <div class="leading-relaxed">${esc(ex.hint)}</div>
@@ -3788,7 +3792,7 @@ const CONFIG = {
                 <button
                   type="button"
                   data-portal-click="toggleStudyExample" data-portal-click-args="[${jsArg(ex.id)}]"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                  class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                     isSolOpen
                       ? 'bg-muted text-foreground hover:bg-muted/80'
                       : 'bg-primary text-primary-foreground hover:opacity-90 shadow-2xs'
@@ -3802,34 +3806,41 @@ const CONFIG = {
 
             <!-- Solution Steps (Expanded) -->
             ${isSolOpen ? `
-              <div class="border-t border-border bg-muted/20 p-3.5 sm:p-4 space-y-3">
+              <div class="border-t border-border bg-muted/20 p-3.5 sm:p-5 space-y-4">
                 <div class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                  <i data-lucide="check-circle-2" class="size-3.5 text-emerald-500"></i>
+                  <i data-lucide="check-circle-2" class="size-4 text-emerald-500"></i>
                   <span>Adım Adım Çözüm</span>
                 </div>
 
-                <div class="space-y-3 pl-1 sm:pl-2">
-                  ${ex.steps.map((step, sIdx) => `
-                    <div class="relative pl-5 pb-1 border-l-2 border-blue-500/40 last:border-transparent last:pb-0">
-                      <div class="absolute -left-[8px] top-0 size-3.5 rounded-full bg-blue-500 text-white text-[9px] font-bold flex items-center justify-center">
-                        ${sIdx + 1}
-                      </div>
-                      <div class="space-y-0.5">
-                        <h4 class="text-xs font-semibold text-foreground">${esc(step.title)}</h4>
-                        <div class="text-xs text-foreground/90 leading-relaxed math-content">
-                          ${esc(step.content)}
+                <div class="space-y-4 pt-1">
+                  ${ex.steps.map((step, sIdx) => {
+                    const cleanTitle = step.title.replace(/^Adım\s*\d+\s*:\s*/i, '').trim() || step.title;
+                    return `
+                      <div class="relative pl-8 sm:pl-9 pb-3 border-l-2 border-blue-500/30 dark:border-blue-500/40 last:border-transparent last:pb-0">
+                        <div class="absolute -left-[10px] top-0 size-5 rounded-full bg-blue-600 dark:bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center shadow-xs ring-4 ring-card select-none">
+                          ${sIdx + 1}
+                        </div>
+                        <div class="space-y-1.5">
+                          <h4 class="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-1.5 flex-wrap">
+                            <span class="text-blue-600 dark:text-blue-400 font-bold font-mono">Adım ${sIdx + 1}:</span>
+                            <span>${esc(cleanTitle)}</span>
+                          </h4>
+                          <div class="text-sm sm:text-base text-foreground/90 leading-relaxed math-content pl-0.5">
+                            ${esc(step.content)}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  `).join('')}
+                    `;
+                  }).join('')}
                 </div>
 
                 <!-- Final Answer Callout -->
-                <div class="mt-3 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between gap-3 flex-wrap">
-                  <div class="text-xs font-bold text-emerald-700 dark:text-emerald-300">
-                    Nihai Sonuç:
+                <div class="mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between gap-3 flex-wrap">
+                  <div class="text-xs sm:text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1.5">
+                    <i data-lucide="check-check" class="size-4"></i>
+                    <span>Nihai Sonuç:</span>
                   </div>
-                  <div class="text-xs sm:text-sm font-bold font-mono text-emerald-700 dark:text-emerald-300 math-content">
+                  <div class="text-sm sm:text-base font-bold font-mono text-emerald-700 dark:text-emerald-300 math-content">
                     ${esc(ex.answer)}
                   </div>
                 </div>
@@ -3874,11 +3885,11 @@ const CONFIG = {
             ` : ''}
           </div>
 
-          <div class="text-xs sm:text-sm font-medium text-foreground math-content">
+          <div class="text-sm sm:text-base font-medium text-foreground math-content leading-relaxed">
             ${esc(quiz.question)}
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             ${quiz.options.map((opt, oIdx) => {
               const isSelected = hasAnsweredQuiz && userQuizChoice === oIdx;
               const isCorrectOpt = oIdx === quiz.correctIndex;
@@ -3897,19 +3908,19 @@ const CONFIG = {
                 <button
                   type="button"
                   data-portal-click="selectStudyQuizOption" data-portal-click-args="[${jsArg(currentTopic.id)}, ${oIdx}]"
-                  class="p-2.5 text-left rounded-lg border text-xs font-medium transition cursor-pointer flex items-center gap-2 ${btnClass}"
+                  class="p-3 text-left rounded-lg border text-xs sm:text-sm font-medium transition cursor-pointer flex items-center gap-2.5 ${btnClass}"
                 >
-                  <span class="size-4 rounded-full border border-current flex items-center justify-center shrink-0 text-[9px] font-bold">
+                  <span class="size-5 rounded-full border border-current flex items-center justify-center shrink-0 text-[10px] font-bold">
                     ${['A', 'B', 'C', 'D'][oIdx] || oIdx + 1}
                   </span>
-                  <span class="math-content flex-1">${esc(opt)}</span>
+                  <span class="math-content flex-1 text-sm sm:text-base">${esc(opt)}</span>
                 </button>
               `;
             }).join('')}
           </div>
 
           ${hasAnsweredQuiz ? `
-            <div class="p-2.5 rounded-lg ${isQuizCorrect ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-200' : 'bg-muted border border-border text-foreground/90'} text-xs leading-relaxed math-content">
+            <div class="p-3 rounded-lg ${isQuizCorrect ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-200' : 'bg-muted border border-border text-foreground/90'} text-xs sm:text-sm leading-relaxed math-content">
               <strong>Açıklama:</strong> ${esc(quiz.explanation)}
             </div>
           ` : ''}

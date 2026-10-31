@@ -752,14 +752,17 @@
     }
 
     /* KaTeX & Calculus Study Mode polish */
+    .math-content .katex {
+      font-size: 1.18em;
+    }
     .math-content .katex-display {
-      margin: 0.35rem 0 !important;
+      margin: 0.5rem 0 !important;
       overflow-x: auto;
       overflow-y: hidden;
-      padding: 0.15rem 0 !important;
+      padding: 0.25rem 0 !important;
     }
-    .math-content .katex {
-      font-size: 1.04em;
+    .math-content .katex-display > .katex {
+      font-size: 1.25em;
     }
     .dark .math-content .katex {
       color: #f4f4f5;
@@ -773,6 +776,13 @@
     @keyframes studyFadeIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
   </style>
 </head>
@@ -926,17 +936,6 @@
 
     <!-- ================= RIGHT INSET ================= -->
     <div data-slot="sidebar-inset" class="bg-background relative flex min-w-0 flex-1 flex-col">
-
-      <!-- Test Environment Notice Banner -->
-      <div class="bg-blue-600/10 dark:bg-blue-500/20 border-b border-blue-500/30 px-3 sm:px-6 py-2 text-xs text-blue-800 dark:text-blue-200 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2 min-w-0">
-          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-600 text-white font-mono uppercase tracking-wide shrink-0">Test Sürümü</span>
-          <span class="truncate">Calculus I: Adım Adım Öğrenme Modu test ortamındasınız. Paul's Online Math Notes tabanlıdır.</span>
-        </div>
-        <div class="flex items-center gap-2 shrink-0 text-[11px] font-semibold">
-          <a href="index.html" class="underline hover:opacity-80">Ana Siteye Dön</a>
-        </div>
-      </div>
 
       <header class="bg-card sticky top-0 z-30 border-b border-border">
         <div class="flex w-full items-center justify-between gap-2.5 sm:gap-4 px-3 py-2 sm:px-6 lg:px-8">
