@@ -3582,16 +3582,16 @@ const CONFIG = {
       // Sidebar HTML (Collapsible Rail on Desktop / Sleek Horizontal Top Bar on Mobile)
       const sidebarHtml = isStudyNavCollapsed ? `
         <!-- Collapsed Rail: Horizontal Top Bar on Mobile, Slim Vertical Rail on Desktop -->
-        <aside class="w-full lg:w-14 shrink-0 rounded-2xl border border-border bg-card p-1.5 sm:p-2 lg:p-1.5 flex flex-row lg:flex-col items-center justify-between lg:justify-start gap-1.5 sm:gap-2 shadow-2xs sticky top-14 sm:top-16 lg:top-20 z-20">
-          <div class="flex items-center lg:flex-col gap-1.5 shrink-0">
+        <aside class="study-rail-collapsed rounded-2xl border border-border bg-card p-1.5 sm:p-2 md:p-1.5 shadow-2xs">
+          <div class="flex items-center md:flex-col gap-1.5 shrink-0">
             <button
               type="button"
               data-portal-click="toggleStudyNav" data-portal-click-args="[]"
               title="Müfredatı Genişlet"
               class="size-8 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition cursor-pointer shrink-0"
             >
-              <i data-lucide="chevrons-right" class="size-4 hidden lg:block"></i>
-              <i data-lucide="layout-grid" class="size-4 lg:hidden"></i>
+              <i data-lucide="chevrons-right" class="size-4 hidden md:block"></i>
+              <i data-lucide="layout-grid" class="size-4 md:hidden"></i>
             </button>
 
             <div
@@ -3602,10 +3602,10 @@ const CONFIG = {
             </div>
           </div>
 
-          <div class="w-px h-6 lg:w-6 lg:h-px bg-border my-0 lg:my-0.5 shrink-0"></div>
+          <div class="w-px h-6 md:w-6 md:h-px bg-border my-0 md:my-0.5 shrink-0"></div>
 
           <!-- Topic Buttons: Horizontal Scroll on Mobile, Vertical Stack on Desktop -->
-          <div class="flex flex-row lg:flex-col items-center gap-1.5 flex-1 min-w-0 lg:w-full overflow-x-auto lg:overflow-x-visible py-0.5 no-scrollbar">
+          <div class="study-rail-topics no-scrollbar">
             ${allTopics.map(t => {
               const isSelected = t.id === currentTopic.id;
               const isDone = completedStudyTopics.has(t.id);
@@ -3630,7 +3630,7 @@ const CONFIG = {
         </aside>
       ` : `
         <!-- Expanded Sidebar: Sticky on Desktop, Collapsible with Left Chevron -->
-        <aside class="w-full lg:w-72 xl:w-80 shrink-0 rounded-2xl border border-border bg-card p-3 space-y-3 shadow-2xs lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
+        <aside class="study-sidebar-expanded rounded-2xl border border-border bg-card p-3 space-y-3 shadow-2xs">
           <!-- Top Header Banner embedded inside sidebar -->
           <div class="rounded-xl bg-blue-500/10 border border-blue-500/20 p-3 space-y-2">
             <div class="flex items-center justify-between gap-1.5">
@@ -3976,12 +3976,12 @@ const CONFIG = {
       `;
 
       return `
-        <div id="studyTopicContentTop" class="calculus-study-view flex flex-col lg:flex-row items-start gap-4">
+        <div id="studyTopicContentTop" class="calculus-study-view study-layout">
           <!-- Left Collapsible Sidebar -->
           ${sidebarHtml}
 
           <!-- Right Topic Main Content Area -->
-          <div class="flex-1 min-w-0 space-y-4 w-full">
+          <div class="study-main-content space-y-4">
             <!-- Header Card for Topic -->
             <div class="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-3 shadow-2xs">
               <div class="flex items-center justify-between gap-2 flex-wrap">

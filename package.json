@@ -2,7 +2,7 @@
   "name": "anku-eee-materials",
   "private": true,
   "scripts": {
-    "build:assets": "tailwindcss -i styles/tailwind.css -o assets/vendor/tailwind.css --minify && node scripts/vendor-assets.cjs",
+    "build:assets": "tailwindcss -c tailwind.config.cjs -i styles/tailwind.css -o assets/vendor/tailwind.css --minify && node scripts/vendor-assets.cjs",
     "test:security": "node --test tests/*.test.cjs"
   },
   "devDependencies": {
