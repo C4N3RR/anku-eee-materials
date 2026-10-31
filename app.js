@@ -1334,13 +1334,11 @@ const CONFIG = {
       return allTopics.some(t => t.id === topicId);
     }
 
-    let activeCourseTab = 'materials'; // 'materials' | 'study'
+    let activeCourseTab = 'study'; // 'study' (default for Calculus I) | 'materials'
     try {
       const savedCourseTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
       if (savedCourseTab === 'study' || savedCourseTab === 'materials') {
         activeCourseTab = savedCourseTab;
-      } else if (typeof location !== 'undefined' && location.pathname.includes('test')) {
-        activeCourseTab = 'study';
       }
     } catch {}
 
@@ -2074,11 +2072,6 @@ const CONFIG = {
 
     function syncCourseFromHash() {
       if (!location.hash) {
-        if (location.pathname.includes('test') && typeof window.CALCULUS_STUDY_DATA !== 'undefined') {
-          activeCourseTab = 'study';
-          location.hash = '#MTH0101';
-          return;
-        }
         activeView = 'home';
         activeCourseId = null;
         return;
@@ -2134,13 +2127,11 @@ const CONFIG = {
             const savedTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
             if (savedTab === 'study' || savedTab === 'materials') {
               activeCourseTab = savedTab;
-            } else if (location.pathname.includes('test')) {
-              activeCourseTab = 'study';
             } else {
-              activeCourseTab = 'materials';
+              activeCourseTab = 'study';
             }
           } catch {
-            activeCourseTab = 'materials';
+            activeCourseTab = 'study';
           }
         }
 
@@ -2213,7 +2204,7 @@ const CONFIG = {
       activeCourseId = null;
       highlightedStaffId = null;
       courseLocalSearch = '';
-      activeCourseTab = (typeof location !== 'undefined' && location.pathname.includes('test')) ? 'study' : 'materials';
+      activeCourseTab = 'study';
       updateHeaderBreadcrumb(null);
       updatePageMeta(null, null);
       renderSidebarCourses();
@@ -2289,10 +2280,8 @@ const CONFIG = {
           const savedTab = localStorage.getItem('anku_course_tab_MTH0101_v1');
           if (savedTab === 'study' || savedTab === 'materials') {
             activeCourseTab = savedTab;
-          } else if (location.pathname.includes('test')) {
-            activeCourseTab = 'study';
           } else {
-            activeCourseTab = 'materials';
+            activeCourseTab = 'study';
           }
           const savedTopic = localStorage.getItem('anku_study_active_topic_id_v1');
           if (savedTopic && isValidStudyTopic(savedTopic)) {
