@@ -2098,11 +2098,7 @@ const CONFIG = {
       activeCourseId = null;
       highlightedStaffId = null;
       courseLocalSearch = '';
-      if (code !== 'MTH0101') {
-        activeCourseTab = 'materials';
-      } else if (location.pathname.includes('test')) {
-        activeCourseTab = 'study';
-      }
+      activeCourseTab = (typeof location !== 'undefined' && location.pathname.includes('test')) ? 'study' : 'materials';
       updateHeaderBreadcrumb(null);
       updatePageMeta(null, null);
       renderSidebarCourses();
@@ -2110,7 +2106,9 @@ const CONFIG = {
       if (window.innerWidth < 768) {
         toggleMobileSidebar(false);
       }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (typeof window.scrollTo === 'function') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     };
 
     window.goToStaffPage = function(staffId = null, opts = {}) {

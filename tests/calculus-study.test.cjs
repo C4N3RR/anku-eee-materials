@@ -113,5 +113,10 @@ test('Calculus study mode interacts cleanly with DOM and local storage', () => {
   vm.runInContext('toggleStudyNav()', ctx);
   assert.equal(vm.runInContext('isStudyNavCollapsed', ctx), false);
 
+  // Return to home page (ANKU EEE Portal logo / brand button)
+  vm.runInContext('goHome()', ctx);
+  assert.equal(vm.runInContext('activeView', ctx), 'home');
+  assert.equal(vm.runInContext('activeCourseId', ctx), null);
+
   dom.window.close();
 });
