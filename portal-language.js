@@ -29,6 +29,21 @@
       link.href = target.href;
     });
   }
+  let feedbackAnimation;
+  document.addEventListener('click', event => {
+    const button = event.target instanceof Element ? event.target.closest('#langToggleBtn') : null;
+    if (!button || typeof button.animate !== 'function') return;
+    feedbackAnimation?.cancel();
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    feedbackAnimation = button.animate([
+      {transform: 'scale(1)', offset: 0},
+      {transform: 'scale(0.86)', offset: 0.16},
+      {transform: 'scale(1.12)', offset: 0.44},
+      {transform: 'scale(0.96)', offset: 0.67},
+      {transform: 'scale(1.025)', offset: 0.84},
+      {transform: 'scale(1)', offset: 1}
+    ], {duration: 440, easing: 'ease-out'});
+  }, true);
   window.PortalLanguage = Object.freeze({read, write});
   document.documentElement.lang = read();
 })();
