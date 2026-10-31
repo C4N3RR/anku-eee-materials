@@ -100,7 +100,7 @@
               }
             ],
             quiz: {
-              question: 'Konum fonksiyonu $s(t)$ olan bir cismin $t=a$ anındaki anlık hızı hangi limit ile tanımlanır?',
+              question: 'Konum fonksiyonu $s(t)$ olan bir cismin $t = a$ anındaki anlık hızı hangi limit ile tanımlanır?',
               options: [
                 '$\\lim_{h \\to 0} \\frac{s(a+h) - s(a)}{h}$',
                 '$\\lim_{h \\to 0} \\frac{s(a+h) + s(a)}{h}$',
@@ -119,7 +119,7 @@
             subTitle: 'The Limit & One-Sided Limits',
             sourceUrl: 'https://tutorial.math.lamar.edu/Classes/CalcI/TheLimit.aspx',
             readTime: '12 dk',
-            overview: 'Limit, fonksiyonun bir noktadaki değeriyle değil, o noktaya çok yaklaştığında nasıl davrandığı ile ilgilenir. Paul Dawkins\'in vurguladığı gibi: $\\lim_{x \\to a} f(x) = L$ dediğimizde $x=a$ noktasında ne olduğu bizi ilgilendirmez; önemli olan $x$, $a$\'ya yaklaşırken $f(x)$\'in hangi değere yaklaştığıdır.',
+            overview: 'Limit, fonksiyonun bir noktadaki değeriyle değil, o noktaya çok yaklaştığında nasıl davrandığı ile ilgilenir. Paul Dawkins\'in vurguladığı gibi: $\\lim_{x \\to a} f(x) = L$ dediğimizde $x = a$ noktasında ne olduğu bizi ilgilendirmez; önemli olan $x$, $a$\'ya yaklaşırken $f(x)$\'in hangi değere yaklaştığıdır.',
             keyFormulas: [
               {
                 label: 'İki Taraflı Limit',
@@ -167,7 +167,7 @@
                 id: 'ex-limit-2',
                 title: 'Örnek 2: Parçalı Fonksiyon Limiti',
                 question: '$f(x) = \\begin{cases} x^2 + 1, & x < 1 \\\\ 3 - x, & x > 1 \\end{cases}$ fonksiyonu için $\\lim_{x \\to 1} f(x)$ değerini inceleyiniz.',
-                hint: '$x=1$ noktasında kural değiştiğinden sağdan ($x > 1$) ve soldan ($x < 1$) limitleri ayrı ayrı hesaplayın.',
+                hint: '$x = 1$ noktasında kural değiştiğinden sağdan ($x > 1$) ve soldan ($x < 1$) limitleri ayrı ayrı hesaplayın.',
                 steps: [
                   {
                     title: 'Adım 1: Soldan limit (x < 1)',
@@ -351,7 +351,7 @@
               question: '$\\lim_{x \\to 4} \\frac{x - 4}{\\sqrt{x} - 2}$ limitinin değeri kaçtır?',
               options: ['4', '2', '0', 'Belirsiz'],
               correctIndex: 0,
-              explanation: '$x - 4 = (\\sqrt{x} - 2)(\\sqrt{x} + 2)$ olarak açılır. Sadeleşince geriye $\\sqrt{x} + 2$ kalır. $x=4$ için $\\sqrt{4} + 2 = 4$ olur.'
+              explanation: '$x - 4 = (\\sqrt{x} - 2)(\\sqrt{x} + 2)$ olarak açılır. Sadeleşince geriye $\\sqrt{x} + 2$ kalır. $x = 4$ için $\\sqrt{4} + 2 = 4$ olur.'
             }
           }
         ]

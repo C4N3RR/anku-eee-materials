@@ -166,3 +166,25 @@ select[multiple].portal-input { min-height:110px; }
   width: 100%;
 }
 
+/* KaTeX & Math Content Spacing */
+.math-content .katex {
+  font-size: 1.18em;
+  margin: 0 0.28em;
+}
+.math-content .katex-display {
+  margin: 0.5rem 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0 !important;
+}
+.math-content .katex-display .katex {
+  margin: 0 !important;
+  font-size: 1.25em;
+}
+.dark .math-content .katex {
+  color: #f4f4f5;
+}
+.math-content .katex-html {
+  color: inherit;
+}
+
