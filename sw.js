@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anku-eee-shell-v26';
+const CACHE_NAME = 'anku-eee-shell-v27';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -14,8 +14,12 @@ const PRECACHE_URLS = [
   './analytics-init.js',
   './privacy-controls.js',
   './not-found-controls.js',
+  './calculus-study-data.js',
   './assets/vendor/tailwind.css',
   './assets/vendor/lucide.min.js',
+  './assets/vendor/katex/katex.min.css',
+  './assets/vendor/katex/katex.min.js',
+  './assets/vendor/katex/auto-render.min.js',
   './favicon.svg',
   './assets/ankara-uni-logo.png',
   './assets/android-chrome-192x192.png',

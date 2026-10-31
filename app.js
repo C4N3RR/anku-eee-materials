@@ -1325,6 +1325,41 @@ const CONFIG = {
     let tableCourseFilter = 'ALL';
     let courseLocalSearch = '';
 
+    // Calculus I (MTH0101) Interactive Study Mode State
+    let activeCourseTab = 'materials'; // 'materials' | 'study'
+    let activeStudyTopicId = 'tangents-rates';
+    let openStudyExamples = new Set();
+    let openStudyHints = new Set();
+    let studyQuizAnswers = {};
+    let completedStudyTopics = new Set();
+    try {
+      const savedCompleted = localStorage.getItem('anku_mth0101_completed_topics_v1');
+      if (savedCompleted) completedStudyTopics = new Set(JSON.parse(savedCompleted));
+    } catch {}
+
+    function triggerMathRendering(container) {
+      if (typeof window !== 'undefined' && typeof window.renderMathInElement === 'function') {
+        const target = container || $('courseMaterialsContainer') || document.body;
+        try {
+          window.renderMathInElement(target, {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '$', right: '$', display: false }
+            ],
+            throwOnError: false
+          });
+        } catch (e) {
+          console.warn('Math rendering error:', e);
+        }
+      }
+    }
+
+    function saveCompletedStudyTopics() {
+      try {
+        localStorage.setItem('anku_mth0101_completed_topics_v1', JSON.stringify(Array.from(completedStudyTopics)));
+      } catch {}
+    }
+
     const jsArg = PortalSecurity.argument;
     const safeLink = PortalSecurity.url;
     const safeImage = PortalSecurity.image;
@@ -1882,6 +1917,9 @@ const CONFIG = {
       activeView = 'course';
       activeCourseId = node.id;
       courseLocalSearch = '';
+      if (code !== 'MTH0101') {
+        activeCourseTab = 'materials';
+      }
       expandSidebarForCourse(code);
       const meta = courseMetadata[code] || { name: code };
       updateHeaderBreadcrumb(code, meta.name);
@@ -1921,6 +1959,9 @@ const CONFIG = {
       activeCourseId = null;
       highlightedStaffId = null;
       courseLocalSearch = '';
+      if (code !== 'MTH0101') {
+        activeCourseTab = 'materials';
+      }
       updateHeaderBreadcrumb(null);
       updatePageMeta(null, null);
       renderSidebarCourses();
@@ -1974,6 +2015,9 @@ const CONFIG = {
       activeCourseId = courseNode ? courseNode.id : courseId;
       highlightedStaffId = null;
       courseLocalSearch = '';
+      if (code !== 'MTH0101') {
+        activeCourseTab = 'materials';
+      }
       if (code) {
         expandSidebarForCourse(code);
         const meta = courseMetadata[code] || { name: courseNode.name };
@@ -3167,6 +3211,7 @@ const CONFIG = {
 
       const code = courseNode.name.toUpperCase().trim();
       const curr = CURRICULUM_MAP.get(code);
+      const hasStudyMode = (code === 'MTH0101' && typeof window !== 'undefined' && Boolean(window.CALCULUS_STUDY_DATA));
       const meta = courseMetadata[code] || {
         name: curr?.name || courseNode.name,
         instructorIds: curr?.instructorIds || [],
@@ -3397,13 +3442,595 @@ const CONFIG = {
 
         ${courseLinksSectionHtml}
 
+        ${hasStudyMode ? `
+          <div class="flex items-center justify-between flex-wrap gap-3 pt-1 border-b border-border pb-3">
+            <div class="inline-flex p-1 rounded-xl bg-muted/60 border border-border text-xs font-medium">
+              <button
+                type="button"
+                data-portal-click="setCourseActiveTab" data-portal-click-args="[&quot;materials&quot;]"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeCourseTab === 'materials' ? 'bg-background text-foreground shadow-2xs font-semibold' : 'text-muted-foreground hover:text-foreground'}"
+              >
+                <i data-lucide="folder" class="size-3.5"></i>
+                <span>Ders Materyalleri</span>
+              </button>
+              <button
+                type="button"
+                data-portal-click="setCourseActiveTab" data-portal-click-args="[&quot;study&quot;]"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeCourseTab === 'study' ? 'bg-primary text-primary-foreground shadow-2xs font-semibold' : 'text-muted-foreground hover:text-foreground'}"
+              >
+                <i data-lucide="graduation-cap" class="size-3.5"></i>
+                <span>Adım Adım Öğren</span>
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold ${activeCourseTab === 'study' ? 'bg-white/20 text-white' : 'bg-blue-500/15 text-blue-600 dark:text-blue-400'}">Beta</span>
+              </button>
+            </div>
+            ${activeCourseTab === 'study' ? `
+              <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                <span class="inline-flex items-center gap-1.5 font-medium">
+                  <i data-lucide="book-open-check" class="size-3.5 text-blue-500"></i>
+                  <span>Kaynak: Paul's Online Math Notes</span>
+                </span>
+              </div>
+            ` : ''}
+          </div>
+        ` : ''}
+
         <div id="courseMaterialsContainer" class="space-y-6">
-          ${renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl)}
+          ${(hasStudyMode && activeCourseTab === 'study')
+            ? renderCalculusStudyHub(code)
+            : renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl)}
         </div>
       `;
 
       lucide.createIcons();
+      if (hasStudyMode && activeCourseTab === 'study') {
+        triggerMathRendering(container);
+      }
     }
+
+    // ================= CALCULUS STUDY HUB (PAUL'S NOTES) =================
+    function renderCalculusStudyHub(code) {
+      const data = typeof window !== 'undefined' ? window.CALCULUS_STUDY_DATA : null;
+      if (!data) {
+        return `
+          <div class="p-8 text-center rounded-xl border border-dashed border-border bg-card">
+            <p class="text-sm text-muted-foreground">Calculus öğrenme verisi yüklenemedi.</p>
+          </div>
+        `;
+      }
+
+      const allTopics = data.weeks.flatMap(w => w.topics);
+      const currentTopic = allTopics.find(t => t.id === activeStudyTopicId) || allTopics[0];
+      const currentTopicIndex = allTopics.findIndex(t => t.id === currentTopic.id);
+      const prevTopic = currentTopicIndex > 0 ? allTopics[currentTopicIndex - 1] : null;
+      const nextTopic = currentTopicIndex < allTopics.length - 1 ? allTopics[currentTopicIndex + 1] : null;
+
+      const totalTopics = allTopics.length;
+      const completedCount = allTopics.filter(t => completedStudyTopics.has(t.id)).length;
+      const progressPercent = totalTopics > 0 ? Math.round((completedCount / totalTopics) * 100) : 0;
+      const isTopicDone = completedStudyTopics.has(currentTopic.id);
+
+      const userQuizChoice = studyQuizAnswers[currentTopic.id];
+      const hasAnsweredQuiz = (typeof userQuizChoice === 'number');
+      const isQuizCorrect = hasAnsweredQuiz && userQuizChoice === currentTopic.quiz.correctIndex;
+
+      // Weeks & Topics Navigator List
+      const weeksNavHtml = data.weeks.map(week => {
+        const weekCompletedCount = week.topics.filter(t => completedStudyTopics.has(t.id)).length;
+        const weekTotal = week.topics.length;
+        return `
+          <div class="space-y-1.5 pt-3 first:pt-1">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground px-2 flex items-center justify-between">
+              <span class="truncate">${esc(week.title.split(':')[0])}</span>
+              <span class="text-[10px] font-mono shrink-0 font-semibold">${weekCompletedCount}/${weekTotal}</span>
+            </div>
+            <div class="space-y-1">
+              ${week.topics.map(topic => {
+                const isSelected = topic.id === currentTopic.id;
+                const isDone = completedStudyTopics.has(topic.id);
+                return `
+                  <button
+                    type="button"
+                    data-portal-click="selectStudyTopic" data-portal-click-args="[${jsArg(topic.id)}]"
+                    class="w-full text-left flex items-start gap-2.5 p-2 rounded-lg text-xs transition group cursor-pointer ${
+                      isSelected
+                        ? 'bg-blue-500/15 dark:bg-blue-500/25 text-blue-600 dark:text-blue-400 font-semibold border border-blue-500/30 shadow-2xs'
+                        : 'hover:bg-muted text-foreground/80 hover:text-foreground border border-transparent'
+                    }"
+                  >
+                    <div class="mt-0.5 shrink-0">
+                      <div class="size-4 rounded-full flex items-center justify-center text-[9px] ${
+                        isDone
+                          ? 'bg-emerald-500 text-white'
+                          : isSelected
+                            ? 'border-2 border-blue-500 text-blue-500'
+                            : 'border border-muted-foreground/40 text-muted-foreground'
+                      }">
+                        ${isDone ? '<i data-lucide="check" class="size-3 stroke-[3]"></i>' : ''}
+                      </div>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="truncate font-medium leading-tight">${esc(topic.title)}</div>
+                      <div class="text-[10px] text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                        <span>${esc(topic.readTime)}</span>
+                        <span>•</span>
+                        <span class="truncate opacity-80">${esc(topic.subTitle)}</span>
+                      </div>
+                    </div>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Key Formulas
+      const formulasHtml = (currentTopic.keyFormulas || []).map(f => `
+        <div class="p-3.5 sm:p-4 rounded-xl border border-border bg-card/70 space-y-2">
+          <div class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide flex items-center gap-1.5">
+            <i data-lucide="sigma" class="size-3.5"></i>
+            <span>${esc(f.label)}</span>
+          </div>
+          <div class="math-content overflow-x-auto py-1 text-center font-mono text-sm sm:text-base text-foreground">
+            $$${f.latex}$$
+          </div>
+          ${f.desc ? `<p class="text-xs text-muted-foreground leading-relaxed">${esc(f.desc)}</p>` : ''}
+        </div>
+      `).join('');
+
+      // Critical Notes / Pitfalls
+      const notesHtml = (currentTopic.notes || []).map(note => `
+        <div class="flex items-start gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-foreground/90">
+          <i data-lucide="alert-circle" class="size-4 text-amber-500 shrink-0 mt-0.5"></i>
+          <span class="leading-relaxed math-content">${esc(note)}</span>
+        </div>
+      `).join('');
+
+      // Worked Examples (Paul Dawkins' Style: click to expand step-by-step solution)
+      const examplesHtml = (currentTopic.examples || []).map(ex => {
+        const isSolOpen = openStudyExamples.has(ex.id);
+        const isHintOpen = openStudyHints.has(ex.id);
+        return `
+          <div class="border border-border rounded-xl bg-card overflow-hidden shadow-2xs transition">
+            <div class="p-4 sm:p-5 space-y-3">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono">
+                  ${esc(ex.title)}
+                </span>
+                ${ex.hint ? `
+                  <button
+                    type="button"
+                    data-portal-click="toggleStudyHint" data-portal-click-args="[${jsArg(ex.id)}]"
+                    class="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 transition cursor-pointer"
+                  >
+                    <i data-lucide="lightbulb" class="size-3.5"></i>
+                    <span>${isHintOpen ? 'İpucunu Kapat' : 'İpucu Al'}</span>
+                  </button>
+                ` : ''}
+              </div>
+
+              <!-- Question statement (LaTeX) -->
+              <div class="text-sm sm:text-base font-medium text-foreground leading-relaxed math-content pt-1">
+                ${esc(ex.question)}
+              </div>
+
+              <!-- Hint box -->
+              ${isHintOpen ? `
+                <div class="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2.5 math-content">
+                  <i data-lucide="lightbulb" class="size-4 text-amber-500 shrink-0 mt-0.5"></i>
+                  <div class="space-y-1">
+                    <span class="font-semibold">İpucu / Strateji:</span>
+                    <div class="leading-relaxed">${esc(ex.hint)}</div>
+                  </div>
+                </div>
+              ` : ''}
+
+              <!-- Expand/Collapse Button (Paul's style) -->
+              <div class="pt-2">
+                <button
+                  type="button"
+                  data-portal-click="toggleStudyExample" data-portal-click-args="[${jsArg(ex.id)}]"
+                  class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                    isSolOpen
+                      ? 'bg-muted text-foreground hover:bg-muted/80'
+                      : 'bg-primary text-primary-foreground hover:opacity-90 shadow-2xs'
+                  }"
+                >
+                  <i data-lucide="${isSolOpen ? 'chevron-up' : 'chevron-down'}" class="size-4"></i>
+                  <span>${isSolOpen ? 'Çözümü Gizle' : 'Çözümü Göster (Adım Adım)'}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Solution Steps (Expanded) -->
+            ${isSolOpen ? `
+              <div class="border-t border-border bg-muted/20 p-4 sm:p-5 space-y-4">
+                <div class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                  <i data-lucide="check-circle-2" class="size-3.5 text-emerald-500"></i>
+                  <span>Adım Adım Çözüm</span>
+                </div>
+
+                <div class="space-y-4 pl-1 sm:pl-2">
+                  ${ex.steps.map((step, sIdx) => `
+                    <div class="relative pl-6 pb-2 border-l-2 border-blue-500/40 last:border-transparent last:pb-0">
+                      <div class="absolute -left-[9px] top-0 size-4 rounded-full bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center">
+                        ${sIdx + 1}
+                      </div>
+                      <div class="space-y-1">
+                        <h4 class="text-xs sm:text-sm font-semibold text-foreground">${esc(step.title)}</h4>
+                        <div class="text-xs sm:text-sm text-foreground/90 whitespace-pre-line leading-relaxed math-content">
+                          ${esc(step.content)}
+                        </div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+
+                <!-- Final Answer Callout -->
+                <div class="mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between gap-3 flex-wrap">
+                  <div class="text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                    Nihai Sonuç:
+                  </div>
+                  <div class="text-sm font-bold font-mono text-emerald-700 dark:text-emerald-300 math-content">
+                    ${esc(ex.answer)}
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
+      // Quiz Checkpoint
+      const quiz = currentTopic.quiz;
+      const quizHtml = quiz ? `
+        <div class="border border-border rounded-xl bg-card p-4 sm:p-5 space-y-4 shadow-2xs">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <div class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <i data-lucide="help-circle" class="size-4 text-primary"></i>
+              <span>Kendini Sına (Kavrama Sorusu)</span>
+            </div>
+            ${hasAnsweredQuiz ? `
+              <span class="text-xs font-semibold px-2 py-0.5 rounded ${isQuizCorrect ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/15 text-rose-600 dark:text-rose-400'}">
+                ${isQuizCorrect ? 'Tebrikler! Doğru Cevap' : 'Tekrar İnceleyin'}
+              </span>
+            ` : ''}
+          </div>
+
+          <div class="text-sm sm:text-base font-medium text-foreground math-content">
+            ${esc(quiz.question)}
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            ${quiz.options.map((opt, oIdx) => {
+              const isSelected = hasAnsweredQuiz && userQuizChoice === oIdx;
+              const isCorrectOpt = oIdx === quiz.correctIndex;
+              let btnClass = 'border-border bg-card hover:bg-muted text-foreground';
+              if (hasAnsweredQuiz) {
+                if (isCorrectOpt) {
+                  btnClass = 'border-emerald-500 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-semibold';
+                } else if (isSelected) {
+                  btnClass = 'border-rose-500 bg-rose-500/15 text-rose-700 dark:text-rose-300 font-semibold';
+                } else {
+                  btnClass = 'border-border bg-muted/40 text-muted-foreground opacity-60';
+                }
+              }
+
+              return `
+                <button
+                  type="button"
+                  data-portal-click="selectStudyQuizOption" data-portal-click-args="[${jsArg(currentTopic.id)}, ${oIdx}]"
+                  class="p-3 text-left rounded-lg border text-xs sm:text-sm font-medium transition cursor-pointer flex items-center gap-2.5 ${btnClass}"
+                >
+                  <span class="size-5 rounded-full border border-current flex items-center justify-center shrink-0 text-[10px] font-bold">
+                    ${['A', 'B', 'C', 'D'][oIdx] || oIdx + 1}
+                  </span>
+                  <span class="math-content flex-1">${esc(opt)}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          ${hasAnsweredQuiz ? `
+            <div class="p-3 rounded-lg ${isQuizCorrect ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-200' : 'bg-muted border border-border text-foreground/90'} text-xs leading-relaxed math-content">
+              <strong>Açıklama:</strong> ${esc(quiz.explanation)}
+            </div>
+          ` : ''}
+        </div>
+      ` : '';
+
+      return `
+        <div class="calculus-study-view space-y-6">
+          <!-- Overview Card -->
+          <div class="rounded-2xl border border-blue-500/25 bg-blue-500/5 dark:bg-blue-500/10 p-4 sm:p-6 space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500 text-white font-mono tracking-wide">BETA MODU</span>
+                  <h2 class="text-base sm:text-lg font-bold text-foreground">Calculus I: Adım Adım Öğrenme</h2>
+                </div>
+                <p class="text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
+                  Lamar University <strong>Prof. Paul Dawkins</strong>'in açık ders notları temelinde hazırlanmıştır. Konuları sırayla inceleyin, çözümlü örnekleri adım adım açarak mantığını kavrayın.
+                </p>
+              </div>
+
+              <div class="flex items-center gap-3 shrink-0 bg-background/90 dark:bg-zinc-900/90 px-3.5 py-2 rounded-xl border border-border shadow-xs">
+                <div class="text-right">
+                  <div class="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">İlerleme</div>
+                  <div class="text-xs font-bold text-foreground font-mono">${completedCount} / ${totalTopics} Konu</div>
+                </div>
+                <div class="size-9 rounded-full border-2 border-blue-500 flex items-center justify-center font-bold text-xs text-blue-500 font-mono">
+                  %${progressPercent}
+                </div>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-zinc-200 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+              <div class="bg-blue-500 h-1.5 rounded-full transition-all duration-300" style="width: ${progressPercent}%;"></div>
+            </div>
+          </div>
+
+          <!-- Main Layout Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- Left Navigation (4 cols on lg) -->
+            <div class="lg:col-span-4 space-y-4">
+              <div class="rounded-2xl border border-border bg-card p-3.5 shadow-2xs space-y-2">
+                <div class="flex items-center justify-between px-2 pb-1 border-b border-border/60">
+                  <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <i data-lucide="layers" class="size-3.5"></i>
+                    <span>Ders Müfredatı</span>
+                  </span>
+                  <span class="text-[11px] font-mono text-muted-foreground font-medium">${completedCount}/${totalTopics} Tamamlandı</span>
+                </div>
+
+                ${weeksNavHtml}
+
+                ${completedCount > 0 ? `
+                  <div class="pt-2 px-1 border-t border-border/60">
+                    <button
+                      type="button"
+                      data-portal-click="resetStudyProgress" data-portal-click-args="[]"
+                      class="text-[11px] text-muted-foreground hover:text-rose-500 transition cursor-pointer flex items-center gap-1"
+                    >
+                      <i data-lucide="rotate-ccw" class="size-3"></i>
+                      <span>İlerlemeyi Sıfırla</span>
+                    </button>
+                  </div>
+                ` : ''}
+              </div>
+
+              <!-- Paul's Math Notes Source Attribution Card -->
+              <div class="rounded-2xl border border-border bg-muted/30 p-3.5 text-xs text-muted-foreground space-y-2">
+                <div class="flex items-center gap-1.5 font-semibold text-foreground">
+                  <i data-lucide="book-open" class="size-3.5 text-blue-500"></i>
+                  <span>Paul's Math Notes Referansı</span>
+                </div>
+                <p class="text-[11px] leading-relaxed">
+                  Bu modüldeki konu anlatımları ve çözümlü adımlar Lamar University Matematik Bölümü'nden <strong>Prof. Paul Dawkins</strong>'in Paul's Online Math Notes ders kaynağına dayanmaktadır.
+                </p>
+                <a
+                  href="${esc(safeLink(currentTopic.sourceUrl))}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-1.5 text-xs text-blue-500 hover:underline font-medium"
+                >
+                  <span>Bu Konunun Orijinal Sayfası</span>
+                  <i data-lucide="arrow-up-right" class="size-3"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Right Main Topic Content (8 cols on lg) -->
+            <div class="lg:col-span-8 space-y-6">
+              <!-- Topic Header Card -->
+              <div class="rounded-2xl border border-border bg-card p-5 sm:p-6 space-y-4 shadow-2xs">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                  <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                    Calculus I • Hafta ${data.weeks.find(w => w.id === currentTopic.weekId)?.number || 1}
+                  </span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-muted-foreground flex items-center gap-1">
+                      <i data-lucide="clock" class="size-3"></i>
+                      <span>${esc(currentTopic.readTime)}</span>
+                    </span>
+                    <button
+                      type="button"
+                      data-portal-click="toggleStudyTopicDone" data-portal-click-args="[${jsArg(currentTopic.id)}]"
+                      class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                        isTopicDone
+                          ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-2xs'
+                          : 'bg-muted hover:bg-muted/80 text-foreground border border-border'
+                      }"
+                    >
+                      <i data-lucide="${isTopicDone ? 'check-circle' : 'circle'}" class="size-3.5"></i>
+                      <span>${isTopicDone ? 'Tamamlandı' : 'Tamamlandı Olarak İşaretle'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="space-y-1">
+                  <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+                    ${esc(currentTopic.title)}
+                  </h1>
+                  <p class="text-xs sm:text-sm font-medium text-muted-foreground">
+                    ${esc(currentTopic.subTitle)}
+                  </p>
+                </div>
+
+                <!-- Topic Overview / Intuition -->
+                <div class="p-4 rounded-xl bg-muted/40 border border-border/80 text-xs sm:text-sm leading-relaxed text-foreground/90 space-y-2">
+                  <div class="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <i data-lucide="compass" class="size-3.5 text-blue-500"></i>
+                    <span>Kavramsal Yaklaşım & Sezgisel Giriş</span>
+                  </div>
+                  <p class="math-content leading-relaxed">${esc(currentTopic.overview)}</p>
+                </div>
+              </div>
+
+              <!-- Key Formulas & Theorems -->
+              ${formulasHtml ? `
+                <div class="space-y-3">
+                  <div class="flex items-center gap-2 px-1">
+                    <i data-lucide="sigma" class="size-4 text-blue-500"></i>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted-foreground">Temel Formüller ve Tanımlar</h3>
+                  </div>
+                  <div class="grid grid-cols-1 gap-3">
+                    ${formulasHtml}
+                  </div>
+                </div>
+              ` : ''}
+
+              <!-- Critical Notes / Pitfalls -->
+              ${notesHtml ? `
+                <div class="space-y-2.5">
+                  <div class="flex items-center gap-2 px-1">
+                    <i data-lucide="alert-triangle" class="size-4 text-amber-500"></i>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted-foreground">Dikkat Edilmesi Gereken Noktalar</h3>
+                  </div>
+                  <div class="space-y-2">
+                    ${notesHtml}
+                  </div>
+                </div>
+              ` : ''}
+
+              <!-- Worked Examples Section (Paul's Style) -->
+              <div class="space-y-3 pt-2">
+                <div class="flex items-center justify-between gap-2 px-1 flex-wrap">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check-square" class="size-4 text-blue-500"></i>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted-foreground">Paul's Notes Çözümlü Örnekleri</h3>
+                  </div>
+                  <span class="text-xs text-muted-foreground">Çözümleri adım adım açarak inceleyin</span>
+                </div>
+
+                <div class="space-y-4">
+                  ${examplesHtml}
+                </div>
+              </div>
+
+              <!-- Checkpoint Quiz -->
+              ${quizHtml ? `
+                <div class="space-y-3 pt-2">
+                  <div class="flex items-center gap-2 px-1">
+                    <i data-lucide="sparkles" class="size-4 text-purple-500"></i>
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-muted-foreground">Kavrama Testi</h3>
+                  </div>
+                  ${quizHtml}
+                </div>
+              ` : ''}
+
+              <!-- Navigation Footer (Previous / Next Topic) -->
+              <div class="pt-4 border-t border-border flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  ${prevTopic ? `
+                    <button
+                      type="button"
+                      data-portal-click="navigateStudyTopic" data-portal-click-args="[-1]"
+                      class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
+                    >
+                      <i data-lucide="arrow-left" class="size-3.5"></i>
+                      <span>Önceki: ${esc(prevTopic.title.split('(')[0].trim())}</span>
+                    </button>
+                  ` : '<div></div>'}
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    data-portal-click="toggleStudyTopicDone" data-portal-click-args="[${jsArg(currentTopic.id)}]"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                      isTopicDone
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-2xs'
+                        : 'bg-primary text-primary-foreground hover:opacity-90 shadow-2xs'
+                    }"
+                  >
+                    <i data-lucide="${isTopicDone ? 'check' : 'circle-check'}" class="size-3.5"></i>
+                    <span>${isTopicDone ? 'Konu Tamamlandı ✓' : 'Konuyu Tamamla'}</span>
+                  </button>
+
+                  ${nextTopic ? `
+                    <button
+                      type="button"
+                      data-portal-click="navigateStudyTopic" data-portal-click-args="[1]"
+                      class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition cursor-pointer shadow-2xs"
+                    >
+                      <span>Sonraki Konu</span>
+                      <i data-lucide="arrow-right" class="size-3.5"></i>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.setCourseActiveTab = function(tabName) {
+      activeCourseTab = tabName;
+      if (activeCourseId) renderCourseHub(activeCourseId);
+    };
+
+    window.selectStudyTopic = function(topicId) {
+      activeStudyTopicId = topicId;
+      if (activeCourseId) renderCourseHub(activeCourseId);
+      $('courseMaterialsContainer')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    window.toggleStudyExample = function(exampleId) {
+      if (openStudyExamples.has(exampleId)) {
+        openStudyExamples.delete(exampleId);
+      } else {
+        openStudyExamples.add(exampleId);
+      }
+      if (activeCourseId) renderCourseHub(activeCourseId);
+    };
+
+    window.toggleStudyHint = function(exampleId) {
+      if (openStudyHints.has(exampleId)) {
+        openStudyHints.delete(exampleId);
+      } else {
+        openStudyHints.add(exampleId);
+      }
+      if (activeCourseId) renderCourseHub(activeCourseId);
+    };
+
+    window.toggleStudyTopicDone = function(topicId) {
+      if (completedStudyTopics.has(topicId)) {
+        completedStudyTopics.delete(topicId);
+      } else {
+        completedStudyTopics.add(topicId);
+      }
+      saveCompletedStudyTopics();
+      if (activeCourseId) renderCourseHub(activeCourseId);
+    };
+
+    window.selectStudyQuizOption = function(topicId, optionIndex) {
+      studyQuizAnswers[topicId] = Number(optionIndex);
+      if (activeCourseId) renderCourseHub(activeCourseId);
+    };
+
+    window.navigateStudyTopic = function(direction) {
+      const data = typeof window !== 'undefined' ? window.CALCULUS_STUDY_DATA : null;
+      if (!data) return;
+      const allTopics = data.weeks.flatMap(w => w.topics);
+      const idx = allTopics.findIndex(t => t.id === activeStudyTopicId);
+      const nextIdx = idx + direction;
+      if (nextIdx >= 0 && nextIdx < allTopics.length) {
+        activeStudyTopicId = allTopics[nextIdx].id;
+        if (activeCourseId) renderCourseHub(activeCourseId);
+        $('courseMaterialsContainer')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    window.resetStudyProgress = function() {
+      if (!confirm('Tüm konu tamamlama ilerlemenizi sıfırlamak istediğinize emin misiniz?')) return;
+      completedStudyTopics.clear();
+      saveCompletedStudyTopics();
+      studyQuizAnswers = {};
+      if (activeCourseId) renderCourseHub(activeCourseId);
+    };
 
     function renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl) {
       const q = courseLocalSearch.trim().toLowerCase();
@@ -4781,6 +5408,14 @@ const CONFIG = {
       selectGlobalSearchFile: (...args) => { if (typeof selectGlobalSearchFile === 'function') return selectGlobalSearchFile(...args); },
       selectGlobalSearchStaff: (...args) => { if (typeof selectGlobalSearchStaff === 'function') return selectGlobalSearchStaff(...args); },
       setStaffCategoryFilter: (...args) => { if (typeof setStaffCategoryFilter === 'function') return setStaffCategoryFilter(...args); },
+      setCourseActiveTab: (...args) => { if (typeof setCourseActiveTab === 'function') return setCourseActiveTab(...args); },
+      selectStudyTopic: (...args) => { if (typeof selectStudyTopic === 'function') return selectStudyTopic(...args); },
+      toggleStudyExample: (...args) => { if (typeof toggleStudyExample === 'function') return toggleStudyExample(...args); },
+      toggleStudyHint: (...args) => { if (typeof toggleStudyHint === 'function') return toggleStudyHint(...args); },
+      toggleStudyTopicDone: (...args) => { if (typeof toggleStudyTopicDone === 'function') return toggleStudyTopicDone(...args); },
+      selectStudyQuizOption: (...args) => { if (typeof selectStudyQuizOption === 'function') return selectStudyQuizOption(...args); },
+      navigateStudyTopic: (...args) => { if (typeof navigateStudyTopic === 'function') return navigateStudyTopic(...args); },
+      resetStudyProgress: (...args) => { if (typeof resetStudyProgress === 'function') return resetStudyProgress(...args); },
       toggleSidebarSemester: (...args) => { if (typeof toggleSidebarSemester === 'function') return toggleSidebarSemester(...args); },
       toggleSidebarYear: (...args) => { if (typeof toggleSidebarYear === 'function') return toggleSidebarYear(...args); },
 
