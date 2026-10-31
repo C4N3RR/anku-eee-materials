@@ -3735,7 +3735,7 @@ const CONFIG = {
               >
                 <i data-lucide="graduation-cap" class="size-3.5"></i>
                 <span>Adım Adım Öğren</span>
-                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold ${activeCourseTab === 'study' ? 'bg-white/20 text-white' : 'bg-blue-500/15 text-blue-600 dark:text-blue-400'}">Beta</span>
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold ${activeCourseTab === 'study' ? 'bg-blue-600 text-white shadow-2xs' : 'bg-blue-500/15 text-blue-600 dark:text-blue-400'}">Beta</span>
               </button>
             </div>
             ${activeCourseTab === 'study' ? `
@@ -3816,14 +3816,15 @@ const CONFIG = {
                     }"
                   >
                     <div class="mt-0.5 shrink-0">
-                      <div class="size-4 rounded-full flex items-center justify-center text-[9px] ${
-                        isDone
-                          ? 'bg-emerald-500 text-white'
-                          : isSelected
-                            ? 'border-2 border-blue-500 text-blue-500'
-                            : 'border border-muted-foreground/40 text-muted-foreground'
+                      <div class="px-1.5 py-0.5 rounded-md flex items-center gap-1 font-mono text-[9px] font-bold ${
+                        isSelected
+                          ? 'bg-blue-500 text-white shadow-2xs'
+                          : isDone
+                            ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                            : 'bg-muted text-muted-foreground border border-border/60'
                       }">
-                        ${isDone ? '<i data-lucide="check" class="size-3 stroke-[3]"></i>' : esc(topic.topicNum || '')}
+                        <span>${esc(topic.topicNum || '')}</span>
+                        ${isDone ? '<i data-lucide="check" class="size-2.5 stroke-[3.5] text-emerald-600 dark:text-emerald-400"></i>' : ''}
                       </div>
                     </div>
                     <div class="min-w-0 flex-1">
@@ -3878,15 +3879,20 @@ const CONFIG = {
                   type="button"
                   data-portal-click="selectStudyTopic" data-portal-click-args="[${jsArg(t.id)}]"
                   title="${esc(t.topicNum || '')}: ${esc(t.title)} (%${tPercent})"
-                  class="size-8 shrink-0 rounded-xl flex items-center justify-center text-[10px] font-mono font-bold transition cursor-pointer ${
+                  class="relative size-8 shrink-0 rounded-xl flex items-center justify-center text-[10px] font-mono font-bold transition cursor-pointer ${
                     isSelected
                       ? 'bg-blue-500 text-white shadow-xs'
                       : isDone
-                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/25'
+                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/25'
                         : 'hover:bg-muted text-muted-foreground hover:text-foreground border border-transparent'
                   }"
                 >
-                  ${isDone && !isSelected ? '<i data-lucide="check" class="size-3.5 stroke-[3]"></i>' : esc(t.topicNum || '')}
+                  <span class="leading-none tracking-tight">${esc(t.topicNum || '')}</span>
+                  ${isDone ? `
+                    <span class="absolute -top-1 -right-1 size-3.5 rounded-full bg-emerald-500 text-white flex items-center justify-center ring-2 ring-card shadow-2xs" title="Tamamlandı">
+                      <i data-lucide="check" class="size-2 stroke-[3.5]"></i>
+                    </span>
+                  ` : ''}
                 </button>
               `;
             }).join('')}
