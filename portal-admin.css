@@ -88,6 +88,19 @@ select[multiple].portal-input { min-height:110px; }
 .academic-footnotes p { margin:0; }
 
 /* Calculus Study Mode Responsive Layout */
+#studyTopicHeaderCard,
+#studyTopicContentTop,
+.study-layout {
+  scroll-margin-top: 5rem;
+}
+@media (max-width: 767px) {
+  #studyTopicHeaderCard,
+  #studyTopicContentTop,
+  .study-layout {
+    scroll-margin-top: 7.5rem;
+  }
+}
+
 .study-layout {
   display: flex;
   flex-direction: column;

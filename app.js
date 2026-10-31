@@ -1442,6 +1442,27 @@ const CONFIG = {
       if (railBadge) railBadge.textContent = `%${progressPercent}`;
     }
 
+    function scrollToStudyTopicHeader() {
+      if (typeof window === 'undefined') return;
+      window.requestAnimationFrame(() => {
+        const headerCard = $('studyTopicHeaderCard') || $('studyTopicContentTop');
+        if (!headerCard) return;
+        const isMobile = typeof window.innerWidth === 'number' ? window.innerWidth < 768 : false;
+        const stickyOffset = isMobile ? 120 : 80;
+        const rect = headerCard.getBoundingClientRect ? headerCard.getBoundingClientRect() : null;
+        if (rect && typeof window.scrollTo === 'function') {
+          const currentY = window.scrollY || window.pageYOffset || 0;
+          const targetY = currentY + rect.top - stickyOffset;
+          window.scrollTo({
+            top: Math.max(0, Math.round(targetY)),
+            behavior: 'smooth'
+          });
+        } else if (typeof headerCard.scrollIntoView === 'function') {
+          headerCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
     function triggerMathRendering(container) {
       if (typeof window !== 'undefined' && typeof window.renderMathInElement === 'function') {
         const target = container || $('courseMaterialsContainer') || document.body;
@@ -4101,7 +4122,7 @@ const CONFIG = {
           <!-- Right Topic Main Content Area -->
           <div class="study-main-content space-y-4">
             <!-- Header Card for Topic -->
-            <div class="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-3 shadow-2xs">
+            <div id="studyTopicHeaderCard" class="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-3 shadow-2xs scroll-mt-20 sm:scroll-mt-24">
               <div class="flex items-center justify-between gap-2 flex-wrap">
                 <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-mono">
                   Calculus I • Hafta ${data.weeks.find(w => w.id === currentTopic.weekId)?.number || 1} • Konu ${esc(currentTopic.topicNum || '')}
@@ -4204,7 +4225,7 @@ const CONFIG = {
         }
       }
       if (activeCourseId) renderCourseHub(activeCourseId);
-      $('studySectionContainer')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToStudyTopicHeader();
     };
 
     window.setCourseActiveTab = function(tabName) {
@@ -4216,7 +4237,7 @@ const CONFIG = {
       activeStudyTopicId = topicId;
       activeStudySectionTab = 'theory';
       if (activeCourseId) renderCourseHub(activeCourseId);
-      $('studyTopicContentTop')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToStudyTopicHeader();
     };
 
     window.toggleStudyExample = function(exampleId) {
@@ -4268,7 +4289,7 @@ const CONFIG = {
         activeStudyTopicId = allTopics[nextIdx].id;
         activeStudySectionTab = 'theory';
         if (activeCourseId) renderCourseHub(activeCourseId);
-        $('studyTopicContentTop')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        scrollToStudyTopicHeader();
       }
     };
 
