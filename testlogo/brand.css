@@ -25,3 +25,11 @@
 @media(max-width:480px) { .portal-hero .portal-hero-logo { width:2.5rem; height:2.5rem; } .portal-hero::after { background-size:7rem; } }
 .dark .calendar-month-header h3 { color:#e8dcca; }
 .sidebar-brand-btn span, .portal-hero h1 { letter-spacing:-.025em; }
+
+/* Monochrome artwork: internal details and holes never borrow the background color. */
+.sidebar-brand-btn > div:first-child { width:2.25rem; height:2.25rem; }
+.portal-brand-symbol { display:block; }
+.portal-brand-night { display:none; }
+.dark .portal-brand-day { display:none; }
+.dark .portal-brand-night { display:block; }
+.portal-hero::after { opacity:.045; }

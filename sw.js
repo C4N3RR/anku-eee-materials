@@ -24,7 +24,7 @@ const PRECACHE_URLS = [
   './assets/vendor/katex/katex.min.js',
   './assets/vendor/katex/auto-render.min.js',
   './favicon.svg',
-  './brand.css?v=20261101-testlogo1',
+  './brand.css?v=20261101-testlogo2',
   './assets/brand/portal-mark.svg',
   './assets/brand/portal-mark-cream.svg',
   './assets/android-chrome-192x192.png',
