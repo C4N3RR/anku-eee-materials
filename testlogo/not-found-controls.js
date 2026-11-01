@@ -69,7 +69,7 @@
     const image = event.target;
     if (image instanceof HTMLImageElement && image.hasAttribute('data-logo-fallback')) {
       image.removeAttribute('data-logo-fallback');
-      image.src = '/anku-eee-materials/assets/brand/portal-mark.svg';
+      image.src = '/anku-eee-materials/assets/brand/portal-mark.svg?v=2';
     }
   }, true);
 })();
