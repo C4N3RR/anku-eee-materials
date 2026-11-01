@@ -3274,9 +3274,6 @@ const CONFIG = {
         <div class="portal-hero px-4 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3 sm:gap-4">
           <div class="min-w-0 flex-1">
             <h1 class="portal-brand-lockup" aria-label="ANKU EEE Portal">ANKU EEE Portal</h1>
-            <p class="portal-hero-sub text-xs sm:text-sm mt-0.5 leading-snug">
-              ${trEn('Ders materyalleri, sınav tarihleri ve bölüm bilgileri tek yerde.', 'Course materials, exam dates and department info in one place.')}
-            </p>
           </div>
         </div>
 

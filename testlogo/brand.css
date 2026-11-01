@@ -50,3 +50,7 @@
  -webkit-mask-size:598% auto; mask-size:598% auto;
  -webkit-mask-position:4.6% center; mask-position:4.6% center;
 }
+
+/* Compact logo-only welcome banner. */
+.portal-hero { padding:.5rem 1rem; }
+.portal-hero h1.portal-brand-lockup { max-width:22rem; margin:0; }
