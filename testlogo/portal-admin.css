@@ -1,0 +1,221 @@
+.portal-dialog { width:min(94vw,560px); max-height:90dvh; padding:0; border:1px solid var(--border); border-radius:14px; background:var(--card); color:var(--foreground); box-shadow:0 24px 80px #0004; }
+.portal-dialog::backdrop { background:#0007; backdrop-filter:blur(3px); }
+.portal-dialog-wide { width:min(96vw,1080px); }
+.portal-modal-head { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 24px; border-bottom:1px solid var(--border); }
+.portal-modal-head h2 { font-size:16px; font-weight:700; }
+.portal-modal-head p,.portal-help { font-size:12px; color:var(--muted-foreground); line-height:1.6; margin-top:4px; }
+.portal-modal-body { padding:22px 24px; }
+.portal-form { display:grid; gap:16px; }
+.portal-field { display:grid; gap:6px; font-size:12px; font-weight:500; min-width:0; }
+.portal-input { width:100%; border:1px solid var(--input); background:var(--background); color:var(--foreground); border-radius:7px; padding:9px 11px; min-height:38px; font-size:13px; font-weight:400; }
+.portal-input:focus { outline:2px solid var(--ring); outline-offset:2px; }
+textarea.portal-input { resize:vertical; min-height:100px; }
+select[multiple].portal-input { min-height:110px; }
+.portal-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.portal-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.portal-btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; min-height:36px; padding:8px 13px; border:1px solid var(--border); border-radius:7px; background:var(--card); font-size:12px; font-weight:600; cursor:pointer; }
+.portal-btn:hover { background:var(--muted); }
+.portal-btn-primary { background:var(--primary); color:var(--primary-foreground); border-color:transparent; }
+.portal-btn-primary:hover { background:var(--primary); opacity:.85; }
+.portal-btn-danger { color:#e34848; }
+.portal-btn:disabled { opacity:.45; cursor:wait; }
+.portal-icon-btn { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:6px; }
+.portal-icon-btn:hover { background:var(--muted); }
+.portal-status { font-size:12px; line-height:1.6; white-space:pre-wrap; }
+.portal-status[data-error="true"] { color:#e34848; }
+.portal-admin-tabs { display:flex; gap:4px; overflow-x:auto; padding:12px 20px; border-bottom:1px solid var(--border); }
+.portal-admin-tabs button { white-space:nowrap; border:0; background:none; }
+.portal-admin-tabs button[aria-selected="true"] { background:var(--muted); color:var(--foreground); }
+.portal-admin-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding-bottom:16px; }
+.portal-admin-list { display:grid; gap:8px; max-height:48dvh; overflow:auto; }
+.portal-admin-row { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 14px; border:1px solid var(--border); border-radius:8px; min-width:0; }
+.portal-admin-row h3 { font-size:13px; font-weight:600; overflow-wrap:anywhere; }
+.portal-admin-row p { font-size:11px; color:var(--muted-foreground); margin-top:3px; overflow-wrap:anywhere; }
+.portal-admin-row .portal-actions { flex-shrink:0; }
+.portal-admin-publish { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 24px; border-top:1px solid var(--border); }
+.portal-feedback-message { white-space:pre-wrap; font-size:13px; line-height:1.7; overflow-wrap:anywhere; margin:12px 0; }
+.portal-feedback-card { border:1px solid var(--border); border-radius:8px; padding:16px; }
+.portal-honeypot { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+@media(max-width:600px) { .portal-grid { grid-template-columns:1fr; } .portal-modal-head,.portal-modal-body { padding:16px; } .portal-admin-row { align-items:flex-start; } .portal-admin-publish { padding:12px 16px; flex-wrap:wrap; } .portal-admin-tabs { padding:10px; } }
+
+.portal-admin-row[hidden] { display:none; }
+
+/* Fixed footprint: only the visual transform moves during class changes. */
+.portal-btn.calendar-class-button {
+  width:96px;
+  min-width:96px;
+  height:36px;
+  flex:0 0 96px;
+  padding:0 12px;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+  border-radius:10px;
+  transform-origin:center;
+  touch-action:manipulation;
+  transition:background-color 150ms ease, transform 100ms ease;
+}
+.calendar-class-button svg { flex-shrink:0; }
+.calendar-class-button:active { transform:scale(.93); }
+.calendar-class-button.is-bouncing { animation:calendar-class-bounce 420ms both; }
+@keyframes calendar-class-bounce {
+  0% { transform:translateY(0) scale(.93); animation-timing-function:cubic-bezier(.16,1,.3,1); }
+  42% { transform:translateY(-3px) scale(1.045); animation-timing-function:cubic-bezier(.4,0,.6,1); }
+  70% { transform:translateY(1px) scale(.985); animation-timing-function:ease-out; }
+  100% { transform:translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .portal-btn.calendar-class-button { transition:none; }
+  .calendar-class-button:active { transform:none; }
+  .calendar-class-button.is-bouncing { animation:none; }
+}
+
+#academicTimetableDialog { width:98vw; max-width:1500px; height:96dvh; max-height:96dvh; overflow:hidden; }
+#academicTimetableDialog .portal-modal-head { flex:0 0 auto; padding:8px 16px; }
+#academicTimetableDialog .portal-modal-head h2 { font-size:13px; }
+#academicTimetableDialog .portal-modal-head p { display:none; }
+#academicTimetableDialog .portal-modal-body { position:relative; flex:1; min-height:0; padding:0; margin:0 12px 12px; overflow:hidden; }
+.academic-sheet { width:1080px; position:absolute; top:0; left:50%; margin-left:-540px; transform-origin:top center; color:var(--foreground); }
+.academic-table { width:100%; table-layout:fixed; border-collapse:collapse; font-size:13px; line-height:1.25; }
+.academic-table caption { border:1px solid var(--border); border-bottom:0; background:var(--muted); color:var(--foreground); padding:9px; font-size:16px; font-weight:700; line-height:1.35; letter-spacing:.4px; }
+.academic-table th,.academic-table td { border:1px solid var(--border); padding:4px 8px; }
+.academic-table thead th { background:var(--muted); text-align:center; font-size:14px; padding:6px; }
+.academic-table tbody th { text-align:left; font-weight:400; }
+.academic-table td { white-space:nowrap; font-variant-numeric:tabular-nums; }
+.academic-table tbody tr:nth-child(even) { background:var(--muted); }
+.academic-table tbody tr.academic-highlight { background:color-mix(in srgb,var(--primary) 20%,var(--card)); }
+.academic-table .academic-highlight th,.academic-table .academic-highlight td { font-weight:700; }
+.academic-footnotes { margin-top:10px; color:var(--muted-foreground); font-size:12px; line-height:1.5; }
+.academic-footnotes p { margin:0; }
+
+/* Calculus Study Mode Responsive Layout */
+#studyTopicHeaderCard,
+#studyTopicContentTop,
+.study-layout {
+  scroll-margin-top: 5rem;
+}
+@media (max-width: 767px) {
+  #studyTopicHeaderCard,
+  #studyTopicContentTop,
+  .study-layout {
+    scroll-margin-top: 7.5rem;
+  }
+}
+
+.study-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .study-layout {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+  }
+}
+
+.study-rail-collapsed {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 3.5rem;
+  z-index: 20;
+}
+@media (min-width: 768px) {
+  .study-rail-collapsed {
+    width: 3.5rem !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    top: 4.5rem !important;
+    max-height: calc(100vh - 6rem) !important;
+  }
+}
+
+.study-sidebar-expanded {
+  width: 100%;
+  flex-shrink: 0;
+}
+@media (min-width: 768px) {
+  .study-sidebar-expanded {
+    width: 18.5rem !important;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 4.5rem !important;
+    max-height: calc(100vh - 6rem) !important;
+    overflow-y: auto !important;
+  }
+}
+
+.study-rail-topics {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.375rem;
+  flex: 1 1 0%;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 0.25rem 0;
+}
+@media (min-width: 768px) {
+  .study-rail-topics {
+    flex-direction: column !important;
+    width: 100% !important;
+    overflow-x: visible !important;
+    flex: none !important;
+  }
+}
+
+.study-main-content {
+  flex: 1 1 0%;
+  min-width: 0;
+  width: 100%;
+}
+
+/* KaTeX & Math Content Spacing */
+.math-content .katex {
+  font-size: 1.22em;
+  margin: 0 0.28em;
+}
+.math-content .katex-display {
+  margin: 0.5rem 0 !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0 !important;
+}
+.math-content .katex-display .katex {
+  margin: 0 !important;
+  font-size: 1.28em;
+}
+.dark .math-content .katex {
+  color: #f4f4f5;
+}
+.math-content .katex-html {
+  color: inherit;
+}
+
+/* Question sentence math expressions: large, clear, display-quality matching solutions */
+.study-question-stem {
+  font-size: 1.05rem;
+  line-height: 1.85;
+}
+@media (min-width: 640px) {
+  .study-question-stem {
+    font-size: 1.15rem;
+  }
+}
+.study-question-stem .katex {
+  font-size: 1.35em !important;
+  vertical-align: -0.22em;
+}
+.study-question-stem .katex .mfrac {
+  vertical-align: -0.1em;
+}
+

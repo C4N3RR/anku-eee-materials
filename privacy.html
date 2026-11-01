@@ -36,10 +36,6 @@
 
   <!-- 6. Favicon Set -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-  <link rel="shortcut icon" href="favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
 
   <!-- 12. Analytics -->
@@ -112,20 +108,15 @@
       background-color: color-mix(in oklab, var(--card) 40%, transparent);
     }
   </style>
+  <link rel="stylesheet" href="brand.css?v=20261101-testlogo1">
 </head>
 <body class="flex min-h-svh w-full flex-col bg-background text-foreground">
 
   <header class="bg-card border-b border-border">
     <div class="flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-      <a href="./" class="flex items-center gap-2.5">
+      <a href="./" class="portal-page-brand flex items-center gap-2.5">
         <div class="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground overflow-hidden p-0.5">
-          <img
-            src="assets/ankara-uni-logo.png"
-            alt="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği Logosu"
-            width="32"
-            height="32"
-            class="size-full object-contain rounded-full"
-          />
+          <img src="assets/brand/portal-mark.svg" alt="ANKU EEE Portal" width="32" height="32" class="portal-brand-symbol portal-brand-day"><img src="assets/brand/portal-mark-cream.svg" alt="" width="32" height="32" class="portal-brand-symbol portal-brand-night">
         </div>
         <span class="text-base font-semibold tracking-tight text-foreground">ANKU EEE</span>
       </a>

@@ -2981,7 +2981,7 @@ const CONFIG = {
                 <button
                   type="button"
                   class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm transition-transform hover:scale-110 active:scale-95 cursor-pointer ${isSelected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}"
-                  style="background-color: #ff453a; color: #ffffff;"
+                  style="background-color: #6d1a36; color: #e8dcca;"
                   data-date="${dateStr}"
                   data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
                   data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
@@ -2998,7 +2998,7 @@ const CONFIG = {
               <div class="aspect-square flex items-center justify-center">
                 <span
                   class="size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm select-none"
-                  style="background-color: #ff453a; color: #ffffff;"
+                  style="background-color: #6d1a36; color: #e8dcca;"
                   title="${trEn('Bugün', 'Today')} (${d} ${getMonthName(month)})"
                 >
                   ${d}
@@ -3272,22 +3272,9 @@ const CONFIG = {
       container.innerHTML = `
         <!-- COMPACT ORANGE HERO BANNER -->
         <div class="portal-hero px-4 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3 sm:gap-4">
-          <a
-            href="https://www.ankara.edu.tr"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="${trEn('Ankara Üniversitesi', 'Ankara University')}"
-            class="portal-hero-logo"
-          >
-            <img
-              src="assets/ankara-uni-logo.png"
-              alt="${trEn('Ankara Üniversitesi Logosu', 'Ankara University Logo')}"
-              width="44"
-              height="44"
-              class="size-full object-contain rounded-full"
-              data-portal-error="hideImageParent" data-portal-error-args="[{&quot;$context&quot;:&quot;element&quot;}]"
-            />
-          </a>
+          <div class="portal-hero-logo" aria-hidden="true">
+            <img src="assets/brand/portal-mark-cream.svg" alt="" width="48" height="48" class="portal-brand-symbol" />
+          </div>
           <div class="min-w-0 flex-1">
             <h1 class="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight leading-tight text-white">
               ANKU EEE Portal
@@ -6206,7 +6193,7 @@ const CONFIG = {
       ["#cancelEditCourseBtn", null, "İptal", "Cancel"],
       ["#editCourseForm button[type=\"submit\"]", null, "Kaydet", "Save"],
       ["#closeEditCourseBtn", "aria-label", "Kapat", "Close"],
-      [".sidebar-brand-btn img", "alt", "Ankara Üniversitesi Elektrik-Elektronik Mühendisliği Logosu", "Ankara University Electrical & Electronics Engineering Logo"],
+      [".sidebar-brand-btn img", "alt", "ANKU EEE Portal Logosu", "ANKU EEE Portal Logo"],
       ['#sidebarTriggerBtn', 'title', 'Menü (Ctrl+B)', 'Menu (Ctrl+B)'],
       ['#sidebarTriggerBtn', 'aria-label', 'Menü', 'Menu'],
       ['.sidebar-brand-btn', 'title', 'Ana Sayfa', 'Home'],
@@ -6409,7 +6396,7 @@ const CONFIG = {
     loadDriveData();
 
     // ================= SERVICE WORKER =================
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator && !window.PORTAL_LOGO_PREVIEW) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
           reg.update().catch(() => {});

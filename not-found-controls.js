@@ -38,7 +38,7 @@
     const t = I18N[l] || I18N.tr;
     document.title = t.docTitle;
     document.getElementById('themeToggleBtn')?.setAttribute('aria-label', l === 'en' ? 'Toggle theme' : 'Tema Değiştir');
-    document.querySelector('header img')?.setAttribute('alt', l === 'en' ? 'Ankara University Logo' : 'Ankara Üniversitesi Logosu');
+    document.querySelector('header img')?.setAttribute('alt', l === 'en' ? 'ANKU EEE Portal Logo' : 'ANKU EEE Portal Logosu');
     document.getElementById('themeToggleBtn')?.setAttribute('title', l === 'en' ? 'Theme' : 'Tema');
     document.querySelector('meta[property="og:title"]')?.setAttribute('content', t.docTitle);
     const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
@@ -69,7 +69,7 @@
     const image = event.target;
     if (image instanceof HTMLImageElement && image.hasAttribute('data-logo-fallback')) {
       image.removeAttribute('data-logo-fallback');
-      image.src = '/anku-eee-materials/assets/ankara-uni-logo.png';
+      image.src = '/anku-eee-materials/assets/brand/portal-mark.svg';
     }
   }, true);
 })();

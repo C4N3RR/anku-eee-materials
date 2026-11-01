@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anku-eee-shell-v35';
+const CACHE_NAME = 'anku-eee-shell-logo-v1';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -10,7 +10,7 @@ const PRECACHE_URLS = [
   './portal-admin.js?v=20261031-i18n3',
   './portal-config.js',
   './portal-security.js?v=20261030-class-sidebar1',
-  './app.js?v=20261101-language-toggle',
+  './app.js?v=20261101-testlogo1',
   './theme-init.js',
   './portal-language.js?v=20261101-language-spring',
   './portal-language.css?v=20261101-language-spring',
@@ -24,7 +24,9 @@ const PRECACHE_URLS = [
   './assets/vendor/katex/katex.min.js',
   './assets/vendor/katex/auto-render.min.js',
   './favicon.svg',
-  './assets/ankara-uni-logo.png',
+  './brand.css?v=20261101-testlogo1',
+  './assets/brand/portal-mark.svg',
+  './assets/brand/portal-mark-cream.svg',
   './assets/android-chrome-192x192.png',
   './assets/android-chrome-512x512.png',
   './assets/apple-touch-icon.png',
