@@ -11,7 +11,7 @@
 .portal-page-brand { color:var(--brand-ink); }
 .portal-page-brand span { font-weight:750; letter-spacing:-.04em; }
 .portal-hero { background:#6d1a36; color:#e8dcca; box-shadow:0 10px 28px -18px #6d1a3655,inset 0 1px 0 #ffffff16; isolation:isolate; }
-.portal-hero::after { background-image:url('assets/brand/portal-mark-cream.svg?v=2'); background-repeat:no-repeat; background-position:right 1.2rem center; background-size:10rem; opacity:.075; mask-image:none; }
+.portal-hero::after { display:none; }
 .portal-hero .portal-hero-logo { background:transparent; box-shadow:none; border-radius:0; padding:0; width:3rem; height:3rem; cursor:default; }
 .portal-hero .portal-hero-logo:hover { transform:none; box-shadow:none; }
 .portal-hero .portal-hero-logo img { border-radius:0; }
@@ -22,7 +22,7 @@
 .portal-btn-primary { background:#6d1a36; color:#e8dcca; border-color:#6d1a36; }
 .portal-btn-primary:hover { background:#7c2443; }
 .sidebar-brand-btn:focus-visible { outline:2px solid var(--brand-ink); outline-offset:2px; }
-@media(max-width:480px) { .portal-hero .portal-hero-logo { width:2.5rem; height:2.5rem; } .portal-hero::after { background-size:7rem; } }
+@media(max-width:480px) { .portal-hero .portal-hero-logo { width:2.5rem; height:2.5rem; } .portal-hero::after { display:none; } }
 .dark .calendar-month-header h3 { color:#e8dcca; }
 .sidebar-brand-btn span, .portal-hero h1 { letter-spacing:-.025em; }
 
@@ -32,4 +32,21 @@
 .portal-brand-night { display:none; }
 .dark .portal-brand-day { display:none; }
 .dark .portal-brand-night { display:block; }
-.portal-hero::after { opacity:.045; }
+.portal-hero::after { display:none; }
+
+/* Use the approved original bitmap as an alpha mask: no tracing or redrawing. */
+.portal-brand-lockup {
+ display:block; position:relative; width:100%; max-width:25rem; aspect-ratio:5 / 1;
+ background-color:var(--brand-ink); overflow:hidden; font-size:0 !important;
+ -webkit-mask:url('assets/brand/portal-original.png') center / 100% auto no-repeat;
+ mask:url('assets/brand/portal-original.png') center / 100% auto no-repeat;
+}
+.sidebar-brand-btn .portal-brand-lockup { max-width:none; min-width:0; }
+.portal-page-brand .portal-brand-lockup { width:13rem; }
+.portal-hero h1.portal-brand-lockup { background-color:#e8dcca; margin:-.35rem 0 -.1rem; }
+.portal-hero-sub { margin-top:0; }
+#sidebarWrapper[data-state="collapsed"] .sidebar-brand-btn .portal-brand-lockup {
+ flex:none; width:2.25rem; height:2.5rem; aspect-ratio:auto;
+ -webkit-mask-size:598% auto; mask-size:598% auto;
+ -webkit-mask-position:4.6% center; mask-position:4.6% center;
+}
