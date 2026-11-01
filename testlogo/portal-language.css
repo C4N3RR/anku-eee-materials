@@ -1,0 +1,11 @@
+/* Keep both language labels in the same fixed layout footprint. */
+#langToggleBtn {
+  box-sizing: border-box;
+  width: 36px;
+  min-width: 36px;
+  max-width: 36px;
+  height: 32px;
+  flex: 0 0 36px;
+  padding: 0;
+  transform-origin: center;
+}

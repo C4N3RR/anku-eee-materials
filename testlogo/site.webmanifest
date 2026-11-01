@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı",
+  "short_name": "ANKU EEE",
+  "description": "Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#09090b",
+  "theme_color": "#6d1a36",
+  "categories": [
+    "education",
+    "books",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
