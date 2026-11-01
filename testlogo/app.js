@@ -3272,13 +3272,8 @@ const CONFIG = {
       container.innerHTML = `
         <!-- COMPACT ORANGE HERO BANNER -->
         <div class="portal-hero px-4 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3 sm:gap-4">
-          <div class="portal-hero-logo" aria-hidden="true">
-            <img src="assets/brand/portal-mark-cream.svg?v=2" alt="" width="48" height="48" class="portal-brand-symbol" />
-          </div>
           <div class="min-w-0 flex-1">
-            <h1 class="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight leading-tight text-white">
-              ANKU EEE Portal
-            </h1>
+            <h1 class="portal-brand-lockup" aria-label="ANKU EEE Portal">ANKU EEE Portal</h1>
             <p class="portal-hero-sub text-xs sm:text-sm mt-0.5 leading-snug">
               ${trEn('Ders materyalleri, sınav tarihleri ve bölüm bilgileri tek yerde.', 'Course materials, exam dates and department info in one place.')}
             </p>
