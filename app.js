@@ -2686,8 +2686,12 @@ const CONFIG = {
     const getDayName = (d) => (isEn() ? DAY_NAMES_EN : DAY_NAMES_TR)[d];
 
     const EXAM_SOLID_BLUE = { bg: '#3b82f6', text: '#ffffff' };
+    const HOMEWORK_SOLID_COLOR = { bg: '#f59e0b', text: '#ffffff' };
 
-    function getCourseSolidColor() {
+    function getCourseSolidColor(code, ev = null) {
+      if (ev && (ev.type === 'odev' || /ödev|homework/i.test(ev.title || ''))) {
+        return HOMEWORK_SOLID_COLOR;
+      }
       return EXAM_SOLID_BLUE;
     }
 
@@ -2750,7 +2754,16 @@ const CONFIG = {
     }
 
     const DEFAULT_ACADEMIC_EVENTS = [
-      // ==================== 1. SINIF ARA SINAVLARI ====================
+      // ==================== 1. SINIF ARA SINAVLARI & ÖDEVLERİ ====================
+      {
+        id: 'hw-2026-fall-1-eee1001-1',
+        title: 'EEE1001 Introduction to EEE Ödevi',
+        courseCode: 'EEE1001',
+        year: 1,
+        date: '2026-11-05',
+        time: '',
+        location: ''
+      },
       {
         id: 'exam-2026-fall-1-tur101',
         title: 'TUR101 - HIS101 Ortak Dersler Sınavı',
@@ -3006,7 +3019,7 @@ const CONFIG = {
         const events = window.portalEvents();
         if (Array.isArray(events) && events.length > 0) return events;
       }
-      const raw = localStorage.getItem('anku_academic_events_v4');
+      const raw = localStorage.getItem('anku_academic_events_v5');
       if (raw) {
         try {
           const parsed = JSON.parse(raw);
@@ -3245,7 +3258,7 @@ const CONFIG = {
         } else if (dayEvs.length > 0) {
           // Event day (not today)
           const firstEv = dayEvs[0];
-          const solid = getCourseSolidColor(firstEv.courseCode);
+          const solid = getCourseSolidColor(firstEv.courseCode, firstEv);
 
           // USER REQUEST: "bugünden önceki geçmiş önemli günlerin hepsinin rengi gri bir şekilde soluk gözüksün."
           const badgeClass = isPast ? 'calendar-past-event' : '';
@@ -3314,7 +3327,7 @@ const CONFIG = {
       return `
         <div class="min-h-full flex-1 flex flex-col justify-between gap-1">
           ${visibleEvents.map(ev => {
-            const solid = getCourseSolidColor(ev.courseCode);
+            const solid = getCourseSolidColor(ev.courseCode, ev);
             const [y, m, d] = ev.date.split('-').map(Number);
 
             return `
@@ -3405,7 +3418,7 @@ const CONFIG = {
           </div>
           <div class="space-y-1.5">
             ${events.map(ev => {
-              const solid = isPast ? { bg: '#71717a' } : getCourseSolidColor(ev.courseCode);
+              const solid = isPast ? { bg: '#71717a' } : getCourseSolidColor(ev.courseCode, ev);
               return `
                 <div class="space-y-0.5 rounded px-1.5 py-1 transition">
                   <div class="flex items-center justify-between gap-2">
@@ -6297,7 +6310,7 @@ const CONFIG = {
             </div>
             <div class="space-y-0.5 mt-0.5">
               ${matchedEvents.map(ev => {
-                const solid = getCourseSolidColor(ev.courseCode);
+                const solid = getCourseSolidColor(ev.courseCode, ev);
                 const [, m, d] = ev.date.split('-').map(Number);
                 return `
                   <button
