@@ -3325,7 +3325,7 @@ const CONFIG = {
       }
 
       return `
-        <div class="min-h-full flex-1 flex flex-col justify-between gap-1">
+        <div class="space-y-1.5 flex flex-col justify-start">
           ${visibleEvents.map(ev => {
             const solid = getCourseSolidColor(ev.courseCode, ev);
             const [y, m, d] = ev.date.split('-').map(Number);
@@ -3337,7 +3337,7 @@ const CONFIG = {
                 data-event-id="${esc(ev.id)}"
                 data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(ev.date)}]"
                 data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
-                class="event-agenda-item flex-1 flex items-center gap-1.5 py-1 px-1 rounded-md hover:bg-muted/50 transition cursor-default outline-none select-none"
+                class="event-agenda-item flex items-center gap-1.5 py-1.5 px-1 rounded-md hover:bg-muted/50 transition cursor-default outline-none select-none"
               >
                 <!-- Date solid badge matching calendar circle -->
                 <span
