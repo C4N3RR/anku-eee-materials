@@ -125,7 +125,7 @@
     return url.href;
   };
   const defaults = {
-    courses: copy(CURRICULUM_COURSES).map(c=>({...c,shortName:SHORT_SIDEBAR_COURSE_LABELS[c.code]||c.name})), staff: copy(STAFF_DATA), events: [],
+    courses: copy(CURRICULUM_COURSES).map(c=>({...c,shortName:SHORT_SIDEBAR_COURSE_LABELS[c.code]||c.name})), staff: copy(STAFF_DATA), events: copy(window.DEFAULT_ACADEMIC_EVENTS || []),
     resources: CURRICULUM_COURSES.flatMap(c => (c.links || []).map((link,i) => ({...link,id:`${c.code}-${i}`,courseCode:c.code,kind:'site'}))),
     sidebar: [...document.querySelectorAll('[data-portal-links] a:not(#sidebarDriveLink)')].map(a => ({id:uid(),title:a.textContent.trim(),url:a.href})),
     hiddenDrive: [], driveEdits: {},

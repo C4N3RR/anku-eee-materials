@@ -2687,12 +2687,36 @@ const CONFIG = {
 
     const COURSE_SOLID_COLORS = {
       'PHY0107': { bg: '#a855f7', text: '#ffffff' }, // Mor
+      'PHY107':  { bg: '#a855f7', text: '#ffffff' },
       'MTH0101': { bg: '#3b82f6', text: '#ffffff' }, // Mavi
       'MTH103':  { bg: '#0d9488', text: '#ffffff' }, // Turkuaz
       'CHM109':  { bg: '#10b981', text: '#ffffff' }, // Zümrüt Yeşili
       'EEE1001': { bg: '#f59e0b', text: '#000000' }, // Kehribar (siyah kontrast yazı)
       'TUR171':  { bg: '#f43f5e', text: '#ffffff' }, // Pembe / Gül
-      'GENEL':   { bg: '#ff453a', text: '#ffffff' }  // Apple Kırmızı
+      'TUR101':  { bg: '#f43f5e', text: '#ffffff' },
+      'GENEL':   { bg: '#ff453a', text: '#ffffff' }, // Apple Kırmızı
+      // 2. Sınıf
+      'EEE2001': { bg: '#2563eb', text: '#ffffff' },
+      'EEE2003': { bg: '#7c3aed', text: '#ffffff' },
+      'EEE2005': { bg: '#4f46e5', text: '#ffffff' },
+      'EEE2007': { bg: '#0284c7', text: '#ffffff' },
+      'MTH201':  { bg: '#0891b2', text: '#ffffff' },
+      // 3. Sınıf
+      'EEE3001': { bg: '#059669', text: '#ffffff' },
+      'EEE3005': { bg: '#d97706', text: '#ffffff' },
+      'EEE3007': { bg: '#ea580c', text: '#ffffff' },
+      'EEE3009': { bg: '#dc2626', text: '#ffffff' },
+      // 4. Sınıf
+      'EEE4433': { bg: '#6366f1', text: '#ffffff' },
+      'EEE4013': { bg: '#ec4899', text: '#ffffff' },
+      'EEE4009': { bg: '#8b5cf6', text: '#ffffff' },
+      'EEE4409': { bg: '#14b8a6', text: '#ffffff' },
+      'EEE4441': { bg: '#f97316', text: '#ffffff' },
+      'EEE4447': { bg: '#06b6d4', text: '#ffffff' },
+      'EEE4091': { bg: '#84cc16', text: '#000000' },
+      'EEE4445': { bg: '#e11d48', text: '#ffffff' },
+      'EEE4015': { bg: '#3b82f6', text: '#ffffff' },
+      'EEE4003': { bg: '#a855f7', text: '#ffffff' }
     };
 
     function getCourseSolidColor(code) {
@@ -2753,34 +2777,271 @@ const CONFIG = {
       button?.focus({ preventScroll: true });
     }
 
+    const DEFAULT_ACADEMIC_EVENTS = [
+      // ==================== 1. SINIF ARA SINAVLARI ====================
+      {
+        id: 'exam-2026-fall-1-tur101',
+        title: 'TUR101 - HIS101 Ortak Dersler Sınavı',
+        courseCode: 'TUR171',
+        year: 1,
+        date: '2026-11-16',
+        time: '10:00',
+        location: 'D1-D2'
+      },
+      {
+        id: 'exam-2026-fall-1-mth0101',
+        title: 'MTH0101 Calculus I Ara Sınavı',
+        courseCode: 'MTH0101',
+        year: 1,
+        date: '2026-11-16',
+        time: '13:00',
+        location: 'D1-D2-D3'
+      },
+      {
+        id: 'exam-2026-fall-1-eee1001',
+        title: 'EEE1001 Introduction to EEE Ara Sınavı',
+        courseCode: 'EEE1001',
+        year: 1,
+        date: '2026-11-16',
+        time: '18:15',
+        location: 'D1'
+      },
+      {
+        id: 'exam-2026-fall-1-chm109',
+        title: 'CHM109 General Chemistry Ara Sınavı',
+        courseCode: 'CHM109',
+        year: 1,
+        date: '2026-11-17',
+        time: '11:15',
+        location: 'D1'
+      },
+      {
+        id: 'exam-2026-fall-1-phy0107',
+        title: 'PHY107 Physics I Ara Sınavı',
+        courseCode: 'PHY0107',
+        year: 1,
+        date: '2026-11-18',
+        time: '11:15',
+        location: 'D1-D2'
+      },
+      {
+        id: 'exam-2026-fall-1-mth103',
+        title: 'MTH103 Linear Algebra Ara Sınavı',
+        courseCode: 'MTH103',
+        year: 1,
+        date: '2026-11-20',
+        time: '13:45',
+        location: 'D1-D2-D3'
+      },
+
+      // ==================== 2. SINIF ARA SINAVLARI ====================
+      {
+        id: 'exam-2026-fall-2-eee2007',
+        title: 'EEE2007 Engineering Mathematics Ara Sınavı',
+        courseCode: 'EEE2007',
+        year: 2,
+        date: '2026-11-16',
+        time: '14:45',
+        location: 'D1-D2'
+      },
+      {
+        id: 'exam-2026-fall-2-eee2003',
+        title: 'EEE2003 Microprocessors Ara Sınavı',
+        courseCode: 'EEE2003',
+        year: 2,
+        date: '2026-11-17',
+        time: '14:45',
+        location: 'D1-D2'
+      },
+      {
+        id: 'exam-2026-fall-2-mth201',
+        title: 'MTH201 Differential Equations Ara Sınavı',
+        courseCode: 'MTH201',
+        year: 2,
+        date: '2026-11-18',
+        time: '09:30',
+        location: 'D1-D2-D3'
+      },
+      {
+        id: 'exam-2026-fall-2-eee2001',
+        title: 'EEE2001 Circuit Analysis I Ara Sınavı',
+        courseCode: 'EEE2001',
+        year: 2,
+        date: '2026-11-19',
+        time: '09:30',
+        location: 'D1-D2-D3'
+      },
+      {
+        id: 'exam-2026-fall-2-eee2005',
+        title: 'EEE2005 Microprocessors Lab. Ara Sınavı',
+        courseCode: 'EEE2005',
+        year: 2,
+        date: '2026-11-19',
+        time: '16:30',
+        location: 'D1-D2'
+      },
+
+      // ==================== 3. SINIF ARA SINAVLARI ====================
+      {
+        id: 'exam-2026-fall-3-eee3001',
+        title: 'EEE3001 Electronics I Ara Sınavı',
+        courseCode: 'EEE3001',
+        year: 3,
+        date: '2026-11-17',
+        time: '09:30',
+        location: 'D1-D2-D3'
+      },
+      {
+        id: 'exam-2026-fall-3-eee3005',
+        title: 'EEE3005 Electromagnetic Waves Ara Sınavı',
+        courseCode: 'EEE3005',
+        year: 3,
+        date: '2026-11-18',
+        time: '14:45',
+        location: 'D1-D2-D3'
+      },
+      {
+        id: 'exam-2026-fall-3-eee3007',
+        title: 'EEE3007 Electromechanical Energy Conversion Ara Sınavı',
+        courseCode: 'EEE3007',
+        year: 3,
+        date: '2026-11-19',
+        time: '13:00',
+        location: 'D1-D2-D3'
+      },
+      {
+        id: 'exam-2026-fall-3-eee3009',
+        title: 'EEE3009 Signals and Systems Ara Sınavı',
+        courseCode: 'EEE3009',
+        year: 3,
+        date: '2026-11-20',
+        time: '11:15',
+        location: 'D1-D2-D3-D4'
+      },
+
+      // ==================== 4. SINIF ARA SINAVLARI ====================
+      {
+        id: 'exam-2026-fall-4-eee4433',
+        title: 'EEE4433 Computer Controlled Syst. Ara Sınavı',
+        courseCode: 'EEE4433',
+        year: 4,
+        date: '2026-11-16',
+        time: '16:30',
+        location: 'D4'
+      },
+      {
+        id: 'exam-2026-fall-4-eee4013',
+        title: 'EEE4013 Intro. to Biomedical Engineering Ara Sınavı',
+        courseCode: 'EEE4013',
+        year: 4,
+        date: '2026-11-17',
+        time: '13:00',
+        location: 'D4'
+      },
+      {
+        id: 'exam-2026-fall-4-eee4009',
+        title: 'EEE4009 Microwaves 2 Ara Sınavı',
+        courseCode: 'EEE4009',
+        year: 4,
+        date: '2026-11-17',
+        time: '16:30',
+        location: 'D4'
+      },
+      {
+        id: 'exam-2026-fall-4-eee4409',
+        title: 'EEE4409 Intro. to Machine Learning Ara Sınavı',
+        courseCode: 'EEE4409',
+        year: 4,
+        date: '2026-11-18',
+        time: '13:00',
+        location: 'D1'
+      },
+      {
+        id: 'exam-2026-fall-4-eee4441',
+        title: 'EEE4441 High Voltage Tech. Ara Sınavı',
+        courseCode: 'EEE4441',
+        year: 4,
+        date: '2026-11-19',
+        time: '11:15',
+        location: 'D1'
+      },
+      {
+        id: 'exam-2026-fall-4-eee4447',
+        title: 'EEE4447 Communication Theory Ara Sınavı',
+        courseCode: 'EEE4447',
+        year: 4,
+        date: '2026-11-19',
+        time: '14:45',
+        location: 'D1-D2'
+      },
+      {
+        id: 'exam-2026-fall-4-eee4091',
+        title: 'EEE4091 Occupational Health and Safety Ara Sınavı',
+        courseCode: 'EEE4091',
+        year: 4,
+        date: '2026-11-19',
+        time: '14:45',
+        location: 'Derslik daha sonra ilan edilecek'
+      },
+      {
+        id: 'exam-2026-fall-4-eee4445',
+        title: 'EEE4445 Power Electronics Ara Sınavı',
+        courseCode: 'EEE4445',
+        year: 4,
+        date: '2026-11-20',
+        time: '09:30',
+        location: 'D2'
+      },
+      {
+        id: 'exam-2026-fall-4-eee4015',
+        title: 'EEE4015 Intro. to Internet of Things Ara Sınavı',
+        courseCode: 'EEE4015',
+        year: 4,
+        date: '2026-11-20',
+        time: '15:15',
+        location: 'D1'
+      },
+      {
+        id: 'exam-2026-fall-4-eee4003',
+        title: 'EEE4003 Optoelectronic Ara Sınavı',
+        courseCode: 'EEE4003',
+        year: 4,
+        date: '2026-11-20',
+        time: '16:30',
+        location: 'D2'
+      }
+    ];
+    window.DEFAULT_ACADEMIC_EVENTS = DEFAULT_ACADEMIC_EVENTS;
+
     function getCalendarEvents() {
       return getAcademicEvents().filter(event => {
+        if (event.year) {
+          return Number(event.year) === calendarClassYear;
+        }
         if (event.courseCode === 'GENEL') {
           return !event.year || Number(event.year) === calendarClassYear;
         }
-        return Number(CURRICULUM_COURSES.find(course => course.code === event.courseCode)?.year) === calendarClassYear;
+        const course = CURRICULUM_COURSES.find(c => c.code === event.courseCode);
+        if (course) return Number(course.year) === calendarClassYear;
+        const match = (event.courseCode || '').match(/^EEE(\d)/);
+        if (match) return Number(match[1]) === calendarClassYear;
+        return false;
       });
     }
 
     function getAcademicEvents() {
-      if (window.portalEvents) return window.portalEvents();
-      const raw = localStorage.getItem('anku_academic_events_v4');
-      if (!raw) return [];
-
-      try {
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return [];
-
-        // Remove the old seeded demo dates while preserving other saved events.
-        const demoEventId = /^(?:eee-\d{4}-(?:10-15|11-30|12-25)|phy-\d{4}-(?:10-23|11-22|12-05)|mth1-\d{4}-(?:10-28|11-15)|chm-\d{4}-(?:11-16|12-11)|mth2-\d{4}-(?:11-26|12-16)|tur-\d{4}-11-29)$/;
-        const events = parsed.filter(event => !demoEventId.test(event.id));
-        if (events.length !== parsed.length) {
-          localStorage.setItem('anku_academic_events_v4', JSON.stringify(events));
-        }
-        return events;
-      } catch (e) {
-        return [];
+      if (window.portalEvents) {
+        const events = window.portalEvents();
+        if (Array.isArray(events) && events.length > 0) return events;
       }
+      const raw = localStorage.getItem('anku_academic_events_v4');
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch (_) {}
+      }
+      return DEFAULT_ACADEMIC_EVENTS;
     }
 
     function navigateCalendarMonth(delta) {
@@ -2832,6 +3093,10 @@ const CONFIG = {
               <i data-lucide="repeat" class="size-3.5"></i><span aria-live="polite">${formatClassOrdinal(calendarClassYear)}</span>
             </button>
             <button type="button" class="portal-btn" data-portal-click="openAcademicTimetable" data-portal-click-args="[]"><i data-lucide="calendar-days" class="size-3.5"></i> ${trEn('Akademik Takvim', 'Academic Calendar')}</button>
+            <a href="assets/calendars/eee_${calendarClassYear}_sinif_ara_sinavlar.ics" download class="portal-btn" title="${trEn(`${calendarClassYear}. Sınıf Ara Sınav Takvimini İndir (.ics)`, `Download ${formatClassOrdinal(calendarClassYear)} Exam Calendar (.ics)`)}">
+              <i data-lucide="calendar-arrow-down" class="size-3.5"></i>
+              <span>${trEn('Takvimi İndir (.ics)', 'Download Calendar (.ics)')}</span>
+            </a>
             ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn"><i data-lucide="calendar-plus" class="size-3.5"></i> ' + trEn('Tarih ekle', 'Add date') + '</button>' : ''}
           </div>
           <div class="flex flex-col lg:flex-row items-stretch gap-5 lg:gap-7">

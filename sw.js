@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anku-eee-shell-v35';
+const CACHE_NAME = 'anku-eee-shell-v36';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -6,11 +6,11 @@ const PRECACHE_URLS = [
   './404.html',
   './privacy.html',
   './site.webmanifest',
-  './portal-admin.css?v=20261030-class-sidebar1',
-  './portal-admin.js?v=20261031-i18n3',
+  './portal-admin.css?v=20261102-exam-calendar',
+  './portal-admin.js?v=20261102-exam-calendar',
   './portal-config.js',
-  './portal-security.js?v=20261030-class-sidebar1',
-  './app.js?v=20261101-language-toggle',
+  './portal-security.js?v=20261102-exam-calendar',
+  './app.js?v=20261102-exam-calendar',
   './theme-init.js',
   './portal-language.js?v=20261101-language-spring',
   './portal-language.css?v=20261101-language-spring',
@@ -18,6 +18,11 @@ const PRECACHE_URLS = [
   './privacy-controls.js?v=20261101-language-toggle',
   './not-found-controls.js?v=20261101-language-toggle',
   './calculus-study-data.js?v=20261031-i18n3',
+  './assets/calendars/eee_1_sinif_ara_sinavlar.ics',
+  './assets/calendars/eee_2_sinif_ara_sinavlar.ics',
+  './assets/calendars/eee_3_sinif_ara_sinavlar.ics',
+  './assets/calendars/eee_4_sinif_ara_sinavlar.ics',
+  './assets/calendars/eee_tum_siniflar_ara_sinavlar.ics',
   './assets/vendor/tailwind.css',
   './assets/vendor/lucide.min.js',
   './assets/vendor/katex/katex.min.css',
