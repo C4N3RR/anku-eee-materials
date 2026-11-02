@@ -2734,7 +2734,9 @@ const CONFIG = {
     let calendarViewDate = new Date();
     calendarViewDate.setDate(1); // 1st of month
     let calendarActiveDateStr = null;
+    let calendarActiveEventId = null;
     let calendarPopoverHideTimer = null;
+    let calendarScrollAnchorY = null;
 
     const CALENDAR_CLASS_STORAGE_KEY = 'anku_calendar_class_v1';
     let calendarClassYear = 1;
@@ -2768,6 +2770,8 @@ const CONFIG = {
       calendarClassYear = calendarClassYear % 4 + 1;
       try { localStorage.setItem(CALENDAR_CLASS_STORAGE_KEY, String(calendarClassYear)); } catch (_) {}
       calendarActiveDateStr = null;
+      calendarActiveEventId = null;
+      calendarScrollAnchorY = null;
       clearTimeout(calendarPopoverHideTimer);
       hideCalendarDayPopover();
       refreshCalendarWidget();
@@ -3053,6 +3057,8 @@ const CONFIG = {
       calendarViewDate = new Date();
       calendarViewDate.setDate(1);
       calendarActiveDateStr = null;
+      calendarActiveEventId = null;
+      calendarScrollAnchorY = null;
       refreshCalendarWidget();
     }
 
@@ -3346,15 +3352,16 @@ const CONFIG = {
           ${visibleEvents.map(ev => {
             const solid = getCourseSolidColor(ev.courseCode);
             const [y, m, d] = ev.date.split('-').map(Number);
-            const isHighlighted = (calendarActiveDateStr === ev.date);
+            const isHighlighted = (calendarActiveEventId === ev.id);
 
             return `
               <div
                 id="agenda-item-${esc(ev.id)}"
                 data-date="${esc(ev.date)}"
+                data-event-id="${esc(ev.id)}"
                 title="${esc(ev.location || ev.title)}"
-                data-portal-click="handleAgendaItemClick" data-portal-click-args="[${jsArg(ev.date)}]"
-                class="event-agenda-item flex items-center gap-2.5 py-1.5 px-2.5 rounded-md hover:bg-muted/50 transition cursor-pointer outline-none select-none ${isHighlighted ? 'bg-muted/80 dark:bg-white/10' : ''}"
+                data-portal-click="handleAgendaItemClick" data-portal-click-args="[${jsArg(ev.id)}, ${jsArg(ev.date)}]"
+                class="event-agenda-item flex items-center gap-2.5 py-1.5 px-2.5 rounded-md hover:bg-muted/50 transition cursor-pointer outline-none select-none ${isHighlighted ? 'bg-muted/80 dark:bg-white/10 ring-1 ring-primary/40' : ''}"
               >
                 <!-- Date solid badge matching calendar circle -->
                 <span
@@ -3382,14 +3389,22 @@ const CONFIG = {
       `;
     }
 
-    function handleAgendaItemClick(dateStr) {
+    function handleAgendaItemClick(eventId, dateStr) {
       clearTimeout(calendarPopoverHideTimer);
-      calendarActiveDateStr = (calendarActiveDateStr === dateStr) ? null : dateStr;
+      if (calendarActiveEventId === eventId) {
+        calendarActiveEventId = null;
+        calendarActiveDateStr = null;
+        calendarScrollAnchorY = null;
+      } else {
+        calendarActiveEventId = eventId;
+        calendarActiveDateStr = dateStr;
+        calendarScrollAnchorY = window.scrollY || document.documentElement.scrollTop || 0;
+      }
       refreshCalendarWidget();
       if (calendarActiveDateStr) {
         const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
         if (targetCell) {
-          showCalendarDayPopover(targetCell, dateStr, true);
+          showCalendarDayPopover(targetCell, dateStr, true, calendarActiveEventId);
         }
       } else {
         hideCalendarDayPopover(false);
@@ -3402,7 +3417,7 @@ const CONFIG = {
         || (eventOrEl?.target instanceof Element && eventOrEl.target.isConnected ? eventOrEl.target.closest('.calendar-day-cell') : null)
         || document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
       if (targetCell) {
-        showCalendarDayPopover(targetCell, dateStr, false);
+        showCalendarDayPopover(targetCell, dateStr, false, calendarActiveEventId);
       }
     }
 
@@ -3422,19 +3437,27 @@ const CONFIG = {
         event.stopPropagation();
       }
       clearTimeout(calendarPopoverHideTimer);
-      calendarActiveDateStr = (calendarActiveDateStr === dateStr) ? null : dateStr;
+      if (calendarActiveDateStr === dateStr && !calendarActiveEventId) {
+        calendarActiveDateStr = null;
+        calendarActiveEventId = null;
+        calendarScrollAnchorY = null;
+      } else {
+        calendarActiveDateStr = dateStr;
+        calendarActiveEventId = null;
+        calendarScrollAnchorY = window.scrollY || document.documentElement.scrollTop || 0;
+      }
       refreshCalendarWidget();
       if (calendarActiveDateStr) {
         const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
         if (targetCell) {
-          showCalendarDayPopover(targetCell, dateStr, true);
+          showCalendarDayPopover(targetCell, dateStr, true, null);
         }
       } else {
         hideCalendarDayPopover(false);
       }
     }
 
-    function showCalendarDayPopover(targetEl, dateStr, isPinned) {
+    function showCalendarDayPopover(targetEl, dateStr, isPinned, highlightedEventId = null) {
       const popover = document.getElementById('calendarDayPopover');
       if (!popover) return;
 
@@ -3470,8 +3493,9 @@ const CONFIG = {
           <div class="space-y-1.5">
             ${events.map(ev => {
               const solid = isPast ? { bg: '#71717a' } : getCourseSolidColor(ev.courseCode);
+              const isEventSelected = (highlightedEventId && ev.id === highlightedEventId);
               return `
-                <div class="space-y-0.5">
+                <div class="space-y-0.5 rounded px-1.5 py-1 transition ${isEventSelected ? 'bg-primary/10 ring-1 ring-primary/40' : ''}">
                   <div class="flex items-center justify-between gap-2">
                     <span class="font-medium text-foreground truncate flex items-center gap-1.5 text-xs">
                       <span class="size-2 rounded-full shrink-0" style="background-color: ${solid.bg}"></span>
@@ -3524,8 +3548,10 @@ const CONFIG = {
     }
 
     function hideCalendarDayPopover(clearPinned = false) {
-      if (clearPinned && calendarActiveDateStr) {
+      if (clearPinned && (calendarActiveDateStr || calendarActiveEventId)) {
         calendarActiveDateStr = null;
+        calendarActiveEventId = null;
+        calendarScrollAnchorY = null;
         refreshCalendarWidget();
       }
       const popover = document.getElementById('calendarDayPopover');
@@ -3534,6 +3560,43 @@ const CONFIG = {
         popover.style.visibility = 'hidden';
       }
     }
+
+    function handleCalendarScroll() {
+      const popover = document.getElementById('calendarDayPopover');
+      if (!popover || !popover.classList.contains('is-open')) {
+        calendarScrollAnchorY = null;
+        return;
+      }
+
+      // If opened via hover (not pinned), dismiss immediately on scroll
+      if (!calendarActiveDateStr) {
+        hideCalendarDayPopover(false);
+        return;
+      }
+
+      // If user scrolled up or down, dismiss so it never stays glued to screen
+      const currentScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      if (calendarScrollAnchorY === null) {
+        calendarScrollAnchorY = currentScrollY;
+      }
+
+      const scrollDelta = Math.abs(currentScrollY - calendarScrollAnchorY);
+      // Small tolerance (12px) for tiny accidental trackpad/touch tremors before dismissing
+      if (scrollDelta > 12) {
+        hideCalendarDayPopover(true);
+        calendarScrollAnchorY = null;
+      } else {
+        // Within tiny tremor, update position to stay attached to cell
+        const cell = document.querySelector(`.calendar-day-cell[data-date="${calendarActiveDateStr}"]`);
+        if (cell && cell.isConnected) {
+          showCalendarDayPopover(cell, calendarActiveDateStr, true, calendarActiveEventId);
+        } else {
+          hideCalendarDayPopover(true);
+        }
+      }
+    }
+
+    window.addEventListener('scroll', handleCalendarScroll, { capture: true, passive: true });
 
     // Dismiss popover when clicking anywhere outside
     document.addEventListener('click', (e) => {
