@@ -3245,18 +3245,16 @@ const CONFIG = {
 
         if (isToday) {
           // USER REQUEST: "bugünü gösteren günü ayların yazıldığı renkte önemli günlerdeki gibi işaretle"
-          const isSelected = (calendarActiveDateStr === dateStr);
           if (dayEvs.length > 0) {
             daysHtml += `
               <div class="aspect-square flex items-center justify-center">
                 <button
                   type="button"
-                  class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm transition-transform hover:scale-110 active:scale-95 cursor-pointer ${isSelected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}"
+                  class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm transition-transform hover:scale-110 cursor-default"
                   style="background-color: #ff453a; color: #ffffff;"
                   data-date="${dateStr}"
                   data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(dateStr)}]"
-                  data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[${jsArg(dateStr)}]"
-                  data-portal-click="handleCalendarDayClick" data-portal-click-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
+                  data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
                   aria-label="${d} ${getMonthName(month)} (${trEn('Bugün', 'Today')}), ${dayEvs.map(e => e.title).join(', ')}"
                 >
                   ${d}
@@ -3280,7 +3278,6 @@ const CONFIG = {
           // Event day (not today)
           const firstEv = dayEvs[0];
           const solid = getCourseSolidColor(firstEv.courseCode);
-          const isSelected = (calendarActiveDateStr === dateStr);
 
           // USER REQUEST: "bugünden önceki geçmiş önemli günlerin hepsinin rengi gri bir şekilde soluk gözüksün."
           const badgeClass = isPast ? 'calendar-past-event' : '';
@@ -3290,12 +3287,11 @@ const CONFIG = {
             <div class="aspect-square flex items-center justify-center">
               <button
                 type="button"
-                class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-transform hover:scale-110 active:scale-95 cursor-pointer ${badgeClass} ${isSelected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}"
+                class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-transform hover:scale-110 cursor-default ${badgeClass}"
                 style="${badgeStyle}"
                 data-date="${dateStr}"
                 data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(dateStr)}]"
-                data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[${jsArg(dateStr)}]"
-                data-portal-click="handleCalendarDayClick" data-portal-click-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
+                data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
                 aria-label="${d} ${getMonthName(month)}${isPast ? ' (' + trEn('Geçmiş', 'Past') + ')' : ''}, ${dayEvs.map(e => e.title).join(', ')}"
               >
                 ${d}
@@ -3352,33 +3348,32 @@ const CONFIG = {
           ${visibleEvents.map(ev => {
             const solid = getCourseSolidColor(ev.courseCode);
             const [y, m, d] = ev.date.split('-').map(Number);
-            const isHighlighted = (calendarActiveEventId === ev.id);
 
             return `
               <div
                 id="agenda-item-${esc(ev.id)}"
                 data-date="${esc(ev.date)}"
                 data-event-id="${esc(ev.id)}"
-                title="${esc(ev.location || ev.title)}"
-                data-portal-click="handleAgendaItemClick" data-portal-click-args="[${jsArg(ev.id)}, ${jsArg(ev.date)}]"
-                class="event-agenda-item flex items-center gap-2.5 py-1.5 px-2.5 rounded-md hover:bg-muted/50 transition cursor-pointer outline-none select-none ${isHighlighted ? 'bg-muted/80 dark:bg-white/10 ring-1 ring-primary/40' : ''}"
+                data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(ev.date)}]"
+                data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
+                class="event-agenda-item flex items-center gap-2.5 py-1.5 px-2.5 rounded-md hover:bg-muted/50 transition cursor-default outline-none select-none"
               >
                 <!-- Date solid badge matching calendar circle -->
                 <span
-                  class="inline-flex items-center justify-center px-2 py-0.5 sm:py-1 rounded-md font-bold text-[11px] shrink-0 leading-snug"
+                  class="pointer-events-none inline-flex items-center justify-center px-2 py-0.5 sm:py-1 rounded-md font-bold text-[11px] shrink-0 leading-snug"
                   style="background-color: ${solid.bg}; color: ${solid.text};"
                 >
                   ${d} ${getMonthShort(m - 1)}
                 </span>
 
                 <!-- Event Title -->
-                <span class="font-medium text-foreground truncate flex-1 text-xs sm:text-[13px] leading-snug">
+                <span class="pointer-events-none font-medium text-foreground truncate flex-1 text-xs sm:text-[13px] leading-snug">
                   ${esc(ev.title)}
                 </span>
 
                 <!-- Time (if present) -->
                 ${ev.time ? `
-                  <span class="text-xs text-muted-foreground font-mono shrink-0">
+                  <span class="pointer-events-none text-xs text-muted-foreground font-mono shrink-0">
                     ${esc(ev.time)}
                   </span>
                 ` : ''}
@@ -3389,87 +3384,34 @@ const CONFIG = {
       `;
     }
 
-    function handleAgendaItemClick(eventId, dateStr) {
-      clearTimeout(calendarPopoverHideTimer);
-      if (calendarActiveEventId === eventId) {
-        calendarActiveEventId = null;
-        calendarActiveDateStr = null;
-        calendarScrollAnchorY = null;
-      } else {
-        calendarActiveEventId = eventId;
-        calendarActiveDateStr = dateStr;
-        calendarScrollAnchorY = window.scrollY || document.documentElement.scrollTop || 0;
-      }
-      refreshCalendarWidget();
-      if (calendarActiveDateStr) {
-        const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
-        if (targetCell) {
-          showCalendarDayPopover(targetCell, dateStr, true, calendarActiveEventId);
-        }
-      } else {
-        hideCalendarDayPopover(false);
-      }
-    }
+    function handleAgendaItemClick() {}
 
     function handleCalendarDayHover(eventOrEl, dateStr) {
       clearTimeout(calendarPopoverHideTimer);
-      const targetCell = (eventOrEl instanceof Element && eventOrEl.isConnected ? eventOrEl : null)
-        || (eventOrEl?.target instanceof Element && eventOrEl.target.isConnected ? eventOrEl.target.closest('.calendar-day-cell') : null)
+      const targetCell = (eventOrEl instanceof Element && eventOrEl.isConnected && eventOrEl.classList.contains('calendar-day-cell') ? eventOrEl : null)
         || document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
       if (targetCell) {
-        showCalendarDayPopover(targetCell, dateStr, false, (calendarActiveDateStr === dateStr ? calendarActiveEventId : null));
+        showCalendarDayPopover(targetCell, dateStr, false, null);
       }
     }
 
-    function handleCalendarDayLeave(dateStr = null) {
+    function handleCalendarDayLeave() {
       clearTimeout(calendarPopoverHideTimer);
       calendarPopoverHideTimer = setTimeout(() => {
-        if (!calendarActiveDateStr) {
-          hideCalendarDayPopover(false);
-        } else if (dateStr && dateStr !== calendarActiveDateStr) {
-          // If we hovered another date while calendarActiveDateStr was pinned, restore pinned date!
-          const pinnedCell = document.querySelector(`.calendar-day-cell[data-date="${calendarActiveDateStr}"]`);
-          if (pinnedCell) {
-            showCalendarDayPopover(pinnedCell, calendarActiveDateStr, true, calendarActiveEventId);
-          } else {
-            hideCalendarDayPopover(true);
-          }
-        }
-      }, 140);
+        hideCalendarDayPopover(false);
+      }, 80);
     }
 
-    function handleCalendarDayClick(event, dateStr) {
-      if (event && typeof event.stopPropagation === 'function') {
-        event.stopPropagation();
-      }
-      clearTimeout(calendarPopoverHideTimer);
-      if (calendarActiveDateStr === dateStr && !calendarActiveEventId) {
-        calendarActiveDateStr = null;
-        calendarActiveEventId = null;
-        calendarScrollAnchorY = null;
-      } else {
-        calendarActiveDateStr = dateStr;
-        calendarActiveEventId = null;
-        calendarScrollAnchorY = window.scrollY || document.documentElement.scrollTop || 0;
-      }
-      refreshCalendarWidget();
-      if (calendarActiveDateStr) {
-        const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
-        if (targetCell) {
-          showCalendarDayPopover(targetCell, dateStr, true, null);
-        }
-      } else {
-        hideCalendarDayPopover(false);
-      }
-    }
+    function handleCalendarDayClick() {}
 
     function showCalendarDayPopover(targetEl, dateStr, isPinned, highlightedEventId = null) {
       const popover = document.getElementById('calendarDayPopover');
       if (!popover) return;
 
       // Always resolve to an active, connected DOM cell
-      const cell = (targetEl instanceof Element && targetEl.isConnected ? targetEl : null)
-        || document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
+      const cell = (targetEl instanceof Element && targetEl.isConnected && targetEl.classList.contains('calendar-day-cell') ? targetEl : null)
+        || document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`)
+        || (targetEl instanceof Element && targetEl.isConnected ? targetEl : null);
       if (!cell || !cell.isConnected) return;
 
       const events = getCalendarEvents().filter(e => e.date === dateStr);
@@ -3492,16 +3434,12 @@ const CONFIG = {
         <div class="p-2.5 sm:p-3 space-y-2 text-xs">
           <div class="flex items-center justify-between border-b border-border/60 pb-1.5 text-[11px] font-semibold text-muted-foreground gap-2">
             <span class="truncate">${d} ${monthName}, ${dayOfWeek} ${isToday ? '<span class="text-[10px] text-[#ff453a] font-bold ml-1">(' + trEn('Bugün', 'Today') + ')</span>' : (isPast ? '<span class="text-[10px] text-muted-foreground/75 font-normal ml-1">(' + trEn('Geçmiş', 'Past') + ')</span>' : '')}</span>
-            <button type="button" data-portal-click="dismissCalendarDayPopover" data-portal-click-args="[]" class="size-4 shrink-0 flex items-center justify-center text-muted-foreground hover:text-foreground transition cursor-pointer" title="${trEn('Kapat', 'Close')}">
-              <i data-lucide="x" class="size-3"></i>
-            </button>
           </div>
           <div class="space-y-1.5">
             ${events.map(ev => {
               const solid = isPast ? { bg: '#71717a' } : getCourseSolidColor(ev.courseCode);
-              const isEventSelected = (highlightedEventId && ev.id === highlightedEventId);
               return `
-                <div class="space-y-0.5 rounded px-1.5 py-1 transition ${isEventSelected ? 'bg-primary/10 ring-1 ring-primary/40' : ''}">
+                <div class="space-y-0.5 rounded px-1.5 py-1 transition">
                   <div class="flex items-center justify-between gap-2">
                     <span class="font-medium text-foreground truncate flex items-center gap-1.5 text-xs">
                       <span class="size-2 rounded-full shrink-0" style="background-color: ${solid.bg}"></span>
@@ -3559,7 +3497,6 @@ const CONFIG = {
         calendarActiveDateStr = null;
         calendarActiveEventId = null;
         calendarScrollAnchorY = null;
-        refreshCalendarWidget();
       }
       const popover = document.getElementById('calendarDayPopover');
       if (popover) {
@@ -3574,46 +3511,10 @@ const CONFIG = {
         calendarScrollAnchorY = null;
         return;
       }
-
-      // If opened via hover (not pinned), dismiss immediately on scroll
-      if (!calendarActiveDateStr) {
-        hideCalendarDayPopover(false);
-        return;
-      }
-
-      // If user scrolled up or down, dismiss so it never stays glued to screen
-      const currentScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-      if (calendarScrollAnchorY === null) {
-        calendarScrollAnchorY = currentScrollY;
-      }
-
-      const scrollDelta = Math.abs(currentScrollY - calendarScrollAnchorY);
-      // Small tolerance (12px) for tiny accidental trackpad/touch tremors before dismissing
-      if (scrollDelta > 12) {
-        hideCalendarDayPopover(true);
-        calendarScrollAnchorY = null;
-      } else {
-        // Within tiny tremor, update position to stay attached to cell
-        const cell = document.querySelector(`.calendar-day-cell[data-date="${calendarActiveDateStr}"]`);
-        if (cell && cell.isConnected) {
-          showCalendarDayPopover(cell, calendarActiveDateStr, true, calendarActiveEventId);
-        } else {
-          hideCalendarDayPopover(true);
-        }
-      }
+      hideCalendarDayPopover(false);
     }
 
     window.addEventListener('scroll', handleCalendarScroll, { capture: true, passive: true });
-
-    // Dismiss popover when clicking anywhere outside
-    document.addEventListener('click', (e) => {
-      const popover = document.getElementById('calendarDayPopover');
-      if (popover && popover.classList.contains('is-open')) {
-        if (!popover.contains(e.target) && !e.target.closest('.calendar-day-cell') && !e.target.closest('[data-portal-click="handleAgendaItemClick"]')) {
-          hideCalendarDayPopover(true);
-        }
-      }
-    });
 
     // Automatic live date & time reading and auto-refresh across midnight / tab focus
     let calendarLastKnownDateStr = getTodayDateStr();
