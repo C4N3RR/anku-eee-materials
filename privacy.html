@@ -101,6 +101,17 @@
       background-color: var(--background);
       color: var(--foreground);
     }
+    button, [type="button"], [role="button"], a {
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:focus, button:focus-visible, button:active,
+    [type="button"]:focus, [type="button"]:focus-visible, [type="button"]:active,
+    [role="button"]:focus, [role="button"]:focus-visible, [role="button"]:active,
+    a:focus, a:focus-visible, a:active {
+      outline: none !important;
+      box-shadow: none !important;
+    }
     .admincn-card {
       background-color: var(--card);
       color: var(--card-foreground);

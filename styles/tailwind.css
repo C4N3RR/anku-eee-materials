@@ -1,3 +1,60 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+button,
+[type="button"],
+[type="reset"],
+[type="submit"],
+[role="button"],
+a,
+summary,
+dialog,
+.portal-btn,
+.portal-icon-btn {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus,
+button:focus-visible,
+button:active,
+[type="button"]:focus,
+[type="button"]:focus-visible,
+[type="button"]:active,
+[type="reset"]:focus,
+[type="reset"]:focus-visible,
+[type="reset"]:active,
+[type="submit"]:focus,
+[type="submit"]:focus-visible,
+[type="submit"]:active,
+[role="button"]:focus,
+[role="button"]:focus-visible,
+[role="button"]:active,
+a:focus,
+a:focus-visible,
+a:active,
+summary:focus,
+summary:focus-visible,
+summary:active,
+dialog:focus,
+dialog:focus-visible,
+.portal-btn:focus,
+.portal-btn:focus-visible,
+.portal-btn:active,
+.portal-icon-btn:focus,
+.portal-icon-btn:focus-visible,
+.portal-icon-btn:active {
+  outline: none !important;
+  --tw-ring-shadow: 0 0 #0000 !important;
+  --tw-ring-offset-shadow: 0 0 #0000 !important;
+}
+
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
