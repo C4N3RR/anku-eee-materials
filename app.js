@@ -3497,6 +3497,95 @@ const CONFIG = {
 
     window.addEventListener('scroll', handleCalendarScroll, { capture: true, passive: true });
 
+    // Auto-hiding vertical scroll indicator (visible only during vertical scroll, quick 100% -> 0% fade out)
+    let windowScrollThumb = null;
+    let windowScrollHideTimer = null;
+    let lastWindowScrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    const elementScrollStateMap = new WeakMap();
+
+    function handleTransientVerticalScroll(e) {
+      const target = e.target;
+      const isDocScroll = (target === document || target === document.documentElement || target === document.body || target === window);
+
+      if (isDocScroll) {
+        const docEl = document.documentElement;
+        const scrollTop = window.scrollY || docEl.scrollTop || 0;
+        if (scrollTop === lastWindowScrollTop) return;
+        lastWindowScrollTop = scrollTop;
+
+        const scrollHeight = Math.max(docEl.scrollHeight, document.body ? document.body.scrollHeight : 0);
+        const clientHeight = window.innerHeight || docEl.clientHeight;
+        if (scrollHeight <= clientHeight + 2) return;
+
+        if (!windowScrollThumb && document.body) {
+          windowScrollThumb = document.createElement('div');
+          windowScrollThumb.setAttribute('aria-hidden', 'true');
+          windowScrollThumb.className = 'portal-scroll-thumb portal-scroll-thumb-window';
+          document.body.appendChild(windowScrollThumb);
+        }
+        if (!windowScrollThumb) return;
+
+        const trackHeight = Math.max(32, clientHeight - 8);
+        const thumbHeight = Math.max(32, Math.round((clientHeight / scrollHeight) * trackHeight));
+        const maxScroll = Math.max(1, scrollHeight - clientHeight);
+        const ratio = Math.min(1, Math.max(0, scrollTop / maxScroll));
+        const thumbTop = 4 + ratio * (trackHeight - thumbHeight);
+
+        windowScrollThumb.style.height = `${thumbHeight}px`;
+        windowScrollThumb.style.transform = `translate3d(0, ${thumbTop.toFixed(1)}px, 0)`;
+        windowScrollThumb.classList.add('is-scrolling');
+
+        clearTimeout(windowScrollHideTimer);
+        windowScrollHideTimer = setTimeout(() => {
+          windowScrollThumb?.classList.remove('is-scrolling');
+        }, 200);
+        return;
+      }
+
+      if (target instanceof HTMLElement && target.matches('[data-slot="sidebar-content"], .agenda-scroll-container')) {
+        let state = elementScrollStateMap.get(target);
+        if (!state) {
+          state = { thumb: null, timer: null, lastScrollTop: target.scrollTop };
+          elementScrollStateMap.set(target, state);
+        }
+
+        const scrollTop = target.scrollTop;
+        if (scrollTop === state.lastScrollTop) return;
+        state.lastScrollTop = scrollTop;
+
+        const scrollHeight = target.scrollHeight;
+        const clientHeight = target.clientHeight;
+        if (scrollHeight <= clientHeight + 2) return;
+
+        const host = target.parentElement;
+        if (!host) return;
+        if (!state.thumb || !state.thumb.isConnected) {
+          state.thumb = document.createElement('div');
+          state.thumb.setAttribute('aria-hidden', 'true');
+          state.thumb.className = 'portal-scroll-thumb';
+          host.appendChild(state.thumb);
+        }
+
+        const trackTop = target.offsetTop + 4;
+        const trackHeight = Math.max(24, clientHeight - 8);
+        const thumbHeight = Math.max(24, Math.round((clientHeight / scrollHeight) * trackHeight));
+        const maxScroll = Math.max(1, scrollHeight - clientHeight);
+        const ratio = Math.min(1, Math.max(0, scrollTop / maxScroll));
+        const thumbTop = trackTop + ratio * (trackHeight - thumbHeight);
+
+        state.thumb.style.height = `${thumbHeight}px`;
+        state.thumb.style.transform = `translate3d(0, ${thumbTop.toFixed(1)}px, 0)`;
+        state.thumb.classList.add('is-scrolling');
+
+        clearTimeout(state.timer);
+        state.timer = setTimeout(() => {
+          state.thumb?.classList.remove('is-scrolling');
+        }, 200);
+      }
+    }
+
+    window.addEventListener('scroll', handleTransientVerticalScroll, { capture: true, passive: true });
+
     // Automatic live date & time reading and auto-refresh across midnight / tab focus
     let calendarLastKnownDateStr = getTodayDateStr();
 
