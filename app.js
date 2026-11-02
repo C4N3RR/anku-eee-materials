@@ -3094,16 +3094,16 @@ const CONFIG = {
 
       return `
         <div id="academicCalendarContainer" class="admincn-card p-4 sm:p-5 select-none overflow-hidden">
-          <div class="flex items-center flex-wrap mb-3 gap-3">
-            <button id="calendarClassButton" type="button" data-portal-click="cycleCalendarClass" data-portal-click-args="[]" class="portal-btn calendar-class-button" title="${trEn('Sonraki sınıfa geç', 'Switch to next year')}" aria-label="${trEn(`${calendarClassYear}. sınıf takvimi. ${calendarClassYear % 4 + 1}. sınıfa geç`, `${formatClassOrdinal(calendarClassYear)} calendar. Switch to ${formatClassOrdinal(calendarClassYear % 4 + 1)}`)}">
-              <i data-lucide="repeat" class="size-3.5"></i><span aria-live="polite">${formatClassOrdinal(calendarClassYear)}</span>
+          <div class="calendar-btn-bar flex items-center gap-1.5 sm:gap-2.5 mb-3 overflow-x-auto no-scrollbar flex-nowrap">
+            <button id="calendarClassButton" type="button" data-portal-click="cycleCalendarClass" data-portal-click-args="[]" class="portal-btn calendar-class-button shrink-0" title="${trEn('Sonraki sınıfa geç', 'Switch to next year')}" aria-label="${trEn(`${calendarClassYear}. sınıf takvimi. ${calendarClassYear % 4 + 1}. sınıfa geç`, `${formatClassOrdinal(calendarClassYear)} calendar. Switch to ${formatClassOrdinal(calendarClassYear % 4 + 1)}`)}">
+              <i data-lucide="repeat" class="size-3.5 shrink-0"></i><span aria-live="polite">${formatClassOrdinal(calendarClassYear)}</span>
             </button>
-            <button type="button" class="portal-btn" data-portal-click="openAcademicTimetable" data-portal-click-args="[]"><i data-lucide="calendar-days" class="size-3.5"></i> ${trEn('Akademik Takvim', 'Academic Calendar')}</button>
-            <a href="assets/calendars/eee_${calendarClassYear}_sinif_ara_sinavlar.ics" download class="portal-btn" title="${trEn(`${calendarClassYear}. Sınıf Ara Sınav Takvimini İndir (.ics)`, `Download ${formatClassOrdinal(calendarClassYear)} Exam Calendar (.ics)`)}">
-              <i data-lucide="calendar-arrow-down" class="size-3.5"></i>
-              <span>${trEn('Takvimi İndir (.ics)', 'Download Calendar (.ics)')}</span>
+            <button type="button" class="portal-btn shrink-0" data-portal-click="openAcademicTimetable" data-portal-click-args="[]"><i data-lucide="calendar-days" class="size-3.5 shrink-0"></i> <span>${trEn('Akademik Takvim', 'Academic Calendar')}</span></button>
+            <a href="assets/calendars/eee_${calendarClassYear}_sinif_ara_sinavlar.ics" download class="portal-btn shrink-0" title="${trEn(`${calendarClassYear}. Sınıf Ara Sınav Takvimini Aktar`, `Export ${formatClassOrdinal(calendarClassYear)} Exam Calendar`)}">
+              <i data-lucide="calendar-arrow-down" class="size-3.5 shrink-0"></i>
+              <span>${trEn('Takvimi Aktar', 'Export Calendar')}</span>
             </a>
-            ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn"><i data-lucide="calendar-plus" class="size-3.5"></i> ' + trEn('Tarih ekle', 'Add date') + '</button>' : ''}
+            ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn shrink-0"><i data-lucide="calendar-plus" class="size-3.5 shrink-0"></i> <span>' + trEn('Tarih ekle', 'Add date') + '</span></button>' : ''}
           </div>
           <div class="flex flex-col lg:flex-row items-stretch gap-5 lg:gap-7">
             
@@ -3665,7 +3665,7 @@ const CONFIG = {
           </div>
         </div>
 
-        <nav aria-label="${trEn('Hızlı erişim', 'Quick access')}" class="grid grid-cols-2 gap-3 md:hidden">
+        <nav aria-label="${trEn('Hızlı erişim', 'Quick access')}" class="grid grid-cols-2 gap-4 md:hidden">
           <button type="button" data-portal-click="openCourseNavigation" data-portal-click-args="[]" aria-controls="sidebar"
             class="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-xs font-semibold text-foreground shadow-sm hover:bg-muted active:bg-muted transition">
             <i data-lucide="book-open" class="size-4 shrink-0 text-muted-foreground"></i>

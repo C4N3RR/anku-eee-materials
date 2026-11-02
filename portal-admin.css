@@ -40,6 +40,38 @@ select[multiple].portal-input { min-height:110px; }
 
 .portal-admin-row[hidden] { display:none; }
 
+.calendar-btn-bar {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:12px;
+  overflow-x:auto;
+  flex-wrap:nowrap;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.calendar-btn-bar::-webkit-scrollbar { display:none; }
+@media (max-width:640px) {
+  .calendar-btn-bar {
+    gap:6px;
+  }
+  .calendar-btn-bar .portal-btn {
+    padding:6px 9px;
+    font-size:11px;
+    gap:4px;
+    min-height:32px;
+    height:32px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .calendar-btn-bar .portal-btn.calendar-class-button {
+    width:auto;
+    min-width:unset;
+    flex:0 0 auto;
+    padding:0 9px;
+  }
+}
+
 /* Fixed footprint: only the visual transform moves during class changes. */
 .portal-btn.calendar-class-button {
   width:96px;
