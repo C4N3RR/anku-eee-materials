@@ -657,8 +657,9 @@
     .calendar-day-popover {
       position: fixed;
       z-index: 9999;
-      width: 240px;
-      max-width: calc(100vw - 24px);
+      width: max-content;
+      min-width: 200px;
+      max-width: min(320px, calc(100vw - 24px));
       background-color: var(--card);
       color: var(--card-foreground);
       border: 1px solid var(--border);
@@ -667,7 +668,7 @@
       pointer-events: auto;
       opacity: 0;
       transform: scale(0.96);
-      transition: opacity 0.15s ease, transform 0.15s ease;
+      transition: opacity 0.12s ease, transform 0.12s ease;
       display: none;
     }
     .calendar-day-popover.is-open {
