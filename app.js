@@ -3250,7 +3250,7 @@ const CONFIG = {
                   data-date="${dateStr}"
                   data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(dateStr)}]"
                   data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
-                  data-portal-click="handleCalendarDayClick" data-portal-click-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(dateStr)}]"
+                  data-portal-click="handleCalendarDayClick" data-portal-click-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
                   aria-label="${d} ${getMonthName(month)} (${trEn('Bugün', 'Today')}), ${dayEvs.map(e => e.title).join(', ')}"
                 >
                   ${d}
@@ -3289,7 +3289,7 @@ const CONFIG = {
                 data-date="${dateStr}"
                 data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(dateStr)}]"
                 data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
-                data-portal-click="handleCalendarDayClick" data-portal-click-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(dateStr)}]"
+                data-portal-click="handleCalendarDayClick" data-portal-click-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
                 aria-label="${d} ${getMonthName(month)}${isPast ? ' (' + trEn('Geçmiş', 'Past') + ')' : ''}, ${dayEvs.map(e => e.title).join(', ')}"
               >
                 ${d}
@@ -3383,24 +3383,23 @@ const CONFIG = {
     }
 
     function handleAgendaItemClick(dateStr) {
+      clearTimeout(calendarPopoverHideTimer);
       calendarActiveDateStr = (calendarActiveDateStr === dateStr) ? null : dateStr;
       refreshCalendarWidget();
       if (calendarActiveDateStr) {
-        setTimeout(() => {
-          const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
-          if (targetCell) {
-            showCalendarDayPopover(targetCell, dateStr, true);
-          }
-        }, 50);
+        const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
+        if (targetCell) {
+          showCalendarDayPopover(targetCell, dateStr, true);
+        }
       } else {
-        hideCalendarDayPopover();
+        hideCalendarDayPopover(false);
       }
     }
 
     function handleCalendarDayHover(eventOrEl, dateStr) {
       clearTimeout(calendarPopoverHideTimer);
-      const targetCell = (eventOrEl instanceof Element ? eventOrEl : null)
-        || (eventOrEl?.target instanceof Element ? eventOrEl.target.closest('.calendar-day-cell') : null)
+      const targetCell = (eventOrEl instanceof Element && eventOrEl.isConnected ? eventOrEl : null)
+        || (eventOrEl?.target instanceof Element && eventOrEl.target.isConnected ? eventOrEl.target.closest('.calendar-day-cell') : null)
         || document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
       if (targetCell) {
         showCalendarDayPopover(targetCell, dateStr, false);
@@ -3412,28 +3411,26 @@ const CONFIG = {
       if (!calendarActiveDateStr) {
         calendarPopoverHideTimer = setTimeout(() => {
           if (!calendarActiveDateStr) {
-            hideCalendarDayPopover();
+            hideCalendarDayPopover(false);
           }
         }, 140);
       }
     }
 
-    function handleCalendarDayClick(eventOrEl, dateStr) {
-      if (eventOrEl?.stopPropagation) eventOrEl.stopPropagation();
+    function handleCalendarDayClick(event, dateStr) {
+      if (event && typeof event.stopPropagation === 'function') {
+        event.stopPropagation();
+      }
       clearTimeout(calendarPopoverHideTimer);
       calendarActiveDateStr = (calendarActiveDateStr === dateStr) ? null : dateStr;
       refreshCalendarWidget();
       if (calendarActiveDateStr) {
-        setTimeout(() => {
-          const targetCell = (eventOrEl instanceof Element ? eventOrEl : null)
-            || (eventOrEl?.target instanceof Element ? eventOrEl.target.closest('.calendar-day-cell') : null)
-            || document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
-          if (targetCell) {
-            showCalendarDayPopover(targetCell, dateStr, true);
-          }
-        }, 50);
+        const targetCell = document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
+        if (targetCell) {
+          showCalendarDayPopover(targetCell, dateStr, true);
+        }
       } else {
-        hideCalendarDayPopover();
+        hideCalendarDayPopover(false);
       }
     }
 
@@ -3441,13 +3438,14 @@ const CONFIG = {
       const popover = document.getElementById('calendarDayPopover');
       if (!popover) return;
 
-      const cell = (targetEl instanceof Element ? targetEl : null)
+      // Always resolve to an active, connected DOM cell
+      const cell = (targetEl instanceof Element && targetEl.isConnected ? targetEl : null)
         || document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
-      if (!cell) return;
+      if (!cell || !cell.isConnected) return;
 
       const events = getCalendarEvents().filter(e => e.date === dateStr);
       if (events.length === 0) {
-        hideCalendarDayPopover();
+        hideCalendarDayPopover(false);
         return;
       }
 
@@ -3465,7 +3463,7 @@ const CONFIG = {
         <div class="p-2.5 sm:p-3 space-y-2 text-xs">
           <div class="flex items-center justify-between border-b border-border/60 pb-1.5 text-[11px] font-semibold text-muted-foreground gap-2">
             <span class="truncate">${d} ${monthName}, ${dayOfWeek} ${isToday ? '<span class="text-[10px] text-[#ff453a] font-bold ml-1">(' + trEn('Bugün', 'Today') + ')</span>' : (isPast ? '<span class="text-[10px] text-muted-foreground/75 font-normal ml-1">(' + trEn('Geçmiş', 'Past') + ')</span>' : '')}</span>
-            <button type="button" data-portal-click="hideCalendarDayPopover" data-portal-click-args="[]" class="size-4 shrink-0 flex items-center justify-center text-muted-foreground hover:text-foreground transition cursor-pointer" title="${trEn('Kapat', 'Close')}">
+            <button type="button" data-portal-click="dismissCalendarDayPopover" data-portal-click-args="[]" class="size-4 shrink-0 flex items-center justify-center text-muted-foreground hover:text-foreground transition cursor-pointer" title="${trEn('Kapat', 'Close')}">
               <i data-lucide="x" class="size-3"></i>
             </button>
           </div>
@@ -3489,45 +3487,51 @@ const CONFIG = {
         </div>
       `;
 
-      // Reset position so measurement isn't constrained by previous coordinates
-      popover.style.left = '0px';
-      popover.style.top = '0px';
       popover.classList.add('is-open');
       lucide.createIcons({ root: popover });
 
       // Calculate dynamic positioning relative to the cell
       const cellRect = cell.getBoundingClientRect();
-      const popoverWidth = popover.offsetWidth || 240;
-      const popoverHeight = popover.offsetHeight || 80;
+      const hasLayout = (cellRect.width > 0 || cellRect.height > 0);
 
-      // Perfectly center horizontally over the cell
-      const cellCenterX = cellRect.left + (cellRect.width / 2);
-      let left = cellCenterX - (popoverWidth / 2);
+      if (hasLayout) {
+        const popoverWidth = popover.offsetWidth || 240;
+        const popoverHeight = popover.offsetHeight || 80;
 
-      // Clamp horizontally to stay within viewport with padding
-      const padding = 12;
-      const maxLeft = Math.max(padding, window.innerWidth - popoverWidth - padding);
-      left = Math.max(padding, Math.min(left, maxLeft));
+        // Perfectly center horizontally over the cell
+        const cellCenterX = cellRect.left + (cellRect.width / 2);
+        let left = cellCenterX - (popoverWidth / 2);
 
-      // Position vertically: right above the cell with an 8px gap
-      let top = cellRect.top - popoverHeight - 8;
-      let isAbove = true;
+        // Clamp horizontally to stay within viewport with padding
+        const padding = 12;
+        const maxLeft = Math.max(padding, window.innerWidth - popoverWidth - padding);
+        left = Math.max(padding, Math.min(left, maxLeft));
 
-      // If not enough space above, flip below the cell
-      if (top < padding) {
-        top = cellRect.bottom + 8;
-        isAbove = false;
+        // Position vertically: right above the cell with an 8px gap
+        let top = cellRect.top - popoverHeight - 8;
+        let isAbove = true;
+
+        // If not enough space above, flip below the cell
+        if (top < padding) {
+          top = cellRect.bottom + 8;
+          isAbove = false;
+        }
+
+        popover.style.transformOrigin = isAbove ? 'bottom center' : 'top center';
+        popover.style.left = `${Math.round(left)}px`;
+        popover.style.top = `${Math.round(top)}px`;
       }
-
-      popover.style.transformOrigin = isAbove ? 'bottom center' : 'top center';
-      popover.style.left = `${Math.round(left)}px`;
-      popover.style.top = `${Math.round(top)}px`;
     }
 
-    function hideCalendarDayPopover() {
+    function hideCalendarDayPopover(clearPinned = false) {
+      if (clearPinned && calendarActiveDateStr) {
+        calendarActiveDateStr = null;
+        refreshCalendarWidget();
+      }
       const popover = document.getElementById('calendarDayPopover');
       if (popover) {
         popover.classList.remove('is-open');
+        popover.style.visibility = 'hidden';
       }
     }
 
@@ -3535,8 +3539,8 @@ const CONFIG = {
     document.addEventListener('click', (e) => {
       const popover = document.getElementById('calendarDayPopover');
       if (popover && popover.classList.contains('is-open')) {
-        if (!popover.contains(e.target) && !e.target.closest('.calendar-day-cell')) {
-          hideCalendarDayPopover();
+        if (!popover.contains(e.target) && !e.target.closest('.calendar-day-cell') && !e.target.closest('[data-portal-click="handleAgendaItemClick"]')) {
+          hideCalendarDayPopover(true);
         }
       }
     });
@@ -6680,6 +6684,8 @@ const CONFIG = {
       hideImageParent: image => { image.parentElement.style.display='none'; },
       imageFallback: image => { image.style.display='none'; image.nextElementSibling?.classList.remove('hidden'); },
       fitBanner: image => { if(image.naturalWidth&&image.naturalHeight)image.parentElement.style.setProperty('--banner-ratio',Math.max(image.naturalWidth/image.naturalHeight,.8)); },
+      dismissCalendarDayPopover: () => hideCalendarDayPopover(true),
+      hideCalendarDayPopover: () => hideCalendarDayPopover(true),
       pauseCalendarPopup: () => clearTimeout(calendarPopoverHideTimer),
       resumeCalendarPopup: () => {
         clearTimeout(calendarPopoverHideTimer);
