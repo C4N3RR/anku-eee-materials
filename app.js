@@ -3255,7 +3255,7 @@ const CONFIG = {
                   style="background-color: #ff453a; color: #ffffff;"
                   data-date="${dateStr}"
                   data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(dateStr)}]"
-                  data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
+                  data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[${jsArg(dateStr)}]"
                   data-portal-click="handleCalendarDayClick" data-portal-click-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
                   aria-label="${d} ${getMonthName(month)} (${trEn('Bugün', 'Today')}), ${dayEvs.map(e => e.title).join(', ')}"
                 >
@@ -3294,7 +3294,7 @@ const CONFIG = {
                 style="${badgeStyle}"
                 data-date="${dateStr}"
                 data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(dateStr)}]"
-                data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
+                data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[${jsArg(dateStr)}]"
                 data-portal-click="handleCalendarDayClick" data-portal-click-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
                 aria-label="${d} ${getMonthName(month)}${isPast ? ' (' + trEn('Geçmiş', 'Past') + ')' : ''}, ${dayEvs.map(e => e.title).join(', ')}"
               >
@@ -3417,19 +3417,25 @@ const CONFIG = {
         || (eventOrEl?.target instanceof Element && eventOrEl.target.isConnected ? eventOrEl.target.closest('.calendar-day-cell') : null)
         || document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
       if (targetCell) {
-        showCalendarDayPopover(targetCell, dateStr, false, calendarActiveEventId);
+        showCalendarDayPopover(targetCell, dateStr, false, (calendarActiveDateStr === dateStr ? calendarActiveEventId : null));
       }
     }
 
-    function handleCalendarDayLeave() {
+    function handleCalendarDayLeave(dateStr = null) {
       clearTimeout(calendarPopoverHideTimer);
-      if (!calendarActiveDateStr) {
-        calendarPopoverHideTimer = setTimeout(() => {
-          if (!calendarActiveDateStr) {
-            hideCalendarDayPopover(false);
+      calendarPopoverHideTimer = setTimeout(() => {
+        if (!calendarActiveDateStr) {
+          hideCalendarDayPopover(false);
+        } else if (dateStr && dateStr !== calendarActiveDateStr) {
+          // If we hovered another date while calendarActiveDateStr was pinned, restore pinned date!
+          const pinnedCell = document.querySelector(`.calendar-day-cell[data-date="${calendarActiveDateStr}"]`);
+          if (pinnedCell) {
+            showCalendarDayPopover(pinnedCell, calendarActiveDateStr, true, calendarActiveEventId);
+          } else {
+            hideCalendarDayPopover(true);
           }
-        }, 140);
-      }
+        }
+      }, 140);
     }
 
     function handleCalendarDayClick(event, dateStr) {
@@ -3511,6 +3517,7 @@ const CONFIG = {
         </div>
       `;
 
+      popover.style.visibility = '';
       popover.classList.add('is-open');
       lucide.createIcons({ root: popover });
 
@@ -3557,7 +3564,7 @@ const CONFIG = {
       const popover = document.getElementById('calendarDayPopover');
       if (popover) {
         popover.classList.remove('is-open');
-        popover.style.visibility = 'hidden';
+        popover.style.visibility = '';
       }
     }
 
