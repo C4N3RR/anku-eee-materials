@@ -2685,42 +2685,10 @@ const CONFIG = {
     const getMonthShort = (m) => (isEn() ? MONTH_NAMES_EN_SHORT : MONTH_NAMES_TR_SHORT)[m];
     const getDayName = (d) => (isEn() ? DAY_NAMES_EN : DAY_NAMES_TR)[d];
 
-    const COURSE_SOLID_COLORS = {
-      'PHY0107': { bg: '#a855f7', text: '#ffffff' }, // Mor
-      'PHY107':  { bg: '#a855f7', text: '#ffffff' },
-      'MTH0101': { bg: '#3b82f6', text: '#ffffff' }, // Mavi
-      'MTH103':  { bg: '#0d9488', text: '#ffffff' }, // Turkuaz
-      'CHM109':  { bg: '#10b981', text: '#ffffff' }, // Zümrüt Yeşili
-      'EEE1001': { bg: '#f59e0b', text: '#000000' }, // Kehribar (siyah kontrast yazı)
-      'TUR171':  { bg: '#f43f5e', text: '#ffffff' }, // Pembe / Gül
-      'TUR101':  { bg: '#f43f5e', text: '#ffffff' },
-      'GENEL':   { bg: '#ff453a', text: '#ffffff' }, // Apple Kırmızı
-      // 2. Sınıf
-      'EEE2001': { bg: '#2563eb', text: '#ffffff' },
-      'EEE2003': { bg: '#7c3aed', text: '#ffffff' },
-      'EEE2005': { bg: '#4f46e5', text: '#ffffff' },
-      'EEE2007': { bg: '#0284c7', text: '#ffffff' },
-      'MTH201':  { bg: '#0891b2', text: '#ffffff' },
-      // 3. Sınıf
-      'EEE3001': { bg: '#059669', text: '#ffffff' },
-      'EEE3005': { bg: '#d97706', text: '#ffffff' },
-      'EEE3007': { bg: '#ea580c', text: '#ffffff' },
-      'EEE3009': { bg: '#dc2626', text: '#ffffff' },
-      // 4. Sınıf
-      'EEE4433': { bg: '#6366f1', text: '#ffffff' },
-      'EEE4013': { bg: '#ec4899', text: '#ffffff' },
-      'EEE4009': { bg: '#8b5cf6', text: '#ffffff' },
-      'EEE4409': { bg: '#14b8a6', text: '#ffffff' },
-      'EEE4441': { bg: '#f97316', text: '#ffffff' },
-      'EEE4447': { bg: '#06b6d4', text: '#ffffff' },
-      'EEE4091': { bg: '#84cc16', text: '#000000' },
-      'EEE4445': { bg: '#e11d48', text: '#ffffff' },
-      'EEE4015': { bg: '#3b82f6', text: '#ffffff' },
-      'EEE4003': { bg: '#a855f7', text: '#ffffff' }
-    };
+    const EXAM_SOLID_BLUE = { bg: '#3b82f6', text: '#ffffff' };
 
-    function getCourseSolidColor(code) {
-      return COURSE_SOLID_COLORS[code] || { bg: '#ff453a', text: '#ffffff' };
+    function getCourseSolidColor() {
+      return EXAM_SOLID_BLUE;
     }
 
     function getTodayDateStr() {
@@ -3105,10 +3073,10 @@ const CONFIG = {
             </a>
             ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn shrink-0"><i data-lucide="calendar-plus" class="size-3.5 shrink-0"></i> <span>' + trEn('Tarih ekle', 'Add date') + '</span></button>' : ''}
           </div>
-          <div class="flex flex-col lg:flex-row items-stretch gap-5 lg:gap-7">
+          <div class="flex flex-col lg:flex-row items-stretch">
             
             <!-- LEFT: 2 MONTHS (or 1 on mobile) - No top border line -->
-            <div class="flex-1 flex flex-col justify-between">
+            <div class="flex-1 flex flex-col justify-between lg:pr-7">
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-8">
                 
                 <!-- Month 1 -->
@@ -3124,11 +3092,11 @@ const CONFIG = {
 
             <!-- DIVIDER: Soft, slightly darker separator bar (~3px thick, not too thin) -->
             <div class="hidden lg:block w-[3px] bg-black/15 dark:bg-white/10 rounded-full self-stretch my-1 shrink-0"></div>
-            <div class="lg:hidden h-[3px] w-full bg-black/15 dark:bg-white/10 rounded-full my-2 shrink-0"></div>
+            <div class="lg:hidden h-[3px] w-full bg-black/15 dark:bg-white/10 rounded-full my-3 shrink-0"></div>
 
             <!-- RIGHT: CLEAN MINIMAL EVENT ROWS (fixed box height matching 6-week calendar + scroll slider) -->
-            <div class="lg:w-72 xl:w-80 shrink-0 flex flex-col relative self-stretch">
-              <div class="lg:absolute lg:inset-0 flex flex-col overflow-y-auto max-h-[170px] sm:max-h-[200px] lg:max-h-none agenda-scroll-container pr-1">
+            <div class="lg:w-[19.75rem] xl:w-[21.75rem] lg:pl-2.5 shrink-0 flex flex-col relative self-stretch">
+              <div class="lg:absolute lg:inset-y-0 lg:left-2.5 lg:right-0 flex flex-col overflow-y-auto max-h-[170px] sm:max-h-[200px] lg:max-h-none agenda-scroll-container">
                 ${renderMinimalAgendaList(visibleEvents)}
               </div>
             </div>
@@ -3344,7 +3312,7 @@ const CONFIG = {
       }
 
       return `
-        <div class="space-y-1.5 flex flex-col justify-start">
+        <div class="min-h-full flex-1 flex flex-col justify-between gap-1">
           ${visibleEvents.map(ev => {
             const solid = getCourseSolidColor(ev.courseCode);
             const [y, m, d] = ev.date.split('-').map(Number);
@@ -3356,18 +3324,18 @@ const CONFIG = {
                 data-event-id="${esc(ev.id)}"
                 data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(ev.date)}]"
                 data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
-                class="event-agenda-item flex items-center gap-2.5 py-1.5 px-2.5 rounded-md hover:bg-muted/50 transition cursor-default outline-none select-none"
+                class="event-agenda-item flex-1 flex items-center gap-1.5 py-1 px-1 rounded-md hover:bg-muted/50 transition cursor-default outline-none select-none"
               >
                 <!-- Date solid badge matching calendar circle -->
                 <span
-                  class="pointer-events-none inline-flex items-center justify-center px-2 py-0.5 sm:py-1 rounded-md font-bold text-[11px] shrink-0 leading-snug"
+                  class="pointer-events-none inline-flex items-center justify-center px-1.5 py-0.5 sm:py-1 rounded-md font-bold text-[11px] shrink-0 leading-snug"
                   style="background-color: ${solid.bg}; color: ${solid.text};"
                 >
                   ${d} ${getMonthShort(m - 1)}
                 </span>
 
                 <!-- Event Title -->
-                <span class="pointer-events-none font-medium text-foreground truncate flex-1 text-xs sm:text-[13px] leading-snug">
+                <span class="pointer-events-none font-medium text-foreground truncate flex-1 text-xs leading-snug">
                   ${esc(ev.title)}
                 </span>
 
