@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="tr" class="flex min-h-full w-full" data-scroll-behavior="smooth">
 <head>
+  <base href="/anku-eee-materials/testlogo/">
+  <meta name="robots" content="noindex,nofollow">
+  <script src="preview-init.js"></script>
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self' https://heuxjlefnwxdqfskriso.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://drive.google.com https://docs.google.com https://www.youtube-nocookie.com https://www.youtube.com blob:; media-src 'self' https://drive.google.com blob:; worker-src 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <link rel="stylesheet" href="portal-admin.css?v=20261102-exam-calendar">
-  <script src="portal-security.js?v=20261102-exam-calendar"></script>
+  <link rel="stylesheet" href="portal-admin.css?v=20261030-class-sidebar1">
+  <script src="portal-security.js?v=20261030-class-sidebar1"></script>
   <script src="portal-config.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
@@ -14,9 +17,9 @@
   <script src="portal-language.js?v=20261101-language-spring"></script>
 
   <!-- 3 & 4. Meta Title & Meta Description -->
-  <title>ANKU EEE — [TEST SÜRÜMÜ] Calculus Adım Adım Öğrenme</title>
+  <title>ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı</title>
   <meta id="metaDescription" name="description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
-  <link rel="canonical" href="https://c4n3rr.github.io/anku-eee-materials/">
+  <link rel="canonical" href="https://c4n3rr.github.io/anku-eee-materials/test.html">
 
   <!-- 5. Open Graph & Twitter Card -->
   <meta property="og:type" content="website">
@@ -24,8 +27,8 @@
   <meta property="og:locale" content="tr_TR">
   <meta id="ogTitle" property="og:title" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
   <meta id="ogDescription" property="og:description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
-  <meta property="og:url" content="https://c4n3rr.github.io/anku-eee-materials/">
-  <meta property="og:image" content="https://c4n3rr.github.io/anku-eee-materials/assets/og-portal-v2.jpg">
+  <meta property="og:url" content="https://c4n3rr.github.io/anku-eee-materials/test.html">
+  <meta property="og:image" content="https://c4n3rr.github.io/anku-eee-materials/testlogo/assets/og-portal-v2.jpg">
   <meta property="og:image:type" content="image/jpeg">
   <meta property="og:image:width" content="1731">
   <meta property="og:image:height" content="909">
@@ -33,15 +36,11 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta id="twitterTitle" name="twitter:title" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
   <meta id="twitterDescription" name="twitter:description" content="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği (ANKU EEE) ders materyalleri, ders notları, slaytlar ve kaynak arşivi.">
-  <meta name="twitter:image" content="https://c4n3rr.github.io/anku-eee-materials/assets/og-portal-v2.jpg">
+  <meta name="twitter:image" content="https://c4n3rr.github.io/anku-eee-materials/testlogo/assets/og-portal-v2.jpg">
   <meta name="twitter:image:alt" content="ANKU EEE — Elektrik-Elektronik Mühendisliği Ders Portalı">
 
   <!-- 6. Favicon Set -->
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-  <link rel="shortcut icon" href="favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -51,8 +50,6 @@
   <meta name="apple-mobile-web-app-title" content="ANKU EEE">
 
   <!-- 12. Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-570V5G977T"></script>
-  <script src="analytics-init.js"></script>
 
   <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -175,62 +172,6 @@
       cursor: pointer;
     }
 
-    button,
-    [type="button"],
-    [type="reset"],
-    [type="submit"],
-    [role="button"],
-    a,
-    summary,
-    dialog,
-    .portal-btn,
-    .portal-icon-btn {
-      outline: none !important;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    button:focus,
-    button:focus-visible,
-    button:active,
-    [type="button"]:focus,
-    [type="button"]:focus-visible,
-    [type="button"]:active,
-    [type="reset"]:focus,
-    [type="reset"]:focus-visible,
-    [type="reset"]:active,
-    [type="submit"]:focus,
-    [type="submit"]:focus-visible,
-    [type="submit"]:active,
-    [role="button"]:focus,
-    [role="button"]:focus-visible,
-    [role="button"]:active,
-    a:focus,
-    a:focus-visible,
-    a:active,
-    summary:focus,
-    summary:focus-visible,
-    summary:active,
-    dialog:focus,
-    dialog:focus-visible,
-    .portal-btn:focus,
-    .portal-btn:focus-visible,
-    .portal-btn:active,
-    .portal-icon-btn:focus,
-    .portal-icon-btn:focus-visible,
-    .portal-icon-btn:active {
-      outline: none !important;
-      --tw-ring-shadow: 0 0 #0000 !important;
-      --tw-ring-offset-shadow: 0 0 #0000 !important;
-    }
-
-    button::-moz-focus-inner,
-    [type="button"]::-moz-focus-inner,
-    [type="reset"]::-moz-focus-inner,
-    [type="submit"]::-moz-focus-inner {
-      border-style: none;
-      padding: 0;
-    }
-
     .admincn-card {
       background-color: var(--card);
       color: var(--card-foreground);
@@ -306,40 +247,10 @@
       padding-right: 0.5rem;
     }
 
-    * {
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-    *::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-      display: none;
-    }
-
-    .portal-scroll-thumb {
-      position: absolute;
-      right: 2px;
-      top: 0;
-      width: 4px;
-      border-radius: 9999px;
-      background-color: color-mix(in oklab, var(--muted-foreground) 45%, transparent);
-      pointer-events: none;
-      opacity: 0;
-      will-change: transform, opacity;
-      transition: opacity 0.16s ease-out;
-      z-index: 45;
-    }
-    .portal-scroll-thumb-window {
-      position: fixed;
-      right: 3px;
-      top: 0;
-      width: 5px;
-      z-index: 60;
-    }
-    .portal-scroll-thumb.is-scrolling {
-      opacity: 1;
-      transition: opacity 0.05s linear;
-    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: color-mix(in oklab, var(--muted-foreground) 35%, transparent); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: color-mix(in oklab, var(--muted-foreground) 60%, transparent); }
 
     dialog:not([open]) { display: none !important; }
     dialog[open] { display: flex !important; flex-direction: column; }
@@ -743,18 +654,17 @@
     .calendar-day-popover {
       position: fixed;
       z-index: 9999;
-      width: max-content;
-      min-width: 200px;
-      max-width: min(320px, calc(100vw - 24px));
+      width: 240px;
+      max-width: calc(100vw - 24px);
       background-color: var(--card);
       color: var(--card-foreground);
       border: 1px solid var(--border);
       border-radius: calc(var(--radius) * 1.1);
       box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.3), 0 4px 10px -2px rgba(0, 0, 0, 0.1);
-      pointer-events: none;
+      pointer-events: auto;
       opacity: 0;
       transform: scale(0.96);
-      transition: opacity 0.12s ease, transform 0.12s ease;
+      transition: opacity 0.15s ease, transform 0.15s ease;
       display: none;
     }
     .calendar-day-popover.is-open {
@@ -805,14 +715,22 @@
       transform: translateY(-1px);
     }
     .agenda-scroll-container {
-      scrollbar-width: none;
-      -ms-overflow-style: none;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(150, 150, 150, 0.4) transparent;
       -webkit-overflow-scrolling: touch;
     }
     .agenda-scroll-container::-webkit-scrollbar {
-      width: 0;
-      height: 0;
-      display: none;
+      width: 4px;
+    }
+    .agenda-scroll-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .agenda-scroll-container::-webkit-scrollbar-thumb {
+      background-color: rgba(150, 150, 150, 0.35);
+      border-radius: 9999px;
+    }
+    .agenda-scroll-container::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(150, 150, 150, 0.65);
     }
     .calendar-past-event {
       background-color: rgba(140, 140, 150, 0.22) !important;
@@ -982,6 +900,7 @@
       width: 100%;
     }
   </style>
+  <link rel="stylesheet" href="brand.css?v=20261101-compact-banner">
 </head>
 <body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground select-none">
 
@@ -1001,19 +920,7 @@
             title="Ana Sayfa"
             class="sidebar-brand-btn flex w-full items-center gap-2.5 rounded-md p-2 text-left hover:bg-sidebar-accent transition overflow-hidden"
           >
-            <div class="relative flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground overflow-hidden p-0.5">
-              <img
-                src="assets/ankara-uni-logo.png"
-                alt="Ankara Üniversitesi Elektrik-Elektronik Mühendisliği Logosu"
-                width="32"
-                height="32"
-                class="size-full object-contain rounded-full"
-                data-portal-error="hideImage" data-portal-error-args="[{&quot;$context&quot;:&quot;element&quot;}]"
-              />
-            </div>
-            <div class="sidebar-hide-collapsed flex items-center min-w-0 flex-1">
-              <span class="text-base font-semibold tracking-tight leading-none text-sidebar-foreground truncate">ANKU EEE Portal</span>
-            </div>
+            <span class="portal-brand-lockup" role="img" aria-label="ANKU EEE Portal">ANKU EEE Portal</span>
           </button>
 
           <button
@@ -1219,13 +1126,13 @@
         </div>
       </header>
 
-      <main id="mainContainer" aria-busy="true" class="w-full flex-1 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+      <main id="mainContainer" aria-busy="true" class="w-full flex-1 px-4 py-6 sm:px-6 lg:px-8">
         <div id="mainLoader" class="hidden py-20 flex flex-col items-center justify-center gap-3 text-muted-foreground">
           <progress aria-label="Yükleniyor" class="loading-spinner"></progress>
           <span class="text-xs">Yükleniyor...</span>
         </div>
 
-        <div id="courseHubView" class="space-y-4 sm:space-y-6"></div>
+        <div id="courseHubView" class="space-y-6"></div>
       </main>
 
       <footer class="border-t border-border bg-card/40 mt-auto">
@@ -1515,7 +1422,7 @@
 
 
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
-  <script src="app.js?v=20261102-exam-calendar"></script>
-  <script src="portal-admin.js?v=20261102-exam-calendar"></script>
+  <script src="app.js?v=20261101-compact-banner"></script>
+  <script src="portal-admin.js?v=20261031-i18n3"></script>
 </body>
 </html>
