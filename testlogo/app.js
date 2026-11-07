@@ -2981,7 +2981,7 @@ const CONFIG = {
                 <button
                   type="button"
                   class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm transition-transform hover:scale-110 active:scale-95 cursor-pointer ${isSelected ? 'ring-2 ring-primary ring-offset-2 ring-offset-background' : ''}"
-                  style="background-color: #6d1a36; color: #e8dcca;"
+                  style="background-color: #ff453a; color: #ffffff;"
                   data-date="${dateStr}"
                   data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;event&quot;}, ${jsArg(dateStr)}]"
                   data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
@@ -2998,7 +2998,7 @@ const CONFIG = {
               <div class="aspect-square flex items-center justify-center">
                 <span
                   class="size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm select-none"
-                  style="background-color: #6d1a36; color: #e8dcca;"
+                  style="background-color: #ff453a; color: #ffffff;"
                   title="${trEn('Bugün', 'Today')} (${d} ${getMonthName(month)})"
                 >
                   ${d}
