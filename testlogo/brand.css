@@ -76,3 +76,17 @@
  top:-5%;
  bottom:5%;
 }
+
+.portal-banner-clock { display:none; }
+
+@media (min-width:900px) and (orientation:landscape), (min-width:1200px) {
+ .portal-banner-clock {
+  display:block;
+  flex:none;
+  color:#ede4d3;
+  font-size:clamp(1.25rem, 2vw, 2rem);
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+ }
+}
