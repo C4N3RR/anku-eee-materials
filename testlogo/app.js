@@ -3263,6 +3263,19 @@ const CONFIG = {
     });
     window.addEventListener('focus', checkCalendarDateAutoRefresh);
 
+    const bannerClockFormat = new Intl.DateTimeFormat('tr-TR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    });
+
+    setInterval(() => {
+      const clock = $('portalBannerClock');
+      if (!clock) return;
+      const time = bannerClockFormat.format(new Date());
+      if (clock.textContent !== time) clock.textContent = time;
+    }, 1000);
+
     // ================= RENDER HOME VIEW =================
     function renderWelcomeHub() {
       const container = $('courseHubView');
@@ -3270,11 +3283,12 @@ const CONFIG = {
       const allFilesFlat = collectAllFiles(driveTree);
 
       container.innerHTML = `
-        <!-- COMPACT ORANGE HERO BANNER -->
+        <!-- HOME BANNER -->
         <div class="portal-hero px-4 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3 sm:gap-4">
           <div class="min-w-0 flex-1">
             <h1 class="portal-brand-lockup" aria-label="ANKU EEE Portal">ANKU EEE Portal</h1>
           </div>
+          <time id="portalBannerClock" class="portal-banner-clock">${bannerClockFormat.format(new Date())}</time>
         </div>
 
         <nav aria-label="${trEn('Hızlı erişim', 'Quick access')}" class="grid grid-cols-2 gap-3 md:hidden">
