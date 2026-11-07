@@ -53,4 +53,26 @@
 
 /* Compact logo-only welcome banner. */
 .portal-hero { padding:.5rem 1rem; }
-.portal-hero h1.portal-brand-lockup { max-width:22rem; margin:0 auto; }
+.portal-hero h1.portal-brand-lockup {
+ max-width:22rem;
+ margin:0;
+ background:none;
+ overflow:visible;
+ -webkit-mask:none;
+ mask:none;
+}
+.portal-hero h1.portal-brand-lockup::before,
+.portal-hero h1.portal-brand-lockup::after {
+ content:"";
+ position:absolute;
+ inset:0;
+ background:#e8dcca;
+ -webkit-mask:url('assets/brand/portal-original.png') center / 100% auto no-repeat;
+ mask:url('assets/brand/portal-original.png') center / 100% auto no-repeat;
+}
+.portal-hero h1.portal-brand-lockup::before { clip-path:inset(0 80% 0 0); }
+.portal-hero h1.portal-brand-lockup::after {
+ clip-path:inset(0 0 0 20%);
+ top:-5%;
+ bottom:5%;
+}
