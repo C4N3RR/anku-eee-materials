@@ -53,4 +53,4 @@
 
 /* Compact logo-only welcome banner. */
 .portal-hero { padding:.5rem 1rem; }
-.portal-hero h1.portal-brand-lockup { max-width:22rem; margin:0; }
+.portal-hero h1.portal-brand-lockup { max-width:22rem; margin:0 auto; }
