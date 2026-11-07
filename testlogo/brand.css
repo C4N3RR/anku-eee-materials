@@ -81,12 +81,34 @@
 
 @media (min-width:900px) and (orientation:landscape), (min-width:1200px) {
  .portal-banner-clock {
-  display:block;
+  display:grid;
   flex:none;
-  color:#ede4d3;
-  font-size:clamp(1.25rem, 2vw, 2rem);
-  font-weight:600;
+  justify-items:center;
+  gap:.25rem;
+  margin-inline-end:.85rem;
+  color:rgb(237 228 211 / 60%);
+  font-family:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size:clamp(28px, 2.35vw, 32px);
+  font-weight:400;
   font-variant-numeric:tabular-nums;
+  letter-spacing:.04em;
   line-height:1;
  }
+}
+
+.portal-clock-colon {
+ color:#e5513e;
+ animation:portal-clock-pulse 2s ease-in-out infinite;
+}
+.portal-clock-date {
+ font-size:11px;
+ letter-spacing:.12em;
+ text-transform:uppercase;
+}
+@keyframes portal-clock-pulse {
+ 0%, 100% { opacity:1; }
+ 50% { opacity:.25; }
+}
+@media (prefers-reduced-motion:reduce) {
+ .portal-clock-colon { animation:none; }
 }
