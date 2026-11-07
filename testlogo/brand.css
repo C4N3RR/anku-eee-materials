@@ -70,9 +70,9 @@
  -webkit-mask:url('assets/brand/portal-original.png') center / 100% auto no-repeat;
  mask:url('assets/brand/portal-original.png') center / 100% auto no-repeat;
 }
-.portal-hero h1.portal-brand-lockup::before { clip-path:inset(0 80% 0 0); }
+.portal-hero h1.portal-brand-lockup::before { clip-path:inset(0 78.5% 0 0); }
 .portal-hero h1.portal-brand-lockup::after {
- clip-path:inset(0 0 0 20%);
+ clip-path:inset(0 0 0 21.5%);
  top:-5%;
  bottom:5%;
 }
