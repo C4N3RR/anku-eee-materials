@@ -1,6 +1,6 @@
 /* Independent student identity: maroon / warm cream. */
-:root { --brand-maroon:#6d1a36; --brand-cream:#e8dcca; --brand-ink:#6d1a36; --brand-calendar:#6d1a36; }
-.dark { --brand-ink:#e8dcca; --brand-calendar:#e8dcca; }
+:root { --brand-maroon:#6d1a36; --brand-cream:#e8dcca; --brand-ink:#6d1a36; }
+.dark { --brand-ink:#e8dcca; }
 .sidebar-brand-btn { gap:.4rem; }
 .sidebar-brand-btn > div:first-child, .portal-page-brand > div:first-child { background:transparent; border-radius:0; padding:0; overflow:visible; }
 .portal-brand-symbol { width:100%; height:100%; object-fit:contain; border-radius:0; }
@@ -17,13 +17,8 @@
 .portal-hero .portal-hero-logo img { border-radius:0; }
 .portal-hero h1 { color:#e8dcca; font-weight:750; letter-spacing:-.045em; }
 .portal-hero-sub { color:#e8dcca; }
-.calendar-month-header h3 { color:var(--brand-calendar); }
-.calendar-today { background:#6d1a36 !important; color:#e8dcca !important; }
-.portal-btn-primary { background:#6d1a36; color:#e8dcca; border-color:#6d1a36; }
-.portal-btn-primary:hover { background:#7c2443; }
 .sidebar-brand-btn:focus-visible { outline:2px solid var(--brand-ink); outline-offset:2px; }
 @media(max-width:480px) { .portal-hero .portal-hero-logo { width:2.5rem; height:2.5rem; } .portal-hero::after { display:none; } }
-.dark .calendar-month-header h3 { color:#e8dcca; }
 .sidebar-brand-btn span, .portal-hero h1 { letter-spacing:-.025em; }
 
 /* Monochrome artwork: internal details and holes never borrow the background color. */
