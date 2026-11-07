@@ -3269,12 +3269,28 @@ const CONFIG = {
       hourCycle: 'h23',
     });
 
-    setInterval(() => {
+    const bannerDateFormat = new Intl.DateTimeFormat('tr-TR', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+    });
+
+    function updateBannerClock() {
       const clock = $('portalBannerClock');
       if (!clock) return;
-      const time = bannerClockFormat.format(new Date());
-      if (clock.textContent !== time) clock.textContent = time;
-    }, 1000);
+
+      const now = new Date();
+      const time = bannerClockFormat.format(now);
+      if (clock.dateTime !== time) {
+        const [hours, minutes] = time.split(':');
+        clock.firstElementChild.textContent = hours;
+        clock.lastElementChild.textContent = minutes;
+        clock.dateTime = time;
+        $('portalBannerDate').textContent = bannerDateFormat.format(now);
+      }
+    }
+
+    setInterval(updateBannerClock, 1000);
 
     // ================= RENDER HOME VIEW =================
     function renderWelcomeHub() {
@@ -3288,7 +3304,10 @@ const CONFIG = {
           <div class="min-w-0 flex-1">
             <h1 class="portal-brand-lockup" aria-label="ANKU EEE Portal">ANKU EEE Portal</h1>
           </div>
-          <time id="portalBannerClock" class="portal-banner-clock">${bannerClockFormat.format(new Date())}</time>
+          <div class="portal-banner-clock">
+            <time id="portalBannerClock"><span></span><span class="portal-clock-colon">:</span><span></span></time>
+            <span id="portalBannerDate" class="portal-clock-date"></span>
+          </div>
         </div>
 
         <nav aria-label="${trEn('Hızlı erişim', 'Quick access')}" class="grid grid-cols-2 gap-3 md:hidden">
@@ -3342,6 +3361,7 @@ const CONFIG = {
           </div>
         </div>
       `;
+      updateBannerClock();
 
       lucide.createIcons();
     }
