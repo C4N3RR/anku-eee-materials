@@ -1759,6 +1759,12 @@ const CONFIG = {
       if (activeView !== 'course') return;
       const node = getCourseNodeById(activeCourseId);
       const code = node ? node.name.toUpperCase().trim() : '';
+      if (window.PORTAL_PRACTICE_QUESTIONS?.[code]?.length) {
+        const targetHash = '#' + code + (activeCourseTab === 'practice' ? ':practice' : '');
+        if (location.hash !== targetHash) {
+          try { history.replaceState(null, '', targetHash); } catch {}
+        }
+      }
       if (code !== 'MTH0101') return;
 
       if (activeCourseTab === 'study') {
@@ -2500,7 +2506,9 @@ const CONFIG = {
       activeCourseId = node.id;
       courseLocalSearch = '';
 
-      if (code !== 'MTH0101') {
+      if (hashParts[1]?.toLowerCase().trim() === 'practice' && window.PORTAL_PRACTICE_QUESTIONS?.[code]?.length) {
+        activeCourseTab = 'practice';
+      } else if (code !== 'MTH0101') {
         activeCourseTab = 'materials';
       } else {
         // Explicit study links open the study view; plain course links open materials.
