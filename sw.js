@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anku-eee-shell-v37';
+const CACHE_NAME = 'anku-eee-shell-v38';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -11,7 +11,7 @@ const PRECACHE_URLS = [
   './portal-config.js',
   './portal-security.js?v=20261102-exam-calendar',
   './app.js?v=20261108-portal-brand',
-  './portal-brand.css?v=1',
+  './portal-brand.css?v=2',
   './portal-favicon.svg',
   './testlogo/assets/brand/portal-original.png',
   './theme-init.js',
