@@ -463,6 +463,10 @@
        Background follows the site theme: white in light mode, near-black in dark mode. */
 
     .practice-panel { --practice-bg:#fbf8f2; --practice-figure-bg:#fff; --practice-choice:color-mix(in srgb,var(--course-tone) 8%,transparent); --practice-edge:color-mix(in srgb,var(--course-tone) 30%,transparent); --practice-error:#c23b27; max-width:860px; margin-inline:auto; display:grid; gap:16px; }
+    @media (min-width: 900px) and (orientation: landscape) {
+      .practice-panel { max-width:1200px; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; }
+      .practice-panel > :not(.practice-card) { grid-column:1 / -1; }
+    }
     .dark .practice-panel { --practice-bg:#161616; --practice-figure-bg:var(--practice-bg); --practice-choice:var(--course-accent-soft); --practice-edge:var(--course-accent-border); --practice-error:#f07664; }
     .practice-header,.practice-tools,.practice-progress { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.65rem; }
     .practice-header h2 { font-size:clamp(1.45rem,3vw,1.85rem); font-weight:650; }
@@ -494,7 +498,7 @@
     .practice-figure svg { display:block; width:100%; height:auto; font:12px 'JetBrains Mono',monospace; }
     .practice-figure text { fill:var(--foreground); }
     .practice-grid path { stroke:var(--foreground); opacity:.1; }
-    .practice-axis { stroke:var(--muted-foreground); }
+    .practice-axis { fill:none; stroke:var(--muted-foreground); }
     .practice-plot,.practice-jump { fill:none; stroke:var(--course-tone); stroke-width:2; }
     .practice-jump { stroke-width:1; stroke-dasharray:3 3; }
     .practice-answer { font-size:.875rem; line-height:1.6; }
