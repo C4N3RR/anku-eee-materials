@@ -2685,14 +2685,14 @@ const CONFIG = {
     const getMonthShort = (m) => (isEn() ? MONTH_NAMES_EN_SHORT : MONTH_NAMES_TR_SHORT)[m];
     const getDayName = (d) => (isEn() ? DAY_NAMES_EN : DAY_NAMES_TR)[d];
 
-    const EXAM_SOLID_BLUE = { bg: '#3b82f6', text: '#ffffff' };
+    const EXAM_SOLID_COLOR = { bg: 'var(--exam-ring-soft)', text: 'var(--exam-ring)' };
     const HOMEWORK_SOLID_COLOR = { bg: '#f59e0b', text: '#ffffff' };
 
     function getCourseSolidColor(code, ev = null) {
       if (ev && (ev.type === 'odev' || /ödev|homework/i.test(ev.title || ''))) {
         return HOMEWORK_SOLID_COLOR;
       }
-      return EXAM_SOLID_BLUE;
+      return EXAM_SOLID_COLOR;
     }
 
     function getTodayDateStr() {
@@ -3231,12 +3231,12 @@ const CONFIG = {
               <div class="aspect-square flex items-center justify-center">
                 <button
                   type="button"
-                  class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm transition-transform hover:scale-110 cursor-default"
+                  class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-sm transition-transform hover:scale-110 cursor-default calendar-today-with-event"
                   style="background-color: #ff453a; color: #ffffff;"
                   data-date="${dateStr}"
                   data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(dateStr)}]"
                   data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
-                  aria-label="${d} ${getMonthName(month)} (${trEn('Bugün', 'Today')}), ${dayEvs.map(e => e.title).join(', ')}"
+                  aria-label="${d} ${getMonthName(month)} (${trEn('Bugün', 'Today')}), ${dayEvs.length} ${trEn('sınav/etkinlik', 'exams/events')}, ${esc(dayEvs.map(e => e.title).join(', '))}"
                 >
                   ${d}
                 </button>
@@ -3256,24 +3256,15 @@ const CONFIG = {
             `;
           }
         } else if (dayEvs.length > 0) {
-          // Event day (not today)
-          const firstEv = dayEvs[0];
-          const solid = getCourseSolidColor(firstEv.courseCode, firstEv);
-
-          // USER REQUEST: "bugünden önceki geçmiş önemli günlerin hepsinin rengi gri bir şekilde soluk gözüksün."
-          const badgeClass = isPast ? 'calendar-past-event' : '';
-          const badgeStyle = isPast ? '' : `background-color: ${solid.bg}; color: ${solid.text};`;
-
           daysHtml += `
             <div class="aspect-square flex items-center justify-center">
               <button
                 type="button"
-                class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-transform hover:scale-110 cursor-default ${badgeClass}"
-                style="${badgeStyle}"
+                class="calendar-day-cell size-7 sm:size-7.5 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-transform hover:scale-110 cursor-default calendar-important-day"
                 data-date="${dateStr}"
                 data-portal-mouseenter="handleCalendarDayHover" data-portal-mouseenter-args="[{&quot;$context&quot;:&quot;element&quot;}, ${jsArg(dateStr)}]"
                 data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
-                aria-label="${d} ${getMonthName(month)}${isPast ? ' (' + trEn('Geçmiş', 'Past') + ')' : ''}, ${dayEvs.map(e => e.title).join(', ')}"
+                aria-label="${d} ${getMonthName(month)}${isPast ? ' (' + trEn('Geçmiş', 'Past') + ')' : ''}, ${dayEvs.length} ${trEn('sınav/etkinlik', 'exams/events')}, ${esc(dayEvs.map(e => e.title).join(', '))}"
               >
                 ${d}
               </button>
@@ -3327,8 +3318,7 @@ const CONFIG = {
       return `
         <div class="space-y-1.5 flex flex-col justify-start">
           ${visibleEvents.map(ev => {
-            const solid = getCourseSolidColor(ev.courseCode, ev);
-            const [y, m, d] = ev.date.split('-').map(Number);
+            const [, m, d] = ev.date.split('-').map(Number);
 
             return `
               <div
@@ -3339,10 +3329,9 @@ const CONFIG = {
                 data-portal-mouseleave="handleCalendarDayLeave" data-portal-mouseleave-args="[]"
                 class="event-agenda-item flex items-center gap-1.5 py-1.5 px-1 rounded-md hover:bg-muted/50 transition cursor-default outline-none select-none"
               >
-                <!-- Date solid badge matching calendar circle -->
+                <!-- Event date -->
                 <span
-                  class="pointer-events-none inline-flex items-center justify-center px-1.5 py-0.5 sm:py-1 rounded-md font-bold text-[11px] shrink-0 leading-snug"
-                  style="background-color: ${solid.bg}; color: ${solid.text};"
+                  class="pointer-events-none inline-flex items-center justify-center px-1.5 py-0.5 sm:py-1 calendar-event-date text-[11px] shrink-0 leading-snug"
                 >
                   ${d} ${getMonthShort(m - 1)}
                 </span>
@@ -3371,12 +3360,21 @@ const CONFIG = {
       clearTimeout(calendarPopoverHideTimer);
       const targetCell = (eventOrEl instanceof Element && eventOrEl.isConnected && eventOrEl.classList.contains('calendar-day-cell') ? eventOrEl : null)
         || document.querySelector(`.calendar-day-cell[data-date="${dateStr}"]`);
+      clearCalendarDateHighlight();
+      document.querySelectorAll(`.calendar-day-cell[data-date="${CSS.escape(dateStr)}"], .event-agenda-item[data-date="${CSS.escape(dateStr)}"]`)
+        .forEach(element => element.classList.add('calendar-date-highlight'));
       if (targetCell) {
         showCalendarDayPopover(targetCell, dateStr, false, null);
       }
     }
 
+    function clearCalendarDateHighlight() {
+      document.querySelectorAll('.calendar-date-highlight')
+        .forEach(element => element.classList.remove('calendar-date-highlight'));
+    }
+
     function handleCalendarDayLeave() {
+      clearCalendarDateHighlight();
       clearTimeout(calendarPopoverHideTimer);
       calendarPopoverHideTimer = setTimeout(() => {
         hideCalendarDayPopover(false);
@@ -3418,7 +3416,7 @@ const CONFIG = {
           </div>
           <div class="space-y-1.5">
             ${events.map(ev => {
-              const solid = isPast ? { bg: '#71717a' } : getCourseSolidColor(ev.courseCode, ev);
+              const solid = isPast ? { bg: '#71717a' } : { bg: getCourseSolidColor(ev.courseCode, ev) === HOMEWORK_SOLID_COLOR ? HOMEWORK_SOLID_COLOR.bg : 'var(--exam-ring)' };
               return `
                 <div class="space-y-0.5 rounded px-1.5 py-1 transition">
                   <div class="flex items-center justify-between gap-2">

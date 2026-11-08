@@ -812,22 +812,42 @@
       height: 0;
       display: none;
     }
-    .calendar-past-event {
-      background-color: rgba(140, 140, 150, 0.22) !important;
-      color: #71717a !important;
-      opacity: 0.6;
+    :root {
+      --exam-ring: var(--brand-maroon, #6d1a36);
+      --exam-ring-soft: color-mix(in srgb, var(--exam-ring) 8%, transparent);
+      --exam-ring-border: color-mix(in srgb, var(--exam-ring) 30%, transparent);
+      --exam-ring-stroke: var(--exam-ring);
+      --exam-ring-hover: color-mix(in srgb, var(--exam-ring) 12%, transparent);
     }
-    .dark .calendar-past-event {
-      background-color: rgba(255, 255, 255, 0.08) !important;
-      color: #a1a1aa !important;
-      opacity: 0.5;
+    .dark {
+      --exam-ring: #d9bf8c;
+      --exam-ring-soft: color-mix(in srgb, var(--exam-ring) 14%, transparent);
+      --exam-ring-border: color-mix(in srgb, var(--exam-ring) 40%, transparent);
+      --exam-ring-stroke: color-mix(in srgb, var(--exam-ring) 90%, transparent);
     }
-    .calendar-past-event:hover {
-      opacity: 1 !important;
-      background-color: rgba(140, 140, 150, 0.35) !important;
+    .calendar-important-day {
+      background-color: transparent;
+      border: 1.5px solid var(--exam-ring-stroke);
+      color: var(--foreground);
+      font-weight: 600;
+      transition: background-color .15s, border-color .15s;
     }
-    .dark .calendar-past-event:hover {
-      background-color: rgba(255, 255, 255, 0.16) !important;
+    .calendar-important-day:hover,
+    .calendar-important-day:focus-visible,
+    .calendar-important-day.calendar-date-highlight,
+    .event-agenda-item.calendar-date-highlight {
+      background-color: var(--exam-ring-hover);
+    }
+    .calendar-today-with-event {
+      box-shadow: 0 0 0 2px var(--card), 0 0 0 3.5px var(--exam-ring-stroke);
+    }
+    .calendar-event-date {
+      background-color: var(--exam-ring-soft);
+      border: 1px solid var(--exam-ring-border);
+      border-radius: 8px;
+      color: var(--exam-ring);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
     }
 
     /* KaTeX & Calculus Study Mode polish */
@@ -1502,7 +1522,7 @@
 
 
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
-  <script src="app.js?v=20261108-portal-brand"></script>
+  <script src="app.js?v=20261108-calendar-rings"></script>
   <script src="portal-admin.js?v=20261102-exam-calendar"></script>
 </body>
 </html>
