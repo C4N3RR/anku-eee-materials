@@ -3608,6 +3608,35 @@ const CONFIG = {
     });
     window.addEventListener('focus', checkCalendarDateAutoRefresh);
 
+    const bannerClockFormat = new Intl.DateTimeFormat('tr-TR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    });
+
+    const bannerDateFormat = new Intl.DateTimeFormat('tr-TR', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+    });
+
+    function updateBannerClock() {
+      const clock = $('portalBannerClock');
+      if (!clock) return;
+
+      const now = new Date();
+      const time = bannerClockFormat.format(now);
+      if (clock.dateTime !== time) {
+        const [hours, minutes] = time.split(':');
+        clock.firstElementChild.textContent = hours;
+        clock.lastElementChild.textContent = minutes;
+        clock.dateTime = time;
+        $('portalBannerDate').textContent = bannerDateFormat.format(now);
+      }
+    }
+
+    setInterval(updateBannerClock, 1000);
+
     // ================= RENDER HOME VIEW =================
     function renderWelcomeHub() {
       const container = $('courseHubView');
@@ -3615,31 +3644,14 @@ const CONFIG = {
       const allFilesFlat = collectAllFiles(driveTree);
 
       container.innerHTML = `
-        <!-- COMPACT ORANGE HERO BANNER -->
+        <!-- HOME BANNER -->
         <div class="portal-hero px-4 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3 sm:gap-4">
-          <a
-            href="https://www.ankara.edu.tr"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="${trEn('Ankara Üniversitesi', 'Ankara University')}"
-            class="portal-hero-logo"
-          >
-            <img
-              src="assets/ankara-uni-logo.png"
-              alt="${trEn('Ankara Üniversitesi Logosu', 'Ankara University Logo')}"
-              width="44"
-              height="44"
-              class="size-full object-contain rounded-full"
-              data-portal-error="hideImageParent" data-portal-error-args="[{&quot;$context&quot;:&quot;element&quot;}]"
-            />
-          </a>
           <div class="min-w-0 flex-1">
-            <h1 class="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight leading-tight text-white">
-              ANKU EEE Portal
-            </h1>
-            <p class="portal-hero-sub text-xs sm:text-sm mt-0.5 leading-snug">
-              ${trEn('Ders materyalleri, sınav tarihleri ve bölüm bilgileri tek yerde.', 'Course materials, exam dates and department info in one place.')}
-            </p>
+            <h1 class="portal-brand-lockup" aria-label="ANKU EEE Portal">ANKU EEE Portal</h1>
+          </div>
+          <div class="portal-banner-clock">
+            <time id="portalBannerClock"><span></span><span class="portal-clock-colon">:</span><span></span></time>
+            <span id="portalBannerDate" class="portal-clock-date"></span>
           </div>
         </div>
 
@@ -3694,6 +3706,7 @@ const CONFIG = {
           </div>
         </div>
       `;
+      updateBannerClock();
 
       lucide.createIcons();
     }
