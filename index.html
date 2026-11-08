@@ -461,6 +461,44 @@
 
     /* Course Hero Banner with Right Image, Tint & Left Vignette.
        Background follows the site theme: white in light mode, near-black in dark mode. */
+
+    .practice-panel { --practice-bg:#fbf8f2; --practice-figure-bg:#fff; --practice-choice:color-mix(in srgb,var(--course-tone) 8%,transparent); --practice-edge:color-mix(in srgb,var(--course-tone) 30%,transparent); --practice-error:#c23b27; max-width:860px; margin-inline:auto; display:grid; gap:16px; }
+    .dark .practice-panel { --practice-bg:#161616; --practice-figure-bg:var(--practice-bg); --practice-choice:var(--course-accent-soft); --practice-edge:var(--course-accent-border); --practice-error:#f07664; }
+    .practice-header,.practice-tools,.practice-progress { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.65rem; }
+    .practice-header h2 { font-size:clamp(1.45rem,3vw,1.85rem); font-weight:650; }
+    .practice-header p,.practice-tag,.practice-figure figcaption { color:var(--muted-foreground); }
+    .practice-count,.practice-progress output,.practice-number,.practice-key,.practice-tag { font-family:'JetBrains Mono',monospace; }
+    .practice-count,.practice-new,.practice-number { padding:.15rem .5rem; border-radius:999px; }
+    .practice-count { background:var(--muted); font-size:.8rem; }
+    .practice-number { display:inline-grid; place-items:center; min-width:2rem; color:var(--course-tone); background:var(--course-accent-soft); border:1px solid var(--course-accent-border); }
+    .practice-new { font-size:.625rem; color:var(--course-tone); background:color-mix(in srgb,var(--course-tone) 15%,transparent); }
+    .practice-tab[aria-pressed="true"] { background:var(--course-accent-soft); color:var(--foreground); }
+    .practice-progress progress { appearance:none; flex:1; height:3px; accent-color:var(--course-tone); }
+    .practice-progress progress::-webkit-progress-bar { background:var(--border); }
+    .practice-progress progress::-webkit-progress-value { background:var(--course-tone); }
+    .practice-progress output,.practice-tag { font-size:.8rem; }
+    .practice-panel .practice-card { display:grid; justify-items:start; gap:12px; padding:clamp(14px,3vw,24px); min-width:0; background:var(--practice-bg); transition:border-color .15s; }
+    .practice-card:hover { border-color:var(--practice-edge); }
+    .practice-card > p:not(.practice-tag) { font-size:16px; line-height:1.6; }
+    .practice-options { width:100%; display:grid; gap:8px; }
+    .practice-option { display:flex; align-items:center; gap:.6rem; min-height:44px; padding:.45rem .65rem; border:1px solid var(--border); border-radius:8px; cursor:pointer; }
+    .practice-option input,[data-reveal] { accent-color:var(--course-tone); }
+    .practice-option:has(:checked),.practice-option.practice-correct { background:var(--practice-choice); border-color:var(--practice-edge); }
+    .practice-option.practice-incorrect { border-color:var(--practice-error); }
+    .practice-feedback { margin-inline-start:auto; font-size:.75rem; text-align:end; }
+    .practice-correct .practice-feedback { color:var(--course-tone); }
+    .practice-incorrect .practice-feedback { color:var(--practice-error); }
+    .practice-reset { min-height:44px; padding:0 .8rem; border-radius:8px; }
+    .practice-panel :focus-visible,.practice-tab:focus-visible { outline:2px solid var(--course-tone); outline-offset:2px; }
+    .practice-figure { width:min(100%,520px); margin-inline:auto; padding:8px; border:1px solid var(--border); border-radius:8px; background:var(--practice-figure-bg); text-align:center; }
+    .practice-figure svg { display:block; width:100%; height:auto; font:12px 'JetBrains Mono',monospace; }
+    .practice-figure text { fill:var(--foreground); }
+    .practice-grid path { stroke:var(--foreground); opacity:.1; }
+    .practice-axis { stroke:var(--muted-foreground); }
+    .practice-plot,.practice-jump { fill:none; stroke:var(--course-tone); stroke-width:2; }
+    .practice-jump { stroke-width:1; stroke-dasharray:3 3; }
+    .practice-answer { font-size:.875rem; line-height:1.6; }
+
     .course-page {
       --course-tone: var(--course-accent-light);
       --course-accent-soft: color-mix(in srgb, var(--course-tone) 12%, transparent);
@@ -1679,7 +1717,9 @@
 
 
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
-  <script src="app.js?v=20261108-staff-design"></script>
+  <script src="practice-questions.js"></script>
+  <script src="practice-panel.js"></script>
+  <script src="app.js?v=20261108-practice"></script>
   <script src="portal-admin.js?v=20261102-exam-calendar"></script>
 </body>
 </html>

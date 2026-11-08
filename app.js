@@ -4189,6 +4189,7 @@ const CONFIG = {
 
       const code = courseNode.name.toUpperCase().trim();
       const curr = CURRICULUM_MAP.get(code);
+      const practiceQuestions = window.PORTAL_PRACTICE_QUESTIONS?.[code];
       const hasStudyMode = (code === 'MTH0101' && typeof window !== 'undefined' && Boolean(window.CALCULUS_STUDY_DATA));
       const meta = courseMetadata[code] || {
         name: curr?.name || courseNode.name,
@@ -4385,7 +4386,7 @@ const CONFIG = {
             </div>
           </div>
 
-        ${hasStudyMode ? `
+        ${hasStudyMode || practiceQuestions?.length ? `
           <div class="flex items-center justify-between flex-wrap gap-3 pt-1 border-b border-border pb-3">
             <div class="inline-flex p-1 rounded-xl bg-muted/60 border border-border text-xs font-medium">
               <button
@@ -4396,7 +4397,7 @@ const CONFIG = {
                 <i data-lucide="folder" class="size-3.5"></i>
                 <span>${trEn('Ders Materyalleri', 'Course Materials')}</span>
               </button>
-              <button
+              ${hasStudyMode ? `              <button
                 type="button"
                 data-portal-click="setCourseActiveTab" data-portal-click-args="[&quot;study&quot;]"
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer ${activeCourseTab === 'study' ? 'bg-primary text-primary-foreground shadow-2xs font-semibold' : 'text-muted-foreground hover:text-foreground'}"
@@ -4404,7 +4405,14 @@ const CONFIG = {
                 <i data-lucide="graduation-cap" class="size-3.5"></i>
                 <span>${trEn('Adım Adım Öğren', 'Step-by-Step Study')}</span>
                 <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold ${activeCourseTab === 'study' ? 'bg-blue-600 text-white shadow-2xs' : 'bg-blue-500/15 text-blue-600 dark:text-blue-400'}">Beta</span>
-              </button>
+              </button>` : `
+                <button type="button" data-portal-click="setCourseActiveTab" data-portal-click-args="[&quot;practice&quot;]"
+                  aria-pressed="${activeCourseTab === 'practice'}" class="practice-tab inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition cursor-pointer">
+                  <i data-lucide="list-checks" class="size-3.5"></i>
+                  <span>${trEn('Vize Çalışma Soruları', 'Midterm Practice Questions')}</span>
+                  <span class="practice-new">${trEn('Yeni', 'New')}</span>
+                </button>
+              `}
             </div>
             ${activeCourseTab === 'study' ? `
               <div class="flex items-center gap-2 text-xs text-muted-foreground">
@@ -4420,12 +4428,17 @@ const CONFIG = {
         <div id="courseMaterialsContainer" class="space-y-6">
           ${(hasStudyMode && activeCourseTab === 'study')
             ? renderCalculusStudyHub(code)
-            : renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl)}
+            : (practiceQuestions?.length && activeCourseTab === 'practice')
+              ? '<div data-practice-panel></div>'
+              : renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl)}
         </div>
         </div>
       `;
 
       lucide.createIcons();
+      if (practiceQuestions?.length && activeCourseTab === 'practice') {
+        window.mountPortalPractice(container.querySelector('[data-practice-panel]'), code, practiceQuestions, triggerMathRendering);
+      }
       if (hasStudyMode && activeCourseTab === 'study') {
         triggerMathRendering(container);
       }
@@ -5054,7 +5067,9 @@ const CONFIG = {
     window.setCourseActiveTab = function(tabName) {
       activeCourseTab = tabName;
       try {
-        localStorage.setItem('anku_course_tab_MTH0101_v1', tabName);
+        if (getCourseNodeById(activeCourseId)?.name.trim().toUpperCase() === 'MTH0101') {
+          localStorage.setItem('anku_course_tab_MTH0101_v1', tabName);
+        }
       } catch {}
       if (tabName === 'study') {
         // Restore last viewed topic and section instead of restarting from 1.1
@@ -5256,6 +5271,7 @@ const CONFIG = {
       weekFolders.sort((a, b) => a.weekNum - b.weekNum);
 
       const box = $('courseMaterialsContainer');
+      if (activeCourseTab === 'practice') return;
       if (box) {
         box.innerHTML = renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl);
         lucide.createIcons();
