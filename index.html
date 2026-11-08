@@ -564,6 +564,14 @@
       .course-toolbar-controls { width:100%; }
       .course-toolbar-search { flex:1; min-width:0; }
     }
+    @media (pointer: coarse), (max-width: 767px) {
+      #globalSearchInput,
+      #datatableSearchInput,
+      #staffSearchInput,
+      .course-toolbar-search input {
+        font-size:16px;
+      }
+    }
     .course-toolbar-controls { display: flex; align-items: center; gap: .5rem; margin-inline-start: auto; max-width: 100%; }
     .course-ghost {
       border: 1px solid var(--border);
