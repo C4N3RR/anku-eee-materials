@@ -373,7 +373,7 @@ window.PORTAL_PRACTICE_QUESTIONS = {
       "tags": [
         "anlamlı rakam"
       ],
-      "review": true
+      "note": "Addition: $148+2.6+0.52=151.12$, rounded to the ones place, gives $151$. Multiplication: $148\\times2.6\\times0.52=200.096$, rounded to two significant figures, gives $2.0\\times10^2$."
     }
   ]
 };
