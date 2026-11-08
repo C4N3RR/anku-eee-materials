@@ -29,11 +29,29 @@ window.PORTAL_PRACTICE_QUESTIONS = {
     {
       "id": 2,
       "text": "The dimensional analysis of the equation $x_f=x_i+v_{xi}t+\\frac12 a_x t^2$ is given correctly in which of the following options?",
-      "options": [],
+      "options": [
+        {
+          "key": "A",
+          "text": "$[L]=[L]+\\left[\\frac{L}{T}\\right][T]+\\frac12\\left[\\frac{L}{T^2}\\right][T^2]$"
+        },
+        {
+          "key": "B",
+          "text": "$[L]=[L]+\\left[\\frac{L}{T}\\right][T]+\\left[\\frac{L}{T^2}\\right][T^2]$"
+        },
+        {
+          "key": "C",
+          "text": "$[L]=\\left[\\frac{L}{T}\\right]+\\left[\\frac{L}{T}\\right][T^2]+\\left[\\frac{L}{T}\\right][T^2]$"
+        },
+        {
+          "key": "D",
+          "text": "$[L]=\\left[\\frac{L}{T}\\right]+\\left[\\frac{L}{T}\\right][T]+\\left[\\frac{L}{T^2}\\right][T^2]$"
+        }
+      ],
       "tags": [
         "boyut analizi"
       ],
-      "expectedEquation": "$[L]=[L]+[L/T][T]+[L/T^2][T^2]$"
+      "answer": "B",
+      "note": "Boyut analizinde ½ boyutsuzdur. A seçeneği bu katsayıyı koruduğu için boyutsal olarak o da geçerlidir. B, yalnızca boyutların yazıldığı biçimdir."
     },
     {
       "id": 3,
