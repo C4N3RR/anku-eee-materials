@@ -1620,6 +1620,19 @@ const CONFIG = {
       }
     ];
 
+    const COURSE_PAGE_PALETTE = {
+      EEE1001: ['#e5513e', '#c23b27'],
+      CHM109: ['#7fb69a', '#3f7d5f'],
+      MTH0101: ['#7c9cd6', '#3d5fa0'],
+      MTH103: ['#9a8fb5', '#6a5c8f'],
+      PHY0107: ['#c9805a', '#a15a34'],
+      TUR171: ['#c46a78', '#a8434f'],
+      OUL101: ['#d9bf8c', '#a8842f'],
+    };
+    const springCourseAccents = new Map(CURRICULUM_COURSES
+      .filter(course => course.semester === 'bahar' && !COURSE_PAGE_PALETTE[course.code])
+      .map((course, index) => [course.code, Object.values(COURSE_PAGE_PALETTE)[index % Object.keys(COURSE_PAGE_PALETTE).length]]));
+
     const CURRICULUM_MAP = new Map(CURRICULUM_COURSES.map(c => [c.code, c]));
 
     // Build DEFAULT_COURSE_METADATA dynamically from single source of truth (CURRICULUM_COURSES + STAFF_DATA)
@@ -4273,13 +4286,8 @@ const CONFIG = {
         </nav>
       ` : '';
 
-      const bannerUrl = Number(curr?.year || meta.year) === 1 ? '' : (meta.banner || DEFAULT_COURSE_METADATA[code]?.banner || '');
-      const bannerPos = meta.bannerPos || DEFAULT_COURSE_METADATA[code]?.bannerPos || 'center center';
-      const bannerRatioRaw = Number(meta.bannerRatio || DEFAULT_COURSE_METADATA[code]?.bannerRatio) || (16 / 9);
-      const bannerRatio = Math.max(bannerRatioRaw, 0.8);
-      const theme = getCourseTheme(code);
-
-      // Build clickable instructor & assistant pills from STAFF_DATA (single source of truth)
+      const [courseAccent, courseAccentLight] = COURSE_PAGE_PALETTE[code] || springCourseAccents.get(code) || ['#8e9aaf', '#5b6880'];
+      const courseIcon = esc(PortalSecurity.icon(meta.icon || 'book-open'));
       const instructorStaffList = (meta.instructorIds || curr?.instructorIds || [])
         .map(id => STAFF_MAP.get(id))
         .filter(Boolean);
@@ -4287,26 +4295,24 @@ const CONFIG = {
         .map(id => STAFF_MAP.get(id))
         .filter(Boolean);
 
-      const yearSemLabel = curr ? `${formatClassOrdinal(curr.year)} • ${formatSemesterLabel(curr.semester, true)}` : '';
+      const yearSemLabel = curr ? `${formatClassOrdinal(curr.year)} · ${formatSemesterLabel(curr.semester, true)}` : '';
 
-      const renderStaffLinkPill = (staff, isAssistant = false) => {
+      const renderCourseStaffLink = (staff, isAssistant = false) => {
         const fullName = formatStaffFullName(staff);
         const initials = getStaffInitials(staff.name);
         return `
-          <div class="inline-flex items-center gap-1 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/85 dark:bg-white/10 p-0.5 pr-2 text-xs text-zinc-800 dark:text-zinc-100 shadow-2xs">
+          <div class="course-staff-line">
             <button
               type="button"
               data-portal-click="goToStaffPage" data-portal-click-args="[${jsArg(staff.id)}]"
               title="${esc(fullName)} — ${trEn('Öğretim Görevlileri sayfasında kartına git', 'go to their card on the Academic Staff page')}"
-              class="inline-flex items-center gap-1.5 rounded px-1.5 py-0.5 font-medium hover:bg-zinc-900/5 dark:hover:bg-white/10 hover:text-orange-600 dark:hover:text-orange-400 transition cursor-pointer"
+              class="course-staff-link"
             >
               <span class="size-5 rounded-full overflow-hidden bg-zinc-200 dark:bg-zinc-700 inline-flex items-center justify-center shrink-0">
-                ${staff.photo ? `
-                  <img src="${esc(safeImage(staff.photo))}" alt="" class="size-full object-cover object-top" data-portal-error="hideImage" data-portal-error-args="[{&quot;$context&quot;:&quot;element&quot;}]" />
-                ` : `<span class="text-[9px] font-bold">${esc(initials)}</span>`}
+                <span class="text-[9px] font-bold">${esc(initials)}</span>
               </span>
               ${isAssistant ? `<span class="text-[10px] font-semibold text-sky-600 dark:text-sky-400">${trEn('Asistan:', 'Assistant:')}</span>` : ''}
-              <span class="underline decoration-zinc-400/60 underline-offset-2">${esc(fullName)}</span>
+              <span>${esc(fullName)}</span>
               <i data-lucide="arrow-up-right" class="size-3 opacity-70"></i>
             </button>
             ${staff.email ? `
@@ -4314,29 +4320,29 @@ const CONFIG = {
                 type="button"
                 data-portal-click="copyInstructorEmail" data-portal-click-args="[${jsArg(staff.email)}, {&quot;$context&quot;:&quot;element&quot;}]"
                 title="${trEn('E-postayı Kopyala', 'Copy Email')}: ${esc(staff.email)}"
-                class="inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-[11px] text-zinc-500 dark:text-zinc-300 hover:bg-zinc-900/5 dark:hover:bg-white/10 hover:text-zinc-950 dark:hover:text-white transition border-l border-zinc-900/10 dark:border-white/10"
+                class="course-staff-email"
               >
-                <i data-lucide="mail" class="size-3"></i>
-                <span class="email-text hidden sm:inline">${esc(staff.email)}</span>
+                <span aria-hidden="true">·</span>
+                <span class="email-text">${esc(staff.email)}</span>
               </button>
             ` : ''}
           </div>
         `;
       };
 
-      let staffPillsHtml = '';
+      let courseStaffHtml = '';
       if (instructorStaffList.length > 0 || assistantStaffList.length > 0) {
-        staffPillsHtml = `
+        courseStaffHtml = `
           <div class="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
-            ${instructorStaffList.map(s => renderStaffLinkPill(s, false)).join('')}
-            ${assistantStaffList.map(s => renderStaffLinkPill(s, true)).join('')}
+            ${instructorStaffList.map(s => renderCourseStaffLink(s, false)).join('')}
+            ${assistantStaffList.map(s => renderCourseStaffLink(s, true)).join('')}
           </div>
         `;
       } else if (meta.instructor || meta.email) {
-        staffPillsHtml = `
+        courseStaffHtml = `
           <div class="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
             ${meta.instructor ? `
-              <div class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 px-2.5 py-1 font-medium text-zinc-800 dark:text-zinc-100">
+              <div class="course-staff-line">
                 <i data-lucide="user" class="size-3.5 text-zinc-600 dark:text-zinc-300"></i>
                 <span>${esc(meta.instructor)}</span>
               </div>
@@ -4345,7 +4351,7 @@ const CONFIG = {
               <button
                 data-portal-click="copyInstructorEmail" data-portal-click-args="[${jsArg(meta.email)}, {&quot;$context&quot;:&quot;element&quot;}]"
                 title="${trEn('Kopyala', 'Copy')}"
-                class="inline-flex items-center gap-1.5 rounded-md border border-zinc-900/10 dark:border-white/15 bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 px-2.5 py-1 font-mono text-xs text-zinc-600 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition"
+                class="course-staff-line"
               >
                 <i data-lucide="mail" class="size-3.5"></i>
                 <span class="email-text">${esc(meta.email)}</span>
@@ -4355,50 +4361,28 @@ const CONFIG = {
         `;
       }
 
+
+      const courseDetails = [yearSemLabel, formatCreditsText(meta.credits), `${totalFiles} ${trEn('dosya', 'files')}`].filter(Boolean).join(' · ');
+
       container.innerHTML = `
-        <div
-          class="course-hero-banner p-5 sm:p-6"
-          style="--course-border: ${theme.border}; --course-glow: ${theme.glow}; --course-tint: ${theme.tint};"
-        >
-          ${bannerUrl ? `
-            <div class="course-hero-banner-media" style="--banner-ratio: ${bannerRatio};" aria-hidden="true">
-              <img
-                src="${esc(safeImage(bannerUrl))}"
-                alt="${esc(formatCourseDisplayName(code, meta.name))} Banner"
-                fetchpriority="high"
-                class="course-hero-banner-img"
-                style="object-position: ${esc(bannerPos)};"
-                data-portal-load="fitBanner" data-portal-load-args="[{&quot;$context&quot;:&quot;element&quot;}]"
-              />
-              <div class="course-hero-banner-vignette"></div>
+        <div class="course-page space-y-6" data-course="${esc(code)}"
+             style="--course-accent: ${courseAccent}; --course-accent-light: ${courseAccentLight};">
+          <header class="course-page-banner">
+            <i data-lucide="${courseIcon}" class="course-watermark" aria-hidden="true"></i>
+            <div class="course-page-icon size-11 rounded-xl flex items-center justify-center shrink-0">
+              <i data-lucide="${courseIcon}" class="size-5" aria-hidden="true"></i>
             </div>
-          ` : ''}
+            <div class="course-page-heading min-w-0 space-y-2">
+              <span class="course-code-pill rounded-md px-2 py-0.5 font-mono text-xs font-semibold">${esc(code)}</span>
+              <h1>${esc(formatCourseDisplayName(code, meta.name))}</h1>
+              ${courseStaffHtml}
+              <p class="course-details font-mono">${esc(courseDetails)}</p>
+            </div>
+          </header>
 
-          <div class="relative z-10 flex flex-col gap-4 max-w-full ${bannerUrl ? 'sm:max-w-[68%] xl:max-w-[72%]' : ''}">
-            <div class="flex items-start gap-3.5">
-              <div
-                class="course-hero-icon size-11 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
-                style="background-color: ${theme.badgeBg}; color: ${theme.accent}; border: 1px solid ${theme.badgeBorder};"
-              >
-                <i data-lucide="${esc(PortalSecurity.icon(meta.icon || 'book-open'))}" class="size-5"></i>
-              </div>
-              <div class="space-y-3 min-w-0 flex-1">
-                <div class="space-y-1.5 min-w-0">
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    <span
-                      class="rounded-sm px-2 py-0.5 font-mono text-xs font-semibold"
-                      style="background-color: ${theme.accent}; color: #09090b;"
-                    >${esc(code)}</span>
-                    ${yearSemLabel ? `<span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${esc(yearSemLabel)}</span>` : ''}
-                    ${meta.credits ? `<span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${esc(formatCreditsText(meta.credits))}</span>` : ''}
-                    <span class="rounded-sm bg-zinc-900/5 dark:bg-white/10 text-zinc-700 dark:text-zinc-200 border border-zinc-900/10 dark:border-white/10 px-2 py-0.5 text-xs font-medium">${totalFiles} ${trEn('dosya', 'files')}</span>
-                  </div>
-                  <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-zinc-950 dark:text-white drop-shadow-sm">${esc(formatCourseDisplayName(code, meta.name))}</h1>
-
-                  ${staffPillsHtml}
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2 pt-0.5">
+          <div class="course-toolbar">
+            ${courseLinksSectionHtml}
+            <div class="course-toolbar-controls">
                   <div class="relative w-44 sm:w-52">
                     <i data-lucide="search" class="size-3.5 text-zinc-500 dark:text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2 z-10 pointer-events-none"></i>
                     <input
@@ -4406,15 +4390,14 @@ const CONFIG = {
                       value="${esc(courseLocalSearch)}"
                       data-portal-input="filterCourseMaterials" data-portal-input-args="[{&quot;$context&quot;:&quot;value&quot;}]"
                       placeholder="${trEn('Ders içinde ara...', 'Search in course...')}"
-                      class="h-8 w-full rounded-md bg-white/85 dark:bg-white/10 border border-zinc-900/15 dark:border-white/15 pl-8 pr-3 text-xs text-zinc-950 dark:text-white placeholder:text-zinc-400 outline-none focus:ring-2 transition"
-                      style="--tw-ring-color: ${theme.border};"
+                      class="course-ghost h-8 w-full rounded-md pl-8 pr-3 text-xs"
                     >
                   </div>
                   <a
                     href="${driveFolderUrl}"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/15 text-zinc-800 dark:text-zinc-100 border border-zinc-900/10 dark:border-white/15 transition"
+                    class="course-ghost inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md"
                   >
                     <i data-lucide="folder-symlink" class="size-3.5"></i>
                     <span>Drive</span>
@@ -4426,13 +4409,8 @@ const CONFIG = {
                   >
                     <i data-lucide="edit-3" class="size-3.5"></i>
                   </button>
-                </div>
-              </div>
             </div>
           </div>
-        </div>
-
-        ${courseLinksSectionHtml}
 
         ${hasStudyMode ? `
           <div class="flex items-center justify-between flex-wrap gap-3 pt-1 border-b border-border pb-3">
@@ -4470,6 +4448,7 @@ const CONFIG = {
           ${(hasStudyMode && activeCourseTab === 'study')
             ? renderCalculusStudyHub(code)
             : renderCourseMaterialsSections(code, meta, weekFolders, catFolders, rootFiles, totalFiles, driveFolderUrl)}
+        </div>
         </div>
       `;
 
@@ -5329,7 +5308,7 @@ const CONFIG = {
               <h4 class="font-semibold text-sm text-foreground truncate" title="${esc(folder.name)}">${esc(title)}</h4>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
-              <span class="rounded-sm bg-primary-soft px-2 py-0.5 text-xs font-medium text-primary tabular-nums">
+              <span class="course-folder-count rounded-full px-2 py-0.5 text-xs font-medium font-mono tabular-nums">
                 ${count}
               </span>
               <a
@@ -5360,7 +5339,7 @@ const CONFIG = {
       const sizeStr = formatFileSize(item.size);
 
       return `
-        <div class="flex items-center justify-between gap-2 p-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition group">
+        <div class="flex items-center justify-between gap-2 p-2 rounded-lg border border-border bg-background course-file-row transition group">
           <div class="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer" data-portal-click="openViewerModal" data-portal-click-args="[${jsArg(item.id)}, ${jsArg(courseCode)}]">
             <div class="size-7 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
               <i data-lucide="${conf.icon}" class="size-3.5"></i>
@@ -5369,8 +5348,8 @@ const CONFIG = {
               <div class="text-xs sm:text-sm font-medium text-foreground truncate group-hover:underline" title="${esc(item.name)}">
                 ${esc(item.name)}
               </div>
-              <div class="text-[11px] text-muted-foreground">
-                ${conf.badge}${sizeStr !== '—' ? ' • ' + sizeStr : ''}
+              <div class="text-[11px] text-muted-foreground font-mono">
+                ${conf.badge}${sizeStr !== '—' ? ' · ' + sizeStr : ''}
               </div>
             </div>
           </div>
@@ -5378,7 +5357,7 @@ const CONFIG = {
           <div class="flex items-center gap-1 shrink-0">
             <button
               data-portal-click="openViewerModal" data-portal-click-args="[${jsArg(item.id)}, ${jsArg(courseCode)}]"
-              class="h-7 px-2.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
+              class="h-7 px-2.5 text-xs font-medium rounded-md course-ghost"
             >
               ${kind === 'youtube' || yt ? trEn('İzle', 'Watch') : trEn('Aç', 'Open')}
             </button>
@@ -5413,20 +5392,20 @@ const CONFIG = {
       const sizeStr = formatFileSize(item.size);
 
       return `
-        <div class="flex items-center justify-between gap-3 py-2 px-2 hover:bg-muted/30 rounded-md transition">
+        <div class="flex items-center justify-between gap-3 py-2 px-2 course-file-row rounded-md transition">
           <div class="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer" data-portal-click="openViewerModal" data-portal-click-args="[${jsArg(item.id)}, ${jsArg(courseCode)}]">
             <div class="size-7 rounded-sm bg-primary-soft text-primary flex items-center justify-center shrink-0">
               <i data-lucide="${conf.icon}" class="size-3.5"></i>
             </div>
-            <span class="text-xs sm:text-sm font-medium text-foreground truncate hover:underline" title="${esc(item.name)}">
-              ${esc(item.name)}
-            </span>
-            ${sizeStr !== '—' ? `<span class="text-xs text-muted-foreground shrink-0 font-mono">${sizeStr}</span>` : ''}
+            <div class="min-w-0 flex-1">
+              <div class="text-xs sm:text-sm font-medium text-foreground truncate" title="${esc(item.name)}">${esc(item.name)}</div>
+              <div class="text-[11px] text-muted-foreground font-mono">${conf.badge}${sizeStr !== '—' ? ' · ' + sizeStr : ''}</div>
+            </div>
           </div>
           <div class="flex items-center gap-1 shrink-0">
             <button
               data-portal-click="openViewerModal" data-portal-click-args="[${jsArg(item.id)}, ${jsArg(courseCode)}]"
-              class="h-7 px-2.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
+              class="h-7 px-2.5 text-xs font-medium rounded-md course-ghost"
             >
               ${trEn('Aç', 'Open')}
             </button>
