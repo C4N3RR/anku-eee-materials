@@ -778,6 +778,96 @@
         box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.45), 0 16px 36px -6px rgba(249, 115, 22, 0.5);
       }
     }
+
+    .staff-page {
+      --staff-surface: #fff;
+      --staff-hero-bg: #f6f1e7;
+      --staff-line: rgb(0 0 0 / 8%);
+      --staff-photo-border: rgb(0 0 0 / 10%);
+      --staff-photo-overlay: transparent;
+      --staff-fg: var(--foreground);
+      --staff-muted: #6b655c;
+      --staff-accent: #c23b27;
+      --staff-action-accent: #c23b27;
+      --staff-brand: #e5513e;
+      --staff-hover: rgb(0 0 0 / 3%);
+      --staff-role-bg: color-mix(in srgb, var(--staff-accent) 8%, transparent);
+      --staff-deputy-fg: var(--staff-accent);
+      --staff-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+    }
+    .dark .staff-page {
+      --staff-surface: #161616;
+      --staff-hero-bg: #1e1e1e;
+      --staff-line: rgb(255 255 255 / 8%);
+      --staff-photo-border: rgb(255 255 255 / 12%);
+      --staff-photo-overlay: rgb(0 0 0 / 4%);
+      --staff-fg: #ede4d3;
+      --staff-muted: #aaa397;
+      --staff-accent: #f07664;
+      --staff-action-accent: #e5513e;
+      --staff-hover: rgb(255 255 255 / 3%);
+      --staff-role-bg: color-mix(in srgb, var(--staff-brand) 14%, transparent);
+      --staff-deputy-fg: color-mix(in srgb, #ff9a88 80%, transparent);
+      --staff-shadow: none;
+    }
+    .staff-page a:focus-visible, .staff-page button:focus-visible, .staff-page input:focus-visible {
+      outline: 2px solid var(--staff-action-accent);
+      outline-offset: 2px;
+    }
+    .staff-page .staff-hero, .staff-page .staff-card {
+      padding: clamp(20px, 2vw, 24px);
+      color: var(--staff-fg);
+      border-color: var(--staff-line);
+      transition: background-color .2s, color .2s, border-color .2s, transform .15s;
+    }
+    .staff-page .staff-hero {
+      background-color: var(--staff-hero-bg);
+      box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--staff-brand) 80%, transparent), var(--staff-shadow);
+    }
+    .dark .staff-page .staff-hero { box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--staff-brand) 80%, transparent); }
+    .staff-hero-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem; }
+    .staff-hero-title { font-size: clamp(28px, 3vw, 32px); font-weight: 650; line-height: 1.15; }
+    .staff-ghost { background: transparent; border: 1px solid var(--border); color: var(--staff-fg); transition: color .2s, border-color .2s; }
+    .staff-ghost:hover, .staff-ghost:focus-visible { border-color: color-mix(in srgb, var(--staff-action-accent) 50%, transparent); }
+    .staff-tab { display: inline-flex; align-items: center; gap: .375rem; padding: .4rem .6rem; font-size: .75rem; color: var(--staff-muted); border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; }
+    .staff-tab:hover, .staff-tab[aria-pressed="true"] { color: var(--staff-fg); }
+    .staff-tab[aria-pressed="true"] { border-color: var(--staff-action-accent); font-weight: 600; }
+    .staff-section-heading { border-bottom: 1px solid var(--staff-line); }
+    .staff-section-heading p { color: var(--staff-muted); }
+    .staff-section-title { font-size: clamp(22px, 2vw, 24px); font-weight: 650; }
+    .staff-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; align-items: stretch; }
+    @media (width < 1100px) { .staff-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @media (width < 700px) { .staff-grid { grid-template-columns: minmax(0,1fr); } }
+    .staff-page .staff-card { display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; min-width: 0; background-color: var(--staff-surface); box-shadow: var(--staff-shadow); }
+    .staff-page .staff-card:hover { border-color: color-mix(in srgb, var(--staff-brand) 35%, transparent); transform: translateY(-1px); }
+    .staff-card-chair { background-image: radial-gradient(circle at 0 0, color-mix(in srgb, var(--staff-brand) 6%, transparent), transparent 60%); }
+    .staff-divider { border-top: 1px solid var(--staff-line); }
+    .staff-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: var(--staff-muted); }
+    .staff-name { font-size: clamp(20px, 2vw, 22px); font-weight: 650; line-height: 1.2; overflow-wrap: anywhere; }
+    .staff-role { font-size: 11px; padding: .1rem .4rem; letter-spacing: .02em; border: 1px solid var(--staff-line); border-radius: 6px; color: var(--staff-muted); }
+    .staff-role-chair, .staff-role-deputy { background: var(--staff-role-bg); border-color: color-mix(in srgb, var(--staff-brand) 45%, transparent); color: var(--staff-accent); font-weight: 600; }
+    .staff-role-deputy { border-color: color-mix(in srgb, var(--staff-brand) 25%, transparent); }
+    .dark .staff-role-deputy { color: var(--staff-deputy-fg); background: color-mix(in srgb, var(--staff-brand) 8%, transparent); }
+    .staff-photo { border: 1px solid var(--staff-photo-border); }
+    .staff-photo img { object-position: center 20%; filter: saturate(.92) brightness(.97); }
+    .staff-photo::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: var(--staff-photo-overlay); }
+    .staff-profile { display: inline-flex; align-items: center; gap: .25rem; padding: 4px 8px; border: 1px solid transparent; border-radius: 6px; color: var(--staff-muted); font-size: 12px; transition: color .15s, border-color .15s; }
+    .staff-profile:hover { border-color: color-mix(in srgb, var(--staff-brand) 35%, transparent); color: var(--staff-fg); }
+    .staff-profile svg:last-child { transition: transform .15s; }
+    .staff-profile:hover svg:last-child { transform: translate(1px,-1px); }
+    .staff-contact { display: flex; align-items: stretch; border-radius: 6px; }
+    .staff-contact:hover { background-color: var(--staff-hover); }
+    .staff-contact a { flex: 1; min-width: 0; display: flex; align-items: center; gap: .4rem; padding: .25rem; color: color-mix(in srgb, var(--staff-muted) 85%, var(--staff-fg)); font: 13px 'JetBrains Mono', monospace; }
+    .staff-contact-text { flex: 1; overflow-wrap: anywhere; }
+    .staff-send { margin-left: auto; }
+    .staff-contact a:hover .staff-send, .staff-copy:hover { color: var(--staff-action-accent); }
+    .staff-copy { display: grid; place-items: center; width: 1.75rem; flex: none; color: var(--staff-muted); opacity: 0; transition: opacity .15s; }
+    .staff-contact:hover .staff-copy, .staff-contact:focus-within .staff-copy { opacity: 1; }
+    @media (hover: none) { .staff-copy { opacity: 1; } }
+    .staff-course { --staff-course-tone: var(--staff-course-light, var(--staff-muted)); display: inline-flex; align-items: center; gap: .25rem; padding: .25rem .5rem; border: 1px solid var(--border); border-inline-start: 2px solid var(--staff-course-tone); border-radius: 6px; color: var(--staff-fg); font-size: .75rem; transition: background-color .15s, border-color .15s; }
+    .dark .staff-course { --staff-course-tone: var(--staff-course-dark, var(--staff-muted)); }
+    .staff-course:hover { background-color: color-mix(in srgb, var(--staff-course-tone) 12%, transparent); border-color: color-mix(in srgb, var(--staff-course-tone) 35%, transparent); border-inline-start-color: var(--staff-course-tone); }
+
     .staff-card-highlighted {
       border-color: #f97316 !important;
       animation: staffCardPulse 1.3s ease-in-out 3;
@@ -1589,7 +1679,7 @@
 
 
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
-  <script src="app.js?v=20261108-course-pages"></script>
+  <script src="app.js?v=20261108-staff-design"></script>
   <script src="portal-admin.js?v=20261102-exam-calendar"></script>
 </body>
 </html>

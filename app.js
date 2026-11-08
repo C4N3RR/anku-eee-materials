@@ -3736,30 +3736,35 @@ const CONFIG = {
     function renderStaffCard(staff, isHighlighted = false) {
       const fullNameWithTitle = formatStaffFullName(staff);
       const initials = getStaffInitials(staff.name);
-      const roleBadge = staff.role ? `
-        <span class="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium ${
-          staff.role.includes('Bölüm Başkanı')
-            ? 'bg-orange-500/15 text-orange-600 dark:text-orange-400 border border-orange-500/30'
-            : staff.role.includes('Başkan Yardımcısı')
-              ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30'
-              : staff.category === 'assistant'
-                ? 'bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/30'
-                : 'bg-muted text-muted-foreground border border-border'
-        }">
-          ${esc(formatStaffRole(staff.role))}
-        </span>
-      ` : '';
+      const isChair = staff.role === 'Bölüm Başkanı';
+      const roleStyle = isChair ? 'staff-role-chair' : staff.role?.includes('Başkan Yardımcısı') ? 'staff-role-deputy' : '';
+      const roleBadge = staff.role ? `<span class="staff-role ${roleStyle}">${esc(formatStaffRole(staff.role))}</span>` : '';
+
+      const renderContact = (value, href, icon, actionLabel, copyLabel) => `
+        <div class="staff-contact">
+          <a href="${esc(href)}" title="${actionLabel}" aria-label="${actionLabel}: ${esc(value)}">
+            <i data-lucide="${icon}" class="size-3.5 shrink-0"></i>
+            <span class="staff-contact-text">${esc(value)}</span>
+            ${icon === 'mail' ? '<i data-lucide="send" class="staff-send size-3.5 shrink-0"></i>' : ''}
+          </a>
+          <button type="button" class="staff-copy" title="${copyLabel}" aria-label="${copyLabel}"
+            data-portal-click="copyInstructorEmail" data-portal-click-args="[${jsArg(value)}, {&quot;$context&quot;:&quot;element&quot;}]">
+            <i data-lucide="copy" class="size-3.5" aria-hidden="true"></i>
+          </button>
+          <span class="sr-only staff-copy-status" role="status"></span>
+        </div>
+      `;
 
       const coursesHtml = (staff.courses && staff.courses.length > 0)
         ? staff.courses.map(code => {
             const cMeta = courseMetadata[code] || CURRICULUM_MAP.get(code) || { name: code };
-            const theme = getCourseTheme(code);
+            const [darkAccent, lightAccent] = COURSE_PAGE_PALETTE[code] || [];
             return `
               <button
                 type="button"
                 data-portal-click="selectCourseByCode" data-portal-click-args="[${jsArg(code)}]"
                 title="${esc(code)} — ${esc(formatCourseDisplayName(code, cMeta.name))} ${trEn('ders sayfasına git', 'go to course page')}"
-                class="inline-flex items-center gap-1 rounded-md border border-border bg-secondary/70 hover:bg-primary hover:text-primary-foreground hover:border-primary px-2 py-1 font-mono text-xs font-semibold text-foreground transition cursor-pointer shadow-2xs"
+                class="staff-course font-mono" ${darkAccent ? `style="--staff-course-dark: ${darkAccent}; --staff-course-light: ${lightAccent};"` : ''}
               >
                 <i data-lucide="book-open" class="size-3 shrink-0 opacity-75"></i>
                 <span>${esc(code)}</span>
@@ -3771,18 +3776,18 @@ const CONFIG = {
       return `
         <div
           id="staff-card-${esc(staff.id)}"
-          class="admincn-card p-4 sm:p-5 flex flex-col justify-between gap-4 transition-all duration-300 hover:border-foreground/20 ${isHighlighted ? 'staff-card-highlighted' : ''}"
+          class="admincn-card staff-card ${isChair ? 'staff-card-chair' : ''} ${isHighlighted ? 'staff-card-highlighted' : ''}"
         >
           <div class="space-y-3.5">
             <!-- Header: Photo + Title & Name + Role Badge -->
             <div class="flex items-start gap-3.5">
-              <div class="relative size-16 sm:size-[68px] rounded-xl overflow-hidden bg-muted border border-border shrink-0 flex items-center justify-center shadow-xs">
+              <div class="staff-photo relative size-16 sm:size-[68px] rounded-xl overflow-hidden bg-muted shrink-0 flex items-center justify-center font-mono">
                 ${staff.photo ? `
                   <img
                     src="${esc(safeImage(staff.photo))}"
                     alt="${esc(fullNameWithTitle)}"
                     loading="lazy"
-                    class="size-full object-cover object-top"
+                    class="size-full object-cover"
                     data-portal-error="imageFallback" data-portal-error-args="[{&quot;$context&quot;:&quot;element&quot;}]"
                   />
                   <span class="hidden text-sm font-bold text-muted-foreground select-none">${esc(initials)}</span>
@@ -3793,10 +3798,10 @@ const CONFIG = {
 
               <div class="min-w-0 flex-1 space-y-1">
                 <div class="flex flex-wrap items-center gap-1.5">
-                  <span class="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">${esc(formatStaffTitle(staff.title))}</span>
+                  <span class="staff-title">${esc(formatStaffTitle(staff.title))}</span>
                   ${roleBadge}
                 </div>
-                <h3 class="text-sm sm:text-base font-bold text-foreground leading-snug break-words">
+                <h3 class="staff-name">
                   ${esc(staff.name)}
                 </h3>
 
@@ -3807,7 +3812,7 @@ const CONFIG = {
                       href="${esc(safeLink(staff.avesisUrl))}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground transition"
+                      class="staff-profile"
                     >
                       <i data-lucide="graduation-cap" class="size-3"></i>
                       <span>AVESİS</span>
@@ -3819,7 +3824,7 @@ const CONFIG = {
                       href="${esc(safeLink(staff.personalUrl))}"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground transition"
+                      class="staff-profile"
                     >
                       <i data-lucide="globe" class="size-3"></i>
                       <span>${trEn('Bölüm Profili', 'Department Profile')}</span>
@@ -3830,47 +3835,19 @@ const CONFIG = {
               </div>
             </div>
 
-            <!-- Contact Info (Email & Phone) -->
-            <div class="space-y-1.5 pt-2 border-t border-border text-xs">
-              ${staff.email ? `
-                <div class="flex items-center justify-between gap-2">
-                  <button
-                    type="button"
-                    data-portal-click="copyInstructorEmail" data-portal-click-args="[${jsArg(staff.email)}, {&quot;$context&quot;:&quot;element&quot;}]"
-                    title="${trEn('E-posta adresini kopyala', 'Copy email address')}"
-                    class="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground font-mono text-xs truncate transition group/mail"
-                  >
-                    <i data-lucide="mail" class="size-3.5 shrink-0 text-muted-foreground group-hover/mail:text-foreground"></i>
-                    <span class="email-text truncate">${esc(staff.email)}</span>
-                    <i data-lucide="copy" class="size-3 shrink-0 opacity-0 group-hover/mail:opacity-100 transition"></i>
-                  </button>
-                  <a
-                    href="mailto:${esc(staff.email)}"
-                    title="${trEn('E-posta Gönder', 'Send Email')}"
-                    class="size-6 inline-flex items-center justify-center rounded text-muted-foreground hover:bg-muted hover:text-foreground transition shrink-0"
-                  >
-                    <i data-lucide="send" class="size-3"></i>
-                  </a>
-                </div>
-              ` : `
-                <div class="flex items-center gap-1.5 text-muted-foreground/60 text-xs">
+            <div class="staff-divider space-y-1.5 pt-2">
+              ${staff.email ? renderContact(staff.email, 'mailto:' + staff.email, 'mail', 'E-posta gönder', 'E-posta adresini kopyala') : `
+                <div class="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <i data-lucide="mail" class="size-3.5 shrink-0"></i>
                   <span>${trEn('E-posta belirtilmemiş', 'No email provided')}</span>
-                </div>
-              `}
-
-              ${staff.phone ? `
-                <div class="flex items-center gap-1.5 text-muted-foreground font-mono text-[11px]">
-                  <i data-lucide="phone" class="size-3.5 shrink-0"></i>
-                  <span>${esc(staff.phone)}</span>
-                </div>
-              ` : ''}
+                </div>`}
+              ${staff.phone ? renderContact(staff.phone, 'tel:' + staff.phone.replace(/[^+\d]/g, ''), 'phone', 'Telefonla ara', 'Telefon numarasını kopyala') : ''}
             </div>
           </div>
 
           <!-- Courses Taught / Assisted (Clickable Course Code Badges -> Course Page) -->
-          <div class="pt-2.5 border-t border-border space-y-1.5">
-            <div class="text-[11px] font-medium text-muted-foreground flex items-center justify-between">
+          <div class="staff-divider pt-2.5 space-y-1.5">
+            <div class="text-xs font-medium text-muted-foreground flex items-center justify-between">
               <span>${staff.category === 'assistant' ? trEn('Desteklediği Lab / Dersler', 'Assisted Labs / Courses') : trEn('Verdiği Dersler', 'Courses Taught')}</span>
               ${staff.courses && staff.courses.length > 0 ? `<span class="font-mono text-[10px]">${staff.courses.length} ${trEn('ders', 'courses')}</span>` : ''}
             </div>
@@ -3943,17 +3920,17 @@ const CONFIG = {
 
       return groups.map(group => `
         <section class="space-y-3">
-          <div class="flex items-center justify-between border-b border-border pb-2">
+          <div class="staff-section-heading pb-2">
             <div>
-              <h2 class="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
+              <h2 class="staff-section-title flex flex-wrap items-center gap-2">
                 <i data-lucide="${group.icon}" class="size-4 text-muted-foreground"></i>
                 <span>${esc(group.title)}</span>
-                <span class="rounded-full bg-primary-soft px-2 py-0.5 text-xs font-mono font-medium text-muted-foreground">${group.items.length}</span>
+                <span class="rounded-full bg-muted px-2 py-0.5 text-xs font-mono font-medium text-muted-foreground">${group.items.length}</span>
               </h2>
               <p class="text-xs text-muted-foreground mt-0.5">${esc(group.subtitle)}</p>
             </div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div class="staff-grid">
             ${group.items.map(s => renderStaffCard(s, s.id === highlightId)).join('')}
           </div>
         </section>
@@ -3979,13 +3956,14 @@ const CONFIG = {
       ];
 
       container.innerHTML = `
-        <div class="admincn-card p-3.5 sm:p-4">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-            <h1 class="text-base sm:text-lg font-bold tracking-tight text-foreground truncate">
+        <div class="staff-page space-y-6">
+        <div class="admincn-card staff-hero">
+          <div class="staff-hero-top">
+            <h1 class="staff-hero-title">
               ${trEn('Öğretim Görevlileri ve Akademik Kadro', 'Academic Staff & Faculty')}
             </h1>
 
-            <div class="flex items-center gap-2 shrink-0">
+            <div class="staff-hero-controls flex flex-wrap items-center gap-2">
               <div class="relative flex-1 sm:flex-initial">
                 <i data-lucide="search" class="size-3.5 text-muted-foreground absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 <input
@@ -3994,14 +3972,14 @@ const CONFIG = {
                   value="${esc(staffSearchQuery)}"
                   data-portal-input="handleStaffSearch" data-portal-input-args="[{&quot;$context&quot;:&quot;value&quot;}]"
                   placeholder="${trEn('İsim, ünvan, ders kodu ara...', 'Search name, title, course code...')}"
-                  class="h-8 w-full sm:w-56 rounded-md bg-background border border-input pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring/40"
+                  class="staff-ghost h-8 w-full sm:w-56 rounded-md pl-8 pr-3 text-xs" aria-label="Akademik kadroda ara"
                 />
               </div>
               <a
                 href="https://eee.ankara.edu.tr/tr/akademik-personel/"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex h-8 items-center justify-center gap-1.5 px-3 rounded-md border border-border bg-secondary/60 hover:bg-muted text-xs font-medium text-foreground transition shrink-0"
+                class="staff-ghost inline-flex h-8 items-center justify-center gap-1.5 px-3 rounded-md text-xs font-medium shrink-0"
               >
                 <i data-lucide="external-link" class="size-3.5"></i>
                 <span>${trEn('Resmi Sayfa', 'Official Page')}</span>
@@ -4009,21 +3987,15 @@ const CONFIG = {
             </div>
           </div>
 
-          <div class="flex flex-wrap items-center gap-1.5 mt-3 pt-2.5 border-t border-border">
+          <div class="flex flex-wrap items-center gap-1.5 mt-3 pt-2.5 staff-divider">
             ${filterTabs.map(tab => `
               <button
                 type="button"
                 data-portal-click="setStaffCategoryFilter" data-portal-click-args="[${jsArg(tab.id)}]"
-                class="inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition ${
-                  staffCategoryFilter === tab.id
-                    ? 'bg-primary text-primary-foreground shadow-2xs'
-                    : 'bg-secondary/60 text-muted-foreground hover:bg-muted hover:text-foreground'
-                }"
+                class="staff-tab" aria-pressed="${staffCategoryFilter === tab.id}"
               >
                 <span>${esc(tab.label)}</span>
-                <span class="rounded-full px-1.5 py-0.2 text-[10px] font-mono ${
-                  staffCategoryFilter === tab.id ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-background/80 text-muted-foreground'
-                }">${tab.count}</span>
+                <span class="font-mono text-[10px]">${tab.count}</span>
               </button>
             `).join('')}
           </div>
@@ -4031,6 +4003,7 @@ const CONFIG = {
 
         <div id="staffCardsSectionsContainer" class="space-y-6">
           ${renderStaffSectionsContent(highlightId)}
+        </div>
         </div>
       `;
 
@@ -5944,9 +5917,25 @@ const CONFIG = {
       }
     });
 
+    const staffCopyTimers = new WeakMap();
+
     window.copyInstructorEmail = function(email, btnEl) {
       if (!email) return;
+      const contact = btnEl.closest('.staff-contact');
       navigator.clipboard.writeText(email).then(() => {
+        if (contact) {
+          const label = contact.querySelector('.staff-contact-text');
+          const status = contact.querySelector('.staff-copy-status');
+          const copied = trEn('Kopyalandı', 'Copied');
+          clearTimeout(staffCopyTimers.get(contact));
+          label.textContent = copied;
+          status.textContent = copied;
+          staffCopyTimers.set(contact, setTimeout(() => {
+            label.textContent = email;
+            status.textContent = '';
+          }, 1200));
+          return;
+        }
         const textSpan = btnEl.querySelector('.email-text');
         const originalText = textSpan.textContent;
 
@@ -5958,7 +5947,7 @@ const CONFIG = {
           btnEl.classList.remove('text-emerald-600', 'dark:text-emerald-400');
         }, 1500);
       }).catch(() => {
-        prompt(trEn('E-posta:', 'Email:'), email);
+        prompt(contact ? trEn('Kopyala:', 'Copy:') : trEn('E-posta:', 'Email:'), email);
       });
     };
 
