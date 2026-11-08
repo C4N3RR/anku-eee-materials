@@ -557,6 +557,13 @@
     .course-staff-link:hover, .course-staff-link:focus-visible, .course-staff-email:hover { color: var(--course-tone); text-decoration: underline; }
     .course-toolbar { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
     .course-toolbar > nav { flex: 1 1 32rem; margin-top: 0 !important; }
+    .calendar-toolbar { display:flex; align-items:flex-start; gap:.375rem; margin-bottom:.75rem; }
+    .calendar-export-button { opacity:.75; transition:opacity .15s; }
+    .calendar-export-button:hover,.calendar-export-button:focus-visible { opacity:1; }
+    @media (max-width: 639px) {
+      .course-toolbar-controls { width:100%; }
+      .course-toolbar-search { flex:1; min-width:0; }
+    }
     .course-toolbar-controls { display: flex; align-items: center; gap: .5rem; margin-inline-start: auto; max-width: 100%; }
     .course-ghost {
       border: 1px solid var(--border);
@@ -1723,7 +1730,7 @@
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
   <script src="practice-questions.js?v=2"></script>
   <script src="practice-panel.js"></script>
-  <script src="app.js?v=20261108-practice-route"></script>
+  <script src="app.js?v=20261108-toolbar-layout"></script>
   <script src="portal-admin.js?v=20261102-exam-calendar"></script>
 </body>
 </html>

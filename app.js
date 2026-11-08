@@ -3096,16 +3096,18 @@ const CONFIG = {
 
       return `
         <div id="academicCalendarContainer" class="admincn-card p-4 sm:p-5 select-none overflow-hidden">
-          <div class="calendar-btn-bar flex items-center gap-1.5 sm:gap-2.5 mb-3 overflow-x-auto no-scrollbar flex-nowrap">
+          <div class="calendar-toolbar">
+          <div class="calendar-btn-bar flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1 overflow-x-auto no-scrollbar flex-nowrap">
             <button id="calendarClassButton" type="button" data-portal-click="cycleCalendarClass" data-portal-click-args="[]" class="portal-btn calendar-class-button shrink-0" title="${trEn('Sonraki sınıfa geç', 'Switch to next year')}" aria-label="${trEn(`${calendarClassYear}. sınıf takvimi. ${calendarClassYear % 4 + 1}. sınıfa geç`, `${formatClassOrdinal(calendarClassYear)} calendar. Switch to ${formatClassOrdinal(calendarClassYear % 4 + 1)}`)}">
               <i data-lucide="repeat" class="size-3.5 shrink-0"></i><span aria-live="polite">${formatClassOrdinal(calendarClassYear)}</span>
             </button>
             <button type="button" class="portal-btn shrink-0" data-portal-click="openAcademicTimetable" data-portal-click-args="[]"><i data-lucide="calendar-days" class="size-3.5 shrink-0"></i> <span>${trEn('Akademik Takvim', 'Academic Calendar')}</span></button>
-            <a href="assets/calendars/eee_${calendarClassYear}_sinif_ara_sinavlar.ics" download class="portal-btn shrink-0" title="${trEn(`${calendarClassYear}. Sınıf Ara Sınav Takvimini Aktar`, `Export ${formatClassOrdinal(calendarClassYear)} Exam Calendar`)}">
+            ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn shrink-0"><i data-lucide="calendar-plus" class="size-3.5 shrink-0"></i> <span>' + trEn('Tarih ekle', 'Add date') + '</span></button>' : ''}
+          </div>
+            <a href="assets/calendars/eee_${calendarClassYear}_sinif_ara_sinavlar.ics" download class="portal-btn calendar-export-button shrink-0" title="${trEn(`${calendarClassYear}. Sınıf Ara Sınav Takvimini Aktar`, `Export ${formatClassOrdinal(calendarClassYear)} Exam Calendar`)}">
               <i data-lucide="calendar-arrow-down" class="size-3.5 shrink-0"></i>
               <span>${trEn('Takvimi Aktar', 'Export Calendar')}</span>
             </a>
-            ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn shrink-0"><i data-lucide="calendar-plus" class="size-3.5 shrink-0"></i> <span>' + trEn('Tarih ekle', 'Add date') + '</span></button>' : ''}
           </div>
           <div class="flex flex-col lg:flex-row items-stretch">
             
@@ -4365,7 +4367,7 @@ const CONFIG = {
           <div class="course-toolbar">
             ${courseLinksSectionHtml}
             <div class="course-toolbar-controls">
-                  <div class="relative w-44 sm:w-52">
+                  <div class="course-toolbar-search relative w-44 sm:w-52">
                     <i data-lucide="search" class="size-3.5 text-zinc-500 dark:text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2 z-10 pointer-events-none"></i>
                     <input
                       type="text"
@@ -4379,7 +4381,7 @@ const CONFIG = {
                     href="${driveFolderUrl}"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="course-ghost inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md"
+                    class="course-ghost shrink-0 inline-flex h-8 items-center gap-1.5 px-2.5 text-xs font-medium rounded-md"
                   >
                     <i data-lucide="folder-symlink" class="size-3.5"></i>
                     <span>Drive</span>
