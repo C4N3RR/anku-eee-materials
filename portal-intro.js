@@ -36,7 +36,6 @@
   };
 
   document.addEventListener('DOMContentLoaded', () => {
-    if (overlay.isConnected) document.body.prepend(overlay);
     if (!waitingForHome) pageReady();
   }, { once: true });
 

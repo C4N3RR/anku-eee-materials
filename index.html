@@ -2,12 +2,35 @@
 <html lang="tr" class="flex min-h-full w-full" data-scroll-behavior="smooth">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self' https://heuxjlefnwxdqfskriso.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://drive.google.com https://docs.google.com https://www.youtube-nocookie.com https://www.youtube.com blob:; media-src 'self' https://drive.google.com blob:; worker-src 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-ppKe7DI2iBV/2uk3hHs5cBlmhy2A+sRZ74ukdP7hfms=' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self' https://heuxjlefnwxdqfskriso.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://drive.google.com https://docs.google.com https://www.youtube-nocookie.com https://www.youtube.com blob:; media-src 'self' https://drive.google.com blob:; worker-src 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
-  <script src="theme-init.js"></script>
+  <script>
+    (() => {
+      let storedScheme;
+      try {
+        storedScheme = localStorage.getItem('color-scheme');
+      } catch {}
+      const isDark = storedScheme === 'dark' ||
+        (storedScheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.classList.toggle('dark', isDark);
+      document.querySelector('meta[name="color-scheme"]').content =
+        storedScheme === 'light' || storedScheme === 'dark' ? storedScheme : 'light dark';
+    })();
+  </script>
   <style>
+    :root {
+      --intro-background: #f6f1e7;
+      background-color: var(--background, #fff);
+    }
+    :root.dark {
+      --intro-background: #161616;
+      background-color: var(--background, #0a0a0a);
+    }
+    :root.portal-intro-active {
+      background-color: var(--intro-background);
+    }
     #portalIntro {
       position: fixed;
       inset: 0;
@@ -16,12 +39,10 @@
       place-items: center;
       touch-action: none;
       color: #6d1a36;
-      --intro-background: #f6f1e7;
       --intro-artwork: url("testlogo/assets/brand/portal-original.png");
     }
     .dark #portalIntro {
       color: #ede4d3;
-      --intro-background: #161616;
     }
     #portalIntroBackdrop {
       position: absolute;
@@ -50,7 +71,7 @@
     }
     .portal-intro-active .portal-hero h1.portal-brand-lockup { visibility: hidden; }
   </style>
-  <script src="portal-intro.js?v=1"></script>
+  <script src="portal-intro.js?v=2"></script>
   <link rel="stylesheet" href="portal-admin.css?v=20261102-exam-calendar">
   <script src="portal-security.js?v=20261102-exam-calendar"></script>
   <script src="portal-config.js"></script>
