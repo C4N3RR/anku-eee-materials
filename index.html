@@ -4,12 +4,56 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self' https://heuxjlefnwxdqfskriso.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://drive.google.com https://docs.google.com https://www.youtube-nocookie.com https://www.youtube.com blob:; media-src 'self' https://drive.google.com blob:; worker-src 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <link rel="stylesheet" href="portal-admin.css?v=20261102-exam-calendar">
-  <script src="portal-security.js?v=20261102-exam-calendar"></script>
-  <script src="portal-config.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <script src="theme-init.js"></script>
+  <style>
+    #portalIntro {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      display: grid;
+      place-items: center;
+      touch-action: none;
+      color: #6d1a36;
+      --intro-background: #f6f1e7;
+      --intro-artwork: url("testlogo/assets/brand/portal-original.png");
+    }
+    .dark #portalIntro {
+      color: #ede4d3;
+      --intro-background: #161616;
+    }
+    #portalIntroBackdrop {
+      position: absolute;
+      inset: 0;
+      background: var(--intro-background);
+    }
+    #portalIntroLogo {
+      position: relative;
+      width: min(80vw, 36rem);
+      aspect-ratio: 5 / 1;
+      transform-origin: center;
+    }
+    #portalIntroLogo::before, #portalIntroLogo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: currentColor;
+      -webkit-mask: var(--intro-artwork) center / 100% auto no-repeat;
+      mask: var(--intro-artwork) center / 100% auto no-repeat;
+    }
+    #portalIntroLogo::before { clip-path: inset(0 78.5% 0 0); }
+    #portalIntroLogo::after {
+      clip-path: inset(0 0 0 21.5%);
+      top: -5%;
+      bottom: 5%;
+    }
+    .portal-intro-active .portal-hero h1.portal-brand-lockup { visibility: hidden; }
+  </style>
+  <script src="portal-intro.js?v=1"></script>
+  <link rel="stylesheet" href="portal-admin.css?v=20261102-exam-calendar">
+  <script src="portal-security.js?v=20261102-exam-calendar"></script>
+  <script src="portal-config.js"></script>
   <link rel="stylesheet" href="portal-language.css?v=20261101-language-spring">
   <script src="portal-language.js?v=20261101-language-spring"></script>
 
@@ -1741,7 +1785,7 @@
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
   <script src="practice-questions.js?v=3"></script>
   <script src="practice-panel.js"></script>
-  <script src="app.js?v=20261108-toolbar-layout"></script>
+  <script src="app.js?v=20261112-intro"></script>
   <script src="portal-admin.js?v=20261102-exam-calendar"></script>
 </body>
 </html>

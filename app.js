@@ -3730,6 +3730,7 @@ const CONFIG = {
       updateBannerClock();
 
       lucide.createIcons();
+      window.portalIntro?.ready();
     }
 
     // ================= RENDER ACADEMIC STAFF HUB (ÖĞRETİM GÖREVLİLERİ) =================
@@ -6768,7 +6769,16 @@ const CONFIG = {
       renderStaffHub(highlightedStaffId);
     }
     lucide.createIcons();
-    loadDriveData();
+    const initialDriveLoad = loadDriveData();
+    if (window.portalIntro) {
+      window.portalIntro.waitForHome(initialDriveLoad.finally(() => {
+        if (activeView === 'home' && !document.querySelector('.portal-hero h1.portal-brand-lockup')) {
+          $('mainLoader')?.classList.add('hidden');
+          $('mainContainer')?.setAttribute('aria-busy', 'false');
+          renderWelcomeHub();
+        }
+      }));
+    }
 
     // ================= SERVICE WORKER =================
     if ('serviceWorker' in navigator) {
@@ -6777,9 +6787,10 @@ const CONFIG = {
           reg.update().catch(() => {});
         }).catch(() => {});
       });
+      const wasControlled = Boolean(navigator.serviceWorker.controller);
       let refreshing = false;
       navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
+        if (wasControlled && !window.portalIntro && !refreshing) {
           refreshing = true;
           window.location.reload();
         }
