@@ -6089,10 +6089,13 @@ const CONFIG = {
     // ================= THEME TOGGLE =================
     function applyResolvedTheme(storedVal) {
       const meta = document.querySelector('meta[name="color-scheme"]');
-      if (meta) meta.content = storedVal ?? 'light dark';
+      const themeColor = $('portalThemeColor');
       const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const isDark = storedVal ? storedVal === 'dark' : sysDark;
+      const isDark = storedVal === 'dark' || (storedVal !== 'light' && sysDark);
+      const scheme = isDark ? 'dark' : 'light';
       document.documentElement.classList.toggle('dark', isDark);
+      if (meta) meta.content = themeColor ? scheme : (storedVal ?? 'light dark');
+      if (themeColor) themeColor.content = isDark ? '#09090b' : '#ffffff';
     }
 
     function switchTheme() {

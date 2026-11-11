@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="tr" class="flex min-h-full w-full" data-scroll-behavior="smooth">
+<html lang="tr" class="dark flex min-h-full w-full" data-scroll-behavior="smooth">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-ppKe7DI2iBV/2uk3hHs5cBlmhy2A+sRZ74ukdP7hfms=' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self' https://heuxjlefnwxdqfskriso.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://drive.google.com https://docs.google.com https://www.youtube-nocookie.com https://www.youtube.com blob:; media-src 'self' https://drive.google.com blob:; worker-src 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="color-scheme" content="dark">
+  <meta id="portalThemeColor" name="theme-color" content="#09090b">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'sha256-0M8QLIEOJvHCP0WWeuOivbkRsMkuKuTs7gDEw2Htc8w=' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; connect-src 'self' https://heuxjlefnwxdqfskriso.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com; frame-src 'self' https://drive.google.com https://docs.google.com https://www.youtube-nocookie.com https://www.youtube.com blob:; media-src 'self' https://drive.google.com blob:; worker-src 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light dark">
   <script>
     (() => {
       let storedScheme;
@@ -15,18 +16,20 @@
       const isDark = storedScheme === 'dark' ||
         (storedScheme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
       document.documentElement.classList.toggle('dark', isDark);
-      document.querySelector('meta[name="color-scheme"]').content =
-        storedScheme === 'light' || storedScheme === 'dark' ? storedScheme : 'light dark';
+      document.querySelector('meta[name="color-scheme"]').content = isDark ? 'dark' : 'light';
+      document.getElementById('portalThemeColor').content = isDark ? '#09090b' : '#ffffff';
     })();
   </script>
   <style>
     :root {
+      color-scheme: dark;
+      --intro-background: #161616;
+      background-color: var(--background, #09090b);
+    }
+    :root:not(.dark) {
+      color-scheme: light;
       --intro-background: #f6f1e7;
       background-color: var(--background, #fff);
-    }
-    :root.dark {
-      --intro-background: #161616;
-      background-color: var(--background, #0a0a0a);
     }
     :root.portal-intro-active {
       background-color: var(--intro-background);
@@ -106,8 +109,6 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/portal-icon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/portal-icon-180.png">
   <link rel="manifest" href="site.webmanifest">
-  <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -136,7 +137,6 @@
 
   <style>
     :root {
-      color-scheme: light dark;
       --background: oklch(1 0 0);
       --foreground: oklch(0.145 0 0);
       --card: oklch(1 0 0);
@@ -166,13 +166,6 @@
       --sidebar-ring: oklch(0.708 0 0);
       --sidebar-width: 15.5rem;
       --sidebar-width-icon: 3.25rem;
-    }
-
-    :root:has(> head > meta[name="color-scheme"][content="dark"]) {
-      color-scheme: dark;
-    }
-    :root:has(> head > meta[name="color-scheme"][content="light"]) {
-      color-scheme: light;
     }
 
     .dark {
@@ -1806,7 +1799,7 @@
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
   <script src="practice-questions.js?v=3"></script>
   <script src="practice-panel.js"></script>
-  <script src="app.js?v=20261112-intro"></script>
+  <script src="app.js?v=20261112-startup-theme"></script>
   <script src="portal-admin.js?v=20261102-exam-calendar"></script>
 </body>
 </html>
