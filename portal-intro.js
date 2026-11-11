@@ -1,26 +1,14 @@
 (() => {
-  const storageKey = 'anku_portal_intro_v1';
   const root = document.documentElement;
-  if (location.hash || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!root.classList.contains('portal-intro-active')) return;
 
+  const overlay = document.getElementById('portalIntro');
+  const backdrop = document.getElementById('portalIntroBackdrop');
+  const logo = document.getElementById('portalIntroLogo');
   try {
-    if (sessionStorage.getItem(storageKey)) return;
-    sessionStorage.setItem(storageKey, '1');
-  } catch {
-    // The page remains usable when session storage is unavailable.
-  }
+    sessionStorage.setItem('anku_portal_intro_v1', '1');
+  } catch {}
 
-  // Mount before the rest of the page is parsed so the artwork can load immediately.
-  const overlay = document.createElement('div');
-  const backdrop = document.createElement('div');
-  const logo = document.createElement('div');
-  overlay.id = 'portalIntro';
-  overlay.setAttribute('aria-hidden', 'true');
-  backdrop.id = 'portalIntroBackdrop';
-  logo.id = 'portalIntroLogo';
-  overlay.append(backdrop, logo);
-  root.append(overlay);
-  root.classList.add('portal-intro-active');
   overlay.addEventListener('wheel', event => event.preventDefault(), { passive: false });
 
   const homeLogo = () => document.querySelector('.portal-hero h1.portal-brand-lockup');
@@ -42,7 +30,23 @@
   const artwork = new Image();
   artwork.src = 'testlogo/assets/brand/portal-original.png';
   const minimumDisplay = artwork.decode().then(() => new Promise(resolve => {
-    requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(resolve, 500)));
+    let previous;
+    function showWhenCentered() {
+      const { left, top, width, height } = logo.getBoundingClientRect();
+      const bounds = overlay.getBoundingClientRect();
+      const geometry = [left, top, width, height];
+      const centered = width > 0 && height > 0 &&
+        Math.abs(left + width / 2 - bounds.left - bounds.width / 2) < 1 &&
+        Math.abs(top + height / 2 - bounds.top - bounds.height / 2) < 1;
+      if (!centered || !previous || geometry.some((value, index) => Math.abs(value - previous[index]) >= 1)) {
+        previous = centered ? geometry : undefined;
+        requestAnimationFrame(showWhenCentered);
+        return;
+      }
+      logo.classList.add('is-visible');
+      requestAnimationFrame(() => setTimeout(resolve, 500));
+    }
+    requestAnimationFrame(showWhenCentered);
   }));
 
   async function reveal() {
