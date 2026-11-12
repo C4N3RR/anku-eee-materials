@@ -633,6 +633,36 @@
     .course-staff-line, .course-staff-link, .course-staff-email { display: inline-flex; align-items: center; flex-wrap: wrap; gap: .375rem; }
     .course-staff-email { color: var(--muted-foreground); font-family: 'JetBrains Mono', monospace; overflow-wrap: anywhere; }
     .course-staff-link:hover, .course-staff-link:focus-visible, .course-staff-email:hover { color: var(--course-tone); text-decoration: underline; }
+    @media (max-width: 767px), (max-width: 1024px) and (orientation: portrait) {
+      .course-page-banner {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: center;
+        gap: .375rem .5rem;
+        padding: .75rem;
+      }
+      .course-page-banner .course-page-icon {
+        grid-column: 1;
+        grid-row: 1;
+        width: 2rem;
+        height: 2rem;
+      }
+      .course-page-banner .course-page-heading { display: contents; }
+      .course-page-banner .course-page-heading > :not([hidden]) {
+        grid-column: 1 / -1;
+        margin-block: 0;
+      }
+      .course-page-banner .course-page-heading > .course-code-pill {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: start;
+      }
+      .course-page-banner .course-page-heading h1 {
+        font-size: clamp(1.25rem, 4.5vw, 1.625rem);
+        line-height: 1.15;
+      }
+      .course-page-banner .email-text { min-width: 0; overflow-wrap: anywhere; }
+    }
     .course-toolbar { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
     .course-toolbar > nav { flex: 1 1 32rem; margin-top: 0 !important; }
     .calendar-toolbar { display:flex; align-items:flex-start; gap:.375rem; margin-bottom:.75rem; }
