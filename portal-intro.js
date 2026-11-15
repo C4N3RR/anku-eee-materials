@@ -2,12 +2,18 @@
   const root = document.documentElement;
   if (!root.classList.contains('portal-intro-active')) return;
 
-  const overlay = document.getElementById('portalIntro');
+  const overlay = document.getElementById('portalIntroOverlay');
   const backdrop = document.getElementById('portalIntroBackdrop');
   const logo = document.getElementById('portalIntroLogo');
-  try {
-    sessionStorage.setItem('anku_portal_intro_v1', '1');
-  } catch {}
+  if (overlay.hasAttribute('data-play-once')) {
+    try {
+      sessionStorage.setItem('anku_portal_intro_v1', '1');
+    } catch {}
+  }
+
+  const mark = document.getElementById('portalIntroMark');
+  const wordmarkWindow = document.getElementById('portalIntroWordmarkWindow');
+  const wordmark = document.getElementById('portalIntroWordmark');
 
   overlay.addEventListener('wheel', event => event.preventDefault(), { passive: false });
 
@@ -29,7 +35,7 @@
 
   const artwork = new Image();
   artwork.src = 'testlogo/assets/brand/portal-original.png';
-  const minimumDisplay = artwork.decode().then(() => new Promise(resolve => {
+  const viewportSettled = artwork.decode().then(() => new Promise(resolve => {
     let previous;
     function showWhenCentered() {
       const { left, top, width, height } = logo.getBoundingClientRect();
@@ -43,15 +49,54 @@
         requestAnimationFrame(showWhenCentered);
         return;
       }
-      logo.classList.add('is-visible');
-      requestAnimationFrame(() => setTimeout(resolve, 500));
+      resolve({ width, bounds });
     }
     requestAnimationFrame(showWhenCentered);
   }));
 
+  async function assembleLogo({ width, bounds }) {
+    // Percentages use the original artwork's left opening and visible mark center.
+    const lensX = 7.8;
+    const markCenterX = 12.2;
+    const centeredOffset = 50 - markCenterX;
+    const nearScale = 1.15 * Math.max(
+      bounds.width / (2 * width * .017),
+      bounds.height / (2 * width * .045)
+    );
+    const flyAway = mark.animate([
+      { transform: `translateX(${50 - lensX}%) scale(${nearScale})`, offset: 0 },
+      { transform: `translateX(${50 - lensX}%) scale(${Math.sqrt(nearScale)})`, offset: .27 },
+      { transform: 'translateX(40%) scale(2)', offset: .62 },
+      { transform: `translateX(${centeredOffset}%) scale(1)`, offset: 1 }
+    ], { duration: 780, easing: 'cubic-bezier(.32, .12, .27, 1)', fill: 'forwards' });
+    logo.classList.add('is-visible');
+    await flyAway.finished;
+    await new Promise(resolve => setTimeout(resolve, 180));
+
+    const slide = { duration: 460, easing: 'cubic-bezier(.25, .65, .25, 1)', fill: 'forwards' };
+    const moveMark = mark.animate([
+      { transform: `translateX(${centeredOffset}%)` },
+      { transform: 'translateX(0)' }
+    ], slide);
+    flyAway.cancel();
+    const uncover = wordmarkWindow.animate([
+      { clipPath: `inset(0 0 0 ${21.5 + centeredOffset}%)` },
+      { clipPath: 'inset(0 0 0 21.5%)' }
+    ], slide);
+    const moveWordmark = wordmark.animate([
+      { transform: 'translateX(-48%)' },
+      { transform: 'translateX(0)' }
+    ], slide);
+    wordmarkWindow.hidden = false;
+    await Promise.all([moveMark.finished, uncover.finished, moveWordmark.finished]);
+    moveMark.cancel();
+    uncover.cancel();
+    moveWordmark.cancel();
+  }
+
   async function reveal() {
     try {
-      await Promise.all([minimumDisplay, ready]);
+      await Promise.all([viewportSettled.then(assembleLogo), ready]);
       const target = homeLogo();
       const from = logo.getBoundingClientRect();
       const to = target?.getBoundingClientRect();

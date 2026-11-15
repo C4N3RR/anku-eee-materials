@@ -43,7 +43,7 @@
     :root.portal-intro-active {
       background-color: var(--intro-background);
     }
-    #portalIntro {
+    #portalIntroOverlay {
       position: fixed;
       inset: 0;
       z-index: 2147483647;
@@ -53,8 +53,8 @@
       color: #6d1a36;
       --intro-artwork: url("testlogo/assets/brand/portal-original.png");
     }
-    .portal-intro-active #portalIntro { display: block; }
-    .dark #portalIntro {
+    .portal-intro-active #portalIntroOverlay { display: block; }
+    .dark #portalIntroOverlay {
       color: #ede4d3;
     }
     #portalIntroBackdrop {
@@ -1384,7 +1384,7 @@
   <link rel="stylesheet" href="portal-brand.css?v=2">
 </head>
 <body class="flex min-h-svh w-full flex-auto flex-col bg-background text-foreground select-none">
-  <div id="portalIntro" aria-hidden="true">
+  <div id="portalIntroOverlay" aria-hidden="true">
     <div id="portalIntroBackdrop"></div>
     <div id="portalIntroLogo">
       <div id="portalIntroMark"></div>
@@ -1393,7 +1393,7 @@
       </div>
     </div>
   </div>
-  <script src="portal-intro-test.js?v=1"></script>
+  <script src="portal-intro.js?v=4"></script>
 
   <div id="sidebarWrapper" data-state="expanded" class="group/sidebar-wrapper flex min-h-svh w-full">
 
