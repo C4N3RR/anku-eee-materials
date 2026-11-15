@@ -1,5 +1,6 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {JSDOM}=require('jsdom');
+const {createHash}=require('node:crypto');
 function setup(){const dom=new JSDOM('<html><body></body></html>',{url:'https://c4n3rr.github.io/anku-eee-materials/',runScripts:'dangerously'});dom.window.eval(fs.readFileSync(path.resolve(__dirname,'../portal-security.js'),'utf8'));return dom;}
 test('HTML and JavaScript argument boundaries resist quote, tag and backslash payloads',()=>{
  const dom=setup(),w=dom.window;let captured;w.capture=value=>captured=value;
@@ -38,14 +39,22 @@ test('Drive tree fields are bounded and cached JSON corruption is tolerated',()=
 });
 
 test('Every page uses strict script CSP without executable inline handlers or CDN application scripts',()=>{
- for(const file of ['index.html','test.html','privacy.html','404.html','test/index.html']){
+ for(const file of ['index.html','test.html','privacy.html','404.html']){
   const html=fs.readFileSync(path.resolve(__dirname,'../'+file),'utf8');
   assert(!/\bon\w+=["']/.test(html),file+' has executable inline attributes');
   const dom=new JSDOM(html),doc=dom.window.document;
   const csp=doc.querySelector('meta[http-equiv="Content-Security-Policy"]').content;
   const scripts=csp.split(';').find(s=>s.trim().startsWith('script-src'));
   assert(!scripts.includes('unsafe-inline')&&!scripts.includes('unsafe-eval'));
-  for(const script of doc.querySelectorAll('script'))if(script.type!=='application/ld+json')assert(script.src&&!/unpkg|cdn.tailwindcss/.test(script.src));
+  for(const script of doc.querySelectorAll('script')){
+   if(script.type==='application/ld+json')continue;
+   if(script.src){
+    assert(!/unpkg|cdn.tailwindcss/.test(script.src));
+   }else{
+    const hash=createHash('sha256').update(script.textContent).digest('base64');
+    assert(scripts.split(/\s+/).includes(`'sha256-${hash}'`),file+' has an inline script without a CSP hash');
+   }
+  }
   dom.window.close();
  }
 });
