@@ -92,7 +92,7 @@
     }
     .portal-intro-active .portal-hero h1.portal-brand-lockup { visibility: hidden; }
   </style>
-  <link rel="stylesheet" href="portal-admin.css?v=20261102-exam-calendar">
+  <link rel="stylesheet" href="portal-admin.css?v=20261115-mobile-fit">
   <script src="portal-security.js?v=20261102-exam-calendar"></script>
   <script src="portal-config.js"></script>
   <link rel="stylesheet" href="portal-language.css?v=20261101-language-spring">
@@ -227,7 +227,8 @@
     html,
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      text-rendering: optimizeLegibility;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
@@ -632,9 +633,21 @@
     }
     .course-code-pill { display: inline-block; }
     .course-page-heading h1 { font-size: clamp(2rem, 3vw, 2.25rem); font-weight: 650; line-height: 1.12; overflow-wrap: anywhere; }
-    .course-details { color: var(--muted-foreground); font-size: .75rem; }
+    .course-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .125rem .375rem;
+      color: var(--muted-foreground);
+      font-size: .75rem;
+      line-height: 1.35;
+    }
+    .course-details span { overflow-wrap: anywhere; }
+    .course-details span:not(:last-child)::after { content: " ·"; }
     .course-staff-line, .course-staff-link, .course-staff-email { display: inline-flex; align-items: center; flex-wrap: wrap; gap: .375rem; }
-    .course-staff-email { color: var(--muted-foreground); font-family: 'JetBrains Mono', monospace; overflow-wrap: anywhere; }
+    .course-staff-email { color: var(--muted-foreground); overflow-wrap: anywhere; }
+    .course-staff-line, .course-staff-link, .course-staff-email { min-width: 0; max-width: 100%; }
+    .course-staff-link, .course-staff-email { flex-wrap: nowrap; text-align: start; }
+    .course-staff-link span, .course-staff-email .email-text { overflow-wrap: anywhere; }
     .course-staff-link:hover, .course-staff-link:focus-visible, .course-staff-email:hover { color: var(--course-tone); text-decoration: underline; }
     @media (max-width: 767px), (max-width: 1024px) and (orientation: portrait) {
       .course-page-banner {
@@ -661,14 +674,45 @@
         justify-self: start;
       }
       .course-page-banner .course-page-heading h1 {
-        font-size: clamp(1.25rem, 4.5vw, 1.625rem);
+        font-size: clamp(1.125rem, 4.7vw, 1.625rem);
+        font-weight: 600;
         line-height: 1.15;
       }
-      .course-page-banner .email-text { min-width: 0; overflow-wrap: anywhere; }
+      .course-instructors { gap: .25rem .625rem; padding-top: 0; }
+      .course-staff-line { gap: .125rem .5rem; }
+      .course-staff-email, .course-details { font-size: .6875rem; }
     }
     .course-toolbar { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
     .course-toolbar > nav { flex: 1 1 32rem; margin-top: 0 !important; }
-    .calendar-toolbar { display:flex; align-items:flex-start; gap:.375rem; margin-bottom:.75rem; }
+    .calendar-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .375rem;
+      margin-bottom: .75rem;
+    }
+    .calendar-toolbar .portal-btn { max-width: 100%; line-height: 1.25; }
+    .calendar-toolbar .portal-btn span { overflow-wrap: anywhere; }
+    @media (min-width: 640px) {
+      .calendar-toolbar .calendar-export-button { margin-inline-start: auto; }
+    }
+    @media (max-width: 639px) {
+      .calendar-toolbar { column-gap: .3125rem; }
+      .calendar-toolbar .portal-btn {
+        min-height: 34px;
+        padding: .375rem .3125rem;
+        gap: .25rem;
+        font-size: .6875rem;
+        font-weight: 500;
+      }
+      .calendar-toolbar .portal-btn svg { width: .8125rem; height: .8125rem; }
+      .calendar-toolbar .calendar-class-button {
+        width: auto;
+        min-width: 0;
+        height: auto;
+        flex: 0 0 auto;
+      }
+    }
     .calendar-export-button { opacity:.75; transition:opacity .15s; }
     .calendar-export-button:hover,.calendar-export-button:focus-visible { opacity:1; }
     @media (max-width: 639px) {
@@ -676,14 +720,23 @@
       .course-toolbar-search { flex:1; min-width:0; }
     }
     @media (max-width: 767px) {
-      #staffSearchInput::placeholder { font-size:12px; }
+      #globalSearchInput::placeholder,
+      #datatableSearchInput::placeholder,
+      #staffSearchInput::placeholder,
+      .course-toolbar-search input::placeholder {
+        font-size: 13px;
+        font-weight: 400;
+      }
     }
     @media (pointer: coarse), (max-width: 767px) {
       #globalSearchInput,
       #datatableSearchInput,
       #staffSearchInput,
       .course-toolbar-search input {
-        font-size:16px;
+        -webkit-appearance: none;
+        appearance: none;
+        font-size: 16px;
+        font-weight: 400;
       }
     }
     .course-toolbar-controls { display: flex; align-items: center; gap: .5rem; margin-inline-start: auto; max-width: 100%; }
@@ -1862,7 +1915,7 @@
   <!-- ================= JAVASCRIPT APPLICATION CODE ================= -->
   <script src="practice-questions.js?v=3"></script>
   <script src="practice-panel.js"></script>
-  <script src="app.js?v=20261112-startup-theme"></script>
+  <script src="app.js?v=20261115-mobile-fit"></script>
   <script src="portal-admin.js?v=20261102-exam-calendar"></script>
 </body>
 </html>

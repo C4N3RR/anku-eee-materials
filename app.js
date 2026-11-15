@@ -3097,14 +3097,12 @@ const CONFIG = {
       return `
         <div id="academicCalendarContainer" class="admincn-card p-4 sm:p-5 select-none overflow-hidden">
           <div class="calendar-toolbar">
-          <div class="calendar-btn-bar flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-1 overflow-x-auto no-scrollbar flex-nowrap">
             <button id="calendarClassButton" type="button" data-portal-click="cycleCalendarClass" data-portal-click-args="[]" class="portal-btn calendar-class-button shrink-0" title="${trEn('Sonraki sınıfa geç', 'Switch to next year')}" aria-label="${trEn(`${calendarClassYear}. sınıf takvimi. ${calendarClassYear % 4 + 1}. sınıfa geç`, `${formatClassOrdinal(calendarClassYear)} calendar. Switch to ${formatClassOrdinal(calendarClassYear % 4 + 1)}`)}">
               <i data-lucide="repeat" class="size-3.5 shrink-0"></i><span aria-live="polite">${formatClassOrdinal(calendarClassYear)}</span>
             </button>
-            <button type="button" class="portal-btn shrink-0" data-portal-click="openAcademicTimetable" data-portal-click-args="[]"><i data-lucide="calendar-days" class="size-3.5 shrink-0"></i> <span>${trEn('Akademik Takvim', 'Academic Calendar')}</span></button>
-            ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn shrink-0"><i data-lucide="calendar-plus" class="size-3.5 shrink-0"></i> <span>' + trEn('Tarih ekle', 'Add date') + '</span></button>' : ''}
-          </div>
-            <a href="assets/calendars/eee_${calendarClassYear}_sinif_ara_sinavlar.ics" download class="portal-btn calendar-export-button shrink-0" title="${trEn(`${calendarClassYear}. Sınıf Ara Sınav Takvimini Aktar`, `Export ${formatClassOrdinal(calendarClassYear)} Exam Calendar`)}">
+            <button type="button" class="portal-btn" data-portal-click="openAcademicTimetable" data-portal-click-args="[]"><i data-lucide="calendar-days" class="size-3.5 shrink-0"></i> <span>${trEn('Akademik Takvim', 'Academic Calendar')}</span></button>
+            ${window.portalCanEdit?.() ? '<button type="button" data-portal-click="portalOpenCalendar" data-portal-click-args="[]" class="portal-btn"><i data-lucide="calendar-plus" class="size-3.5 shrink-0"></i> <span>' + trEn('Tarih ekle', 'Add date') + '</span></button>' : ''}
+            <a href="assets/calendars/eee_${calendarClassYear}_sinif_ara_sinavlar.ics" download class="portal-btn calendar-export-button" title="${trEn(`${calendarClassYear}. Sınıf Ara Sınav Takvimini Aktar`, `Export ${formatClassOrdinal(calendarClassYear)} Exam Calendar`)}">
               <i data-lucide="calendar-arrow-down" class="size-3.5 shrink-0"></i>
               <span>${trEn('Takvimi Aktar', 'Export Calendar')}</span>
             </a>
@@ -3678,12 +3676,12 @@ const CONFIG = {
 
         <nav aria-label="${trEn('Hızlı erişim', 'Quick access')}" class="grid grid-cols-2 gap-4 md:hidden">
           <button type="button" data-portal-click="openCourseNavigation" data-portal-click-args="[]" aria-controls="sidebar"
-            class="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-xs font-semibold text-foreground shadow-sm hover:bg-muted active:bg-muted transition">
+            class="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-xs font-medium text-foreground shadow-sm hover:bg-muted active:bg-muted transition">
             <i data-lucide="book-open" class="size-4 shrink-0 text-muted-foreground"></i>
             <span class="min-w-0 leading-tight">${trEn('Dersler', 'Courses')}</span>
           </button>
           <button type="button" data-portal-click="goToStaffPage" data-portal-click-args="[]"
-            class="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-xs font-semibold text-foreground shadow-sm hover:bg-muted active:bg-muted transition">
+            class="inline-flex min-h-12 min-w-0 items-center justify-center gap-2 rounded-xl border border-border bg-card px-2 py-3 text-xs font-medium text-foreground shadow-sm hover:bg-muted active:bg-muted transition">
             <i data-lucide="users" class="size-4 shrink-0 text-muted-foreground"></i>
             <span class="min-w-0 leading-tight">${trEn('Öğretim Görevlileri', 'Academic Staff')}</span>
           </button>
@@ -4280,8 +4278,6 @@ const CONFIG = {
         .map(id => STAFF_MAP.get(id))
         .filter(Boolean);
 
-      const yearSemLabel = curr ? `${formatClassOrdinal(curr.year)} · ${formatSemesterLabel(curr.semester, true)}` : '';
-
       const renderCourseStaffLink = (staff, isAssistant = false) => {
         const fullName = formatStaffFullName(staff);
         const initials = getStaffInitials(staff.name);
@@ -4307,7 +4303,7 @@ const CONFIG = {
                 title="${trEn('E-postayı Kopyala', 'Copy Email')}: ${esc(staff.email)}"
                 class="course-staff-email"
               >
-                <span aria-hidden="true">·</span>
+                <i data-lucide="mail" class="size-3 shrink-0" aria-hidden="true"></i>
                 <span class="email-text">${esc(staff.email)}</span>
               </button>
             ` : ''}
@@ -4318,14 +4314,14 @@ const CONFIG = {
       let courseStaffHtml = '';
       if (instructorStaffList.length > 0 || assistantStaffList.length > 0) {
         courseStaffHtml = `
-          <div class="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
+          <div class="course-instructors flex flex-wrap items-center gap-2 pt-0.5 text-xs">
             ${instructorStaffList.map(s => renderCourseStaffLink(s, false)).join('')}
             ${assistantStaffList.map(s => renderCourseStaffLink(s, true)).join('')}
           </div>
         `;
       } else if (meta.instructor || meta.email) {
         courseStaffHtml = `
-          <div class="flex flex-wrap items-center gap-2 pt-0.5 text-xs">
+          <div class="course-instructors flex flex-wrap items-center gap-2 pt-0.5 text-xs">
             ${meta.instructor ? `
               <div class="course-staff-line">
                 <i data-lucide="user" class="size-3.5 text-zinc-600 dark:text-zinc-300"></i>
@@ -4347,7 +4343,12 @@ const CONFIG = {
       }
 
 
-      const courseDetails = [yearSemLabel, formatCreditsText(meta.credits), `${totalFiles} ${trEn('dosya', 'files')}`].filter(Boolean).join(' · ');
+      const courseDetails = [
+        curr && formatClassOrdinal(curr.year),
+        curr && formatSemesterLabel(curr.semester, true),
+        ...formatCreditsText(meta.credits).split(/\s+[•·]\s+/),
+        `${totalFiles} ${trEn('dosya', 'files')}`
+      ].filter(Boolean).map(detail => `<span>${esc(detail)}</span>`).join(' ');
 
       container.innerHTML = `
         <div class="course-page space-y-6" data-course="${esc(code)}"
@@ -4361,7 +4362,7 @@ const CONFIG = {
               <span class="course-code-pill rounded-md px-2 py-0.5 font-mono text-xs font-semibold">${esc(code)}</span>
               <h1>${esc(formatCourseDisplayName(code, meta.name))}</h1>
               ${courseStaffHtml}
-              <p class="course-details font-mono">${esc(courseDetails)}</p>
+              <p class="course-details">${courseDetails}</p>
             </div>
           </header>
 
