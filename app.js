@@ -4398,6 +4398,18 @@ const CONFIG = {
             </div>
           </div>
 
+        ${code === 'EEE1001' ? `
+          <div class="flex items-center gap-3 pt-1 border-b border-border pb-3">
+            <a href="./eee1001-vize-atolyesi.html" target="_blank" rel="noopener noreferrer"
+              class="course-ghost inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold"
+              aria-label="${trEn('Vize Atölyesi (yeni sekme)', 'Midterm Workshop (new tab)')}">
+              <i data-lucide="graduation-cap" class="size-3.5" aria-hidden="true"></i>
+              <span>${trEn('Vize Atölyesi', 'Midterm Workshop')}</span>
+              <i data-lucide="external-link" class="size-3.5" aria-hidden="true"></i>
+            </a>
+          </div>
+        ` : ''}
+
         ${hasStudyMode || practiceQuestions?.length ? `
           <div class="flex items-center justify-between flex-wrap gap-3 pt-1 border-b border-border pb-3">
             <div class="inline-flex p-1 rounded-xl bg-muted/60 border border-border text-xs font-medium">
