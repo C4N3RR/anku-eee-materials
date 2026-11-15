@@ -314,16 +314,91 @@
       const body=dialog.querySelector('.portal-modal-body');
       body.innerHTML=`<div class="academic-sheet"><table class="academic-table"><caption>${L('ANKARA ÜNİVERSİTESİ<br>ELEKTRİK-ELEKTRONİK MÜHENDİSLİĞİ<br>2026–2027 EĞİTİM-ÖĞRETİM YILI AKADEMİK TAKVİMİ','ANKARA UNIVERSITY<br>ELECTRICAL & ELECTRONICS ENGINEERING<br>2026–2027 ACADEMIC YEAR CALENDAR')}</caption><colgroup><col><col style="width:264px"><col style="width:264px"></colgroup><thead><tr><th scope="col">${L('OLAY / İŞLEM','EVENT / ACTION')}</th><th scope="col">${L('GÜZ YARIYILI','FALL SEMESTER')}</th><th scope="col">${L('BAHAR YARIYILI','SPRING SEMESTER')}</th></tr></thead><tbody>${[...rows.values()].map(e=>`<tr class="${e.hl?'academic-highlight':''}"><th scope="row">${escape(e.title)}</th><td>${escape(e.Güz||'—')}</td><td>${escape(e.Bahar||'—')}</td></tr>`).join('')}</tbody></table><div class="academic-footnotes">${L('<p>• Uyum haftası: yeni başlayan 1. sınıf öğrencileri için zorunludur.</p><p>• UÖ sınav tarihleri yalnızca ilgili uzaktan öğretim derslerini alan öğrenciler içindir.</p><p>—: Bu yarıyıl için tarih belirtilmemiştir. Bölüm ara sınavları ayrıca ilan edilir.</p><p>Kaynak: Ankara Üniversitesi 2026–2027 genel lisans akademik takvimi, s. 1–2.</p>','<p>• Orientation week is mandatory for incoming first-year students.</p><p>• Distance-learning (UÖ) exam dates apply only to students taking the related distance-learning courses.</p><p>—: No date specified for this semester. Department midterms are announced separately.</p><p>Source: Ankara University 2026–2027 general undergraduate academic calendar, pp. 1–2.</p>')}</div></div>`;
       const sheet=body.querySelector('.academic-sheet');
+      let fitScale=1;
+      let zoom=1;
+      let x=0;
+      let y=0;
+      let gesture;
+      let lastTap;
+
+      const renderSheet=()=>{
+        const scale=fitScale*zoom;
+        const limitX=Math.max(0,(sheet.offsetWidth*scale-body.clientWidth)/2);
+        const limitY=Math.max(0,sheet.offsetHeight*scale-body.clientHeight);
+        x=Math.min(limitX,Math.max(-limitX,x));
+        y=Math.min(0,Math.max(-limitY,y));
+        sheet.style.transform=`translate(${x}px, ${y}px) scale(${scale})`;
+      };
       const fit=()=>{
         if(!dialog.open)return;
         const viewportHeight=window.visualViewport?.height||window.innerHeight;
         const headerHeight=dialog.querySelector('.portal-modal-head').getBoundingClientRect().height;
         const availableHeight=Math.max(1,viewportHeight*.96-headerHeight-14);
-        const scale=Math.min((document.documentElement.clientWidth*.98-26)/sheet.offsetWidth,availableHeight/sheet.offsetHeight,1);
-        sheet.style.transform=`scale(${scale})`;
-        dialog.style.width=`${Math.ceil(sheet.offsetWidth*scale)+26}px`;
-        dialog.style.height=`${Math.ceil(sheet.offsetHeight*scale)+headerHeight+14}px`;
+        fitScale=Math.min((document.documentElement.clientWidth*.98-26)/sheet.offsetWidth,availableHeight/sheet.offsetHeight,1);
+        dialog.style.width=`${Math.ceil(sheet.offsetWidth*fitScale)+26}px`;
+        dialog.style.height=`${Math.ceil(sheet.offsetHeight*fitScale)+headerHeight+14}px`;
+        renderSheet();
       };
+
+      body.addEventListener('pointerdown',event=>{
+        if(event.pointerType!=='touch')return;
+        if(!event.isPrimary){
+          gesture=lastTap=null;
+          return;
+        }
+        gesture={id:event.pointerId,x:event.clientX,y:event.clientY,time:event.timeStamp,moved:false};
+      });
+
+      body.addEventListener('pointermove',event=>{
+        if(gesture?.id!==event.pointerId)return;
+        const dx=event.clientX-gesture.x;
+        const dy=event.clientY-gesture.y;
+        if(!gesture.moved && Math.hypot(dx,dy)<8)return;
+        gesture.moved=true;
+        lastTap=null;
+        gesture.x=event.clientX;
+        gesture.y=event.clientY;
+        if(zoom===1)return;
+        sheet.classList.remove('academic-sheet-animating');
+        x+=dx;
+        y+=dy;
+        renderSheet();
+      });
+
+      body.addEventListener('pointerup',event=>{
+        if(gesture?.id!==event.pointerId)return;
+        const isTap=!gesture.moved && event.timeStamp-gesture.time<=250 &&
+          Math.hypot(event.clientX-gesture.x,event.clientY-gesture.y)<8;
+        gesture=null;
+        if(!isTap){
+          lastTap=null;
+          return;
+        }
+        const tap={x:event.clientX,y:event.clientY,time:event.timeStamp};
+        if(!lastTap || tap.time-lastTap.time>300 || Math.hypot(tap.x-lastTap.x,tap.y-lastTap.y)>28){
+          lastTap=tap;
+          return;
+        }
+        lastTap=null;
+        zoom=zoom===1?2:1;
+        const bounds=body.getBoundingClientRect();
+        // With a top-center origin, these offsets keep the tapped point under the finger at 2×.
+        x=zoom===2?bounds.left+bounds.width/2-tap.x:0;
+        y=zoom===2?bounds.top-tap.y:0;
+        sheet.classList.add('academic-sheet-animating');
+        renderSheet();
+      });
+
+      body.addEventListener('pointercancel',()=>{
+        gesture=lastTap=null;
+      });
+      dialog.addEventListener('close',()=>{
+        gesture=lastTap=null;
+        zoom=1;
+        x=y=0;
+        sheet.classList.remove('academic-sheet-animating');
+        renderSheet();
+      });
       dialog.fitTimetable=fit;
       const observer=typeof ResizeObserver === 'function' ? new ResizeObserver(fit) : null;
       observer?.observe(body);
